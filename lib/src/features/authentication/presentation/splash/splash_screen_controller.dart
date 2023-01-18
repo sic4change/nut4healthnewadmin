@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/firebase_auth_repository.dart';
 
-class SignInScreenController extends AutoDisposeAsyncNotifier<void> {
+class SplashScreenController extends AutoDisposeAsyncNotifier<void> {
   @override
   FutureOr<void> build() {
     // ok to leave this empty if the return type is FutureOr<void>
@@ -17,6 +17,6 @@ class SignInScreenController extends AutoDisposeAsyncNotifier<void> {
   }
 }
 
-final signInScreenControllerProvider =
-    AutoDisposeAsyncNotifierProvider<SignInScreenController, void>(
-        SignInScreenController.new);
+final splashScreenControllerProvider =
+    AutoDisposeAsyncNotifierProvider<SplashScreenController, void>(
+        SplashScreenController.new);
