@@ -9,6 +9,7 @@ import '../../../../common_widgets/custom_text_button.dart';
 import '../../../../common_widgets/primary_button.dart';
 import '../../../../common_widgets/responsive_scrollable_card.dart';
 import '../../../../constants/app_sizes.dart';
+import '../../../../utils/alert_dialogs.dart';
 import 'email_password_sign_in_controller.dart';
 import 'email_password_sign_in_form_type.dart';
 import 'email_password_sign_in_validators.dart';
@@ -61,10 +62,6 @@ class _EmailPasswordSignInContentsState
   String get email => _emailController.text;
   String get password => _passwordController.text;
 
-  // local variable used to apply AutovalidateMode.onUserInteraction and show
-  // error hints only when the form has been submitted
-  // For more details on how this is implemented, see:
-  // https://codewithandrea.com/articles/flutter-text-field-form-validation/
   var _submitted = false;
   // track the formType as a local state variable
   late var _formType = widget.formType;
@@ -113,6 +110,19 @@ class _EmailPasswordSignInContentsState
     _passwordController.clear();
   }
 
+  Future<void> _forgotPassword() async {
+    if (!canSubmitEmail(email)) {
+      showExceptionAlertDialog(
+        context: context,
+        title: 'Error'.hardcoded,
+        exception: 'Correo electrónico no válido'.hardcoded,
+      );
+    } else {
+      final controller = ref.read(emailPasswordSignInControllerProvider.notifier);
+      await controller.forgotPassword(email: email);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     ref.listen<AsyncValue>(
@@ -120,73 +130,79 @@ class _EmailPasswordSignInContentsState
       (_, state) => state.showAlertDialogOnError(context),
     );
     final state = ref.watch(emailPasswordSignInControllerProvider);
+
     return Center(
       child: ResponsiveScrollableCard(
         child: FocusScope(
           node: _node,
-          child: Form(
-            key: _formKey,
-            child: Column(
+          child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                gapH8,
-                // Email field
-                TextFormField(
-                  key: EmailPasswordSignInScreen.emailKey,
-                  controller: _emailController,
-                  decoration: InputDecoration(
-                    labelText: 'Correo electrónico'.hardcoded,
-                    hintText: 'admin@nut4health.org'.hardcoded,
-                    enabled: !state.isLoading,
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      gapH8,
+                      // Email field
+                      TextFormField(
+                        key: EmailPasswordSignInScreen.emailKey,
+                        controller: _emailController,
+                        decoration: InputDecoration(
+                          labelText: 'Correo electrónico'.hardcoded,
+                          hintText: 'admin@nut4health.org'.hardcoded,
+                          enabled: !state.isLoading,
+                        ),
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (email) =>
+                            !_submitted ? null : emailErrorText(email ?? ''),
+                        autocorrect: false,
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.emailAddress,
+                        keyboardAppearance: Brightness.light,
+                        onEditingComplete: () => _emailEditingComplete(),
+                        inputFormatters: <TextInputFormatter>[
+                          ValidatorInputFormatter(
+                              editingValidator: EmailEditingRegexValidator()),
+                        ],
+                      ),
+                      gapH8,
+                      // Password field
+                      TextFormField(
+                        key: EmailPasswordSignInScreen.passwordKey,
+                        controller: _passwordController,
+                        decoration: InputDecoration(
+                          labelText: _formType.passwordLabelText,
+                          enabled: !state.isLoading,
+                        ),
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (password) => !_submitted
+                            ? null
+                            : passwordErrorText(password ?? '', _formType),
+                        obscureText: true,
+                        autocorrect: false,
+                        textInputAction: TextInputAction.done,
+                        keyboardAppearance: Brightness.light,
+                        onEditingComplete: () => _passwordEditingComplete(),
+                      ),
+                      gapH8,
+                      PrimaryButton(
+                        text: _formType.primaryButtonText,
+                        isLoading: state.isLoading,
+                        onPressed: state.isLoading ? null : () => _submit(),
+                      ),
+                    ],
                   ),
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (email) =>
-                      !_submitted ? null : emailErrorText(email ?? ''),
-                  autocorrect: false,
-                  textInputAction: TextInputAction.next,
-                  keyboardType: TextInputType.emailAddress,
-                  keyboardAppearance: Brightness.light,
-                  onEditingComplete: () => _emailEditingComplete(),
-                  inputFormatters: <TextInputFormatter>[
-                    ValidatorInputFormatter(
-                        editingValidator: EmailEditingRegexValidator()),
-                  ],
-                ),
-                gapH8,
-                // Password field
-                TextFormField(
-                  key: EmailPasswordSignInScreen.passwordKey,
-                  controller: _passwordController,
-                  decoration: InputDecoration(
-                    labelText: _formType.passwordLabelText,
-                    enabled: !state.isLoading,
-                  ),
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (password) => !_submitted
-                      ? null
-                      : passwordErrorText(password ?? '', _formType),
-                  obscureText: true,
-                  autocorrect: false,
-                  textInputAction: TextInputAction.done,
-                  keyboardAppearance: Brightness.light,
-                  onEditingComplete: () => _passwordEditingComplete(),
-                ),
-                gapH8,
-                PrimaryButton(
-                  text: _formType.primaryButtonText,
-                  isLoading: state.isLoading,
-                  onPressed: state.isLoading ? null : () => _submit(),
                 ),
                 gapH8,
                 CustomTextButton(
                   text: _formType.secondaryButtonText,
-                  onPressed: state.isLoading ? null : _updateFormType,
+                  onPressed: state.isLoading ? null : _forgotPassword,
                 ),
-              ],
-            ),
-          ),
+              ]),
         ),
       ),
     );
   }
 }
+

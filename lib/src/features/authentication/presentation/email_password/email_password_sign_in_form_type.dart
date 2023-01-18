@@ -23,11 +23,7 @@ extension EmailPasswordSignInFormTypeX on EmailPasswordSignInFormType {
   }
 
   String get secondaryButtonText {
-    if (this == EmailPasswordSignInFormType.register) {
-      return '¿Ya tienes cuenta? Acceder'.hardcoded;
-    } else {
-      return '¿No tienes cuenta? Registrar'.hardcoded;
-    }
+    return '¿Has olvidado la contraseña?'.hardcoded;
   }
 
   EmailPasswordSignInFormType get secondaryActionFormType {

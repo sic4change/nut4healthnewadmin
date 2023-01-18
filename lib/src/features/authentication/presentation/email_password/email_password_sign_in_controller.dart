@@ -16,8 +16,7 @@ class EmailPasswordSignInController extends AutoDisposeAsyncNotifier<void> {
       required String password,
       required EmailPasswordSignInFormType formType}) async {
     state = const AsyncValue.loading();
-    state =
-        await AsyncValue.guard(() => _authenticate(email, password, formType));
+    state = await AsyncValue.guard(() => _authenticate(email, password, formType));
   }
 
   Future<void> _authenticate(
@@ -30,8 +29,21 @@ class EmailPasswordSignInController extends AutoDisposeAsyncNotifier<void> {
         return authRepository.createUserWithEmailAndPassword(email, password);
     }
   }
+
+  Future<void> forgotPassword(
+      {required String email}) async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() => _resetPassword(email));
+  }
+
+  Future<void> _resetPassword(String email) {
+    final authRepository = ref.read(authRepositoryProvider);
+    return authRepository.resetPassword(email);
+  }
+
 }
 
 final emailPasswordSignInControllerProvider =
     AutoDisposeAsyncNotifierProvider<EmailPasswordSignInController, void>(
         EmailPasswordSignInController.new);
+

@@ -21,9 +21,14 @@ class AuthRepository {
         email: email, password: password);
   }
 
+  Future<void> resetPassword(String email) {
+    return _auth.sendPasswordResetEmail(email: email);
+  }
+
   Future<void> signOut() {
     return _auth.signOut();
   }
+
 }
 
 final firebaseAuthProvider =
