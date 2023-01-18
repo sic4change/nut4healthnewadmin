@@ -18,7 +18,7 @@ extension AsyncValueUI on AsyncValue {
       showExceptionAlertDialog(
         context: context,
         title: 'Email enviado'.hardcoded,
-        exception: 'Se ha enviado un email al correo. Si no lo encuentra, por favor, '
+        exception: 'Se ha enviado un email al correo. Si no lo encuentras, por favor, '
             'revisa la carpeta de SPAM'.hardcoded,
       );
     }

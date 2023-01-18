@@ -9,6 +9,7 @@ import '../features/authentication/presentation/account/account_screen.dart';
 import '../features/authentication/presentation/email_password/email_password_sign_in_form_type.dart';
 import '../features/authentication/presentation/email_password/email_password_sign_in_screen.dart';
 import '../features/jobs/presentation/jobs_screen/jobs_screen.dart';
+import '../sample/sample_browser.dart';
 import 'go_router_refresh_stream.dart';
 
 // private navigators
@@ -77,7 +78,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             name: AppRoute.jobs.name,
             pageBuilder: (context, state) => NoTransitionPage(
               key: state.pageKey,
-              child: const JobsScreen(),
+              child: const SampleBrowser(),
             ),
             routes: [],
           ),

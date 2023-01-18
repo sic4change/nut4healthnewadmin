@@ -1,6 +1,7 @@
 import 'package:adminnut4health/src/app.dart';
 import 'package:adminnut4health/src/features/authentication/data/firebase_auth_repository.dart';
 import 'package:adminnut4health/src/localization/string_hardcoded.dart';
+import 'package:adminnut4health/src/sample/model/model.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await updateControlItems();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
