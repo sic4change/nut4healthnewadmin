@@ -8,7 +8,7 @@ import 'email_password_sign_in_form_type.dart';
 mixin EmailAndPasswordValidators {
   final StringValidator emailSubmitValidator = EmailSubmitRegexValidator();
   final StringValidator passwordRegisterSubmitValidator =
-      MinLengthStringValidator(8);
+      MinLengthStringValidator(6);
   final StringValidator passwordSignInSubmitValidator =
       NonEmptyStringValidator();
 
@@ -27,8 +27,8 @@ mixin EmailAndPasswordValidators {
   String? emailErrorText(String email) {
     final bool showErrorText = !canSubmitEmail(email);
     final String errorText = email.isEmpty
-        ? 'Email can\'t be empty'.hardcoded
-        : 'Invalid email'.hardcoded;
+        ? 'El correo electrónico no puede estar vacío'.hardcoded
+        : 'Correo electrónico no válido'.hardcoded;
     return showErrorText ? errorText : null;
   }
 
@@ -36,8 +36,8 @@ mixin EmailAndPasswordValidators {
       String password, EmailPasswordSignInFormType formType) {
     final bool showErrorText = !canSubmitPassword(password, formType);
     final String errorText = password.isEmpty
-        ? 'Password can\'t be empty'.hardcoded
-        : 'Password is too short'.hardcoded;
+        ? 'La contraseña no puede estar vacía'.hardcoded
+        : 'Contraseña demasiado corta'.hardcoded;
     return showErrorText ? errorText : null;
   }
 }

@@ -7,26 +7,26 @@ enum EmailPasswordSignInFormType { signIn, register }
 extension EmailPasswordSignInFormTypeX on EmailPasswordSignInFormType {
   String get passwordLabelText {
     if (this == EmailPasswordSignInFormType.register) {
-      return 'Password (8+ characters)'.hardcoded;
+      return 'Contraseña'.hardcoded;
     } else {
-      return 'Password'.hardcoded;
+      return 'Contraseña'.hardcoded;
     }
   }
 
   // Getters
   String get primaryButtonText {
     if (this == EmailPasswordSignInFormType.register) {
-      return 'Create an account'.hardcoded;
+      return 'Crear cuenta'.hardcoded;
     } else {
-      return 'Sign in'.hardcoded;
+      return 'Acceder'.hardcoded;
     }
   }
 
   String get secondaryButtonText {
     if (this == EmailPasswordSignInFormType.register) {
-      return 'Have an account? Sign in'.hardcoded;
+      return '¿Ya tienes cuenta? Acceder'.hardcoded;
     } else {
-      return 'Need an account? Register'.hardcoded;
+      return '¿No tienes cuenta? Registrar'.hardcoded;
     }
   }
 
@@ -40,17 +40,17 @@ extension EmailPasswordSignInFormTypeX on EmailPasswordSignInFormType {
 
   String get errorAlertTitle {
     if (this == EmailPasswordSignInFormType.register) {
-      return 'Registration failed'.hardcoded;
+      return 'Error al crear cuenta'.hardcoded;
     } else {
-      return 'Sign in failed'.hardcoded;
+      return 'Error a acceder'.hardcoded;
     }
   }
 
   String get title {
     if (this == EmailPasswordSignInFormType.register) {
-      return 'Register'.hardcoded;
+      return 'Registrar'.hardcoded;
     } else {
-      return 'Sign in'.hardcoded;
+      return 'Acceder'.hardcoded;
     }
   }
 }

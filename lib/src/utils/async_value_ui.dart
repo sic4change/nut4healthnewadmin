@@ -8,11 +8,10 @@ extension AsyncValueUI on AsyncValue {
   void showAlertDialogOnError(BuildContext context) {
     debugPrint('isLoading: $isLoading, hasError: $hasError');
     if (!isLoading && hasError) {
-      final message = error.toString();
       showExceptionAlertDialog(
         context: context,
         title: 'Error'.hardcoded,
-        exception: message,
+        exception: 'Usuario o contraseña incorrecta'.hardcoded,
       );
     }
   }
