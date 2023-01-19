@@ -25,9 +25,6 @@ class _ScaffoldWithBottomNavBarState extends State<ScaffoldWithBottomNavBar> {
     }
     setState(() => _selectedIndex = index);
     if (index == 0) {
-      // Note: this won't remember the previous state of the route
-      // More info here:
-      // https://github.com/flutter/flutter/issues/99124
       context.goNamed(AppRoute.main.name);
     } else if (index == 1) {
       context.goNamed(AppRoute.account.name);
@@ -38,7 +35,7 @@ class _ScaffoldWithBottomNavBarState extends State<ScaffoldWithBottomNavBar> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: widget.child,
-      bottomNavigationBar: BottomNavigationBar(
+      /*bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
         items: [
@@ -53,7 +50,7 @@ class _ScaffoldWithBottomNavBarState extends State<ScaffoldWithBottomNavBar> {
           ),
         ],
         onTap: (index) => _tap(context, index),
-      ),
+      ),*/
     );
   }
 }

@@ -7,9 +7,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../routing/app_router.dart';
 /// local imports
 import 'model/helper.dart';
 import 'model/model.dart';
@@ -423,19 +425,29 @@ class _HomePageState extends State<HomePage> {
                                     );
                                   }))),
                         Padding(
-                            padding: EdgeInsets.only(left: isMaxxSize ? 15 : 0),
+                            padding: EdgeInsets.only(left: isMaxxSize ? 30 : 0),
                             child: Container(
                               padding: MediaQuery.of(context).size.width < 500
-                                  ? const EdgeInsets.only(top: 20, left: 5)
-                                  : const EdgeInsets.only(top: 10, right: 15),
-                              height: 60,
-                              width: 60,
-                              child: IconButton(
-                                icon: const Icon(Icons.settings,
-                                    color: Colors.white),
-                                onPressed: () {
-                                  scaffoldKey.currentState!.openEndDrawer();
-                                },
+                                  ? const EdgeInsets.only(top: 20, left: 10)
+                                  : const EdgeInsets.only(top: 10, right: 30),
+                              height: 120,
+                              width: 120,
+                              child: Row(
+                                children: [IconButton(
+                                  icon: const Icon(Icons.person,
+                                      color: Colors.white),
+                                  onPressed: () {
+                                    context.goNamed(AppRoute.account.name);
+                                  },
+                                ),
+                                  IconButton(
+                                    icon: const Icon(Icons.settings,
+                                        color: Colors.white),
+                                    onPressed: () {
+                                      scaffoldKey.currentState!.openEndDrawer();
+                                    },
+                                  )
+                                ],
                               ),
                             )),
                       ],
