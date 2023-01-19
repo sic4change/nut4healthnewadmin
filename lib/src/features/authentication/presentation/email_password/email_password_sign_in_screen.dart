@@ -4,15 +4,19 @@ import 'package:adminnut4health/src/utils/async_value_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../common_widgets/custom_text_button.dart';
 import '../../../../common_widgets/primary_button.dart';
 import '../../../../common_widgets/responsive_scrollable_card.dart';
 import '../../../../constants/app_sizes.dart';
+import '../../../../sample/model/helper.dart';
+import '../../../../sample/model/model.dart';
 import '../../../../utils/alert_dialogs.dart';
 import 'email_password_sign_in_controller.dart';
 import 'email_password_sign_in_form_type.dart';
 import 'email_password_sign_in_validators.dart';
+
 
 /// Email & password sign in screen.
 /// Wraps the [EmailPasswordSignInContents] widget below with a [Scaffold] and
@@ -28,6 +32,7 @@ class EmailPasswordSignInScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: getFooter(context),
       body: EmailPasswordSignInContents(
         formType: formType,
       ),
@@ -144,6 +149,12 @@ class _EmailPasswordSignInContentsState
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
                       gapH8,
+                      Image.asset("assets/logo.png",
+                          width: 150,
+                          height: 150,
+                      ),
+                      gapH8,
+                      gapH8,
                       // Email field
                       TextFormField(
                         key: EmailPasswordSignInScreen.emailKey,
@@ -204,5 +215,45 @@ class _EmailPasswordSignInContentsState
       ),
     );
   }
+}
+
+Widget getFooter(BuildContext context) {
+  return Container(
+    height: 60,
+    decoration: BoxDecoration(
+      border: Border(
+        top: BorderSide(width: 0.8, color:Colors.grey.withOpacity(0.7)),
+      ),
+      color: const Color.fromRGBO(234, 234, 234, 1),
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+                padding: const EdgeInsets.only(top: 10),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Text('Copyright © 2023 SIC4Change.',
+                      style: TextStyle(
+                          color: Colors.grey.withOpacity(0.7),
+                          fontSize: 12,
+                          letterSpacing: 0.23)),
+                ))
+          ],
+        ),
+        InkWell(
+          onTap: () => launchUrl(Uri.parse('https://www.sic4change.org')),
+          child: Image.asset( 'images/sic.png',
+              fit: BoxFit.contain,
+              height: 25,
+              width:  120),
+        ),
+      ],
+    ),
+  );
 }
 

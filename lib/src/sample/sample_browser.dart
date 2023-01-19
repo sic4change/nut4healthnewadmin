@@ -15,7 +15,7 @@ import 'model/helper.dart';
 import 'model/model.dart';
 import 'model/web_view.dart';
 import 'widgets/animate_opacity_widget.dart';
-import 'widgets/search_bar.dart';
+
 
 /// Root widget of the sample browser
 /// Contains the Homepage wrapped with a MaterialApp widget
@@ -33,8 +33,7 @@ class _SampleBrowserState extends State<SampleBrowser> {
   void initState() {
     _sampleListModel = SampleModel.instance;
     _initializeProperties();
-    _sampleListModel.searchBar = SearchBar(
-        key: GlobalKey<SearchBarState>(), sampleListModel: _sampleListModel);
+
     super.initState();
   }
 
