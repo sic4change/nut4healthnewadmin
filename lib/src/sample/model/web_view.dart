@@ -189,26 +189,15 @@ class _WebLayoutPageState extends State<WebLayoutPage> {
                 backgroundColor: model.paletteColor,
                 titleSpacing:
                     MediaQuery.of(context).size.width <= 768 ? 0 : -30,
-                title: const Text('Flutter UI Widgets ',
+                title: const Text('NUT4Health ',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 18,
                         letterSpacing: 0.53,
                         fontFamily: 'Roboto-Medium')),
                 actions: <Widget>[
-                  if (model.isMobileResolution)
-                    const SizedBox(height: 0, width: 9)
-                  else
-                    SizedBox(
-                        child: Container(
-                            padding: const EdgeInsets.only(right: 20),
-                            width: MediaQuery.of(context).size.width * 0.215,
-                            height: MediaQuery.of(context).size.height * 0.0445,
-                            child: SearchBar(
-                              sampleListModel: model,
-                            ))),
 
-                  ///download option
+
                   if (model.isMobileResolution)
                     Container()
                   else
@@ -234,18 +223,26 @@ class _WebLayoutPageState extends State<WebLayoutPage> {
                                   hoverColor: Colors.white,
                                   onTap: () {
                                     launchUrl(Uri.parse(
-                                        'https://www.syncfusion.com/downloads/flutter/confirm'));
+                                        'https://nut4health.org/'));
                                   },
                                   child: Padding(
                                     padding:
                                         const EdgeInsets.fromLTRB(8, 9, 8, 9),
-                                    child: Text('DOWNLOAD NOW',
-                                        style: TextStyle(
-                                            color: isHoveringDownloadButton
-                                                ? model.paletteColor
-                                                : Colors.white,
-                                            fontSize: 12,
-                                            fontFamily: 'Roboto-Medium')),
+                                    child: Row(children: <Widget>[
+                                      Image.asset('images/nut_logo.png',
+                                          fit: BoxFit.contain,
+                                          height: 33,
+                                          width: 33),
+                                      Text('Web Info',
+                                          style: TextStyle(
+                                              color:
+                                              isHoveringPubDevButton
+                                                  ? model.paletteColor
+                                                  : Colors.white,
+                                              fontSize: 12,
+                                              fontFamily:
+                                              'Roboto-Medium'))
+                                    ]),
                                   ),
                                 ),
                               );
@@ -284,17 +281,19 @@ class _WebLayoutPageState extends State<WebLayoutPage> {
                                       padding:
                                           const EdgeInsets.fromLTRB(0, 7, 8, 7),
                                       child: Row(children: <Widget>[
-                                        Image.asset('images/pub_logo.png',
+                                        Image.asset('images/google_play_logo.png',
                                             fit: BoxFit.contain,
                                             height: 33,
                                             width: 33),
-                                        Text('Get Packages',
+                                        Text('Google Play',
                                             style: TextStyle(
-                                                color: isHoveringPubDevButton
+                                                color:
+                                                isHoveringPubDevButton
                                                     ? model.paletteColor
                                                     : Colors.white,
                                                 fontSize: 12,
-                                                fontFamily: 'Roboto-Medium'))
+                                                fontFamily:
+                                                'Roboto-Medium'))
                                       ]),
                                     ),
                                   ));

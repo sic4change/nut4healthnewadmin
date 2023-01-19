@@ -317,23 +317,6 @@ class _HomePageState extends State<HomePage> {
                             ],
                           )),
                       actions: <Widget>[
-                        /*if (MediaQuery.of(context).size.width < 500)
-                          const SizedBox(height: 0, width: 9)
-                        else
-                          SizedBox(
-                              child: Container(
-                            padding: const EdgeInsets.only(top: 10, right: 10),
-                            width: MediaQuery.of(context).size.width >= 920
-                                ? 300
-                                : MediaQuery.of(context).size.width /
-                                    (MediaQuery.of(context).size.width < 820
-                                        ? 5
-                                        : 4),
-                            height: MediaQuery.of(context).size.height * 0.0445,
-                            child: SearchBar(
-                              sampleListModel: model,
-                            ),
-                          )),*/
 
                         if (model.isMobileResolution)
                           Container()
@@ -388,7 +371,6 @@ class _HomePageState extends State<HomePage> {
                                     );
                                   }))),
 
-                        ///Get package from pub.dev option
                         if (model.isMobileResolution)
                           Container()
                         else
