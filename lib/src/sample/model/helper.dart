@@ -802,46 +802,9 @@ Widget getFooter(BuildContext context, SampleModel model) {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Row(
-              children: <Widget>[
-                InkWell(
-                  onTap: () => launchUrl(Uri.parse(
-                      'https://help.syncfusion.com/flutter/introduction/overview')),
-                  child: const Text('Documentation',
-                      style: TextStyle(color: Colors.blue, fontSize: 12)),
-                ),
-                Text(' | ',
-                    style: TextStyle(
-                        fontSize: 12, color: model.textColor.withOpacity(0.7))),
-                InkWell(
-                  onTap: () => launchUrl(
-                      Uri.parse('https://www.syncfusion.com/forums/flutter')),
-                  child: const Text('Forum',
-                      style: TextStyle(color: Colors.blue, fontSize: 12)),
-                ),
-                Text(' | ',
-                    style: TextStyle(
-                        fontSize: 12, color: model.textColor.withOpacity(0.7))),
-                InkWell(
-                  onTap: () => launchUrl(
-                      Uri.parse('https://www.syncfusion.com/blogs/?s=flutter')),
-                  child: const Text('Blog',
-                      style: TextStyle(color: Colors.blue, fontSize: 12)),
-                ),
-                Text(' | ',
-                    style: TextStyle(
-                        fontSize: 12, color: model.textColor.withOpacity(0.7))),
-                InkWell(
-                  onTap: () => launchUrl(
-                      Uri.parse('https://www.syncfusion.com/kb/flutter')),
-                  child: const Text('Knowledge base',
-                      style: TextStyle(color: Colors.blue, fontSize: 12)),
-                )
-              ],
-            ),
             Container(
                 padding: const EdgeInsets.only(top: 10),
-                child: Text('Copyright © 2001 - 2022 Syncfusion Inc.',
+                child: Text('Copyright © 2023 SIC4Change.',
                     style: TextStyle(
                         color: model.textColor.withOpacity(0.7),
                         fontSize: 12,
@@ -849,11 +812,11 @@ Widget getFooter(BuildContext context, SampleModel model) {
           ],
         ),
         InkWell(
-          onTap: () => launchUrl(Uri.parse('https://www.syncfusion.com')),
+          onTap: () => launchUrl(Uri.parse('https://www.sic4change.org')),
           child: Image.asset(
               model.themeData.colorScheme.brightness == Brightness.dark
-                  ? 'images/syncfusion_dark.png'
-                  : 'images/syncfusion.png',
+                  ? 'images/sic_dark.png'
+                  : 'images/sic.png',
               fit: BoxFit.contain,
               height: 25,
               width: model.isMobileResolution ? 80 : 120),

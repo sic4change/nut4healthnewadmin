@@ -94,7 +94,7 @@ class _SampleBrowserState extends State<SampleBrowser> {
             ],
             locale: const Locale('en', 'US'),
             debugShowCheckedModeBanner: false,
-            title: 'Demos & Examples of Syncfusion Flutter Widgets',
+            title: 'Dashboard NUT4Health',
             theme: ThemeData.from(
                     colorScheme: const ColorScheme.light().copyWith(
                         primary: _sampleListModel.currentPaletteColor,
@@ -117,7 +117,7 @@ class _SampleBrowserState extends State<SampleBrowser> {
             initialRoute: '/demos',
             routes: navigationRoutes,
             debugShowCheckedModeBanner: false,
-            title: 'Demos & Examples of Syncfusion Flutter Widgets',
+            title: 'Dashboard NUT4Health',
             localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
               GlobalMaterialLocalizations.delegate,
               SfGlobalLocalizations.delegate
@@ -237,7 +237,7 @@ class _HomePageState extends State<HomePage> {
                       title: AnimateOpacityWidget(
                           controller: controller,
                           opacity: 0,
-                          child: const Text('Flutter UI Widgets',
+                          child: const Text('NUT4Health',
                               style: TextStyle(
                                   fontSize: 18, fontFamily: 'HeeboMedium'))),
                       actions: <Widget>[
@@ -279,7 +279,7 @@ class _HomePageState extends State<HomePage> {
                             children: <Widget>[
                               const Padding(
                                 padding: EdgeInsets.fromLTRB(24, 10, 0, 0),
-                                child: Text('Flutter UI Widgets ',
+                                child: Text('NUT4Health ',
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 28,
@@ -288,7 +288,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               const Padding(
                                   padding: EdgeInsets.fromLTRB(24, 0, 0, 0),
-                                  child: Text('Fast . Fluid . Flexible',
+                                  child: Text('Administración . Visor mapas . Informes',
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 14,
@@ -484,7 +484,7 @@ class _HomePageState extends State<HomePage> {
                   children: const <Widget>[
                     Padding(
                       padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                      child: Text('Flutter UI Widgets',
+                      child: Text('NUT4Health',
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 25,
@@ -494,7 +494,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     Padding(
                       padding: EdgeInsets.fromLTRB(20, 8, 0, 0),
-                      child: Text('Fast . Fluid . Flexible',
+                      child: Text('Administración . Visor mapas . Informes',
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 14,
