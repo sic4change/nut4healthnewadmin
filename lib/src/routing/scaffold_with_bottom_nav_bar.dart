@@ -28,7 +28,7 @@ class _ScaffoldWithBottomNavBarState extends State<ScaffoldWithBottomNavBar> {
       // Note: this won't remember the previous state of the route
       // More info here:
       // https://github.com/flutter/flutter/issues/99124
-      context.goNamed(AppRoute.jobs.name);
+      context.goNamed(AppRoute.main.name);
     } else if (index == 1) {
       context.goNamed(AppRoute.account.name);
     }

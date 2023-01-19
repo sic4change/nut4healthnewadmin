@@ -19,7 +19,7 @@ final _shellNavigatorKey = GlobalKey<NavigatorState>();
 enum AppRoute {
   splash,
   emailPassword,
-  jobs,
+  main,
   account,
 }
 
@@ -33,10 +33,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       final isLoggedIn = authRepository.currentUser != null;
       if (isLoggedIn) {
         if (state.subloc.startsWith('/splash')) {
-          return '/jobs';
+          return '/main';
         }
       } else {
-        if (state.subloc.startsWith('/jobs') ||
+        if (state.subloc.startsWith('/main') ||
             state.subloc.startsWith('/entries') ||
             state.subloc.startsWith('/account')) {
           return '/splash';
@@ -74,8 +74,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         },
         routes: [
           GoRoute(
-            path: '/jobs',
-            name: AppRoute.jobs.name,
+            path: '/main',
+            name: AppRoute.main.name,
             pageBuilder: (context, state) => NoTransitionPage(
               key: state.pageKey,
               child: const SampleBrowser(),
