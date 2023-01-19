@@ -846,7 +846,7 @@ Widget showWebThemeSettings(SampleModel model) {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text('   Settings',
+                    Text('   Configuración',
                         style: TextStyle(
                             color: model.textColor,
                             fontSize: 16,
@@ -872,7 +872,7 @@ Widget showWebThemeSettings(SampleModel model) {
                                   0: Container(
                                       width: width,
                                       alignment: Alignment.center,
-                                      child: Text('Light theme',
+                                      child: Text('Tema claro',
                                           style: TextStyle(
                                               color: selectedValue == 0
                                                   ? Colors.white
@@ -881,7 +881,7 @@ Widget showWebThemeSettings(SampleModel model) {
                                   1: Container(
                                       width: width,
                                       alignment: Alignment.center,
-                                      child: Text('Dark theme',
+                                      child: Text('Tema oscuro',
                                           style: TextStyle(
                                               color: selectedValue == 1
                                                   ? Colors.white
@@ -915,7 +915,7 @@ Widget showWebThemeSettings(SampleModel model) {
                       Container(
                           padding: const EdgeInsets.only(top: 25, left: 15),
                           child: const Text(
-                            'Theme colors',
+                            'Paleta de colores',
                             style: TextStyle(
                                 color: Color.fromRGBO(128, 128, 128, 1),
                                 fontSize: 14,
@@ -948,7 +948,7 @@ Widget showWebThemeSettings(SampleModel model) {
                             ),
                             onPressed: () => _applyThemeAndPaletteColor(
                                 model, context, selectedValue),
-                            child: const Text('APPLY',
+                            child: const Text('Aplicar',
                                 style: TextStyle(
                                     fontSize: 16,
                                     fontFamily: 'Roboto-Bold',
@@ -1095,7 +1095,7 @@ void showBottomSettingsPanel(SampleModel model, BuildContext context) {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text('Settings',
+                        Text('Configuración',
                             style: TextStyle(
                                 color: model.textColor,
                                 fontSize: 18,
@@ -1140,7 +1140,7 @@ void showBottomSettingsPanel(SampleModel model, BuildContext context) {
                                 1: Container(
                                     width: width,
                                     alignment: Alignment.center,
-                                    child: Text('Light theme',
+                                    child: Text('Tema claro',
                                         style: TextStyle(
                                             color: selectedIndex == 1
                                                 ? Colors.white
@@ -1149,7 +1149,7 @@ void showBottomSettingsPanel(SampleModel model, BuildContext context) {
                                 2: Container(
                                     width: width,
                                     alignment: Alignment.center,
-                                    child: Text('Dark theme',
+                                    child: Text('Tema oscuro',
                                         style: TextStyle(
                                             color: selectedIndex == 2
                                                 ? Colors.white
@@ -1242,7 +1242,7 @@ void showBottomSettingsPanel(SampleModel model, BuildContext context) {
                         ),
                         onPressed: () => _applyThemeAndPaletteColor(
                             model, context, selectedIndex),
-                        child: const Text('APPLY',
+                        child: const Text('Aplicar',
                             style: TextStyle(
                                 fontFamily: 'HeeboMedium',
                                 color: Colors.white))),
@@ -1263,7 +1263,7 @@ void showBottomSheetSettingsPanel(BuildContext context, Widget propertyWidget) {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text('Settings',
+                  Text('Configuración',
                       style: TextStyle(
                           color: model.textColor,
                           fontSize: 18,
