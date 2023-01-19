@@ -317,7 +317,7 @@ class _HomePageState extends State<HomePage> {
                             ],
                           )),
                       actions: <Widget>[
-                        if (MediaQuery.of(context).size.width < 500)
+                        /*if (MediaQuery.of(context).size.width < 500)
                           const SizedBox(height: 0, width: 9)
                         else
                           SizedBox(
@@ -333,9 +333,8 @@ class _HomePageState extends State<HomePage> {
                             child: SearchBar(
                               sampleListModel: model,
                             ),
-                          )),
+                          )),*/
 
-                        ///download option
                         if (model.isMobileResolution)
                           Container()
                         else
@@ -364,19 +363,26 @@ class _HomePageState extends State<HomePage> {
                                         hoverColor: Colors.white,
                                         onTap: () {
                                           launchUrl(Uri.parse(
-                                              'https://www.syncfusion.com/downloads/flutter/confirm'));
+                                              'https://nut4health.org/'));
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.fromLTRB(
                                               8, 9, 8, 9),
-                                          child: Text('DOWNLOAD NOW',
-                                              style: TextStyle(
-                                                  color:
-                                                      isHoveringDownloadButton
-                                                          ? model.paletteColor
-                                                          : Colors.white,
-                                                  fontSize: 12,
-                                                  fontFamily: 'Roboto-Medium')),
+                                          child: Row(children: <Widget>[
+                                            Image.asset('images/nut_logo.png',
+                                                fit: BoxFit.contain,
+                                                height: 33,
+                                                width: 33),
+                                            Text('Web Info',
+                                                style: TextStyle(
+                                                    color:
+                                                    isHoveringPubDevButton
+                                                        ? model.paletteColor
+                                                        : Colors.white,
+                                                    fontSize: 12,
+                                                    fontFamily:
+                                                    'Roboto-Medium'))
+                                          ]),
                                         ),
                                       ),
                                     );
@@ -411,17 +417,17 @@ class _HomePageState extends State<HomePage> {
                                         hoverColor: Colors.white,
                                         onTap: () {
                                           launchUrl(Uri.parse(
-                                              'https://pub.dev/publishers/syncfusion.com/packages'));
+                                              'https://play.google.com/store/apps/details?id=org.sic4change.nut4health&gl=ES'));
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.fromLTRB(
                                               0, 7, 8, 7),
                                           child: Row(children: <Widget>[
-                                            Image.asset('images/pub_logo.png',
+                                            Image.asset('images/google_play_logo.png',
                                                 fit: BoxFit.contain,
                                                 height: 33,
                                                 width: 33),
-                                            Text('Get Packages',
+                                            Text('Google Play',
                                                 style: TextStyle(
                                                     color:
                                                         isHoveringPubDevButton
