@@ -6,10 +6,10 @@ import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../model/sample_view.dart';
+import '../../../sample/model/sample_view.dart';
 /// Local import
-import 'datagridsource/team_datagridsource.dart';
-import 'datagridsource/user_datagridsource.dart';
+import '../../../sample/samples/datagrid/datagridsource/team_datagridsource.dart';
+import 'user_datagridsource.dart';
 
 /// Render user data grid
 class UserDataGrid extends SampleView {

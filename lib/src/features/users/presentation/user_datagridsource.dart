@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 // ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../model/user.dart';
+import '../domain/user.dart';
 
 /// Set user's data collection to data grid source.
 class UserDataGridSource extends DataGridSource {

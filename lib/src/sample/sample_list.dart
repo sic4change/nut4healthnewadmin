@@ -1,4 +1,4 @@
-import 'package:adminnut4health/src/sample/samples/datagrid/datagrid_users.dart';
+import 'package:adminnut4health/src/features/users/presentation/datagrid_users.dart';
 import 'package:flutter/foundation.dart';
 
 import 'samples/barcodes/data_matrix.dart';
