@@ -1,3 +1,4 @@
+import 'package:adminnut4health/src/sample/samples/datagrid/datagrid_users.dart';
 import 'package:flutter/foundation.dart';
 
 import 'samples/barcodes/data_matrix.dart';
@@ -906,6 +907,7 @@ Map<String, Function> getSampleWidget() {
         RangeSelectorBarChartPage(key),
 
     //dataGridSample
+    'user_datagrid': (Key key) => UserDataGrid(key: key),
     'getting_started_datagrid': (Key key) => GettingStartedDataGrid(key: key),
 
     'column_types_datagrid': (Key key) => ColumnTypeDataGrid(key: key),

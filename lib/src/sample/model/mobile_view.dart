@@ -226,29 +226,6 @@ class _LayoutPageState extends State<LayoutPage> {
                       ? <Widget>[
                           StatefulBuilder(builder: (BuildContext buildContext,
                               StateSetter setState) {
-                            codeIconChangeSetState = setState;
-                            return Visibility(
-                                visible: _showIcon && currentSample != null,
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 0, 8, 0),
-                                  child: SizedBox(
-                                    height: 37,
-                                    width: 37,
-                                    child: IconButton(
-                                      icon: Image.asset(
-                                          'images/git_hub_mobile.png',
-                                          color: Colors.white),
-                                      onPressed: () {
-                                        launchUrl(Uri.parse(
-                                            currentSample!.codeLink!));
-                                      },
-                                    ),
-                                  ),
-                                ));
-                          }),
-                          StatefulBuilder(builder: (BuildContext buildContext,
-                              StateSetter setState) {
                             infoIconChangeSetState = setState;
                             return Visibility(
                                 visible: _showIcon &&

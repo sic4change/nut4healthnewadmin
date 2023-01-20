@@ -1306,45 +1306,7 @@ class SampleOutputContainerState extends State<_SampleOutputContainer> {
                                                             MainAxisAlignment
                                                                 .end,
                                                         children: <Widget>[
-                                                          Flexible(
-                                                            child: Material(
-                                                                shape:
-                                                                    const CircleBorder(),
-                                                                clipBehavior: Clip
-                                                                    .hardEdge,
-                                                                child: InkWell(
-                                                                    hoverColor: Colors
-                                                                        .grey
-                                                                        .withOpacity(
-                                                                            0.3),
-                                                                    onTap: () {
-                                                                      launchUrl(
-                                                                          Uri.parse(
-                                                                              sampleSubItem.codeLink!));
-                                                                    },
-                                                                    child: Tooltip(
-                                                                        message: 'Code',
-                                                                        child: Ink(
-                                                                            decoration: BoxDecoration(
-                                                                              color: model.webInputColor,
-                                                                              border: Border.all(color: Colors.transparent, width: 6),
-                                                                              shape: BoxShape.circle,
-                                                                            ),
-                                                                            child: SizedBox(
-                                                                                height: 21,
-                                                                                width: 21,
-                                                                                child: Image.asset(
-                                                                                  model.themeData.colorScheme.brightness == Brightness.dark ? 'images/git_hub_dark.png' : 'images/git_hub.png',
-                                                                                  fit: BoxFit.contain,
-                                                                                )))))),
-                                                          ),
-                                                          Padding(
-                                                              padding: EdgeInsets
-                                                                  .only(
-                                                                      left: width <
-                                                                              500
-                                                                          ? 3
-                                                                          : 6)),
+
                                                           Flexible(
                                                             child: Material(
                                                               shape:
@@ -1479,48 +1441,7 @@ class SampleOutputContainerState extends State<_SampleOutputContainer> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.end,
                                           children: <Widget>[
-                                            Flexible(
-                                              child: Material(
-                                                  shape: const CircleBorder(),
-                                                  clipBehavior: Clip.hardEdge,
-                                                  child: InkWell(
-                                                      hoverColor: Colors.grey
-                                                          .withOpacity(0.3),
-                                                      onTap: () {
-                                                        launchUrl(Uri.parse(
-                                                            sampleSubItem
-                                                                .codeLink!));
-                                                      },
-                                                      child: Tooltip(
-                                                          message: 'Code',
-                                                          child: Ink(
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                color: model
-                                                                    .webInputColor,
-                                                                border: Border.all(
-                                                                    color: Colors
-                                                                        .transparent,
-                                                                    width: 6),
-                                                                shape: BoxShape
-                                                                    .circle,
-                                                              ),
-                                                              child: SizedBox(
-                                                                  height: 21,
-                                                                  width: 21,
-                                                                  child: Image
-                                                                      .asset(
-                                                                    model.themeData.colorScheme.brightness ==
-                                                                            Brightness.dark
-                                                                        ? 'images/git_hub_dark.png'
-                                                                        : 'images/git_hub.png',
-                                                                    fit: BoxFit
-                                                                        .contain,
-                                                                  )))))),
-                                            ),
-                                            Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: width < 500 ? 3 : 6)),
+
                                             Flexible(
                                               child: Material(
                                                 shape: const CircleBorder(),
