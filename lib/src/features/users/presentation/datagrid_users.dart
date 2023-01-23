@@ -28,6 +28,9 @@ class _UserDataGridState extends SampleViewState {
   /// DataGridSource required for SfDataGrid to obtain the row data.
   late UserDataGridSource userDataGridSource;
 
+  static const double dataPagerHeight = 60;
+  int _rowsPerPage = 15;
+
   Widget getLocationWidget(String location) {
     return Row(
       children: <Widget>[
@@ -39,11 +42,13 @@ class _UserDataGridState extends SampleViewState {
     );
   }
 
+
+
   Widget _buildView(AsyncValue<List<User>> users) {
     if (users.value != null && users.value!.isNotEmpty) {
       userDataGridSource.setUsers(users.value);
       userDataGridSource.buildDataGridRows();
-      return _buildDataGrid();
+      return _buildLayoutBuilder();
     } else {
       return const Center(
          child: SizedBox(
@@ -55,10 +60,51 @@ class _UserDataGridState extends SampleViewState {
     }
   }
 
+  Widget _buildLayoutBuilder() {
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraint) {
+          return Column(
+            children: <Widget>[
+              SizedBox(
+                  height: constraint.maxHeight - dataPagerHeight,
+                  width: constraint.maxWidth,
+                  child: _buildDataGrid()),
+              Container(
+                height: dataPagerHeight,
+                decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface.withOpacity(0.12),
+                    border: Border(
+                        top: BorderSide(
+                            width: .5,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withOpacity(0.12)))),
+                child: Align(child: _buildDataPager()),
+              )
+            ],
+          );
+        });
+  }
+
+  Widget _buildDataPager() {
+    return SfDataPager(
+        delegate: userDataGridSource,
+        availableRowsPerPage: const <int>[15, 20, 25],
+        pageCount: userDataGridSource.rows.length / _rowsPerPage,
+        onRowsPerPageChanged: (int? rowsPerPage) {
+          setState(() {
+            _rowsPerPage = rowsPerPage!;
+          });
+        },
+    );
+  }
+
 
   SfDataGrid _buildDataGrid() {
     return SfDataGrid(
       source: userDataGridSource,
+      rowsPerPage: _rowsPerPage,
       columns: <GridColumn>[
         GridColumn(
             width: (model.isWeb || model.isMacOS || model.isLinux) ? 150 : 130,
