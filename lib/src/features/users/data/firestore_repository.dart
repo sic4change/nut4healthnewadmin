@@ -12,8 +12,8 @@ String documentIdFromCurrentDate() {
 }
 
 class FirestorePath {
-  static String user(String uid) => 'tests/$uid';
-  static String users() => 'tests';
+  static String user(String uid) => 'users/$uid';
+  static String users() => 'users';
 }
 
 class FirestoreRepository {

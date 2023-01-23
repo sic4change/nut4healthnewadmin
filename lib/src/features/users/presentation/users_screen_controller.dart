@@ -19,6 +19,6 @@ class UsersScreenController extends AutoDisposeAsyncNotifier<void> {
   }
 }
 
-final jobsScreenControllerProvider =
+final usersScreenControllerProvider =
     AutoDisposeAsyncNotifierProvider<UsersScreenController, void>(
         UsersScreenController.new);

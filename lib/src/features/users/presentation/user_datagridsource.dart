@@ -14,30 +14,32 @@ import '../domain/user.dart';
 /// Set user's data collection to data grid source.
 class UserDataGridSource extends DataGridSource {
   /// Creates the user data source class with required details.
-  UserDataGridSource() {
-    _users = _getUsers(20);
+  UserDataGridSource(List<User> userData) {
+    _users = userData;
     buildDataGridRows();
   }
 
-  final math.Random _random = math.Random();
   List<DataGridRow> _dataGridRows = <DataGridRow>[];
-  List<User> _users = <User>[];
+  List<User>? _users = <User>[];
 
   /// Building DataGridRows
   void buildDataGridRows() {
-    _dataGridRows = _users.map<DataGridRow>((User user) {
-      return DataGridRow(cells: <DataGridCell>[
-        DataGridCell<String>(
-            columnName: 'Username', value: user.username),
-        DataGridCell<String>(
-            columnName: 'Nombre', value: user.name),
-        DataGridCell<String>(
-            columnName: 'Apellidos', value: user.surname),
-        DataGridCell<String>(columnName: 'Email', value: user.email),
-        DataGridCell<String>(columnName: 'Teléfono', value: user.phone),
-        DataGridCell<bool>(columnName: 'Estado', value: user.status),
-      ]);
-    }).toList();
+    if (_users != null && _users!.isNotEmpty) {
+      _dataGridRows = _users!.map<DataGridRow>((User user) {
+        return DataGridRow(cells: <DataGridCell>[
+          DataGridCell<String>(columnName: 'Username', value: user.username),
+          DataGridCell<String>(columnName: 'Nombre', value: user.name),
+          DataGridCell<String>(columnName: 'Apellidos', value: user.surname),
+          DataGridCell<String>(columnName: 'DNI/DPI', value: user.dni),
+          DataGridCell<String>(columnName: 'Email', value: user.email),
+          DataGridCell<String>(columnName: 'Teléfono', value: user.phone),
+          DataGridCell<String>(columnName: 'Rol', value: user.role),
+          DataGridCell<String>(columnName: 'Punto', value: user.point),
+          DataGridCell<String>(columnName: 'Configuración', value: user.configuration),
+          DataGridCell<int>(columnName: 'Puntos', value: user.points),
+        ]);
+      }).toList();
+    }
   }
 
   // Overrides
@@ -107,22 +109,47 @@ class UserDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[2].value.toString()),
       ),
-      _buildEmail(row.getCells()[3].value),
-      _buildPhone(row.getCells()[4].value),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[3].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[4].value.toString()),
+      ),
       Container(
           padding: const EdgeInsets.all(8.0),
           alignment: Alignment.center,
           child: Text(
-            row.getCells()[4].value.toString(),
-            style: _getStatusTextStyle(row.getCells()[5].value),
-          )),
+            row.getCells()[5].value.toString())
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[6].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[7].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[8].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.center,
+        child: Text(row.getCells()[9].value.toString()),
+      ),
     ]);
   }
 
-
-  List<User> _getUsers(int count) {
-    final List<User> userData = <User>[];
-    //Llamada a firebase para traer los users
-    return userData;
+  setUsers(List<User>? userData) {
+    _users = userData;
   }
+
 }

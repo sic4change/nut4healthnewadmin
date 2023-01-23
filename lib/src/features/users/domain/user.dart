@@ -8,21 +8,26 @@ typedef UserID = String;
 class User extends Equatable {
 
   const User({required this.userId, this.username, this.name,
-  this.surname, required this.email, this.phone, required this.status,
-  required this. role});
+  this.surname, required this.email, this.phone, required this. role, this.dni,
+  this.photo, this.point, this.configuration, this.points});
 
   final UserID userId;
   final String? username;
   final String? name;
   final String? surname;
+  final String? dni;
   final String email;
   final String? phone;
-  final bool status;
   final String role;
+  final String? photo;
+  final String? point;
+  final String? configuration;
+  final int? points;
 
   @override
-  List<Object> get props => [userId, username==null, name==null, surname==null, email, phone==null,
-    status, role];
+  List<Object> get props => [userId, username ?? "", name ?? "", surname ?? "",
+    role, dni ?? "", email, phone ?? "", photo ?? "", point ?? "",
+    configuration ?? "", points ?? 0];
 
   @override
   bool get stringify => true;
@@ -33,21 +38,23 @@ class User extends Equatable {
       throw StateError('missing data for userId: $documentId');
     }
     final username = data['username'] as String?;
-    final name = data['name'] as String?;
-    final surname = data['surname'] as String?;
-    final email = data['email'] as String?;
-    final phone = data['phone'] as String?;
+    final name = data['name'] ?? "";
+    final surname = data['surname'] ?? "";
+    final email = data['email'] as String;
+    final phone = data['phone'] ?? "";
 
-    var statusPrev = true;
-    if (!data['active']) {
-      statusPrev = false;
-    }
-    final status = statusPrev;
     final role = data['role'] as String;
     if (email == null) {
       throw StateError('missing email for userId: $documentId');
     }
-    return User(userId: documentId, username: username, name: name, surname : surname, email : email, phone : phone, status : status, role : role);
+    final dni = data['dni'] ?? "";
+    final photo = data['photo'] ?? "";
+    final point = data['point'] ?? "";
+    final configuration = data['configuration'] ?? "";
+    final points = data['points'] ?? 0;
+    return User(userId: documentId, username: username, name: name,
+        surname : surname, email : email, phone : phone, role : role, dni : dni,
+    photo : photo, point: point, configuration: configuration, points: points);
   }
 
   Map<String, dynamic> toMap() {
@@ -57,39 +64,13 @@ class User extends Equatable {
       'surname': surname,
       'email': email,
       'phone': phone,
-      'status': status,
       'role': role,
+      'dni': dni,
+      'photo': photo,
+      'point': point,
+      'configuration': configuration,
+      'points': points,
     };
   }
 }
 
-/*class User {
-  /// Creates the user class with required details.
-  User(
-      this.username,
-      this.surname,
-      this.name,
-      this.email,
-      this.phone,
-      this.status,
-  );
-
-  /// Name of an user.
-  final String name;
-
-  /// Surname of an user.
-  final String surname;
-
-  /// Username of an user.
-  final String username;
-
-  /// Status of an user.
-  final bool status;
-
-  /// Phone of an user.
-  final String phone;
-
-  /// Email of an user.
-  final String email;
-
-}*/
