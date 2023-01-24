@@ -164,4 +164,7 @@ class UserDataGridSource extends DataGridSource {
     _users = userData;
   }
 
+  List<User>? getUsers() {
+    return _users;
+  }
 }

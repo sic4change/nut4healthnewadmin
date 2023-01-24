@@ -3,6 +3,7 @@
 import 'package:adminnut4health/src/features/users/presentation/users_screen_controller.dart';
 import 'package:adminnut4health/src/utils/async_value_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Barcode import
@@ -30,6 +31,21 @@ class _UserDataGridState extends SampleViewState {
 
   static const double dataPagerHeight = 60;
   int _rowsPerPage = 15;
+
+  /// Editing controller for forms to perform update the values.
+  TextEditingController? usernameController,
+      nameController,
+      surnamesController,
+      dniController,
+      emailController,
+      phoneController,
+      rolController,
+      pointController,
+      configurationController,
+      pointsController;
+
+  /// Used to validate the forms
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Widget getLocationWidget(String location) {
     return Row(
@@ -120,12 +136,315 @@ class _UserDataGridState extends SampleViewState {
     ];
   }
 
+  RegExp _getRegExp(TextInputType keyboardType, String columnName) {
+    if (keyboardType == TextInputType.number) {
+      return RegExp('[0-9]');
+    } else if (keyboardType == TextInputType.text) {
+      return RegExp(r'^[a-zA-Z0-9]+$');
+    } else if (keyboardType == TextInputType.emailAddress) {
+      return RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+    } else {
+      return RegExp(r'^[a-zA-Z0-9]+$');
+    }
+
+  }
+
+  /// Building the each field with label and TextFormField
+  Widget _buildRow(
+      {required TextEditingController controller, required String columnName}) {
+    TextInputType keyboardType = TextInputType.text;
+    if (<String>['Puntos'].contains(columnName)) {
+      keyboardType =  TextInputType.number;
+    } else if (<String>['Email'].contains(columnName)) {
+      keyboardType =  TextInputType.emailAddress;
+    } else {
+      keyboardType =  TextInputType.text;
+    }
+    // Holds the regular expression pattern based on the column type.
+    final RegExp regExp = _getRegExp(keyboardType, columnName);
+
+    return Row(
+      children: <Widget>[
+        Container(
+            width: 150,
+            padding: const EdgeInsets.symmetric(vertical: 15),
+            child: Text(columnName)),
+        SizedBox(
+          width: 150,
+          child: TextFormField(
+            validator: (String? value) {
+              if (value!.isEmpty) {
+                return 'El campo no puede estar vacío';
+              }
+              return null;
+            },
+            controller: controller,
+            keyboardType: keyboardType,
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.allow(regExp)
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
+  /// Building the forms to edit the data
+  Widget _buildAlertDialogContent() {
+    return Column(
+      children: <Widget>[
+        _buildRow(controller: usernameController!, columnName: 'Username'),
+        _buildRow(controller: nameController!, columnName: 'Nombre'),
+        _buildRow(controller: surnamesController!, columnName: 'Apellidos'),
+        _buildRow(controller: dniController!, columnName: 'DNI/DPI'),
+        //_buildRow(controller: emailController!, columnName: 'Email'),
+        _buildRow(controller: phoneController!, columnName: 'Teléfono'),
+        _buildRow(controller: rolController!, columnName: 'Rol'),
+        _buildRow(controller: pointController!, columnName: 'Punto'),
+        _buildRow(controller: configurationController!, columnName: 'Configuración'),
+        //_buildRow(controller: pointsController!, columnName: 'Puntos'),
+      ],
+    );
+  }
+
+  // Updating the data to the TextEditingController
+  void _updateTextFieldContext(DataGridRow row) {
+    final String? username = row
+        .getCells()
+        .firstWhere((DataGridCell element) => element.columnName == 'Username')
+        ?.value
+        .toString();
+    usernameController!.text = username ?? '';
+
+    final String? name = row
+        .getCells()
+        .firstWhere(
+            (DataGridCell element) => element.columnName == 'Nombre')
+        ?.value
+        .toString();
+
+    nameController!.text = name ?? '';
+
+    final String? surnames = row
+        .getCells()
+        .firstWhere(
+            (DataGridCell element) => element.columnName == 'Apellidos')
+        ?.value
+        .toString();
+
+    surnamesController!.text = surnames ?? '';
+
+    final String? dni = row
+        .getCells()
+        .firstWhere(
+            (DataGridCell element) => element.columnName == 'DNI/DPI')
+        ?.value;
+
+    dniController!.text  = dni ?? '';
+
+    final String? email = row
+        .getCells()
+        .firstWhere(
+          (DataGridCell element) => element.columnName == 'Email',
+    )
+        ?.value
+        .toString();
+
+    emailController!.text = email ?? '';
+
+    final String? phone = row
+        .getCells()
+        .firstWhere(
+          (DataGridCell element) => element.columnName == 'Teléfono',
+    )
+        ?.value
+        .toString();
+
+    phoneController!.text = phone ?? '';
+
+    final String? rol = row
+        .getCells()
+        .firstWhere(
+          (DataGridCell element) => element.columnName == 'Rol',
+    )
+        ?.value
+        .toString();
+
+    rolController!.text = rol ?? '';
+
+    final String? point = row
+        .getCells()
+        .firstWhere(
+          (DataGridCell element) => element.columnName == 'Punto',
+    )
+        ?.value
+        .toString();
+
+    pointController!.text = point ?? '';
+
+    final String? configuration = row
+        .getCells()
+        .firstWhere(
+          (DataGridCell element) => element.columnName == 'Punto',
+    )
+        ?.value
+        .toString();
+
+    configurationController!.text = configuration ?? '';
+
+    final dynamic points = row
+        .getCells()
+        .firstWhere(
+            (DataGridCell element) => element.columnName == 'Puntos')
+        ?.value;
+
+    pointsController!.text =
+    points == null ? '' : points.toString();
+
+  }
+
+  /// Editing the DataGridRow
+  void _handleEditWidgetTap(DataGridRow row) {
+    _updateTextFieldContext(row);
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        scrollable: true,
+        titleTextStyle: TextStyle(
+            color: model.textColor, fontWeight: FontWeight.bold, fontSize: 16),
+        title: const Text('Editar usuario'),
+        actions: _buildActionButtons(row, context),
+        content: Scrollbar(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Form(
+              key: _formKey,
+              child: _buildAlertDialogContent(),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Updating the DataGridRows after changing the value and notify the DataGrid
+  /// to refresh the view
+  void _processCellUpdate(DataGridRow row, BuildContext buildContext) {
+    final int rowIndex = userDataGridSource.rows.indexOf(row);
+
+    if (_formKey.currentState!.validate()) {
+      userDataGridSource.getUsers()![rowIndex] = User( userId: "",
+        username: usernameController!.text, name: nameController!.text,
+         surname: surnamesController!.text, dni: dniController!.text,
+        email: emailController!.text, phone: phoneController!.text,
+        role: rolController!.text, point: pointController!.text,
+          configuration: configurationController!.text,
+        points: int.tryParse(pointsController!.text)
+      );
+      userDataGridSource.buildDataGridRows();
+      userDataGridSource.notifyListeners();
+      Navigator.pop(buildContext);
+    }
+  }
+
+  /// Building the option button on the bottom of the alert popup
+  List<Widget> _buildActionButtons(DataGridRow row, BuildContext buildContext) {
+    return <Widget>[
+      TextButton(
+        onPressed: () => _processCellUpdate(row, buildContext),
+        child: Text(
+          'GUARDAR',
+          style: TextStyle(color: model.backgroundColor),
+        ),
+      ),
+      TextButton(
+        onPressed: () => Navigator.pop(buildContext),
+        child: Text(
+          'CANCELAR',
+          style: TextStyle(color: model.backgroundColor),
+        ),
+      ),
+    ];
+  }
+
+  /// Deleting the DataGridRow
+  void _handleDeleteWidgetTap(DataGridRow row) {
+    final int index = userDataGridSource.rows.indexOf(row);
+    userDataGridSource.rows.remove(row);
+    userDataGridSource.getUsers()?.remove(userDataGridSource.getUsers()![index]);
+    userDataGridSource.notifyListeners();
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'OK',
+              style: TextStyle(color: model.backgroundColor),
+            ),
+          ),
+        ],
+        content: const Text('Usuario eliminado correctamente'),
+      ),
+    );
+  }
+
+  /// Callback for left swiping, and it will flipped for RTL case
+  Widget _buildStartSwipeWidget(
+      BuildContext context, DataGridRow row, int rowIndex) {
+    return GestureDetector(
+      onTap: () => _handleEditWidgetTap(row),
+      child: Container(
+        color: Colors.blueAccent,
+        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const <Widget>[
+            Icon(Icons.edit, color: Colors.white, size: 16),
+            SizedBox(width: 8.0),
+            Text(
+              'EDITAR',
+              style: TextStyle(color: Colors.white, fontSize: 12),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Callback for right swiping, and it will flipped for RTL case
+  Widget _buildEndSwipeWidget(
+      BuildContext context, DataGridRow row, int rowIndex) {
+    return GestureDetector(
+      onTap: () => _handleDeleteWidgetTap(row),
+      child: Container(
+        color: Colors.redAccent,
+        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const <Widget>[
+            Icon(Icons.delete, color: Colors.white, size: 16),
+            SizedBox(width: 8.0),
+            Text(
+              'BORRAR',
+              style: TextStyle(color: Colors.white, fontSize: 12),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   SfDataGrid _buildDataGrid() {
     return SfDataGrid(
       source: userDataGridSource,
       rowsPerPage: _rowsPerPage,
       tableSummaryRows: getTableSummaryRows(),
+      allowSwiping: true,
+      swipeMaxOffset: 100.0,
+      endSwipeActionsBuilder: _buildEndSwipeWidget,
+      startSwipeActionsBuilder: _buildStartSwipeWidget,
       columns: <GridColumn>[
         GridColumn(
             width: (model.isWeb || model.isMacOS || model.isLinux) ? 150 : 130,
@@ -251,6 +570,16 @@ class _UserDataGridState extends SampleViewState {
   void initState() {
     super.initState();
     userDataGridSource = UserDataGridSource(List.empty());
+    usernameController = TextEditingController();
+    nameController = TextEditingController();
+    surnamesController = TextEditingController();
+    dniController = TextEditingController();
+    emailController = TextEditingController();
+    phoneController = TextEditingController();
+    rolController = TextEditingController();
+    pointController = TextEditingController();
+    configurationController = TextEditingController();
+    pointsController = TextEditingController();
   }
 
   @override
