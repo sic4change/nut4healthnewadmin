@@ -2,6 +2,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 typedef UserID = String;
 
 @immutable
@@ -9,7 +11,7 @@ class User extends Equatable {
 
   const User({required this.userId, this.username, this.name,
   this.surname, required this.email, this.phone, required this. role, this.dni,
-  this.photo, this.point, this.configuration, this.points});
+  this.photo, this.point, this.configuration, this.points, this.createdate});
 
   final UserID userId;
   final String? username;
@@ -23,11 +25,12 @@ class User extends Equatable {
   final String? point;
   final String? configuration;
   final int? points;
+  final DateTime? createdate;
 
   @override
   List<Object> get props => [userId, username ?? "", name ?? "", surname ?? "",
     role, dni ?? "", email, phone ?? "", photo ?? "", point ?? "",
-    configuration ?? "", points ?? 0];
+    configuration ?? "", points ?? 0, createdate ?? DateTime(0, 0, 0)];
 
   @override
   bool get stringify => true;
@@ -52,9 +55,22 @@ class User extends Equatable {
     final point = data['point'] ?? "";
     final configuration = data['configuration'] ?? "";
     final points = data['points'] ?? 0;
-    return User(userId: documentId, username: username, name: name,
-        surname : surname, email : email, phone : phone, role : role, dni : dni,
-    photo : photo, point: point, configuration: configuration, points: points);
+    final Timestamp createdateFirebase = data['createdate'] ?? Timestamp(0, 0);
+    final createdate = createdateFirebase.toDate();
+    return User(
+        userId: documentId,
+        username: username,
+        name: name,
+        surname: surname,
+        email: email,
+        phone: phone,
+        role: role,
+        dni: dni,
+        photo: photo,
+        point: point,
+        configuration: configuration,
+        points: points,
+        createdate: createdate);
   }
 
   Map<String, dynamic> toMap() {
@@ -70,6 +86,7 @@ class User extends Equatable {
       'point': point,
       'configuration': configuration,
       'points': points,
+      'createdate': createdate,
     };
   }
 }

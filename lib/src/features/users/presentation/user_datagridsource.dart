@@ -37,6 +37,7 @@ class UserDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Punto', value: user.point),
           DataGridCell<String>(columnName: 'Configuración', value: user.configuration),
           DataGridCell<int>(columnName: 'Puntos', value: user.points),
+          DataGridCell<DateTime>(columnName: 'CreateDate', value: user.createdate),
         ]);
       }).toList();
     }
@@ -156,6 +157,11 @@ class UserDataGridSource extends DataGridSource {
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.center,
         child: Text(row.getCells()[9].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.center,
+        child: Text(row.getCells()[10].value.toString()),
       ),
     ]);
   }

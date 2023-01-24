@@ -58,8 +58,6 @@ class _UserDataGridState extends SampleViewState {
     );
   }
 
-
-
   Widget _buildView(AsyncValue<List<User>> users) {
     if (users.value != null && users.value!.isNotEmpty) {
       userDataGridSource.setUsers(users.value);
@@ -116,7 +114,7 @@ class _UserDataGridState extends SampleViewState {
     );
   }
 
-  List<GridTableSummaryRow> getTableSummaryRows() {
+  List<GridTableSummaryRow> _getTableSummaryRows() {
     final Color color =
     model.themeData.colorScheme.brightness == Brightness.light
         ? const Color(0xFFEBEBEB)
@@ -132,7 +130,7 @@ class _UserDataGridState extends SampleViewState {
                 columnName: 'Username',
                 summaryType: GridSummaryType.count),
           ],
-          position: GridTableSummaryRowPosition.top),
+          position: GridTableSummaryRowPosition.bottom),
     ];
   }
 
@@ -440,11 +438,14 @@ class _UserDataGridState extends SampleViewState {
     return SfDataGrid(
       source: userDataGridSource,
       rowsPerPage: _rowsPerPage,
-      tableSummaryRows: getTableSummaryRows(),
+      tableSummaryRows: _getTableSummaryRows(),
       allowSwiping: true,
       swipeMaxOffset: 100.0,
       endSwipeActionsBuilder: _buildEndSwipeWidget,
       startSwipeActionsBuilder: _buildStartSwipeWidget,
+      allowFiltering: true,
+      allowSorting: true,
+      allowMultiColumnSorting: true,
       columns: <GridColumn>[
         GridColumn(
             width: (model.isWeb || model.isMacOS || model.isLinux) ? 150 : 130,
@@ -562,6 +563,17 @@ class _UserDataGridState extends SampleViewState {
                 overflow: TextOverflow.ellipsis,
               )),
         ),
+        GridColumn(
+            width: (model.isWeb || model.isMacOS || model.isLinux) ? 150 : 130,
+            columnName: 'CreateDate',
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: const Text(
+                'CreateDate',
+                overflow: TextOverflow.ellipsis,
+              ),
+            )),
       ],
     );
   }
