@@ -13,9 +13,21 @@ class FirestoreDataSource {
     await reference.set(data, SetOptions(merge: merge));
   }
 
+  Future<void> addData(
+      {required String path, required Map<String, dynamic> data}) async {
+    final reference = FirebaseFirestore.instance.collection(path);
+    await reference.add(data);
+  }
+
   Future<void> deleteData({required String path}) async {
     final reference = FirebaseFirestore.instance.doc(path);
     await reference.delete();
+  }
+
+  Future<void> updateData(
+      {required String path, required Map<String, dynamic> data}) async {
+    final reference = FirebaseFirestore.instance.doc(path);
+    await reference.set(data, SetOptions(merge: true));
   }
 
   // watch collections and documents as streams

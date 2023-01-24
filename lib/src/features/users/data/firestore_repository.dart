@@ -30,6 +30,14 @@ class FirestoreRepository {
     await _dataSource.deleteData(path: FirestorePath.user(user.userId));
   }
 
+  Future<void> updateUser({required User user}) async {
+    await _dataSource.updateData(path: FirestorePath.user(user.userId), data: user.toMap());
+  }
+
+  Future<void> addUser({required User user}) async {
+    await _dataSource.addData(path: FirestorePath.users(), data: user.toMap());
+  }
+
   Stream<User> watchUser({required UserID userId}) =>
       _dataSource.watchDocument(
         path: FirestorePath.user(userId),
