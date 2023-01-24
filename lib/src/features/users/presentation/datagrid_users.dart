@@ -100,11 +100,32 @@ class _UserDataGridState extends SampleViewState {
     );
   }
 
+  List<GridTableSummaryRow> getTableSummaryRows() {
+    final Color color =
+    model.themeData.colorScheme.brightness == Brightness.light
+        ? const Color(0xFFEBEBEB)
+        : const Color(0xFF3B3B3B);
+    return <GridTableSummaryRow>[
+      GridTableSummaryRow(
+        showSummaryInRow: true,
+          color: color,
+          title: 'Usuarios totales: {Count}',
+          columns: <GridSummaryColumn>[
+            const GridSummaryColumn(
+                name: 'Count',
+                columnName: 'Username',
+                summaryType: GridSummaryType.count),
+          ],
+          position: GridTableSummaryRowPosition.top),
+    ];
+  }
+
 
   SfDataGrid _buildDataGrid() {
     return SfDataGrid(
       source: userDataGridSource,
       rowsPerPage: _rowsPerPage,
+      tableSummaryRows: getTableSummaryRows(),
       columns: <GridColumn>[
         GridColumn(
             width: (model.isWeb || model.isMacOS || model.isLinux) ? 150 : 130,

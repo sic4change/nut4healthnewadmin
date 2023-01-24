@@ -46,6 +46,18 @@ class UserDataGridSource extends DataGridSource {
   @override
   List<DataGridRow> get rows => _dataGridRows;
 
+  @override
+  Widget? buildTableSummaryCellWidget(
+      GridTableSummaryRow summaryRow,
+      GridSummaryColumn? summaryColumn,
+      RowColumnIndex rowColumnIndex,
+      String summaryValue) {
+    return Container(
+      padding: EdgeInsets.all(15.0),
+      child: Text(summaryValue),
+    );
+  }
+
   Widget _buildUserName(dynamic value) {
     return Padding(
       padding: const EdgeInsets.only(left: 16.0),
