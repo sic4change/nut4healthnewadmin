@@ -275,7 +275,7 @@ class _WebLayoutPageState extends State<WebLayoutPage> {
                                     hoverColor: Colors.white,
                                     onTap: () {
                                       launchUrl(Uri.parse(
-                                          'https://pub.dev/publishers/syncfusion.com/packages'));
+                                          'https://play.google.com/store/apps/details?id=org.sic4change.nut4health&gl=ES'));
                                     },
                                     child: Padding(
                                       padding:
