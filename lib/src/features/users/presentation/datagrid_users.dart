@@ -32,6 +32,20 @@ class _UserDataGridState extends SampleViewState {
   static const double dataPagerHeight = 60;
   int _rowsPerPage = 15;
 
+  late Map<String, double> columnWidths = {
+    'Username': 150,
+    'Nombre': 150,
+    'Apellidos': 150,
+    'DNI/DPI': 150,
+    'Email': 150,
+    'Teléfono': 150,
+    'Rol': 150,
+    'Configuración': 150,
+    'Punto': 150,
+    'Puntos': 150,
+    'CreateDate': 150
+  };
+
   /// Editing controller for forms to perform update the values.
   TextEditingController? usernameController,
       nameController,
@@ -283,7 +297,7 @@ class _UserDataGridState extends SampleViewState {
     final String? configuration = row
         .getCells()
         .firstWhere(
-          (DataGridCell element) => element.columnName == 'Punto',
+          (DataGridCell element) => element.columnName == 'Configuración',
     )
         ?.value
         .toString();
@@ -440,6 +454,13 @@ class _UserDataGridState extends SampleViewState {
       rowsPerPage: _rowsPerPage,
       tableSummaryRows: _getTableSummaryRows(),
       allowSwiping: true,
+      allowColumnsResizing: true,
+      onColumnResizeUpdate: (ColumnResizeUpdateDetails details) {
+        setState(() {
+          columnWidths[details.column.columnName] = details.width;
+        });
+        return true;
+      },
       swipeMaxOffset: 100.0,
       endSwipeActionsBuilder: _buildEndSwipeWidget,
       startSwipeActionsBuilder: _buildStartSwipeWidget,
@@ -448,7 +469,7 @@ class _UserDataGridState extends SampleViewState {
       allowMultiColumnSorting: true,
       columns: <GridColumn>[
         GridColumn(
-            width: (model.isWeb || model.isMacOS || model.isLinux) ? 150 : 130,
+            width: columnWidths['Username']!,
             columnName: 'Username',
             label: Container(
               alignment: Alignment.center,
@@ -460,7 +481,7 @@ class _UserDataGridState extends SampleViewState {
             )),
         GridColumn(
           columnName: 'Nombre',
-          width: (model.isWeb || model.isMacOS || model.isLinux) ? 150 : 130,
+            width: columnWidths['Nombre']!,
           label: Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.all(8.0),
@@ -472,7 +493,7 @@ class _UserDataGridState extends SampleViewState {
         ),
         GridColumn(
           columnName: 'Apellidos',
-          width: (model.isWeb || model.isMacOS || model.isLinux) ? 150 : 130,
+          width: columnWidths['Apellidos']!,
           label: Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.all(8.0),
@@ -484,7 +505,7 @@ class _UserDataGridState extends SampleViewState {
         ),
         GridColumn(
           columnName: 'DNI/DPI',
-          width: (model.isWeb || model.isMacOS || model.isLinux) ? 150 : 130,
+          width: columnWidths['DNI/DPI']!,
           label: Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.all(8.0),
@@ -496,7 +517,7 @@ class _UserDataGridState extends SampleViewState {
         ),
         GridColumn(
           columnName: 'Email',
-          width: (model.isWeb || model.isMacOS || model.isLinux) ? 180 : 150,
+          width: columnWidths['Email']!,
           label: Container(
             padding: const EdgeInsets.all(8.0),
             alignment: Alignment.centerLeft,
@@ -508,7 +529,7 @@ class _UserDataGridState extends SampleViewState {
         ),
         GridColumn(
           columnName: 'Teléfono',
-          width: (model.isWeb || model.isMacOS || model.isLinux) ? 150 : 130,
+          width: columnWidths['Teléfono']!,
           label: Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.all(8.0),
@@ -520,7 +541,7 @@ class _UserDataGridState extends SampleViewState {
         ),
         GridColumn(
           columnName: 'Rol',
-          width: (model.isWeb || model.isMacOS || model.isLinux) ? 150 : 130,
+          width: columnWidths['Rol']!,
           label: Container(
               padding: const EdgeInsets.all(8.0),
               alignment: Alignment.center,
@@ -531,7 +552,7 @@ class _UserDataGridState extends SampleViewState {
         ),
         GridColumn(
           columnName: 'Punto',
-          width: (model.isWeb || model.isMacOS || model.isLinux) ? 150 : 130,
+          width: columnWidths['Punto']!,
           label: Container(
               padding: const EdgeInsets.all(8.0),
               alignment: Alignment.center,
@@ -542,7 +563,7 @@ class _UserDataGridState extends SampleViewState {
         ),
         GridColumn(
           columnName: 'Configuración',
-          width: (model.isWeb || model.isMacOS || model.isLinux) ? 150 : 130,
+          width: columnWidths['Configuración']!,
           label: Container(
               padding: const EdgeInsets.all(8.0),
               alignment: Alignment.center,
@@ -553,7 +574,7 @@ class _UserDataGridState extends SampleViewState {
         ),
         GridColumn(
           columnName: 'Puntos',
-          width: (model.isWeb || model.isMacOS || model.isLinux) ? 150 : 130,
+          width: columnWidths['Puntos']!,
           columnWidthMode: ColumnWidthMode.lastColumnFill,
           label: Container(
               padding: const EdgeInsets.all(8.0),
@@ -564,7 +585,7 @@ class _UserDataGridState extends SampleViewState {
               )),
         ),
         GridColumn(
-            width: (model.isWeb || model.isMacOS || model.isLinux) ? 150 : 130,
+            width: columnWidths['CreateDate']!,
             columnName: 'CreateDate',
             label: Container(
               alignment: Alignment.center,
