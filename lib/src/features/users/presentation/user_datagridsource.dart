@@ -75,9 +75,34 @@ class UserDataGridSource extends DataGridSource {
   }
 
   Widget _buildPhone(dynamic value) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16.0),
-      child: _getWidget(const Icon(Icons.phone, size: 20), value),
+    if (value.toString().isNotEmpty) {
+      return Padding(
+        padding: const EdgeInsets.only(left: 16.0),
+        child: _getWidget(const Icon(Icons.phone, size: 20), value),
+      );
+    } else {
+      return const Text("");
+    }
+  }
+
+  Widget _buildPoint(dynamic value) {
+    if (value.toString().isNotEmpty) {
+      return Padding(
+        padding: const EdgeInsets.only(left: 16.0),
+        child: _getWidget(const Icon(Icons.place, size: 20), value),
+      );
+    } else {
+      return const Text("");
+    }
+  }
+
+  Widget _buildRole(dynamic value) {
+    return Center(
+      child: Text(
+        value,
+        style: _getStatusTextStyle(value),
+        overflow: TextOverflow.ellipsis,
+      ),
     );
   }
 
@@ -101,10 +126,14 @@ class UserDataGridSource extends DataGridSource {
   }
 
   TextStyle _getStatusTextStyle(dynamic value) {
-    if (value) {
+    if (value.toString() == 'Servicio Salud') {
       return const TextStyle(color: Colors.green);
+    } else if (value.toString() == 'Agente Salud') {
+      return TextStyle(color: Colors.blueAccent);
+    } else if (value.toString() == 'Super Admin') {
+      return const TextStyle(color: Colors.red);
     } else {
-      return TextStyle(color: Colors.red[500]);
+      return const TextStyle(color: Colors.orange);
     }
   }
 
@@ -127,27 +156,10 @@ class UserDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[3].value.toString()),
       ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[4].value.toString()),
-      ),
-      Container(
-          padding: const EdgeInsets.all(8.0),
-          alignment: Alignment.center,
-          child: Text(
-            row.getCells()[5].value.toString())
-      ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[6].value.toString()),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[7].value.toString()),
-      ),
+      _buildEmail(row.getCells()[4].value),
+      _buildPhone(row.getCells()[5].value),
+      _buildRole(row.getCells()[6].value),
+      _buildPoint(row.getCells()[7].value),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,

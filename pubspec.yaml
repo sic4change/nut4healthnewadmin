@@ -41,6 +41,7 @@ dependencies:
   syncfusion_flutter_signaturepad: ^20.4.38
   syncfusion_flutter_pdfviewer: ^20.4.38-beta
   syncfusion_flutter_treemap: ^20.4.38-beta
+  syncfusion_flutter_core: ^20.4.44
   cupertino_icons: ^1.0.2
 
 dev_dependencies:

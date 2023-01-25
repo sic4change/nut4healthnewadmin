@@ -912,7 +912,7 @@ Widget showWebThemeSettings(SampleModel model) {
                               );
                             }))
                       ]),
-                      Container(
+                      /*Container(
                           padding: const EdgeInsets.only(top: 25, left: 15),
                           child: const Text(
                             'Paleta de colores',
@@ -920,8 +920,8 @@ Widget showWebThemeSettings(SampleModel model) {
                                 color: Color.fromRGBO(128, 128, 128, 1),
                                 fontSize: 14,
                                 fontFamily: 'Roboto-Regular'),
-                          )),
-                      Container(
+                          )),*/
+                      /*Container(
                           padding: const EdgeInsets.fromLTRB(0, 25, 0, 0),
                           child: Row(
                             children: <Widget>[
@@ -937,10 +937,10 @@ Widget showWebThemeSettings(SampleModel model) {
                                 ),
                               ),
                             ],
-                          )),
+                          )),*/
                       Container(
-                        height: 44,
-                        padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                        height: 38,
+                        padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
                         child: ElevatedButton(
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all<Color>(

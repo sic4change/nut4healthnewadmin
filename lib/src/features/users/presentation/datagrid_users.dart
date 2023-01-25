@@ -10,6 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+import 'package:syncfusion_flutter_core/theme.dart';
+
 import '../../../sample/model/sample_view.dart';
 /// Local import
 import '../data/firestore_repository.dart';
@@ -37,11 +39,11 @@ class _UserDataGridState extends SampleViewState {
     'Nombre': 150,
     'Apellidos': 150,
     'DNI/DPI': 150,
-    'Email': 150,
+    'Email': 180,
     'Teléfono': 150,
     'Rol': 150,
     'Configuración': 150,
-    'Punto': 150,
+    'Punto': 200,
     'Puntos': 150,
     'CreateDate': 150
   };
@@ -96,7 +98,10 @@ class _UserDataGridState extends SampleViewState {
               SizedBox(
                   height: constraint.maxHeight - dataPagerHeight,
                   width: constraint.maxWidth,
-                  child: _buildDataGrid()),
+                  child: SfDataGridTheme(
+                      data: SfDataGridThemeData(headerColor: Colors.blueAccent),
+                      child: _buildDataGrid()
+                  )),
               Container(
                 height: dataPagerHeight,
                 decoration: BoxDecoration(
