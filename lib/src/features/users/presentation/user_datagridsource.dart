@@ -27,6 +27,7 @@ class UserDataGridSource extends DataGridSource {
     if (_users != null && _users!.isNotEmpty) {
       _dataGridRows = _users!.map<DataGridRow>((User user) {
         return DataGridRow(cells: <DataGridCell>[
+          DataGridCell<String>(columnName: 'Foto', value: user.photo),
           DataGridCell<String>(columnName: 'Username', value: user.username),
           DataGridCell<String>(columnName: 'Nombre', value: user.name),
           DataGridCell<String>(columnName: 'Apellidos', value: user.surname),
@@ -54,16 +55,32 @@ class UserDataGridSource extends DataGridSource {
       RowColumnIndex rowColumnIndex,
       String summaryValue) {
     return Container(
-      padding: EdgeInsets.all(15.0),
+      padding: const EdgeInsets.all(15.0),
       child: Text(summaryValue),
     );
   }
 
-  Widget _buildUserName(dynamic value) {
+  Widget _buildPhoto(dynamic value) {
     return Padding(
-      padding: const EdgeInsets.only(left: 16.0),
-      child: _getWidget(
-          Icon(Icons.account_circle, size: 30, color: Colors.blue[300]), value),
+            padding: const EdgeInsets.all(1.0),
+            child: CircleAvatar(
+              radius: 80.0,
+              backgroundColor: Colors.grey[200],
+              child: Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    fit: BoxFit.scaleDown,
+                    image: NetworkImage(value),
+                  ),
+                ),
+              ),
+            )
+            /*child: CircleAvatar(
+              backgroundImage: NetworkImage(value),
+            ),*/
     );
   }
 
@@ -140,7 +157,7 @@ class UserDataGridSource extends DataGridSource {
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(cells: <Widget>[
-      _buildUserName(row.getCells()[0].value),
+      _buildPhoto((row.getCells()[0].value.toString())),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
@@ -156,24 +173,29 @@ class UserDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[3].value.toString()),
       ),
-      _buildEmail(row.getCells()[4].value),
-      _buildPhone(row.getCells()[5].value),
-      _buildRole(row.getCells()[6].value),
-      _buildPoint(row.getCells()[7].value),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[8].value.toString()),
+        child: Text(row.getCells()[4].value.toString()),
       ),
+      _buildEmail(row.getCells()[5].value),
+      _buildPhone(row.getCells()[6].value),
+      _buildRole(row.getCells()[7].value),
+      _buildPoint(row.getCells()[8].value),
       Container(
         padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.center,
+        alignment: Alignment.centerLeft,
         child: Text(row.getCells()[9].value.toString()),
       ),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.center,
         child: Text(row.getCells()[10].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.center,
+        child: Text(row.getCells()[11].value.toString()),
       ),
     ]);
   }

@@ -46,6 +46,7 @@ class _UserDataGridState extends SampleViewState {
   int _rowsPerPage = 15;
 
   late Map<String, double> columnWidths = {
+    'Foto': 150,
     'Username': 150,
     'Nombre': 150,
     'Apellidos': 150,
@@ -205,7 +206,7 @@ class _UserDataGridState extends SampleViewState {
     return Row(
       children: <Widget>[
         _buildCreatingButton('Crear Usuario', 'images/Add.png'),
-        _buildExportingButton('Exportar a Excel', 'images/ExcelExport.png',
+        _buildExportingButton('Exportar a XLS', 'images/ExcelExport.png',
             onPressed: exportDataGridToExcel),
         _buildExportingButton('Exportar a PDF', 'images/PdfExport.png',
             onPressed: exportDataGridToPdf)
@@ -687,6 +688,18 @@ class _UserDataGridState extends SampleViewState {
       allowSorting: true,
       allowMultiColumnSorting: true,
       columns: <GridColumn>[
+        GridColumn(
+            width: columnWidths['Foto']!,
+            allowFiltering: false,
+            columnName: 'Foto',
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: const Text(
+                'Foto',
+                overflow: TextOverflow.ellipsis,
+              ),
+            )),
         GridColumn(
             width: columnWidths['Username']!,
             columnName: 'Username',
