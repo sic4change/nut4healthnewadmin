@@ -138,6 +138,29 @@ class _UserDataGridState extends SampleViewState {
         });
   }
 
+  void _createUser() {
+    _createTextFieldContext();
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        scrollable: true,
+        titleTextStyle: TextStyle(
+            color: model.textColor, fontWeight: FontWeight.bold, fontSize: 16),
+        title: const Text('Crear usuario'),
+        actions: _buildActionCreateButtons(context),
+        content: Scrollbar(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Form(
+              key: _formKey,
+              child: _buildAlertDialogCreateContent(),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildExportingButtons() {
     Future<void> exportDataGridToExcel() async {
       final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
@@ -181,6 +204,7 @@ class _UserDataGridState extends SampleViewState {
 
     return Row(
       children: <Widget>[
+        _buildCreatingButton('Crear Usuario', 'images/Add.png'),
         _buildExportingButton('Exportar a Excel', 'images/ExcelExport.png',
             onPressed: exportDataGridToExcel),
         _buildExportingButton('Exportar a PDF', 'images/PdfExport.png',
@@ -189,6 +213,33 @@ class _UserDataGridState extends SampleViewState {
     );
   }
 
+  Widget _buildCreatingButton(String buttonName, String imagePath) {
+    return Container(
+      height: 60.0,
+      padding: const EdgeInsets.only(left: 10.0, top: 10.0, bottom: 10.0),
+      child: MaterialButton(
+        onPressed: _createUser,
+        color: model.backgroundColor,
+        child: SizedBox(
+          width: 150.0,
+          height: 40.0,
+          child: Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                child: ImageIcon(
+                  AssetImage(imagePath),
+                  size: 30,
+                  color: Colors.white,
+                ),
+              ),
+              Text(buttonName, style: const TextStyle(color: Colors.white)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   Widget _buildExportingButton(String buttonName, String imagePath,
       {required VoidCallback onPressed}) {
@@ -322,6 +373,36 @@ class _UserDataGridState extends SampleViewState {
     );
   }
 
+  /// Building the forms to edit the data
+  Widget _buildAlertDialogCreateContent() {
+    return Column(
+      children: <Widget>[
+        _buildRow(controller: usernameController!, columnName: 'Username'),
+        _buildRow(controller: nameController!, columnName: 'Nombre'),
+        _buildRow(controller: surnamesController!, columnName: 'Apellidos'),
+        _buildRow(controller: dniController!, columnName: 'DNI/DPI'),
+        _buildRow(controller: emailController!, columnName: 'Email'),
+        _buildRow(controller: phoneController!, columnName: 'Teléfono'),
+        _buildRow(controller: rolController!, columnName: 'Rol'),
+        _buildRow(controller: pointController!, columnName: 'Punto'),
+        _buildRow(controller: configurationController!, columnName: 'Configuración'),
+      ],
+    );
+  }
+
+  void _createTextFieldContext() {
+    usernameController!.text = '';
+    nameController!.text = '';
+    surnamesController!.text = '';
+    dniController!.text = '';
+    emailController!.text = '';
+    phoneController!.text =  '';
+    rolController!.text = '';
+    pointController!.text =  '';
+    configurationController!.text = '';
+    pointsController!.text = '';
+  }
+
   // Updating the data to the TextEditingController
   void _updateTextFieldContext(DataGridRow row) {
     final String? username = row
@@ -442,6 +523,21 @@ class _UserDataGridState extends SampleViewState {
     );
   }
 
+  void _processCellCreate(BuildContext buildContext) {
+    if (_formKey.currentState!.validate()) {
+      userDataGridSource.getUsers()!.add(User( userId: "",
+          username: usernameController!.text, name: nameController!.text,
+          surname: surnamesController!.text, dni: dniController!.text,
+          email: emailController!.text, phone: phoneController!.text,
+          role: rolController!.text, point: pointController!.text,
+          configuration: configurationController!.text,
+          points: int.tryParse(pointsController!.text)));
+      userDataGridSource.buildDataGridRows();
+      userDataGridSource.notifyListeners();
+      Navigator.pop(buildContext);
+    }
+  }
+
   /// Updating the DataGridRows after changing the value and notify the DataGrid
   /// to refresh the view
   void _processCellUpdate(DataGridRow row, BuildContext buildContext) {
@@ -460,6 +556,25 @@ class _UserDataGridState extends SampleViewState {
       userDataGridSource.notifyListeners();
       Navigator.pop(buildContext);
     }
+  }
+
+  List<Widget> _buildActionCreateButtons(BuildContext buildContext) {
+    return <Widget>[
+      TextButton(
+        onPressed: () => _processCellCreate(buildContext),
+        child: Text(
+          'GUARDAR',
+          style: TextStyle(color: model.backgroundColor),
+        ),
+      ),
+      TextButton(
+        onPressed: () => Navigator.pop(buildContext),
+        child: Text(
+          'CANCELAR',
+          style: TextStyle(color: model.backgroundColor),
+        ),
+      ),
+    ];
   }
 
   /// Building the option button on the bottom of the alert popup
@@ -719,6 +834,7 @@ class _UserDataGridState extends SampleViewState {
     pointsController = TextEditingController();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Consumer(
@@ -732,3 +848,5 @@ class _UserDataGridState extends SampleViewState {
         });
   }
 }
+
+
