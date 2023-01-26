@@ -5,18 +5,26 @@ import 'package:adminnut4health/src/utils/async_value_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 /// Barcode import
 // ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import 'package:syncfusion_flutter_core/theme.dart';
+import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 import '../../../sample/model/sample_view.dart';
 /// Local import
 import '../data/firestore_repository.dart';
 import '../domain/user.dart';
 import 'user_datagridsource.dart';
+
+import '../../../common_widgets/export/save_file_mobile.dart'
+  if (dart.library.html) '../../../common_widgets/export/save_file_web.dart' as helper;
+
+import 'package:syncfusion_flutter_datagrid_export/export.dart';
+import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column, Row, Border;
 
 /// Render user data grid
 class UserDataGrid extends SampleView {
@@ -28,6 +36,9 @@ class UserDataGrid extends SampleView {
 }
 
 class _UserDataGridState extends SampleViewState {
+
+  final GlobalKey<SfDataGridState> _key = GlobalKey<SfDataGridState>();
+
   /// DataGridSource required for SfDataGrid to obtain the row data.
   late UserDataGridSource userDataGridSource;
 
@@ -94,30 +105,118 @@ class _UserDataGridState extends SampleViewState {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraint) {
           return Column(
-            children: <Widget>[
-              SizedBox(
-                  height: constraint.maxHeight - dataPagerHeight,
-                  width: constraint.maxWidth,
-                  child: SfDataGridTheme(
-                      data: SfDataGridThemeData(headerColor: Colors.blueAccent),
-                      child: _buildDataGrid()
-                  )),
-              Container(
-                height: dataPagerHeight,
-                decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface.withOpacity(0.12),
-                    border: Border(
-                        top: BorderSide(
-                            width: .5,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSurface
-                                .withOpacity(0.12)))),
-                child: Align(child: _buildDataPager()),
-              )
-            ],
+              children: <Widget>[
+                Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        _buildExportingButtons(),
+                        SizedBox(
+                          height: constraint.maxHeight - (dataPagerHeight * 2),
+                          width: constraint.maxWidth,
+                          child: SfDataGridTheme(
+                              data: SfDataGridThemeData(headerColor: Colors.blueAccent),
+                              child: _buildDataGrid()
+                          ),
+                        ),
+                      ],
+                    ),
+                Container(
+                  height: dataPagerHeight,
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface.withOpacity(0.12),
+                      border: Border(
+                          top: BorderSide(
+                              width: .5,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withOpacity(0.12)))),
+                  child: Align(child: _buildDataPager()),
+                )
+              ],
           );
         });
+  }
+
+  Widget _buildExportingButtons() {
+    Future<void> exportDataGridToExcel() async {
+      final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
+          cellExport: (DataGridCellExcelExportDetails details) {
+          });
+      final List<int> bytes = workbook.saveAsStream();
+      workbook.dispose();
+      await helper.FileSaveHelper.saveAndLaunchFile(bytes, 'Usuarios.xlsx');
+    }
+
+    Future<void> exportDataGridToPdf() async {
+      final ByteData data = await rootBundle.load('images/nut_logo.jpg');
+      final PdfDocument document = _key.currentState!.exportToPdfDocument(
+          fitAllColumnsInOnePage: true,
+          cellExport: (DataGridCellPdfExportDetails details) {
+
+          },
+          headerFooterExport: (DataGridPdfHeaderFooterExportDetails details) {
+            final double width = details.pdfPage.getClientSize().width;
+            final PdfPageTemplateElement header =
+            PdfPageTemplateElement(Rect.fromLTWH(0, 0, width, 65));
+
+            header.graphics.drawImage(
+                PdfBitmap(data.buffer
+                    .asUint8List(data.offsetInBytes, data.lengthInBytes)),
+                Rect.fromLTWH(width - 148, 0, 148, 60));
+
+            header.graphics.drawString(
+              'Usuarios',
+              PdfStandardFont(PdfFontFamily.helvetica, 13,
+                  style: PdfFontStyle.bold),
+              bounds: const Rect.fromLTWH(0, 25, 200, 60),
+            );
+
+            details.pdfDocumentTemplate.top = header;
+          });
+      final List<int> bytes = document.saveSync();
+      await helper.FileSaveHelper.saveAndLaunchFile(bytes, 'Users.pdf');
+      document.dispose();
+    }
+
+    return Row(
+      children: <Widget>[
+        _buildExportingButton('Exportar a Excel', 'images/ExcelExport.png',
+            onPressed: exportDataGridToExcel),
+        _buildExportingButton('Exportar a PDF', 'images/PdfExport.png',
+            onPressed: exportDataGridToPdf)
+      ],
+    );
+  }
+
+
+  Widget _buildExportingButton(String buttonName, String imagePath,
+      {required VoidCallback onPressed}) {
+    return Container(
+      height: 60.0,
+      padding: const EdgeInsets.only(left: 10.0, top: 10.0, bottom: 10.0),
+      child: MaterialButton(
+        onPressed: onPressed,
+        color: model.backgroundColor,
+        child: SizedBox(
+          width: 150.0,
+          height: 40.0,
+          child: Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                child: ImageIcon(
+                  AssetImage(imagePath),
+                  size: 30,
+                  color: Colors.white,
+                ),
+              ),
+              Text(buttonName, style: const TextStyle(color: Colors.white)),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildDataPager() {
@@ -163,7 +262,6 @@ class _UserDataGridState extends SampleViewState {
     } else {
       return RegExp(r'^[a-zA-Z0-9]+$');
     }
-
   }
 
   /// Building the each field with label and TextFormField
@@ -455,6 +553,7 @@ class _UserDataGridState extends SampleViewState {
 
   SfDataGrid _buildDataGrid() {
     return SfDataGrid(
+      key: _key,
       source: userDataGridSource,
       rowsPerPage: _rowsPerPage,
       tableSummaryRows: _getTableSummaryRows(),
