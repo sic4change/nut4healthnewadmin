@@ -44,6 +44,8 @@ dependencies:
   syncfusion_flutter_treemap: ^20.4.38-beta
   syncfusion_flutter_core: ^20.4.44
   cupertino_icons: ^1.0.2
+  file_picker: ^5.2.5
+  csv: ^4.0.0
 
 dev_dependencies:
   flutter_test:

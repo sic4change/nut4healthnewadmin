@@ -1,11 +1,19 @@
 /// Package imports
 /// import 'package:flutter/foundation.dart';
+
+import 'dart:io';
+
 import 'package:adminnut4health/src/features/users/presentation/users_screen_controller.dart';
 import 'package:adminnut4health/src/utils/async_value_ui.dart';
+import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+
+import 'dart:typed_data';
+import 'dart:html' show Blob, AnchorElement, Url;
 
 /// Barcode import
 // ignore: depend_on_referenced_packages
@@ -19,6 +27,9 @@ import '../../../sample/model/sample_view.dart';
 import '../data/firestore_repository.dart';
 import '../domain/user.dart';
 import 'user_datagridsource.dart';
+
+import 'package:file_picker/file_picker.dart';
+import 'dart:html' show FileReader;
 
 import '../../../common_widgets/export/save_file_mobile.dart'
   if (dart.library.html) '../../../common_widgets/export/save_file_web.dart' as helper;
@@ -110,7 +121,7 @@ class _UserDataGridState extends SampleViewState {
                 Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        _buildExportingButtons(),
+                        _buildHeaderButtons(),
                         SizedBox(
                           height: constraint.maxHeight - (dataPagerHeight * 2),
                           width: constraint.maxWidth,
@@ -139,6 +150,50 @@ class _UserDataGridState extends SampleViewState {
         });
   }
 
+  void _importUsers() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      final myUint8List = new Uint8List.fromList(result.files.single.bytes!);
+      final blob = Blob([myUint8List], 'text/plain');
+      readBlob(blob).then((it)  {
+        List<List<dynamic>> rowsAsListOfValues = const CsvToListConverter().convert(it);
+        List<User> users = [];
+        for (final row in rowsAsListOfValues) {
+          if (row.length > 1) {
+            User user = User(userId: '',
+                photo: row[0].toString(),
+                username: row[1].toString(),
+                name: row[2].toString(),
+                surname: row[3].toString(),
+                dni: row[4].toString(),
+                email: row[5].toString(),
+                phone: row[6].toString(),
+                role: row[7].toString(),
+                point: row[8].toString(),
+                configuration: row[9].toString(),
+                points: row[10]
+            );
+            users.add(user);
+          }
+        }
+        userDataGridSource.getUsers()!.addAll(users);
+        userDataGridSource.buildDataGridRows();
+        userDataGridSource.notifyListeners();
+      });
+
+    } else {
+      // User canceled the picker
+    }
+  }
+
+  Future<String> readBlob(Blob blob) async {
+    final reader = FileReader();
+    reader.readAsText(blob);
+    await reader.onLoad.first;
+    return reader.result as String;
+  }
+
   void _createUser() {
     _createTextFieldContext();
     showDialog<String>(
@@ -162,7 +217,7 @@ class _UserDataGridState extends SampleViewState {
     );
   }
 
-  Widget _buildExportingButtons() {
+  Widget _buildHeaderButtons() {
     Future<void> exportDataGridToExcel() async {
       final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
           cellExport: (DataGridCellExcelExportDetails details) {
@@ -206,11 +261,40 @@ class _UserDataGridState extends SampleViewState {
     return Row(
       children: <Widget>[
         _buildCreatingButton('Crear Usuario', 'images/Add.png'),
+        _buildImportButton('Importar CSV', 'images/ExcelExport.png'),
         _buildExportingButton('Exportar a XLS', 'images/ExcelExport.png',
             onPressed: exportDataGridToExcel),
         _buildExportingButton('Exportar a PDF', 'images/PdfExport.png',
             onPressed: exportDataGridToPdf)
       ],
+    );
+  }
+
+  Widget _buildImportButton(String buttonName, String imagePath) {
+    return Container(
+      height: 60.0,
+      padding: const EdgeInsets.only(left: 10.0, top: 10.0, bottom: 10.0),
+      child: MaterialButton(
+        onPressed: _importUsers,
+        color: model.backgroundColor,
+        child: SizedBox(
+          width: 150.0,
+          height: 40.0,
+          child: Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                child: ImageIcon(
+                  AssetImage(imagePath),
+                  size: 30,
+                  color: Colors.white,
+                ),
+              ),
+              Text(buttonName, style: const TextStyle(color: Colors.white)),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
