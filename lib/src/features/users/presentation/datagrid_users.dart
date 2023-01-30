@@ -393,9 +393,9 @@ class _UserDataGridState extends SampleViewState {
       return RegExp('[0-9]');
     } else if (keyboardType == TextInputType.text) {
       return RegExp(r'^[a-zA-Z0-9]+$');
-    } else if (keyboardType == TextInputType.emailAddress) {
+    } /*else if (keyboardType == TextInputType.emailAddress) {
       return RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-    } else {
+    }*/ else {
       return RegExp(r'^[a-zA-Z0-9]+$');
     }
   }
@@ -458,7 +458,7 @@ class _UserDataGridState extends SampleViewState {
     );
   }
 
-  /// Building the forms to edit the data
+  /// Building the forms to create the data
   Widget _buildAlertDialogCreateContent() {
     return Column(
       children: <Widget>[
@@ -608,7 +608,7 @@ class _UserDataGridState extends SampleViewState {
     );
   }
 
-  void _processCellCreate(BuildContext buildContext) {
+  void _processCellCreate(BuildContext buildContext) async {
     if (_formKey.currentState!.validate()) {
       userDataGridSource.getUsers()!.add(User( userId: "",
           username: usernameController!.text, name: nameController!.text,
@@ -617,6 +617,15 @@ class _UserDataGridState extends SampleViewState {
           role: rolController!.text, point: pointController!.text,
           configuration: configurationController!.text,
           points: int.tryParse(pointsController!.text)));
+      ref.read(usersScreenControllerProvider.notifier).addUser(
+          User( userId: "",
+              username: usernameController!.text, name: nameController!.text,
+              surname: surnamesController!.text, dni: dniController!.text,
+              email: emailController!.text, phone: phoneController!.text,
+              role: rolController!.text, point: pointController!.text,
+              configuration: configurationController!.text,
+              points: int.tryParse(pointsController!.text))
+      );
       userDataGridSource.buildDataGridRows();
       userDataGridSource.notifyListeners();
       Navigator.pop(buildContext);
@@ -627,15 +636,24 @@ class _UserDataGridState extends SampleViewState {
   /// to refresh the view
   void _processCellUpdate(DataGridRow row, BuildContext buildContext) {
     final int rowIndex = userDataGridSource.rows.indexOf(row);
-
     if (_formKey.currentState!.validate()) {
       userDataGridSource.getUsers()![rowIndex] = User( userId: "",
-        username: usernameController!.text, name: nameController!.text,
-         surname: surnamesController!.text, dni: dniController!.text,
-        email: emailController!.text, phone: phoneController!.text,
-        role: rolController!.text, point: pointController!.text,
+          username: usernameController!.text, name: nameController!.text,
+          surname: surnamesController!.text, dni: dniController!.text,
+          email: emailController!.text, phone: phoneController!.text,
+          role: rolController!.text, point: pointController!.text,
           configuration: configurationController!.text,
-        points: int.tryParse(pointsController!.text)
+          points: int.tryParse(pointsController!.text));
+      final String id = userDataGridSource.getUsers()![rowIndex].userId;
+      ref.read(usersScreenControllerProvider.notifier).updateUser(
+          User(userId: id,
+              username: usernameController!.text, name: nameController!.text,
+              surname: surnamesController!.text, dni: dniController!.text,
+              email: emailController!.text, phone: phoneController!.text,
+              role: rolController!.text, point: pointController!.text,
+              configuration: configurationController!.text,
+              points: int.tryParse(pointsController!.text)
+          )
       );
       userDataGridSource.buildDataGridRows();
       userDataGridSource.notifyListeners();
@@ -685,6 +703,7 @@ class _UserDataGridState extends SampleViewState {
   /// Deleting the DataGridRow
   void _handleDeleteWidgetTap(DataGridRow row) {
     final int index = userDataGridSource.rows.indexOf(row);
+    ref.read(usersScreenControllerProvider.notifier).deleteUser(userDataGridSource.getUsers()![index]);
     userDataGridSource.rows.remove(row);
     userDataGridSource.getUsers()?.remove(userDataGridSource.getUsers()![index]);
     userDataGridSource.notifyListeners();
@@ -938,7 +957,7 @@ class _UserDataGridState extends SampleViewState {
         builder: (context, ref, child) {
           ref.listen<AsyncValue>(
             usersScreenControllerProvider,
-                (_, state) => state.showAlertDialogOnError(context),
+                (_, state) => {},
           );
           final usersAsyncValue = ref.watch(usersStreamProvider);
           return _buildView(usersAsyncValue);

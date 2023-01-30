@@ -1,19 +1,20 @@
 /// Package import
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
 
 /// Local import
 import 'model.dart';
 
 /// Base class of the sample's stateful widget class
-abstract class SampleView extends StatefulWidget {
+abstract class SampleView extends ConsumerStatefulWidget {
   /// base class constructor of sample's stateful widget class
   const SampleView({Key? key}) : super(key: key);
 }
 
 /// Base class of the sample's state class
-abstract class SampleViewState<T extends SampleView> extends State<T> {
+abstract class SampleViewState<T extends SampleView> extends ConsumerState<T> {
   /// Holds the SampleModel information
   late SampleModel model;
 
@@ -46,7 +47,10 @@ class LocalizationSampleView extends SampleView {
   const LocalizationSampleView({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => LocalizationSampleViewState();
+  ConsumerState<ConsumerStatefulWidget> createState() => LocalizationSampleViewState();
+
+  /*@override
+  State<StatefulWidget> createState() => LocalizationSampleViewState();*/
 }
 
 /// Base class of the localization sample's state class

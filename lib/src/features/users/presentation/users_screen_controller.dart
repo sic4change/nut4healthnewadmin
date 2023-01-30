@@ -26,7 +26,7 @@ class UsersScreenController extends AutoDisposeAsyncNotifier<void> {
   Future<void> updateUser(User user) async {
     final database = ref.read(databaseProvider);
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() => database.setUser(user: user));
+    state = await AsyncValue.guard(() => database.updateUser(user: user));
   }
 }
 

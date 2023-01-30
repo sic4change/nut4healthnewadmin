@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../authentication/data/firebase_auth_repository.dart';
-import '../../../common_data/firestore_data_source.dart';
+import 'firestore_data_source.dart';
 import '../domain/user.dart';
 
 String documentIdFromCurrentDate() {
