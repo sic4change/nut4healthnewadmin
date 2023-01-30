@@ -677,35 +677,6 @@ class _UserDataGridState extends SampleViewState {
   void _processCellUpdate(DataGridRow row, BuildContext buildContext) {
     final int rowIndex = userDataGridSource.rows.indexOf(row);
     if (_formKey.currentState!.validate()) {
-      userDataGridSource.getUsers()![rowIndex] = UserWithConfigurationAndPoint(
-          User(
-              userId: "",
-              username: usernameController!.text,
-              name: nameController!.text,
-              surname: surnamesController!.text,
-              dni: dniController!.text,
-              email: emailController!.text,
-              phone: phoneController!.text,
-              role: rolController!.text,
-              point: pointController!.text,
-              configuration: configurationController!.text,
-              points: int.tryParse(pointsController!.text)),
-          Configuration(
-              id: '',
-              name: '',
-              money: '',
-              payByConfirmation: 0,
-              payByDiagnosis: 0,
-              pointByConfirmation: 0,
-              pointsByDiagnosis: 0,
-              monthlyPayment: 0),
-          Point(
-              pointId: '',
-              name: '',
-              fullName: '',
-              country: '',
-              province: '',
-              phoneCode: ''));
       final String id = userDataGridSource.getUsers()![rowIndex].user.userId;
       ref.read(usersScreenControllerProvider.notifier).updateUser(
           User(userId: id,
@@ -717,9 +688,24 @@ class _UserDataGridState extends SampleViewState {
               points: int.tryParse(pointsController!.text)
           )
       );
+      userDataGridSource.getUsers()![rowIndex] = UserWithConfigurationAndPoint(
+          User(
+              userId: id,
+              username: usernameController!.text,
+              name: nameController!.text,
+              surname: surnamesController!.text,
+              dni: dniController!.text,
+              email: emailController!.text,
+              phone: phoneController!.text,
+              role: rolController!.text,
+              point: pointController!.text,
+              configuration: configurationController!.text,
+              points: int.tryParse(pointsController!.text)),
+          userDataGridSource.getUsers()![rowIndex].configuration,
+          userDataGridSource.getUsers()![rowIndex].point);
+      Navigator.pop(buildContext);
       userDataGridSource.buildDataGridRows();
       userDataGridSource.notifyListeners();
-      Navigator.pop(buildContext);
     }
   }
 
