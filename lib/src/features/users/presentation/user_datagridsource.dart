@@ -9,24 +9,24 @@ import 'package:intl/intl.dart';
 // ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../domain/UserWithConfiguration.dart';
+import '../domain/UserWithConfigurationAndPoint.dart';
 import '../domain/user.dart';
 
 /// Set user's data collection to data grid source.
 class UserDataGridSource extends DataGridSource {
   /// Creates the user data source class with required details.
-  UserDataGridSource(List<UserWithConfiguration> userData) {
+  UserDataGridSource(List<UserWithConfigurationAndPoint> userData) {
     _users = userData;
     buildDataGridRows();
   }
 
   List<DataGridRow> _dataGridRows = <DataGridRow>[];
-  List<UserWithConfiguration>? _users = <UserWithConfiguration>[];
+  List<UserWithConfigurationAndPoint>? _users = <UserWithConfigurationAndPoint>[];
 
   /// Building DataGridRows
   void buildDataGridRows() {
     if (_users != null && _users!.isNotEmpty) {
-      _dataGridRows = _users!.map<DataGridRow>((UserWithConfiguration userWithConfiguration) {
+      _dataGridRows = _users!.map<DataGridRow>((UserWithConfigurationAndPoint userWithConfiguration) {
         return DataGridRow(cells: <DataGridCell>[
           DataGridCell<String>(columnName: 'Foto', value: userWithConfiguration.user.photo),
           DataGridCell<String>(columnName: 'Username', value: userWithConfiguration.user.username),
@@ -36,7 +36,7 @@ class UserDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Email', value: userWithConfiguration.user.email),
           DataGridCell<String>(columnName: 'Teléfono', value: userWithConfiguration.user.phone),
           DataGridCell<String>(columnName: 'Rol', value: userWithConfiguration.user.role),
-          DataGridCell<String>(columnName: 'Punto', value: userWithConfiguration.user.point),
+          DataGridCell<String>(columnName: 'Punto', value: userWithConfiguration.point?.fullName),
           DataGridCell<String>(columnName: 'Configuración', value: userWithConfiguration.configuration?.name),
           DataGridCell<int>(columnName: 'Puntos', value: userWithConfiguration.user.points),
           DataGridCell<DateTime>(columnName: 'CreateDate', value: userWithConfiguration.user.createdate),
@@ -201,11 +201,11 @@ class UserDataGridSource extends DataGridSource {
     ]);
   }
 
-  setUsers(List<UserWithConfiguration>? userData) {
+  setUsers(List<UserWithConfigurationAndPoint>? userData) {
     _users = userData;
   }
 
-  List<UserWithConfiguration>? getUsers() {
+  List<UserWithConfigurationAndPoint>? getUsers() {
     return _users;
   }
 }

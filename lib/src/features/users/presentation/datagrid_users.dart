@@ -20,9 +20,10 @@ import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 import '../../../sample/model/sample_view.dart';
 import '../../configurations/domain/configuration.dart';
+import '../../points/domain/point.dart';
 /// Local import
 import '../data/firestore_repository.dart';
-import '../domain/UserWithConfiguration.dart';
+import '../domain/UserWithConfigurationAndPoint.dart';
 import '../domain/user.dart';
 import 'user_datagridsource.dart';
 
@@ -95,7 +96,7 @@ class _UserDataGridState extends SampleViewState {
     );
   }
 
-  Widget _buildView(AsyncValue<List<UserWithConfiguration>> users) {
+  Widget _buildView(AsyncValue<List<UserWithConfigurationAndPoint>> users) {
     if (users.value != null && users.value!.isNotEmpty) {
       userDataGridSource.setUsers(users.value);
       userDataGridSource.buildDataGridRows();
@@ -157,7 +158,7 @@ class _UserDataGridState extends SampleViewState {
       readBlob(blob).then((it)  {
         List<List<dynamic>> rowsAsListOfValues = const CsvToListConverter().convert(it);
         List<User> users = [];
-        List<UserWithConfiguration> userWithConfigurations = [];
+        List<UserWithConfigurationAndPoint> userWithConfigurations = [];
         for (final row in rowsAsListOfValues) {
           if (row.length > 1) {
             User user = User(userId: '',
@@ -182,7 +183,13 @@ class _UserDataGridState extends SampleViewState {
                 pointByConfirmation: 0,
                 pointsByDiagnosis: 0,
                 monthlyPayment: 0);
-            userWithConfigurations.add(UserWithConfiguration(user, configuration));
+            Point point = Point(pointId: "",
+                name: "",
+                fullName: "",
+                country: "",
+                province: "",
+                phoneCode: "");
+            userWithConfigurations.add(UserWithConfigurationAndPoint(user, configuration, point));
             users.add(user);
           }
         }
@@ -620,7 +627,7 @@ class _UserDataGridState extends SampleViewState {
   void _processCellCreate(BuildContext buildContext) async {
 
     if (_formKey.currentState!.validate()) {
-      userDataGridSource.getUsers()!.add(UserWithConfiguration(
+      userDataGridSource.getUsers()!.add(UserWithConfigurationAndPoint(
           User(
               userId: "",
               username: usernameController!.text,
@@ -641,7 +648,15 @@ class _UserDataGridState extends SampleViewState {
               payByDiagnosis: 0,
               pointByConfirmation: 0,
               pointsByDiagnosis: 0,
-              monthlyPayment: 0)));
+              monthlyPayment: 0),
+          Point(
+              pointId: '',
+              name: '',
+              fullName: '',
+              country:  '',
+              province:  '',
+              phoneCode:  ''),
+      ));
       ref.read(usersScreenControllerProvider.notifier).addUser(
           User( userId: "",
               username: usernameController!.text, name: nameController!.text,
@@ -662,18 +677,19 @@ class _UserDataGridState extends SampleViewState {
   void _processCellUpdate(DataGridRow row, BuildContext buildContext) {
     final int rowIndex = userDataGridSource.rows.indexOf(row);
     if (_formKey.currentState!.validate()) {
-      userDataGridSource.getUsers()![rowIndex] = UserWithConfiguration(
-          User(userId: "",
-          username: usernameController!.text,
+      userDataGridSource.getUsers()![rowIndex] = UserWithConfigurationAndPoint(
+          User(
+              userId: "",
+              username: usernameController!.text,
               name: nameController!.text,
-          surname: surnamesController!.text,
+              surname: surnamesController!.text,
               dni: dniController!.text,
-          email: emailController!.text,
+              email: emailController!.text,
               phone: phoneController!.text,
-          role: rolController!.text,
+              role: rolController!.text,
               point: pointController!.text,
-          configuration: configurationController!.text,
-          points: int.tryParse(pointsController!.text)),
+              configuration: configurationController!.text,
+              points: int.tryParse(pointsController!.text)),
           Configuration(
               id: '',
               name: '',
@@ -682,7 +698,14 @@ class _UserDataGridState extends SampleViewState {
               payByDiagnosis: 0,
               pointByConfirmation: 0,
               pointsByDiagnosis: 0,
-              monthlyPayment: 0));
+              monthlyPayment: 0),
+          Point(
+              pointId: '',
+              name: '',
+              fullName: '',
+              country: '',
+              province: '',
+              phoneCode: ''));
       final String id = userDataGridSource.getUsers()![rowIndex].user.userId;
       ref.read(usersScreenControllerProvider.notifier).updateUser(
           User(userId: id,

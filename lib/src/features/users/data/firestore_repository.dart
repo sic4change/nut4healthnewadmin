@@ -5,7 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../authentication/data/firebase_auth_repository.dart';
 import '../../../common_data/firestore_data_source.dart';
 import '../../configurations/domain/configuration.dart';
-import '../domain/UserWithConfiguration.dart';
+import '../../points/domain/point.dart';
+import '../domain/UserWithConfigurationAndPoint.dart';
 import '../domain/user.dart';
 
 import 'package:rxdart/rxdart.dart';
@@ -20,6 +21,8 @@ class FirestorePath {
   static String users() => 'users';
   static String configuration(String uid) => 'configurations/$uid';
   static String configurations() => 'configurations';
+  static String point(String uid) => 'points/$uid';
+  static String points() => 'points';
 }
 
 class FirestoreRepository {
@@ -62,33 +65,83 @@ class FirestoreRepository {
         builder: (data, documentId) => Configuration.fromMap(data, documentId),
       );
 
-  Stream<List<UserWithConfiguration>> watchUsersWithConfigurations() {
-    return CombineLatestStream.combine2(
+  Stream<List<Point>> watchPoints() =>
+      _dataSource.watchCollection(
+        path: FirestorePath.points(),
+        builder: (data, documentId) => Point.fromMap(data, documentId),
+      );
+
+  Stream<List<UserWithConfigurationAndPoint>> watchUsersWithConfigurations() {
+    return CombineLatestStream.combine3(
       watchUsers(),
       watchConfigurations(),
-          (List<User> users, List<Configuration> configurations) {
-        final Map<String, Configuration> configurationMap = Map.fromEntries(
-          configurations.map((config) => MapEntry(config.id, config)),
-        );
-        return users.map((user) {
-          try {
-            final Configuration configuration =
-            configurationMap[user.configuration]!;
-            return UserWithConfiguration(user, configuration);
-          } catch(e) {
-            return UserWithConfiguration(user,Configuration(
-                id: '',
-                name: '',
-                money: '',
-                payByConfirmation: 0,
-                payByDiagnosis: 0,
-                pointByConfirmation: 0,
-                pointsByDiagnosis: 0,
-                monthlyPayment: 0));
-          }
-        }).toList();
-      },
-    );
+          watchPoints(),
+          (List<User> users, List<Configuration> configurations, List<Point> points) {
+            final Map<String, Configuration> configurationMap = Map.fromEntries(
+              configurations.map((config) => MapEntry(config.id, config)),
+            );
+            final Map<String, Point> pointMap = Map.fromEntries(
+              points.map((point) => MapEntry(point.pointId, point)),
+            );
+            return users.map((user) {
+              try {
+                final Configuration configuration = configurationMap[user
+                    .configuration]!;
+                final Point point = pointMap[user.point]!;
+                return UserWithConfigurationAndPoint(
+                    user, configuration, point);
+              } catch (e) {
+                try {
+                  final Point point = pointMap[user.point]!;
+                  return UserWithConfigurationAndPoint(
+                      user,
+                      Configuration(
+                          id: '',
+                          name: '',
+                          money: '',
+                          payByConfirmation: 0,
+                          payByDiagnosis: 0,
+                          pointByConfirmation: 0,
+                          pointsByDiagnosis: 0,
+                          monthlyPayment: 0),
+                      point);
+                } catch (e) {
+                  try {
+                    final Configuration configuration = configurationMap[user
+                        .configuration]!;
+                    return UserWithConfigurationAndPoint(
+                        user,
+                        configuration,
+                        Point(pointId: "",
+                            name: "",
+                            fullName: "",
+                            country: "",
+                            province: "",
+                            phoneCode: ""));
+                  } catch (e) {
+                    return UserWithConfigurationAndPoint(
+                        user,
+                        Configuration(
+                            id: '',
+                            name: '',
+                            money: '',
+                            payByConfirmation: 0,
+                            payByDiagnosis: 0,
+                            pointByConfirmation: 0,
+                            pointsByDiagnosis: 0,
+                            monthlyPayment: 0),
+                        Point(pointId: "",
+                            name: "",
+                            fullName: "",
+                            country: "",
+                            province: "",
+                            phoneCode: "")
+                    );
+                  }
+                }
+              }
+            }).toList();
+          });
   }
 
   Future<List<User>> fetchUsers() =>
@@ -103,7 +156,7 @@ final databaseProvider = Provider<FirestoreRepository>((ref) {
   return FirestoreRepository(ref.watch(firestoreDataSourceProvider));
 });
 
-final usersStreamProvider = StreamProvider.autoDispose<List<UserWithConfiguration>>((ref) {
+final usersStreamProvider = StreamProvider.autoDispose<List<UserWithConfigurationAndPoint>>((ref) {
   final user = ref.watch(authStateChangesProvider).value;
   if (user == null) {
     throw AssertionError('User can\'t be null');
