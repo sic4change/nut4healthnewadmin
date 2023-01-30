@@ -6,7 +6,7 @@ import '../../authentication/data/firebase_auth_repository.dart';
 import '../../authentication/domain/app_user.dart';
 import '../domain/entry.dart';
 import '../domain/job.dart';
-import '../../users/data/firestore_data_source.dart';
+import '../../../common_data/firestore_data_source.dart';
 
 String documentIdFromCurrentDate() {
   final iso = DateTime.now().toIso8601String();

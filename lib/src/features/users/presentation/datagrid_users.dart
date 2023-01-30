@@ -1,16 +1,12 @@
 /// Package imports
 /// import 'package:flutter/foundation.dart';
 
-import 'dart:io';
 
 import 'package:adminnut4health/src/features/users/presentation/users_screen_controller.dart';
-import 'package:adminnut4health/src/utils/async_value_ui.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
 
 import 'dart:typed_data';
 import 'dart:html' show Blob, AnchorElement, Url;
@@ -23,8 +19,10 @@ import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 import '../../../sample/model/sample_view.dart';
+import '../../configurations/domain/configuration.dart';
 /// Local import
 import '../data/firestore_repository.dart';
+import '../domain/UserWithConfiguration.dart';
 import '../domain/user.dart';
 import 'user_datagridsource.dart';
 
@@ -97,7 +95,7 @@ class _UserDataGridState extends SampleViewState {
     );
   }
 
-  Widget _buildView(AsyncValue<List<User>> users) {
+  Widget _buildView(AsyncValue<List<UserWithConfiguration>> users) {
     if (users.value != null && users.value!.isNotEmpty) {
       userDataGridSource.setUsers(users.value);
       userDataGridSource.buildDataGridRows();
@@ -159,6 +157,7 @@ class _UserDataGridState extends SampleViewState {
       readBlob(blob).then((it)  {
         List<List<dynamic>> rowsAsListOfValues = const CsvToListConverter().convert(it);
         List<User> users = [];
+        List<UserWithConfiguration> userWithConfigurations = [];
         for (final row in rowsAsListOfValues) {
           if (row.length > 1) {
             User user = User(userId: '',
@@ -174,10 +173,20 @@ class _UserDataGridState extends SampleViewState {
                 configuration: row[9].toString(),
                 points: row[10]
             );
+            Configuration configuration = Configuration(
+                id: '',
+                name: '',
+                money: '',
+                payByConfirmation: 0,
+                payByDiagnosis: 0,
+                pointByConfirmation: 0,
+                pointsByDiagnosis: 0,
+                monthlyPayment: 0);
+            userWithConfigurations.add(UserWithConfiguration(user, configuration));
             users.add(user);
           }
         }
-        userDataGridSource.getUsers()!.addAll(users);
+        userDataGridSource.getUsers()!.addAll(userWithConfigurations);
         userDataGridSource.buildDataGridRows();
         userDataGridSource.notifyListeners();
       });
@@ -609,14 +618,30 @@ class _UserDataGridState extends SampleViewState {
   }
 
   void _processCellCreate(BuildContext buildContext) async {
+
     if (_formKey.currentState!.validate()) {
-      userDataGridSource.getUsers()!.add(User( userId: "",
-          username: usernameController!.text, name: nameController!.text,
-          surname: surnamesController!.text, dni: dniController!.text,
-          email: emailController!.text, phone: phoneController!.text,
-          role: rolController!.text, point: pointController!.text,
-          configuration: configurationController!.text,
-          points: int.tryParse(pointsController!.text)));
+      userDataGridSource.getUsers()!.add(UserWithConfiguration(
+          User(
+              userId: "",
+              username: usernameController!.text,
+              name: nameController!.text,
+              surname: surnamesController!.text,
+              dni: dniController!.text,
+              email: emailController!.text,
+              phone: phoneController!.text,
+              role: rolController!.text,
+              point: pointController!.text,
+              configuration: configurationController!.text,
+              points: int.tryParse(pointsController!.text)),
+          Configuration(
+              id: '',
+              name: '',
+              money: '',
+              payByConfirmation: 0,
+              payByDiagnosis: 0,
+              pointByConfirmation: 0,
+              pointsByDiagnosis: 0,
+              monthlyPayment: 0)));
       ref.read(usersScreenControllerProvider.notifier).addUser(
           User( userId: "",
               username: usernameController!.text, name: nameController!.text,
@@ -637,14 +662,28 @@ class _UserDataGridState extends SampleViewState {
   void _processCellUpdate(DataGridRow row, BuildContext buildContext) {
     final int rowIndex = userDataGridSource.rows.indexOf(row);
     if (_formKey.currentState!.validate()) {
-      userDataGridSource.getUsers()![rowIndex] = User( userId: "",
-          username: usernameController!.text, name: nameController!.text,
-          surname: surnamesController!.text, dni: dniController!.text,
-          email: emailController!.text, phone: phoneController!.text,
-          role: rolController!.text, point: pointController!.text,
+      userDataGridSource.getUsers()![rowIndex] = UserWithConfiguration(
+          User(userId: "",
+          username: usernameController!.text,
+              name: nameController!.text,
+          surname: surnamesController!.text,
+              dni: dniController!.text,
+          email: emailController!.text,
+              phone: phoneController!.text,
+          role: rolController!.text,
+              point: pointController!.text,
           configuration: configurationController!.text,
-          points: int.tryParse(pointsController!.text));
-      final String id = userDataGridSource.getUsers()![rowIndex].userId;
+          points: int.tryParse(pointsController!.text)),
+          Configuration(
+              id: '',
+              name: '',
+              money: '',
+              payByConfirmation: 0,
+              payByDiagnosis: 0,
+              pointByConfirmation: 0,
+              pointsByDiagnosis: 0,
+              monthlyPayment: 0));
+      final String id = userDataGridSource.getUsers()![rowIndex].user.userId;
       ref.read(usersScreenControllerProvider.notifier).updateUser(
           User(userId: id,
               username: usernameController!.text, name: nameController!.text,
@@ -703,7 +742,7 @@ class _UserDataGridState extends SampleViewState {
   /// Deleting the DataGridRow
   void _handleDeleteWidgetTap(DataGridRow row) {
     final int index = userDataGridSource.rows.indexOf(row);
-    ref.read(usersScreenControllerProvider.notifier).deleteUser(userDataGridSource.getUsers()![index]);
+    ref.read(usersScreenControllerProvider.notifier).deleteUser(userDataGridSource.getUsers()![index].user);
     userDataGridSource.rows.remove(row);
     userDataGridSource.getUsers()?.remove(userDataGridSource.getUsers()![index]);
     userDataGridSource.notifyListeners();

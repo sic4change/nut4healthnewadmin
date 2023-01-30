@@ -9,36 +9,37 @@ import 'package:intl/intl.dart';
 // ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+import '../domain/UserWithConfiguration.dart';
 import '../domain/user.dart';
 
 /// Set user's data collection to data grid source.
 class UserDataGridSource extends DataGridSource {
   /// Creates the user data source class with required details.
-  UserDataGridSource(List<User> userData) {
+  UserDataGridSource(List<UserWithConfiguration> userData) {
     _users = userData;
     buildDataGridRows();
   }
 
   List<DataGridRow> _dataGridRows = <DataGridRow>[];
-  List<User>? _users = <User>[];
+  List<UserWithConfiguration>? _users = <UserWithConfiguration>[];
 
   /// Building DataGridRows
   void buildDataGridRows() {
     if (_users != null && _users!.isNotEmpty) {
-      _dataGridRows = _users!.map<DataGridRow>((User user) {
+      _dataGridRows = _users!.map<DataGridRow>((UserWithConfiguration userWithConfiguration) {
         return DataGridRow(cells: <DataGridCell>[
-          DataGridCell<String>(columnName: 'Foto', value: user.photo),
-          DataGridCell<String>(columnName: 'Username', value: user.username),
-          DataGridCell<String>(columnName: 'Nombre', value: user.name),
-          DataGridCell<String>(columnName: 'Apellidos', value: user.surname),
-          DataGridCell<String>(columnName: 'DNI/DPI', value: user.dni),
-          DataGridCell<String>(columnName: 'Email', value: user.email),
-          DataGridCell<String>(columnName: 'Teléfono', value: user.phone),
-          DataGridCell<String>(columnName: 'Rol', value: user.role),
-          DataGridCell<String>(columnName: 'Punto', value: user.point),
-          DataGridCell<String>(columnName: 'Configuración', value: user.configuration),
-          DataGridCell<int>(columnName: 'Puntos', value: user.points),
-          DataGridCell<DateTime>(columnName: 'CreateDate', value: user.createdate),
+          DataGridCell<String>(columnName: 'Foto', value: userWithConfiguration.user.photo),
+          DataGridCell<String>(columnName: 'Username', value: userWithConfiguration.user.username),
+          DataGridCell<String>(columnName: 'Nombre', value: userWithConfiguration.user.name),
+          DataGridCell<String>(columnName: 'Apellidos', value: userWithConfiguration.user.surname),
+          DataGridCell<String>(columnName: 'DNI/DPI', value: userWithConfiguration.user.dni),
+          DataGridCell<String>(columnName: 'Email', value: userWithConfiguration.user.email),
+          DataGridCell<String>(columnName: 'Teléfono', value: userWithConfiguration.user.phone),
+          DataGridCell<String>(columnName: 'Rol', value: userWithConfiguration.user.role),
+          DataGridCell<String>(columnName: 'Punto', value: userWithConfiguration.user.point),
+          DataGridCell<String>(columnName: 'Configuración', value: userWithConfiguration.configuration?.name),
+          DataGridCell<int>(columnName: 'Puntos', value: userWithConfiguration.user.points),
+          DataGridCell<DateTime>(columnName: 'CreateDate', value: userWithConfiguration.user.createdate),
         ]);
       }).toList();
     }
@@ -200,11 +201,11 @@ class UserDataGridSource extends DataGridSource {
     ]);
   }
 
-  setUsers(List<User>? userData) {
+  setUsers(List<UserWithConfiguration>? userData) {
     _users = userData;
   }
 
-  List<User>? getUsers() {
+  List<UserWithConfiguration>? getUsers() {
     return _users;
   }
 }
