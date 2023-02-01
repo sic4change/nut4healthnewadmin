@@ -523,7 +523,6 @@ class _UserDataGridState extends SampleViewState {
     pointOptions.insert(0, "");
     final configurationOptions = userDataGridSource.getConfigurations().map((e) => e.name).toList();
     configurationOptions.insert(0, "");
-
     return Column(
       children: <Widget>[
         _buildRow(controller: usernameController!, columnName: 'Username'),
@@ -543,6 +542,11 @@ class _UserDataGridState extends SampleViewState {
 
   /// Building the forms to create the data
   Widget _buildAlertDialogCreateContent() {
+    final roleOptions = ["Super Admin", "Donante", "Servicio Salud", "Agente Salud"];
+    final pointOptions = userDataGridSource.getPoints().map((e) => e.name).toList();
+    pointOptions.insert(0, "");
+    final configurationOptions = userDataGridSource.getConfigurations().map((e) => e.name).toList();
+    configurationOptions.insert(0, "");
     return Column(
       children: <Widget>[
         _buildRow(controller: usernameController!, columnName: 'Username'),
@@ -551,9 +555,12 @@ class _UserDataGridState extends SampleViewState {
         _buildRow(controller: dniController!, columnName: 'DNI/DPI'),
         _buildRow(controller: emailController!, columnName: 'Email'),
         _buildRow(controller: phoneController!, columnName: 'Teléfono'),
-        _buildRowComboSelection(controller: roleController!, columnName: 'Rol', dropDownMenuItems: ["Super Admin", "Donante", "Servicio Salud", "Agente Salud"]),
-        _buildRowComboSelection(controller: pointController!, columnName: 'Punto', dropDownMenuItems: userDataGridSource.getPoints().map((e) => e.name).toList()),
-        _buildRowComboSelection(controller: configurationController!, columnName: 'Configuración', dropDownMenuItems: userDataGridSource.getConfigurations().map((e) => e.name).toList()),
+        _buildRowComboSelection(controller: roleController!, columnName: 'Rol',
+            dropDownMenuItems: roleOptions),
+        _buildRowComboSelection(controller: pointController!, columnName: 'Punto',
+            dropDownMenuItems: pointOptions),
+        _buildRowComboSelection(controller: configurationController!,
+            columnName: 'Configuración', dropDownMenuItems: configurationOptions),
       ],
     );
   }
@@ -693,23 +700,6 @@ class _UserDataGridState extends SampleViewState {
 
   void _processCellCreate(BuildContext buildContext) async {
     if (_formKey.currentState!.validate()) {
-      userDataGridSource.getUsers()!.add(
-          UserWithConfigurationAndPoint(
-            User(
-                userId: "",
-                username: usernameController!.text,
-                name: nameController!.text,
-                surname: surnamesController!.text,
-                dni: dniController!.text,
-                email: emailController!.text,
-                phone: phoneController!.text,
-                role: roleController!.text,
-                point: userDataGridSource.getPoints().firstWhere((element) => element.name == pointController!.text).pointId,
-                configuration:  userDataGridSource.getConfigurations().firstWhere((element) => element.name == configurationController!.text).id,
-                points: int.tryParse(pointsController!.text)),
-            userDataGridSource.getConfigurations().firstWhere((element) => element.name == configurationController!.text),
-            userDataGridSource.getPoints().firstWhere((element) => element.name == pointController!.text),
-      ));
       ref.read(usersScreenControllerProvider.notifier).addUser(
           User( userId: "",
               username: usernameController!.text, name: nameController!.text,
@@ -720,8 +710,6 @@ class _UserDataGridState extends SampleViewState {
               configuration: userDataGridSource.getConfigurations().firstWhere((element) => element.name == configurationController!.text).id,
               points: int.tryParse(pointsController!.text))
       );
-      //userDataGridSource.buildDataGridRows();
-      userDataGridSource.updateDataSource();
       Navigator.pop(buildContext);
     }
   }
@@ -787,12 +775,14 @@ class _UserDataGridState extends SampleViewState {
 
   /// Deleting the DataGridRow
   void _handleDeleteWidgetTap(DataGridRow row) {
-    final int index = userDataGridSource.rows.indexOf(row);
-    ref.read(usersScreenControllerProvider.notifier).deleteUser(userDataGridSource.getUsers()![index].user);
-    userDataGridSource.rows.remove(row);
-    userDataGridSource.getUsers()?.remove(userDataGridSource.getUsers()![index]);
-    //userDataGridSource.buildDataGridRows();
-    userDataGridSource.updateDataSource();
+    final user = userDataGridSource.getUsers()?.firstWhere((element) => element.user.email == row.getCells()[5].value).user;
+    if (user != null) {
+      ref.read(usersScreenControllerProvider.notifier).deleteUser(user);
+      _showDialogDeleteConfirmation();
+    }
+  }
+
+  _showDialogDeleteConfirmation() {
     showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
@@ -810,7 +800,7 @@ class _UserDataGridState extends SampleViewState {
     );
   }
 
-  /// Callback for left swiping, and it will flipped for RTL case
+  /// Callback for left swiping
   Widget _buildStartSwipeWidget(
       BuildContext context, DataGridRow row, int rowIndex) {
     return GestureDetector(
@@ -833,7 +823,7 @@ class _UserDataGridState extends SampleViewState {
     );
   }
 
-  /// Callback for right swiping, and it will flipped for RTL case
+  /// Callback for right swiping
   Widget _buildEndSwipeWidget(
       BuildContext context, DataGridRow row, int rowIndex) {
     return GestureDetector(
