@@ -77,10 +77,11 @@ class _UserDataGridState extends SampleViewState {
       dniController,
       emailController,
       phoneController,
-      rolController,
+      pointsController,
       pointController,
-      configurationController,
-      pointsController;
+      roleController,
+      configurationController
+  ;
 
   /// Used to validate the forms
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -96,10 +97,34 @@ class _UserDataGridState extends SampleViewState {
     );
   }
 
+  _saveUsers(AsyncValue<List<UserWithConfigurationAndPoint>>? users) {
+    if (users == null) {
+      userDataGridSource.setUsers(List.empty());
+    } else {
+      userDataGridSource.setUsers(users.value);
+    }
+  }
+
+  _saveConfigurations(AsyncValue<List<Configuration>>? configurations) {
+    if (configurations == null) {
+      userDataGridSource.setConfigurations(List.empty());
+    } else {
+      userDataGridSource.setConfigurations(configurations.value!);
+    }
+  }
+
+  _savePoints(AsyncValue<List<Point>>? points) {
+    if (points == null) {
+      userDataGridSource.setPoints(List.empty());
+    } else {
+      userDataGridSource.setPoints(points.value!);
+    }
+  }
+
   Widget _buildView(AsyncValue<List<UserWithConfigurationAndPoint>> users) {
     if (users.value != null && users.value!.isNotEmpty) {
-      userDataGridSource.setUsers(users.value);
       userDataGridSource.buildDataGridRows();
+      userDataGridSource.updateDataSource();
       return _buildLayoutBuilder();
     } else {
       return const Center(
@@ -151,7 +176,6 @@ class _UserDataGridState extends SampleViewState {
 
   void _importUsers() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
-
     if (result != null) {
       final myUint8List = new Uint8List.fromList(result.files.single.bytes!);
       final blob = Blob([myUint8List], 'text/plain');
@@ -416,6 +440,42 @@ class _UserDataGridState extends SampleViewState {
     }
   }
 
+  Widget _buildRowComboSelection({required TextEditingController controller, required String columnName, required List<String> dropDownMenuItems}) {
+    String value = controller.text;
+    if (value.isEmpty) {
+      value = dropDownMenuItems[0];
+    }
+    return Row(
+      children: <Widget>[
+        Container(
+            width: 150,
+            padding: const EdgeInsets.symmetric(vertical: 15),
+            child: Text(columnName)),
+        SizedBox(
+          width: 150,
+          child: DropdownButtonFormField<String>(
+                value: value,
+                autofocus: true,
+                focusColor: Colors.transparent,
+                icon: const Icon(Icons.arrow_drop_down_sharp),
+                isExpanded: false,
+                onChanged: (newValue) {
+                  setState(() {
+                    value = newValue!;
+                    controller.text = newValue!;
+                  });
+                },
+                items: dropDownMenuItems.map((option) {
+                  return DropdownMenuItem<String>(
+                    value: option,
+                    child: Text(option.length > 12 ? option.substring(0, 12) + '...' : option),
+                  );
+                }).toList()),
+          ),
+      ],
+    );
+  }
+
   /// Building the each field with label and TextFormField
   Widget _buildRow(
       {required TextEditingController controller, required String columnName}) {
@@ -458,18 +518,25 @@ class _UserDataGridState extends SampleViewState {
 
   /// Building the forms to edit the data
   Widget _buildAlertDialogContent() {
+    final roleOptions = ["Super Admin", "Donante", "Servicio Salud", "Agente Salud"];
+    final pointOptions = userDataGridSource.getPoints().map((e) => e.name).toList();
+    pointOptions.insert(0, "");
+    final configurationOptions = userDataGridSource.getConfigurations().map((e) => e.name).toList();
+    configurationOptions.insert(0, "");
+
     return Column(
       children: <Widget>[
         _buildRow(controller: usernameController!, columnName: 'Username'),
         _buildRow(controller: nameController!, columnName: 'Nombre'),
         _buildRow(controller: surnamesController!, columnName: 'Apellidos'),
         _buildRow(controller: dniController!, columnName: 'DNI/DPI'),
-        //_buildRow(controller: emailController!, columnName: 'Email'),
         _buildRow(controller: phoneController!, columnName: 'Teléfono'),
-        _buildRow(controller: rolController!, columnName: 'Rol'),
-        _buildRow(controller: pointController!, columnName: 'Punto'),
-        _buildRow(controller: configurationController!, columnName: 'Configuración'),
-        //_buildRow(controller: pointsController!, columnName: 'Puntos'),
+        _buildRowComboSelection(controller: roleController!, columnName: 'Rol',
+            dropDownMenuItems: roleOptions),
+        _buildRowComboSelection(controller: pointController!, columnName: 'Punto',
+            dropDownMenuItems: pointOptions),
+        _buildRowComboSelection(controller: configurationController!,
+            columnName: 'Configuración', dropDownMenuItems: configurationOptions),
       ],
     );
   }
@@ -484,9 +551,9 @@ class _UserDataGridState extends SampleViewState {
         _buildRow(controller: dniController!, columnName: 'DNI/DPI'),
         _buildRow(controller: emailController!, columnName: 'Email'),
         _buildRow(controller: phoneController!, columnName: 'Teléfono'),
-        _buildRow(controller: rolController!, columnName: 'Rol'),
-        _buildRow(controller: pointController!, columnName: 'Punto'),
-        _buildRow(controller: configurationController!, columnName: 'Configuración'),
+        _buildRowComboSelection(controller: roleController!, columnName: 'Rol', dropDownMenuItems: ["Super Admin", "Donante", "Servicio Salud", "Agente Salud"]),
+        _buildRowComboSelection(controller: pointController!, columnName: 'Punto', dropDownMenuItems: userDataGridSource.getPoints().map((e) => e.name).toList()),
+        _buildRowComboSelection(controller: configurationController!, columnName: 'Configuración', dropDownMenuItems: userDataGridSource.getConfigurations().map((e) => e.name).toList()),
       ],
     );
   }
@@ -498,10 +565,10 @@ class _UserDataGridState extends SampleViewState {
     dniController!.text = '';
     emailController!.text = '';
     phoneController!.text =  '';
-    rolController!.text = '';
-    pointController!.text =  '';
-    configurationController!.text = '';
     pointsController!.text = '';
+    roleController!.text = '';
+    pointController!.text = '';
+    configurationController!.text = '';
   }
 
   // Updating the data to the TextEditingController
@@ -567,7 +634,7 @@ class _UserDataGridState extends SampleViewState {
         ?.value
         .toString();
 
-    rolController!.text = rol ?? '';
+    roleController!.text = rol ?? '';
 
     final String? point = row
         .getCells()
@@ -625,49 +692,36 @@ class _UserDataGridState extends SampleViewState {
   }
 
   void _processCellCreate(BuildContext buildContext) async {
-
     if (_formKey.currentState!.validate()) {
-      userDataGridSource.getUsers()!.add(UserWithConfigurationAndPoint(
-          User(
-              userId: "",
-              username: usernameController!.text,
-              name: nameController!.text,
-              surname: surnamesController!.text,
-              dni: dniController!.text,
-              email: emailController!.text,
-              phone: phoneController!.text,
-              role: rolController!.text,
-              point: pointController!.text,
-              configuration: configurationController!.text,
-              points: int.tryParse(pointsController!.text)),
-          Configuration(
-              id: '',
-              name: '',
-              money: '',
-              payByConfirmation: 0,
-              payByDiagnosis: 0,
-              pointByConfirmation: 0,
-              pointsByDiagnosis: 0,
-              monthlyPayment: 0),
-          Point(
-              pointId: '',
-              name: '',
-              fullName: '',
-              country:  '',
-              province:  '',
-              phoneCode:  ''),
+      userDataGridSource.getUsers()!.add(
+          UserWithConfigurationAndPoint(
+            User(
+                userId: "",
+                username: usernameController!.text,
+                name: nameController!.text,
+                surname: surnamesController!.text,
+                dni: dniController!.text,
+                email: emailController!.text,
+                phone: phoneController!.text,
+                role: roleController!.text,
+                point: userDataGridSource.getPoints().firstWhere((element) => element.name == pointController!.text).pointId,
+                configuration:  userDataGridSource.getConfigurations().firstWhere((element) => element.name == configurationController!.text).id,
+                points: int.tryParse(pointsController!.text)),
+            userDataGridSource.getConfigurations().firstWhere((element) => element.name == configurationController!.text),
+            userDataGridSource.getPoints().firstWhere((element) => element.name == pointController!.text),
       ));
       ref.read(usersScreenControllerProvider.notifier).addUser(
           User( userId: "",
               username: usernameController!.text, name: nameController!.text,
               surname: surnamesController!.text, dni: dniController!.text,
               email: emailController!.text, phone: phoneController!.text,
-              role: rolController!.text, point: pointController!.text,
-              configuration: configurationController!.text,
+              role: roleController!.text,
+              point: userDataGridSource.getPoints().firstWhere((element) => element.name == pointController!.text).pointId,
+              configuration: userDataGridSource.getConfigurations().firstWhere((element) => element.name == configurationController!.text).id,
               points: int.tryParse(pointsController!.text))
       );
-      userDataGridSource.buildDataGridRows();
-      userDataGridSource.notifyListeners();
+      //userDataGridSource.buildDataGridRows();
+      userDataGridSource.updateDataSource();
       Navigator.pop(buildContext);
     }
   }
@@ -675,37 +729,20 @@ class _UserDataGridState extends SampleViewState {
   /// Updating the DataGridRows after changing the value and notify the DataGrid
   /// to refresh the view
   void _processCellUpdate(DataGridRow row, BuildContext buildContext) {
-    final int rowIndex = userDataGridSource.rows.indexOf(row);
+    final String? id = userDataGridSource.getUsers()?.firstWhere((element) => element.user.email == row.getCells()[5].value).user.userId;
     if (_formKey.currentState!.validate()) {
-      final String id = userDataGridSource.getUsers()![rowIndex].user.userId;
       ref.read(usersScreenControllerProvider.notifier).updateUser(
-          User(userId: id,
+          User(userId: id!,
               username: usernameController!.text, name: nameController!.text,
               surname: surnamesController!.text, dni: dniController!.text,
               email: emailController!.text, phone: phoneController!.text,
-              role: rolController!.text, point: pointController!.text,
-              configuration: configurationController!.text,
+              role: roleController!.text,
+              point: userDataGridSource.getPoints().firstWhere((element) => element.name == pointController!.text).pointId,
+              configuration: userDataGridSource.getConfigurations().firstWhere((element) => element.name == configurationController!.text).id,
               points: int.tryParse(pointsController!.text)
           )
       );
-      userDataGridSource.getUsers()![rowIndex] = UserWithConfigurationAndPoint(
-          User(
-              userId: id,
-              username: usernameController!.text,
-              name: nameController!.text,
-              surname: surnamesController!.text,
-              dni: dniController!.text,
-              email: emailController!.text,
-              phone: phoneController!.text,
-              role: rolController!.text,
-              point: pointController!.text,
-              configuration: configurationController!.text,
-              points: int.tryParse(pointsController!.text)),
-          userDataGridSource.getUsers()![rowIndex].configuration,
-          userDataGridSource.getUsers()![rowIndex].point);
       Navigator.pop(buildContext);
-      userDataGridSource.buildDataGridRows();
-      userDataGridSource.notifyListeners();
     }
   }
 
@@ -754,7 +791,8 @@ class _UserDataGridState extends SampleViewState {
     ref.read(usersScreenControllerProvider.notifier).deleteUser(userDataGridSource.getUsers()![index].user);
     userDataGridSource.rows.remove(row);
     userDataGridSource.getUsers()?.remove(userDataGridSource.getUsers()![index]);
-    userDataGridSource.notifyListeners();
+    //userDataGridSource.buildDataGridRows();
+    userDataGridSource.updateDataSource();
     showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
@@ -985,16 +1023,16 @@ class _UserDataGridState extends SampleViewState {
   @override
   void initState() {
     super.initState();
-    userDataGridSource = UserDataGridSource(List.empty());
+    userDataGridSource = UserDataGridSource(List.empty(), List.empty(), List.empty());
     usernameController = TextEditingController();
     nameController = TextEditingController();
     surnamesController = TextEditingController();
     dniController = TextEditingController();
     emailController = TextEditingController();
     phoneController = TextEditingController();
-    rolController = TextEditingController();
-    pointController = TextEditingController();
-    configurationController = TextEditingController();
+    roleController = TextEditingController();
+    pointController  = TextEditingController();
+    configurationController  = TextEditingController();
     pointsController = TextEditingController();
   }
 
@@ -1005,9 +1043,22 @@ class _UserDataGridState extends SampleViewState {
         builder: (context, ref, child) {
           ref.listen<AsyncValue>(
             usersScreenControllerProvider,
-                (_, state) => {},
+                (_, state) => {
+                },
           );
           final usersAsyncValue = ref.watch(usersStreamProvider);
+          final pointsAsyncValue = ref.watch(pointsStreamProvider);
+          final configurationsAsyncValue = ref.watch(configurationsStreamProvider);
+          if (usersAsyncValue.value != null) {
+            _saveUsers(usersAsyncValue);
+          }
+          if (pointsAsyncValue.value != null) {
+            _savePoints(pointsAsyncValue);
+          }
+          if (configurationsAsyncValue.value != null) {
+            _saveConfigurations(configurationsAsyncValue);
+          }
+          // a veces no se mete aqui
           return _buildView(usersAsyncValue);
         });
   }

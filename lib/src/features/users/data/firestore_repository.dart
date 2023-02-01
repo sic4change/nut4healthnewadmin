@@ -165,6 +165,24 @@ final usersStreamProvider = StreamProvider.autoDispose<List<UserWithConfiguratio
   return database.watchUsersWithConfigurations();
 });
 
+final pointsStreamProvider = StreamProvider.autoDispose<List<Point>>((ref) {
+  final user = ref.watch(authStateChangesProvider).value;
+  if (user == null) {
+    throw AssertionError('User can\'t be null');
+  }
+  final database = ref.watch(databaseProvider);
+  return database.watchPoints();
+});
+
+final configurationsStreamProvider = StreamProvider.autoDispose<List<Configuration>>((ref) {
+  final user = ref.watch(authStateChangesProvider).value;
+  if (user == null) {
+    throw AssertionError('User can\'t be null');
+  }
+  final database = ref.watch(databaseProvider);
+  return database.watchConfigurations();
+});
+
 final userStreamProvider =
     StreamProvider.autoDispose.family<User, UserID>((ref, userId) {
   final user = ref.watch(authStateChangesProvider).value;
