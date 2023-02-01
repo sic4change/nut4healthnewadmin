@@ -11,7 +11,8 @@ class User extends Equatable {
 
   const User({required this.userId, this.username, this.name,
   this.surname, required this.email, this.phone, required this. role, this.dni,
-  this.photo, this.point, this.configuration, this.points, this.createdate});
+  this.photo, this.point, this.configuration, this.points, this.createdate,
+  this.active, this.emptyUser});
 
   final UserID userId;
   final String? username;
@@ -26,11 +27,14 @@ class User extends Equatable {
   final String? configuration;
   final int? points;
   final DateTime? createdate;
+  final bool? active;
+  final bool? emptyUser;
 
   @override
   List<Object> get props => [userId, username ?? "", name ?? "", surname ?? "",
     role, dni ?? "", email, phone ?? "", photo ?? "", point ?? "",
-    configuration ?? "", points ?? 0, createdate ?? DateTime(0, 0, 0)];
+    configuration ?? "", points ?? 0, createdate ?? DateTime(0, 0, 0),
+    active ?? false, emptyUser ?? false];
 
   @override
   bool get stringify => true;
@@ -57,6 +61,8 @@ class User extends Equatable {
     final points = data['points'] ?? 0;
     final Timestamp createdateFirebase = data['createdate'] ?? Timestamp(0, 0);
     final createdate = createdateFirebase.toDate();
+    final active = data['active'] ?? false;
+    final emptyUser = data['emptyUser'] ?? false;
     return User(
         userId: documentId,
         username: username,
@@ -70,7 +76,9 @@ class User extends Equatable {
         point: point,
         configuration: configuration,
         points: points,
-        createdate: createdate);
+        createdate: createdate,
+        active: active,
+        emptyUser: emptyUser);
   }
 
   Map<String, dynamic> toMap() {
@@ -87,6 +95,8 @@ class User extends Equatable {
       'configuration': configuration,
       'points': points,
       'createdate': createdate,
+      'active': active,
+      'emptyUser': emptyUser,
     };
   }
 }

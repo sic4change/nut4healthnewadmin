@@ -101,7 +101,8 @@ class _UserDataGridState extends SampleViewState {
     if (users == null) {
       userDataGridSource.setUsers(List.empty());
     } else {
-      userDataGridSource.setUsers(users.value);
+      final notEmptyUsers = users.value!.where((element) => !element.user!.email.contains('@anonymous.com')).toList();
+      userDataGridSource.setUsers(notEmptyUsers);
     }
   }
 
