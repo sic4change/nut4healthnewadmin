@@ -62,16 +62,15 @@ class LocalizationSampleViewState<T extends LocalizationSampleView>
   void initState() {
     if (this is! DirectionalitySampleViewState) {
       _supportedLocales = <Locale>[
-        const Locale('ar', 'AE'),
         const Locale('en', 'US'),
         const Locale('es', 'ES'),
-        const Locale('fr', 'FR'),
-        const Locale('zh', 'CN')
+        const Locale('fr', 'FR')
       ];
     } else {
       _supportedLocales = <Locale>[
-        const Locale('ar', 'AE'),
         const Locale('en', 'US'),
+        const Locale('es', 'ES'),
+        const Locale('fr', 'FR')
       ];
     }
 
@@ -104,14 +103,8 @@ class LocalizationSampleViewState<T extends LocalizationSampleView>
                   value: model.locale,
                   items: _supportedLocales.map((Locale value) {
                     String localeString = value.toString();
-                    if (this is DirectionalitySampleViewState) {
-                      localeString =
-                          (localeString == 'ar_AE') ? 'Arabic' : 'English';
-                    } else {
-                      localeString = localeString.substring(0, 2) +
-                          '-' +
-                          localeString.substring(3, 5);
-                    }
+                    localeString = localeString.substring(0, 2) +
+                        '-' + localeString.substring(3, 5);
 
                     return DropdownMenuItem<Locale>(
                         value: value,

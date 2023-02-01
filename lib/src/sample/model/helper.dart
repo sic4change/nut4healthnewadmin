@@ -835,6 +835,14 @@ Widget showWebThemeSettings(SampleModel model) {
         model.themeData.colorScheme.brightness == Brightness.light
             ? const Color.fromRGBO(84, 84, 84, 1)
             : const Color.fromRGBO(218, 218, 218, 1);
+    List<Locale> _supportedLocales = <Locale>[
+      const Locale('en', 'US'),
+      const Locale('es', 'ES'),
+      const Locale('fr', 'FR')
+    ];
+    final double screenWidth =
+    model.isWebFullView ? 250 : MediaQuery.of(context).size.width;
+    final double dropDownWidth = 0.6 * screenWidth;
     return Drawer(
         child: Container(
             color: model.bottomSheetBackgroundColor,
@@ -871,6 +879,7 @@ Widget showWebThemeSettings(SampleModel model) {
                                 children: <int, Widget>{
                                   0: Container(
                                       width: width,
+                                      height: 45,
                                       alignment: Alignment.center,
                                       child: Text('Tema claro',
                                           style: TextStyle(
@@ -880,6 +889,7 @@ Widget showWebThemeSettings(SampleModel model) {
                                               fontFamily: 'Roboto-Medium'))),
                                   1: Container(
                                       width: width,
+                                      height: 45,
                                       alignment: Alignment.center,
                                       child: Text('Tema oscuro',
                                           style: TextStyle(
@@ -912,35 +922,58 @@ Widget showWebThemeSettings(SampleModel model) {
                               );
                             }))
                       ]),
-                      /*Container(
-                          padding: const EdgeInsets.only(top: 25, left: 15),
-                          child: const Text(
-                            'Paleta de colores',
-                            style: TextStyle(
-                                color: Color.fromRGBO(128, 128, 128, 1),
-                                fontSize: 14,
-                                fontFamily: 'Roboto-Regular'),
-                          )),*/
-                      /*Container(
-                          padding: const EdgeInsets.fromLTRB(0, 25, 0, 0),
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(15, 0, 10, 30),
-                                  child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children:
-                                          _addColorPalettes(model, setState)),
-                                ),
-                              ),
-                            ],
-                          )),*/
+
+                      CupertinoSegmentedControl<int>(
+                        children: <int, Widget>{
+                          0: Container(
+                              width: width,
+                              height: 45,
+                              alignment: Alignment.center,
+                              child: const Text('Idioma',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'Roboto-Medium'))),
+                          1: Container(
+                              width: width,
+                              height: 45,
+                              alignment: Alignment.center,
+                              child: DropdownButton<Locale>(
+                                  value: model.locale,
+                                  autofocus: true,
+                                  focusColor: Colors.transparent,
+                                  items: _supportedLocales.map((Locale value) {
+                                    String localeString = value.toString();
+                                    localeString = localeString.substring(0, 2) + '-' + localeString.substring(3, 5);
+                                    return DropdownMenuItem<Locale>(
+                                        value: value,
+                                        child: Container(
+                                          color: Colors.white,
+                                          child: Text(localeString,
+                                              style: TextStyle(color: Colors.blueAccent)),
+                                        ));
+                                  }).toList(),
+                                  onChanged: (Locale? value) {
+                                    if (model.locale != value) {
+                                      setState(() {
+                                        model.isInitialRender = false;
+                                        model.locale = value;
+                                      });
+                                    }
+                                  }))
+                        },
+                        padding: const EdgeInsets.all(5),
+                        unselectedColor: Colors.transparent,
+                        selectedColor: model.paletteColor,
+                        pressedColor: model.paletteColor,
+                        borderColor: model.paletteColor,
+                        groupValue: selectedValue,
+                        onValueChanged: (int value) {
+
+                        },
+                      ),
                       Container(
-                        height: 38,
-                        padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+                        height: 45,
+                        padding: const EdgeInsets.fromLTRB(5, 15, 5, 0),
                         child: ElevatedButton(
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all<Color>(
@@ -953,7 +986,7 @@ Widget showWebThemeSettings(SampleModel model) {
                                     fontSize: 16,
                                     fontFamily: 'Roboto-Bold',
                                     color: Colors.white))),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -961,6 +994,7 @@ Widget showWebThemeSettings(SampleModel model) {
             )));
   });
 }
+
 
 /// Apply the selected theme to the whole application.
 void _applyThemeAndPaletteColor(

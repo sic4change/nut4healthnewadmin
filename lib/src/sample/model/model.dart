@@ -404,7 +404,7 @@ class SampleModel extends Listenable {
   bool isCardView = true;
 
   /// Gets the locale assigned to [SampleModel].
-  Locale? locale = const Locale('ar', 'AE');
+  Locale? locale = const Locale('es', 'ES');
 
   /// Gets the textDirection assigned to [SampleModel].
   TextDirection textDirection = TextDirection.rtl;

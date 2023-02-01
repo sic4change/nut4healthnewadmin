@@ -55,6 +55,9 @@ class _UserDataGridState extends SampleViewState {
   static const double dataPagerHeight = 60;
   int _rowsPerPage = 15;
 
+  /// Translate names
+  late String _photo, _username, _name, _surnames, _dni, _email, _phone, _role, _configuration, _point, _points, _createDate;
+
   late Map<String, double> columnWidths = {
     'Foto': 150,
     'Username': 150,
@@ -80,8 +83,7 @@ class _UserDataGridState extends SampleViewState {
       pointsController,
       pointController,
       roleController,
-      configurationController
-  ;
+      configurationController;
 
   /// Used to validate the forms
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -866,6 +868,51 @@ class _UserDataGridState extends SampleViewState {
   }
 
   SfDataGrid _buildDataGrid() {
+    final selectedLocale = model.locale.toString();
+    switch (selectedLocale) {
+      case 'en_US':
+        _photo = 'Photo';
+        _username = 'Username';
+        _name = 'Name';
+        _surnames = 'Surnames';
+        _dni = 'DNI/DPI';
+        _email = 'Email';
+        _phone = 'Phone';
+        _role = 'Role';
+        _configuration = 'Configuration';
+        _point = 'Point';
+        _points = 'Points';
+        _createDate = 'Creation Date';
+        break;
+      case 'es_ES':
+        _photo = 'Foto';
+        _username = 'Username';
+        _name = 'Nombre';
+        _surnames = 'Apellidos';
+        _dni = 'DNI/DPI';
+        _email = 'Email';
+        _phone = 'Teléfono';
+        _role = 'Rol';
+        _configuration = 'Configuración';
+        _point = 'Punto';
+        _points = 'Puntos';
+        _createDate = 'Fecha alta';
+        break;
+      case 'fr_FR':
+        _photo = 'Photo';
+        _username = 'Nom d\'utilisateur';
+        _name = 'Nom';
+        _surnames = 'Noms de famille';
+        _dni = 'DNI / DPI';
+        _email = 'Email';
+        _phone = 'Téléphone';
+        _role = 'Rôle';
+        _configuration = 'Configuration';
+        _point = 'Point';
+        _points = 'Points';
+        _createDate = 'Date de création';
+        break;
+    }
     return SfDataGrid(
       key: _key,
       source: userDataGridSource,
@@ -893,8 +940,8 @@ class _UserDataGridState extends SampleViewState {
             label: Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(8.0),
-              child: const Text(
-                'Foto',
+              child: Text(
+                _photo,
                 overflow: TextOverflow.ellipsis,
               ),
             )),
@@ -904,8 +951,8 @@ class _UserDataGridState extends SampleViewState {
             label: Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(8.0),
-              child: const Text(
-                'Username',
+              child: Text(
+                _username,
                 overflow: TextOverflow.ellipsis,
               ),
             )),
@@ -915,8 +962,8 @@ class _UserDataGridState extends SampleViewState {
           label: Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.all(8.0),
-            child: const Text(
-              'Nombre',
+            child: Text(
+              _name,
               overflow: TextOverflow.ellipsis,
             ),
           )
@@ -927,8 +974,8 @@ class _UserDataGridState extends SampleViewState {
           label: Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.all(8.0),
-            child: const Text(
-              'Apellidos',
+            child: Text(
+              _surnames,
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -939,8 +986,8 @@ class _UserDataGridState extends SampleViewState {
           label: Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.all(8.0),
-            child: const Text(
-              'DNI/DPI',
+            child: Text(
+              _dni,
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -951,8 +998,8 @@ class _UserDataGridState extends SampleViewState {
           label: Container(
             padding: const EdgeInsets.all(8.0),
             alignment: Alignment.centerLeft,
-            child: const Text(
-              'Email',
+            child: Text(
+              _email,
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -963,8 +1010,8 @@ class _UserDataGridState extends SampleViewState {
           label: Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.all(8.0),
-            child: const Text(
-              'Teléfono',
+            child: Text(
+              _phone,
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -975,8 +1022,8 @@ class _UserDataGridState extends SampleViewState {
           label: Container(
               padding: const EdgeInsets.all(8.0),
               alignment: Alignment.center,
-              child: const Text(
-                'Rol',
+              child: Text(
+                _role,
                 overflow: TextOverflow.ellipsis,
               )),
         ),
@@ -986,8 +1033,8 @@ class _UserDataGridState extends SampleViewState {
           label: Container(
               padding: const EdgeInsets.all(8.0),
               alignment: Alignment.center,
-              child: const Text(
-                'Punto',
+              child: Text(
+                _point,
                 overflow: TextOverflow.ellipsis,
               )),
         ),
@@ -997,8 +1044,8 @@ class _UserDataGridState extends SampleViewState {
           label: Container(
               padding: const EdgeInsets.all(8.0),
               alignment: Alignment.center,
-              child: const Text(
-                'Configuración',
+              child: Text(
+                _configuration,
                 overflow: TextOverflow.ellipsis,
               )),
         ),
@@ -1009,8 +1056,8 @@ class _UserDataGridState extends SampleViewState {
           label: Container(
               padding: const EdgeInsets.all(8.0),
               alignment: Alignment.center,
-              child: const Text(
-                'Puntos',
+              child: Text(
+                _points,
                 overflow: TextOverflow.ellipsis,
               )),
         ),
@@ -1020,8 +1067,8 @@ class _UserDataGridState extends SampleViewState {
             label: Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(8.0),
-              child: const Text(
-                'CreateDate',
+              child: Text(
+                _createDate,
                 overflow: TextOverflow.ellipsis,
               ),
             )),
@@ -1043,6 +1090,19 @@ class _UserDataGridState extends SampleViewState {
     pointController  = TextEditingController();
     configurationController  = TextEditingController();
     pointsController = TextEditingController();
+
+    _photo = 'Foto';
+    _username = 'Username';
+    _name = 'Nombre';
+    _surnames = 'Apellidos';
+    _dni = 'DNI/DPI';
+    _email = 'Email';
+    _phone = 'Teléfono';
+    _role = 'Rol';
+    _configuration = 'Configuración';
+    _point = 'Punto';
+    _points = 'Puntos';
+    _createDate = 'Fecha alta';
   }
 
 
