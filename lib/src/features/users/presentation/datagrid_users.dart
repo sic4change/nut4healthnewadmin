@@ -179,49 +179,67 @@ class _UserDataGridState extends SampleViewState {
     if (result != null) {
       final myUint8List = new Uint8List.fromList(result.files.single.bytes!);
       final blob = Blob([myUint8List], 'text/plain');
-      readBlob(blob).then((it)  {
-        List<List<dynamic>> rowsAsListOfValues = const CsvToListConverter().convert(it);
-        List<User> users = [];
-        List<UserWithConfigurationAndPoint> userWithConfigurations = [];
+      readBlob(blob).then((it) {
+        List<List<dynamic>> rowsAsListOfValues =
+            const CsvToListConverter().convert(it);
         for (final row in rowsAsListOfValues) {
           if (row.length > 1) {
-            User user = User(userId: '',
-                photo: row[0].toString(),
-                username: row[1].toString(),
-                name: row[2].toString(),
-                surname: row[3].toString(),
-                dni: row[4].toString(),
-                email: row[5].toString(),
-                phone: row[6].toString(),
-                role: row[7].toString(),
-                point: row[8].toString(),
-                configuration: row[9].toString(),
-                points: row[10]
-            );
-            Configuration configuration = Configuration(
-                id: '',
-                name: '',
-                money: '',
-                payByConfirmation: 0,
-                payByDiagnosis: 0,
-                pointByConfirmation: 0,
-                pointsByDiagnosis: 0,
-                monthlyPayment: 0);
-            Point point = Point(pointId: "",
-                name: "",
-                fullName: "",
-                country: "",
-                province: "",
-                phoneCode: "");
-            userWithConfigurations.add(UserWithConfigurationAndPoint(user, configuration, point));
-            users.add(user);
+            final email = row[5].toString();
+            try {
+              final userFoundByEmail = userDataGridSource
+                  .getUsers()!
+                  .firstWhere((element) => element.user.email == email);
+              final userToUpdate = userFoundByEmail.user;
+              ref.read(usersScreenControllerProvider.notifier).updateUser(User(
+                  userId: userToUpdate.userId,
+                  username: row[1].toString(),
+                  name: row[2].toString(),
+                  surname: row[3].toString(),
+                  dni: row[4].toString(),
+                  email: userToUpdate.email,
+                  phone: row[6].toString(),
+                  role: row[7].toString(),
+                  point: userDataGridSource
+                      .getPoints()
+                      .firstWhere(
+                          (element) => element.name == row[8].toString())
+                      .pointId,
+                  configuration: userDataGridSource
+                      .getConfigurations()
+                      .firstWhere(
+                          (element) => element.name == row[9].toString())
+                      .id,
+                  points: int.tryParse(row[10].toString())));
+            } catch (e) {
+              if (e is Error && e.toString().contains('No element')) {
+                ref.read(usersScreenControllerProvider.notifier).addUser(User(
+                    userId: "",
+                    photo: row[0].toString(),
+                    username: row[1].toString(),
+                    name: row[2].toString(),
+                    surname: row[3].toString(),
+                    dni: row[4].toString(),
+                    email: row[5].toString(),
+                    phone: row[6].toString(),
+                    role: row[7].toString(),
+                    point: userDataGridSource
+                        .getPoints()
+                        .firstWhere(
+                            (element) => element.name == row[8].toString())
+                        .pointId,
+                    configuration: userDataGridSource
+                        .getConfigurations()
+                        .firstWhere(
+                            (element) => element.name == row[9].toString())
+                        .id,
+                    points: int.tryParse(row[10].toString())));
+              } else {
+                print("another error import");
+              }
+            }
           }
         }
-        userDataGridSource.getUsers()!.addAll(userWithConfigurations);
-        userDataGridSource.buildDataGridRows();
-        userDataGridSource.notifyListeners();
       });
-
     } else {
       // User canceled the picker
     }

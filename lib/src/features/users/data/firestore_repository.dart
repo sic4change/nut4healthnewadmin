@@ -144,6 +144,12 @@ class FirestoreRepository {
           });
   }
 
+  Future<User> fetchUser({required UserID userId}) =>
+      _dataSource.fetchDocument(
+        path: FirestorePath.user(userId),
+        builder: (data, documentId) => User.fromMap(data, documentId),
+      );
+
   Future<List<User>> fetchUsers() =>
       _dataSource.fetchCollection(
         path: FirestorePath.users(),
