@@ -56,7 +56,9 @@ class _UserDataGridState extends SampleViewState {
   int _rowsPerPage = 15;
 
   /// Translate names
-  late String _photo, _username, _name, _surnames, _dni, _email, _phone, _role, _configuration, _point, _points, _createDate;
+  late String _photo, _username, _name, _surnames, _dni, _email, _phone, _role,
+      _configuration, _point, _points, _createDate,  _newUser, _importCSV,
+  _exportXLS, _exportPDF, _total, _editUser, _removeUser, _save, _cancel;
 
   late Map<String, double> columnWidths = {
     'Foto': 150,
@@ -263,7 +265,7 @@ class _UserDataGridState extends SampleViewState {
         scrollable: true,
         titleTextStyle: TextStyle(
             color: model.textColor, fontWeight: FontWeight.bold, fontSize: 16),
-        title: const Text('Crear usuario'),
+        title: Text(_newUser),
         actions: _buildActionCreateButtons(context),
         content: Scrollbar(
           child: SingleChildScrollView(
@@ -321,11 +323,11 @@ class _UserDataGridState extends SampleViewState {
 
     return Row(
       children: <Widget>[
-        _buildCreatingButton('Crear Usuario', 'images/Add.png'),
-        _buildImportButton('Importar CSV', 'images/ExcelExport.png'),
-        _buildExportingButton('Exportar a XLS', 'images/ExcelExport.png',
+        _buildCreatingButton(_newUser, 'images/Add.png'),
+        _buildImportButton(_importCSV, 'images/ExcelExport.png'),
+        _buildExportingButton(_exportXLS, 'images/ExcelExport.png',
             onPressed: exportDataGridToExcel),
-        _buildExportingButton('Exportar a PDF', 'images/PdfExport.png',
+        _buildExportingButton(_exportPDF, 'images/PdfExport.png',
             onPressed: exportDataGridToPdf)
       ],
     );
@@ -438,7 +440,7 @@ class _UserDataGridState extends SampleViewState {
       GridTableSummaryRow(
         showSummaryInRow: true,
           color: color,
-          title: 'Usuarios totales: {Count}',
+          title: '$_total: {Count}',
           columns: <GridSummaryColumn>[
             const GridSummaryColumn(
                 name: 'Count',
@@ -704,7 +706,7 @@ class _UserDataGridState extends SampleViewState {
         scrollable: true,
         titleTextStyle: TextStyle(
             color: model.textColor, fontWeight: FontWeight.bold, fontSize: 16),
-        title: const Text('Editar usuario'),
+        title: Text(_editUser),
         actions: _buildActionButtons(row, context),
         content: Scrollbar(
           child: SingleChildScrollView(
@@ -760,14 +762,14 @@ class _UserDataGridState extends SampleViewState {
       TextButton(
         onPressed: () => _processCellCreate(buildContext),
         child: Text(
-          'GUARDAR',
+          _save,
           style: TextStyle(color: model.backgroundColor),
         ),
       ),
       TextButton(
         onPressed: () => Navigator.pop(buildContext),
         child: Text(
-          'CANCELAR',
+          _cancel,
           style: TextStyle(color: model.backgroundColor),
         ),
       ),
@@ -780,14 +782,14 @@ class _UserDataGridState extends SampleViewState {
       TextButton(
         onPressed: () => _processCellUpdate(row, buildContext),
         child: Text(
-          'GUARDAR',
+          _save,
           style: TextStyle(color: model.backgroundColor),
         ),
       ),
       TextButton(
         onPressed: () => Navigator.pop(buildContext),
         child: Text(
-          'CANCELAR',
+          _cancel,
           style: TextStyle(color: model.backgroundColor),
         ),
       ),
@@ -831,11 +833,11 @@ class _UserDataGridState extends SampleViewState {
         padding: const EdgeInsets.only(left: 8.0, right: 8.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[
+          children: <Widget>[
             Icon(Icons.edit, color: Colors.white, size: 16),
             SizedBox(width: 8.0),
             Text(
-              'EDITAR',
+              _editUser,
               style: TextStyle(color: Colors.white, fontSize: 12),
             )
           ],
@@ -851,14 +853,14 @@ class _UserDataGridState extends SampleViewState {
       onTap: () => _handleDeleteWidgetTap(row),
       child: Container(
         color: Colors.redAccent,
-        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+        padding: EdgeInsets.only(left: 8.0, right: 8.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[
-            Icon(Icons.delete, color: Colors.white, size: 16),
-            SizedBox(width: 8.0),
+          children: <Widget>[
+            const Icon(Icons.delete, color: Colors.white, size: 16),
+            const SizedBox(width: 8.0),
             Text(
-              'BORRAR',
+              _removeUser,
               style: TextStyle(color: Colors.white, fontSize: 12),
             ),
           ],
@@ -883,6 +885,15 @@ class _UserDataGridState extends SampleViewState {
         _point = 'Point';
         _points = 'Points';
         _createDate = 'Creation Date';
+        _newUser = 'Create User';
+        _importCSV = 'Import CSV';
+        _exportXLS = 'Export XLS';
+        _exportPDF = 'Export PDF';
+        _total = 'Total Users';
+        _editUser = 'Edit';
+        _removeUser = 'Remove';
+        _cancel = 'Cancel';
+        _save = 'Save';
         break;
       case 'es_ES':
         _photo = 'Foto';
@@ -897,6 +908,15 @@ class _UserDataGridState extends SampleViewState {
         _point = 'Punto';
         _points = 'Puntos';
         _createDate = 'Fecha alta';
+        _newUser = 'Crear Usuario';
+        _importCSV = 'Importar CSV';
+        _exportXLS = 'Exportar XLS';
+        _exportPDF = 'Exportar PDF';
+        _total = 'Usuarios totales';
+        _editUser = 'Editar';
+        _removeUser = 'Eliminar';
+        _cancel = 'Cancelar';
+        _save = 'Guardar';
         break;
       case 'fr_FR':
         _photo = 'Photo';
@@ -911,6 +931,15 @@ class _UserDataGridState extends SampleViewState {
         _point = 'Point';
         _points = 'Points';
         _createDate = 'Date de création';
+        _newUser = 'Créer utilisateur';
+        _importCSV = 'Importer CSV';
+        _exportXLS = 'Exporter XLS';
+        _exportPDF = 'Exporter PDF';
+        _total = 'Total des utilisateurs';
+        _editUser = 'Modifier';
+        _removeUser = 'Supprimer';
+        _cancel = 'Annuler';
+        _save = 'Enregistrer';
         break;
     }
     return SfDataGrid(
@@ -1103,6 +1132,15 @@ class _UserDataGridState extends SampleViewState {
     _point = 'Punto';
     _points = 'Puntos';
     _createDate = 'Fecha alta';
+    _newUser = 'Crear Usuario';
+    _importCSV = 'Importar CSV';
+    _exportXLS = 'Exportar XLS';
+    _exportPDF = 'Exportar PDF';
+    _total = 'Usuarios totales';
+    _editUser = 'Editar';
+    _removeUser = 'Eliminar';
+    _cancel = 'Cancelar';
+    _save = 'Guardar';
   }
 
 
@@ -1127,7 +1165,6 @@ class _UserDataGridState extends SampleViewState {
           if (configurationsAsyncValue.value != null) {
             _saveConfigurations(configurationsAsyncValue);
           }
-          // a veces no se mete aqui
           return _buildView(usersAsyncValue);
         });
   }
