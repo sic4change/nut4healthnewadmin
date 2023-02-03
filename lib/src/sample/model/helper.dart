@@ -15,6 +15,10 @@ import 'mobile_view.dart';
 import 'model.dart';
 import 'sample_view.dart';
 
+
+/// Translate names
+late String _configuration, _language, _darkMode, _lightMode, _set ;
+
 /// On tap the button, select the samples.
 void onTapControlInMobile(BuildContext context, SampleModel model,
     WidgetCategory category, int position) {
@@ -34,12 +38,12 @@ void resetLocaleValue(SampleModel model, SubItem currentSample) {
       (currentSample.title!.toLowerCase().contains('rtl') ||
           currentSample.title!.toLowerCase().contains('directionality'))) {
     model.textDirection = TextDirection.rtl;
-    model.locale = const Locale('ar', 'AE');
+    model.locale =  const Locale('es', 'ES');
     model.isInitialRender = true;
   } else if (currentSample != null &&
       currentSample.title!.toLowerCase().contains('localization')) {
     model.textDirection = TextDirection.ltr;
-    model.locale = const Locale('en', 'US');
+    model.locale =  const Locale('es', 'ES');
     model.isInitialRender = true;
   }
 }
@@ -829,6 +833,30 @@ Widget getFooter(BuildContext context, SampleModel model) {
 /// Show Right drawer which contains theme settings for web.
 Widget showWebThemeSettings(SampleModel model) {
   int selectedValue = model.selectedThemeIndex;
+  final selectedLocale = model.locale.toString();
+  switch (selectedLocale) {
+    case 'en_US':
+      _configuration = '  Configuration';
+      _darkMode = 'Dark mode';
+      _lightMode = 'Bright mode';
+      _set = 'Apply';
+      _language = 'Language';
+      break;
+    case 'es_ES':
+      _configuration = '  Configuración';
+      _darkMode = 'Modo oscuro';
+      _lightMode = 'Modo claro';
+      _set = 'Aplicar';
+      _language = 'Idioma';
+      break;
+    case 'fr_FR':
+      _configuration = 'Configuration';
+      _darkMode = 'Mode sombre';
+      _lightMode = 'Mode clair';
+      _set = 'Appliquer';
+      _language = 'Langue';
+      break;
+  }
   return StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
     final double width = MediaQuery.of(context).size.width * 0.4;
     final Color textColor =
@@ -854,7 +882,7 @@ Widget showWebThemeSettings(SampleModel model) {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text('   Configuración',
+                    Text( _configuration,
                         style: TextStyle(
                             color: model.textColor,
                             fontSize: 16,
@@ -881,7 +909,7 @@ Widget showWebThemeSettings(SampleModel model) {
                                       width: width,
                                       height: 45,
                                       alignment: Alignment.center,
-                                      child: Text('Tema claro',
+                                      child: Text(_lightMode,
                                           style: TextStyle(
                                               color: selectedValue == 0
                                                   ? Colors.white
@@ -891,7 +919,7 @@ Widget showWebThemeSettings(SampleModel model) {
                                       width: width,
                                       height: 45,
                                       alignment: Alignment.center,
-                                      child: Text('Tema oscuro',
+                                      child: Text(_darkMode,
                                           style: TextStyle(
                                               color: selectedValue == 1
                                                   ? Colors.white
@@ -929,8 +957,8 @@ Widget showWebThemeSettings(SampleModel model) {
                               width: width,
                               height: 45,
                               alignment: Alignment.center,
-                              child: const Text('Idioma',
-                                  style: TextStyle(
+                              child: Text(_language,
+                                  style: const TextStyle(
                                       color: Colors.white,
                                       fontFamily: 'Roboto-Medium'))),
                           1: Container(
@@ -987,8 +1015,8 @@ Widget showWebThemeSettings(SampleModel model) {
                             ),
                             onPressed: () => _applyThemeAndPaletteColor(
                                 model, context, selectedValue),
-                            child: const Text('Aplicar',
-                                style: TextStyle(
+                            child: Text(_set,
+                                style: const TextStyle(
                                     fontSize: 16,
                                     fontFamily: 'Roboto-Bold',
                                     color: Colors.white))),

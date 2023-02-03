@@ -86,14 +86,16 @@ class _SampleBrowserState extends State<SampleBrowser> {
             //ignore: always_specify_types
             localizationsDelegates: const [
               GlobalMaterialLocalizations.delegate,
+              SfGlobalLocalizations.delegate,
               SfGlobalLocalizations.delegate
             ],
             //ignore: always_specify_types
             supportedLocales: const [
-              Locale('en', 'US'),
-              Locale('ar', 'AE'),
+              Locale('en'),
+              Locale('es'),
+              Locale('fr')
             ],
-            locale: const Locale('en', 'US'),
+            locale:  const Locale('es'),
             debugShowCheckedModeBanner: false,
             title: 'Dashboard NUT4Health',
             theme: ThemeData.from(
@@ -125,10 +127,11 @@ class _SampleBrowserState extends State<SampleBrowser> {
             ],
             //ignore: always_specify_types
             supportedLocales: const [
-              Locale('en', 'US'),
-              Locale('ar', 'AE'),
+              Locale('es'),
+              Locale('fr'),
+              Locale('en'),
             ],
-            locale: const Locale('en', 'US'),
+            locale: const Locale('es'),
             theme: ThemeData.from(
                 colorScheme: const ColorScheme.light().copyWith(
                     primary: _sampleListModel.currentPaletteColor,
