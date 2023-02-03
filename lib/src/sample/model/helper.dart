@@ -936,11 +936,17 @@ Widget showWebThemeSettings(SampleModel model) {
                           1: Container(
                               width: width,
                               height: 45,
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                              ),
                               alignment: Alignment.center,
                               child: DropdownButton<Locale>(
                                   value: model.locale,
-                                  autofocus: true,
-                                  focusColor: Colors.transparent,
+                                  icon: const Icon(
+                                    Icons.arrow_drop_down,
+                                    color: Colors.blueAccent,
+                                  ),
+                                  dropdownColor: Colors.white,
                                   items: _supportedLocales.map((Locale value) {
                                     String localeString = value.toString();
                                     localeString = localeString.substring(0, 2) + '-' + localeString.substring(3, 5);
@@ -949,7 +955,7 @@ Widget showWebThemeSettings(SampleModel model) {
                                         child: Container(
                                           color: Colors.white,
                                           child: Text(localeString,
-                                              style: TextStyle(color: Colors.blueAccent)),
+                                              style: const TextStyle(color: Colors.blueAccent)),
                                         ));
                                   }).toList(),
                                   onChanged: (Locale? value) {
