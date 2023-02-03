@@ -86,7 +86,7 @@ class _SampleBrowserState extends State<SampleBrowser> {
             //ignore: always_specify_types
             localizationsDelegates: const [
               GlobalMaterialLocalizations.delegate,
-              SfGlobalLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
               SfGlobalLocalizations.delegate
             ],
             //ignore: always_specify_types
@@ -123,6 +123,7 @@ class _SampleBrowserState extends State<SampleBrowser> {
             title: 'Dashboard NUT4Health',
             localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
               GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
               SfGlobalLocalizations.delegate
             ],
             //ignore: always_specify_types

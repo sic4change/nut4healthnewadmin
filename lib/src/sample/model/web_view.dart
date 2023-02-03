@@ -1935,14 +1935,16 @@ class _OutputContainerState extends State<_OutputContainer> {
               //ignore: always_specify_types
               localizationsDelegates: const [
                 GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
                 SfGlobalLocalizations.delegate
               ],
               //ignore: always_specify_types
               supportedLocales: const [
-                Locale('en', 'US'),
-                Locale('ar', 'AE'),
+                Locale('es'),
+                Locale('en'),
+                Locale('fr'),
               ],
-              locale: const Locale('en', 'US'),
+              locale: const Locale('es'),
               theme: ThemeData(
                   checkboxTheme: CheckboxThemeData(
                       fillColor: MaterialStateProperty.resolveWith(getColor)),

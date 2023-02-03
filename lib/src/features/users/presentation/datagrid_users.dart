@@ -6,6 +6,7 @@ import 'package:adminnut4health/src/features/users/presentation/users_screen_con
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'dart:typed_data';
@@ -17,6 +18,7 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
+import 'package:syncfusion_localizations/syncfusion_localizations.dart';
 
 import '../../../sample/model/sample_view.dart';
 import '../../configurations/domain/configuration.dart';
@@ -60,7 +62,8 @@ class _UserDataGridState extends SampleViewState {
   /// Translate names
   late String _photo, _username, _name, _surnames, _dni, _email, _phone, _role,
       _configuration, _point, _points, _createDate,  _newUser, _importCSV,
-  _exportXLS, _exportPDF, _total, _editUser, _removeUser, _save, _cancel, _users;
+  _exportXLS, _exportPDF, _total, _editUser, _removeUser, _save, _cancel, _users,
+  _removedUser;
 
   late Map<String, double> columnWidths = {
     'Foto': 150,
@@ -286,6 +289,7 @@ class _UserDataGridState extends SampleViewState {
     Future<void> exportDataGridToExcel() async {
       final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
           cellExport: (DataGridCellExcelExportDetails details) {
+
           });
       final List<int> bytes = workbook.saveAsStream();
       workbook.dispose();
@@ -789,7 +793,7 @@ class _UserDataGridState extends SampleViewState {
             ),
           ),
         ],
-        content: const Text('Usuario eliminado correctamente'),
+        content: Text(_removedUser),
       ),
     );
   }
@@ -866,6 +870,7 @@ class _UserDataGridState extends SampleViewState {
         _cancel = 'Cancel';
         _save = 'Save';
         _users = 'Users';
+        _removedUser = 'User deleted successfully.';
         break;
       case 'es_ES':
         _photo = 'Foto';
@@ -890,6 +895,7 @@ class _UserDataGridState extends SampleViewState {
         _cancel = 'Cancelar';
         _save = 'Guardar';
         _users = 'Usuarios';
+        _removedUser = 'Usuario eliminado correctamente';
         break;
       case 'fr_FR':
         _photo = 'Photo';
@@ -914,6 +920,7 @@ class _UserDataGridState extends SampleViewState {
         _cancel = 'Annuler';
         _save = 'Enregistrer';
         _users = 'Utilisateurs';
+        _removedUser = 'Utilisateur supprimé avec succès.';
         break;
     }
     return SfDataGrid(
@@ -1116,6 +1123,7 @@ class _UserDataGridState extends SampleViewState {
     _cancel = 'Cancelar';
     _save = 'Guardar';
     _users = 'Usuarios';
+    _removedUser = '';
   }
 
 
