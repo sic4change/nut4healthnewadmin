@@ -36,6 +36,8 @@ import '../../../common_widgets/export/save_file_mobile.dart'
 import 'package:syncfusion_flutter_datagrid_export/export.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column, Row, Border;
 
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 /// Render user data grid
 class UserDataGrid extends SampleView {
   /// Creates getting started data grid
@@ -58,7 +60,7 @@ class _UserDataGridState extends SampleViewState {
   /// Translate names
   late String _photo, _username, _name, _surnames, _dni, _email, _phone, _role,
       _configuration, _point, _points, _createDate,  _newUser, _importCSV,
-  _exportXLS, _exportPDF, _total, _editUser, _removeUser, _save, _cancel;
+  _exportXLS, _exportPDF, _total, _editUser, _removeUser, _save, _cancel, _users;
 
   late Map<String, double> columnWidths = {
     'Foto': 150,
@@ -287,7 +289,7 @@ class _UserDataGridState extends SampleViewState {
           });
       final List<int> bytes = workbook.saveAsStream();
       workbook.dispose();
-      await helper.FileSaveHelper.saveAndLaunchFile(bytes, 'Usuarios.xlsx');
+      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_users..xlsx');
     }
 
     Future<void> exportDataGridToPdf() async {
@@ -308,7 +310,7 @@ class _UserDataGridState extends SampleViewState {
                 Rect.fromLTWH(width - 148, 0, 148, 60));
 
             header.graphics.drawString(
-              'Usuarios',
+              _users,
               PdfStandardFont(PdfFontFamily.helvetica, 13,
                   style: PdfFontStyle.bold),
               bounds: const Rect.fromLTWH(0, 25, 200, 60),
@@ -317,104 +319,69 @@ class _UserDataGridState extends SampleViewState {
             details.pdfDocumentTemplate.top = header;
           });
       final List<int> bytes = document.saveSync();
-      await helper.FileSaveHelper.saveAndLaunchFile(bytes, 'Users.pdf');
+      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_users.pdf');
       document.dispose();
     }
 
     return Row(
       children: <Widget>[
-        _buildCreatingButton(_newUser, 'images/Add.png'),
-        _buildImportButton(_importCSV, 'images/ExcelExport.png'),
-        _buildExportingButton(_exportXLS, 'images/ExcelExport.png',
-            onPressed: exportDataGridToExcel),
-        _buildExportingButton(_exportPDF, 'images/PdfExport.png',
-            onPressed: exportDataGridToPdf)
+        _buildCreatingButton(_newUser),
+        _buildImportButton(_importCSV),
+        _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
+        _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf)
       ],
     );
   }
 
-  Widget _buildImportButton(String buttonName, String imagePath) {
+  Widget _buildImportButton(String buttonName) {
     return Container(
-      height: 60.0,
-      padding: const EdgeInsets.only(left: 10.0, top: 10.0, bottom: 10.0),
-      child: MaterialButton(
-        onPressed: _importUsers,
-        color: model.backgroundColor,
-        child: SizedBox(
-          width: 150.0,
-          height: 40.0,
-          child: Row(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                child: ImageIcon(
-                  AssetImage(imagePath),
-                  size: 30,
-                  color: Colors.white,
-                ),
-              ),
-              Text(buttonName, style: const TextStyle(color: Colors.white)),
-            ],
+        height: 60.0,
+        padding: const EdgeInsets.only(left: 10.0, top: 10.0, bottom: 10.0),
+        child: IconButton(
+          icon: const Icon(
+            FontAwesomeIcons.fileCsv,
+            color: Colors.blueAccent,
           ),
-        ),
-      ),
+          onPressed: _importUsers,)
     );
   }
 
-  Widget _buildCreatingButton(String buttonName, String imagePath) {
+  Widget _buildCreatingButton(String buttonName) {
     return Container(
       height: 60.0,
       padding: const EdgeInsets.only(left: 10.0, top: 10.0, bottom: 10.0),
-      child: MaterialButton(
-        onPressed: _createUser,
-        color: model.backgroundColor,
-        child: SizedBox(
-          width: 150.0,
-          height: 40.0,
-          child: Row(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                child: ImageIcon(
-                  AssetImage(imagePath),
-                  size: 30,
-                  color: Colors.white,
-                ),
-              ),
-              Text(buttonName, style: const TextStyle(color: Colors.white)),
-            ],
-          ),
+      child: IconButton(
+        icon: const Icon(
+          FontAwesomeIcons.userPlus,
+          color: Colors.blueAccent,
         ),
-      ),
+        onPressed: _createUser,)
     );
   }
 
-  Widget _buildExportingButton(String buttonName, String imagePath,
+  Widget _buildExcelExportingButton(String buttonName,
       {required VoidCallback onPressed}) {
     return Container(
-      height: 60.0,
-      padding: const EdgeInsets.only(left: 10.0, top: 10.0, bottom: 10.0),
-      child: MaterialButton(
-        onPressed: onPressed,
-        color: model.backgroundColor,
-        child: SizedBox(
-          width: 150.0,
-          height: 40.0,
-          child: Row(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                child: ImageIcon(
-                  AssetImage(imagePath),
-                  size: 30,
-                  color: Colors.white,
-                ),
-              ),
-              Text(buttonName, style: const TextStyle(color: Colors.white)),
-            ],
-          ),
-        ),
-      ),
+        height: 60.0,
+        padding: const EdgeInsets.only(left: 10.0, top: 10.0, bottom: 10.0),
+        child: IconButton(
+          icon: const Icon(
+              FontAwesomeIcons.fileExcel,
+              color: Colors.blueAccent),
+          onPressed: onPressed,)
+    );
+  }
+
+  Widget _buildPDFExportingButton(String buttonName,
+      {required VoidCallback onPressed}) {
+    return Container(
+        height: 60.0,
+        padding: const EdgeInsets.only(left: 10.0, top: 10.0, bottom: 10.0),
+        child: IconButton(
+          icon: const Icon(
+              FontAwesomeIcons.filePdf,
+              color: Colors.blueAccent),
+          onPressed: onPressed,)
     );
   }
 
@@ -463,7 +430,9 @@ class _UserDataGridState extends SampleViewState {
     }
   }
 
-  Widget _buildRowComboSelection({required TextEditingController controller, required String columnName, required List<String> dropDownMenuItems}) {
+  Widget _buildRowComboSelection({required TextEditingController controller,
+    required String columnName, required List<String> dropDownMenuItems,
+    required String text}) {
     String value = controller.text;
     if (value.isEmpty) {
       value = dropDownMenuItems[0];
@@ -473,7 +442,7 @@ class _UserDataGridState extends SampleViewState {
         Container(
             width: 150,
             padding: const EdgeInsets.symmetric(vertical: 15),
-            child: Text(columnName)),
+            child: Text(text)),
         SizedBox(
           width: 150,
           child: DropdownButtonFormField<String>(
@@ -501,7 +470,7 @@ class _UserDataGridState extends SampleViewState {
 
   /// Building the each field with label and TextFormField
   Widget _buildRow(
-      {required TextEditingController controller, required String columnName}) {
+      {required TextEditingController controller, required String columnName, required String text}) {
     TextInputType keyboardType = TextInputType.text;
     if (<String>['Puntos'].contains(columnName)) {
       keyboardType =  TextInputType.number;
@@ -518,7 +487,7 @@ class _UserDataGridState extends SampleViewState {
         Container(
             width: 150,
             padding: const EdgeInsets.symmetric(vertical: 15),
-            child: Text(columnName)),
+            child: Text(text)),
         SizedBox(
           width: 150,
           child: TextFormField(
@@ -548,17 +517,18 @@ class _UserDataGridState extends SampleViewState {
     configurationOptions.insert(0, "");
     return Column(
       children: <Widget>[
-        _buildRow(controller: usernameController!, columnName: 'Username'),
-        _buildRow(controller: nameController!, columnName: 'Nombre'),
-        _buildRow(controller: surnamesController!, columnName: 'Apellidos'),
-        _buildRow(controller: dniController!, columnName: 'DNI/DPI'),
-        _buildRow(controller: phoneController!, columnName: 'Teléfono'),
+        _buildRow(controller: usernameController!, columnName: 'Username', text: _username),
+        _buildRow(controller: nameController!, columnName: 'Nombre', text: _name),
+        _buildRow(controller: surnamesController!, columnName: 'Apellidos', text: _surnames),
+        _buildRow(controller: dniController!, columnName: 'DNI/DPI', text: _dni),
+        _buildRow(controller: phoneController!, columnName: 'Teléfono', text: _phone),
         _buildRowComboSelection(controller: roleController!, columnName: 'Rol',
-            dropDownMenuItems: roleOptions),
+            dropDownMenuItems: roleOptions, text: _role),
         _buildRowComboSelection(controller: pointController!, columnName: 'Punto',
-            dropDownMenuItems: pointOptions),
+            dropDownMenuItems: pointOptions, text: _point),
         _buildRowComboSelection(controller: configurationController!,
-            columnName: 'Configuración', dropDownMenuItems: configurationOptions),
+            columnName: 'Configuración', dropDownMenuItems: configurationOptions,
+            text: _configuration),
       ],
     );
   }
@@ -572,18 +542,19 @@ class _UserDataGridState extends SampleViewState {
     configurationOptions.insert(0, "");
     return Column(
       children: <Widget>[
-        _buildRow(controller: usernameController!, columnName: 'Username'),
-        _buildRow(controller: nameController!, columnName: 'Nombre'),
-        _buildRow(controller: surnamesController!, columnName: 'Apellidos'),
-        _buildRow(controller: dniController!, columnName: 'DNI/DPI'),
-        _buildRow(controller: emailController!, columnName: 'Email'),
-        _buildRow(controller: phoneController!, columnName: 'Teléfono'),
+        _buildRow(controller: usernameController!, columnName: 'Username', text: _username),
+        _buildRow(controller: nameController!, columnName: 'Nombre', text: _name),
+        _buildRow(controller: surnamesController!, columnName: 'Apellidos', text: _surnames),
+        _buildRow(controller: dniController!, columnName: 'DNI/DPI', text: _dni),
+        _buildRow(controller: emailController!, columnName: 'Email', text: _email),
+        _buildRow(controller: phoneController!, columnName: 'Teléfono', text: _phone),
         _buildRowComboSelection(controller: roleController!, columnName: 'Rol',
-            dropDownMenuItems: roleOptions),
+            dropDownMenuItems: roleOptions, text: _role),
         _buildRowComboSelection(controller: pointController!, columnName: 'Punto',
-            dropDownMenuItems: pointOptions),
+            dropDownMenuItems: pointOptions, text: _point),
         _buildRowComboSelection(controller: configurationController!,
-            columnName: 'Configuración', dropDownMenuItems: configurationOptions),
+            columnName: 'Configuración', dropDownMenuItems: configurationOptions,
+            text: _configuration),
       ],
     );
   }
@@ -894,6 +865,7 @@ class _UserDataGridState extends SampleViewState {
         _removeUser = 'Remove';
         _cancel = 'Cancel';
         _save = 'Save';
+        _users = 'Users';
         break;
       case 'es_ES':
         _photo = 'Foto';
@@ -917,6 +889,7 @@ class _UserDataGridState extends SampleViewState {
         _removeUser = 'Eliminar';
         _cancel = 'Cancelar';
         _save = 'Guardar';
+        _users = 'Usuarios';
         break;
       case 'fr_FR':
         _photo = 'Photo';
@@ -940,6 +913,7 @@ class _UserDataGridState extends SampleViewState {
         _removeUser = 'Supprimer';
         _cancel = 'Annuler';
         _save = 'Enregistrer';
+        _users = 'Utilisateurs';
         break;
     }
     return SfDataGrid(
@@ -1141,6 +1115,7 @@ class _UserDataGridState extends SampleViewState {
     _removeUser = 'Eliminar';
     _cancel = 'Cancelar';
     _save = 'Guardar';
+    _users = 'Usuarios';
   }
 
 
