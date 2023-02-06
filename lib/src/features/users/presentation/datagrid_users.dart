@@ -396,10 +396,15 @@ class _UserDataGridState extends SampleViewState {
 
 
   Widget _buildDataPager() {
+    var addMorePage = 0;
+    if ((userDataGridSource.rows.length / _rowsPerPage).remainder(1) != 0) {
+      addMorePage  = 1;
+    }
+
     return SfDataPager(
         delegate: userDataGridSource,
         availableRowsPerPage: const <int>[15, 20, 25],
-        pageCount: (userDataGridSource.rows.length / _rowsPerPage) + 1,
+        pageCount: (userDataGridSource.rows.length / _rowsPerPage) + addMorePage,
         onRowsPerPageChanged: (int? rowsPerPage) {
           setState(() {
             _rowsPerPage = rowsPerPage!;
