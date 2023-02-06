@@ -41,7 +41,7 @@ import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column, Row, Border;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// Render user data grid
-class UserDataGrid extends SampleView {
+class UserDataGrid extends LocalizationSampleView {
   /// Creates getting started data grid
   const UserDataGrid({Key? key}) : super(key: key);
 
@@ -58,6 +58,9 @@ class _UserDataGridState extends SampleViewState {
 
   static const double dataPagerHeight = 60;
   int _rowsPerPage = 15;
+
+  /// Selected locale
+  late String selectedLocale;
 
   /// Translate names
   late String _photo, _username, _name, _surnames, _dni, _email, _phone, _role,
@@ -135,6 +138,8 @@ class _UserDataGridState extends SampleViewState {
     if (users.value != null && users.value!.isNotEmpty) {
       userDataGridSource.buildDataGridRows();
       userDataGridSource.updateDataSource();
+      selectedLocale = model.locale.toString();
+      print("cambioando idioma $selectedLocale");
       return _buildLayoutBuilder();
     } else {
       return const Center(
@@ -389,11 +394,12 @@ class _UserDataGridState extends SampleViewState {
     );
   }
 
+
   Widget _buildDataPager() {
     return SfDataPager(
         delegate: userDataGridSource,
         availableRowsPerPage: const <int>[15, 20, 25],
-        pageCount: userDataGridSource.rows.length / _rowsPerPage,
+        pageCount: (userDataGridSource.rows.length / _rowsPerPage) + 1,
         onRowsPerPageChanged: (int? rowsPerPage) {
           setState(() {
             _rowsPerPage = rowsPerPage!;
@@ -1101,6 +1107,8 @@ class _UserDataGridState extends SampleViewState {
     configurationController  = TextEditingController();
     pointsController = TextEditingController();
 
+    selectedLocale = model.locale.toString();
+
     _photo = 'Foto';
     _username = 'Username';
     _name = 'Nombre';
@@ -1148,6 +1156,7 @@ class _UserDataGridState extends SampleViewState {
           if (configurationsAsyncValue.value != null) {
             _saveConfigurations(configurationsAsyncValue);
           }
+
           return _buildView(usersAsyncValue);
         });
   }
