@@ -139,7 +139,6 @@ class _UserDataGridState extends SampleViewState {
       userDataGridSource.buildDataGridRows();
       userDataGridSource.updateDataSource();
       selectedLocale = model.locale.toString();
-      print("cambioando idioma $selectedLocale");
       return _buildLayoutBuilder();
     } else {
       return const Center(
@@ -433,14 +432,24 @@ class _UserDataGridState extends SampleViewState {
     ];
   }
 
+  /*RegExp _getRegExp(TextInputType keyboardType, String columnName) {
+    return keyboardType == TextInputType.number
+        ? columnName == 'Freight' || columnName == 'Price'
+        ? RegExp('[0-9.]')
+        : RegExp('[0-9]')
+        : RegExp('[a-zA-Z ]');
+  }*/
+
   RegExp _getRegExp(TextInputType keyboardType, String columnName) {
     if (keyboardType == TextInputType.number) {
       return RegExp('[0-9]');
     } else if (keyboardType == TextInputType.text) {
       return RegExp(r'^[a-zA-Z0-9]+$');
-    } /*else if (keyboardType == TextInputType.emailAddress) {
-      return RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-    }*/ else {
+    } else if (keyboardType == TextInputType.phone) {
+      return RegExp(r"^[\d+]+$");
+    } else if (keyboardType == TextInputType.emailAddress) {
+      return RegExp(r"[a-zA-Z0-9@.]+");
+    } else {
       return RegExp(r'^[a-zA-Z0-9]+$');
     }
   }
@@ -491,6 +500,8 @@ class _UserDataGridState extends SampleViewState {
       keyboardType =  TextInputType.number;
     } else if (<String>['Email'].contains(columnName)) {
       keyboardType =  TextInputType.emailAddress;
+    } else if (<String>['Teléfono'].contains(columnName)) {
+      keyboardType =  TextInputType.phone;
     } else {
       keyboardType =  TextInputType.text;
     }
