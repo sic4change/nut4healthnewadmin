@@ -223,9 +223,6 @@ class _HomePageState extends State<HomePage> {
         child: model.isMobileResolution
             ? Scaffold(
                 resizeToAvoidBottomInset: false,
-                drawer: (!model.isWebFullView && Platform.isIOS)
-                    ? null //Avoiding drawer in iOS platform
-                    : getLeftSideDrawer(model),
                 key: scaffoldKey,
                 backgroundColor: model.webBackgroundColor,
                 endDrawerEnableOpenDragGesture: false,
