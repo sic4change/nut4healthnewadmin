@@ -44,14 +44,14 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAZRzitgIWquL3abSCZVpAONTjZl1hK0Ew',
-    appId: '1:1055399108789:web:8b63ee4cad1ce997df9efc',
-    messagingSenderId: '1055399108789',
-    projectId: 'nut4health-830cc',
-    authDomain: 'nut4health-830cc.firebaseapp.com',
-    databaseURL: 'https://nut4health-830cc.firebaseio.com',
-    storageBucket: 'nut4health-830cc.appspot.com',
-    measurementId: 'G-QRL01VPZLD',
+      apiKey: "AIzaSyDwwcYxHIihPH0sSGDYsoT0nIrO3PyjUMI",
+      authDomain: "nut4health-830cc.firebaseapp.com",
+      databaseURL: "https://nut4health-830cc.firebaseio.com",
+      projectId: "nut4health-830cc",
+      storageBucket: "nut4health-830cc.appspot.com",
+      messagingSenderId: "1055399108789",
+      appId: "1:1055399108789:web:a9533dad5bdf00aadf9efc",
+      measurementId: "G-9NXD66C4L6"
   );
 
   static const FirebaseOptions android = FirebaseOptions(
