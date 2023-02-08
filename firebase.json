@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "site": "adminnut4health",
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
