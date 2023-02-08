@@ -31,7 +31,30 @@
 
   <title>adminnut4health</title>
   <link rel="manifest" href="manifest.json">
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js"></script>
 
+  <!-- STEP 1: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+  <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.14.3/firebase-auth.js"></script>
+
+  <!-- STEP 2: Initialize Firebase with configuration -->
+  <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyDwwcYxHIihPH0sSGDYsoT0nIrO3PyjUMI",
+        authDomain: "nut4health-830cc.firebaseapp.com",
+        databaseURL: "https://nut4health-830cc.firebaseio.com",
+        projectId: "nut4health-830cc",
+        storageBucket: "nut4health-830cc.appspot.com",
+        messagingSenderId: "1055399108789",
+        appId: "1:1055399108789:web:a9533dad5bdf00aadf9efc",
+        measurementId: "G-9NXD66C4L6"
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+</script>
   <script>
     // The value below is injected by flutter build, do not touch.
     var serviceWorkerVersion = null;
