@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../users/domain/user.dart';
 import '../../data/firebase_auth_repository.dart';
+import '../../data/firestore_repository.dart';
 
 class AccountScreenController extends AutoDisposeAsyncNotifier<void> {
   @override
@@ -20,3 +22,4 @@ class AccountScreenController extends AutoDisposeAsyncNotifier<void> {
 final accountScreenControllerProvider =
     AutoDisposeAsyncNotifierProvider<AccountScreenController, void>(
         AccountScreenController.new);
+
