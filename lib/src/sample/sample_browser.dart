@@ -243,18 +243,22 @@ class _HomePageState extends State<HomePage> {
                               style: TextStyle(
                                   fontSize: 18, fontFamily: 'HeeboMedium'))),
                       actions: <Widget>[
-                        SizedBox(
-                          height: 40,
-                          width: 40,
-                          child: IconButton(
-                            icon:
-                                const Icon(Icons.settings, color: Colors.white),
+                        Row(
+                          children: [IconButton(
+                            icon: const Icon(Icons.person,
+                                color: Colors.white),
                             onPressed: () {
-                              model.isWebFullView
-                                  ? scaffoldKey.currentState!.openEndDrawer()
-                                  : showBottomSettingsPanel(model, context);
+                              context.goNamed(AppRoute.account.name);
                             },
                           ),
+                            IconButton(
+                              icon: const Icon(Icons.settings,
+                                  color: Colors.white),
+                              onPressed: () {
+                                scaffoldKey.currentState!.openEndDrawer();
+                              },
+                            )
+                          ],
                         ),
                       ],
                     )),
