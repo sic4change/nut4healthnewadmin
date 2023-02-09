@@ -1,21 +1,53 @@
-import 'package:adminnut4health/src/features/users/domain/user.dart';
-import 'package:adminnut4health/src/localization/string_hardcoded.dart';
+
 import 'package:adminnut4health/src/utils/async_value_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../common_widgets/action_text_button.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../common_widgets/avatar.dart';
+import '../../../../routing/app_router.dart';
+import '../../../../sample/model/model.dart';
 import '../../../../utils/alert_dialogs.dart';
 import '../../data/firebase_auth_repository.dart';
 import '../../data/firestore_repository.dart';
 import 'account_screen_controller.dart';
+
+/// Translate names
+late String _logout, _goBack, _areSure, _cancel, _changePassword;
+
+void initText() {
+  late SampleModel model = SampleModel.instance;
+  final selectedLocale = model.locale.toString();
+  switch (selectedLocale) {
+    case 'en_US':
+      _logout = 'Logout';
+      _goBack = 'Go Back';
+      _areSure = 'Are you sure?';
+      _cancel = 'Cancel';
+      _changePassword = "Change password";
+      break;
+    case 'es_ES':
+      _logout = 'Salir';
+      _goBack = 'Volver';
+      _areSure = '¿Estás seguro?';
+      _cancel = 'Cancelar';
+      _changePassword = "Cambiar contraseña";
+      break;
+    case 'fr_FR':
+      _logout = 'Sortir';
+      _goBack = 'Revenir';
+      _areSure = 'Êtes-vous sûr?';
+      _cancel = 'Annuler';
+      _changePassword = "Changer de mot de passe";
+      break;
+  }
+}
 
 class AccountScreen extends ConsumerWidget {
   const AccountScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    initText();
     ref.listen<AsyncValue>(
       accountScreenControllerProvider,
       (_, state) => state.showAlertDialogOnError(context),
@@ -26,29 +58,10 @@ class AccountScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromRGBO(0, 116, 227, 1),
         title: state.isLoading
             ? const CircularProgressIndicator()
             : Text(""),
-        actions: [
-          ActionTextButton(
-            text: 'Logout'.hardcoded,
-            onPressed: state.isLoading
-                ? null
-                : () async {
-                    final logout = await showAlertDialog(
-                      context: context,
-                      title: 'Are you sure?'.hardcoded,
-                      cancelActionText: 'Cancel'.hardcoded,
-                      defaultActionText: 'Logout'.hardcoded,
-                    );
-                    if (logout == true) {
-                      ref
-                          .read(accountScreenControllerProvider.notifier)
-                          .signOut();
-                    }
-                  },
-          ),
-        ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(130.0),
           child: Column(
@@ -72,6 +85,86 @@ class AccountScreen extends ConsumerWidget {
           ),
         ),
       ),
+      body: SizedBox(
+          height: 250,
+          child: Column(
+            children: <Widget>[
+              Align(
+                  alignment: FractionalOffset.bottomCenter,
+                  child: Container(
+                    margin: const EdgeInsets.all(10),
+                    height: 40,
+                    width: 200,
+                    child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                             Colors.blue),
+                        ),
+                        onPressed: () => {
+                          context.goNamed(AppRoute.main.name)
+                        },
+                        child: Text(_goBack,
+                            style: const TextStyle(
+                                fontFamily: 'HeeboMedium',
+                                color: Colors.white))),
+                  )),
+              Align(
+                  alignment: FractionalOffset.bottomCenter,
+                  child: Container(
+                    margin: const EdgeInsets.all(10),
+                    height: 40,
+                    width: 200,
+                    child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              Colors.blue),
+                        ),
+                        onPressed: () {
+                          _forgotPassword(context, ref, userDatabase.value!.email);
+                        },
+                        child: Text(_changePassword,
+                            style: const TextStyle(
+                                fontFamily: 'HeeboMedium',
+                                color: Colors.white))),
+                  )),
+              Align(
+                  alignment: FractionalOffset.bottomCenter,
+                  child: Container(
+                    margin: const EdgeInsets.all(10),
+                    height: 40,
+                    width: 200,
+                    child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              Colors.blue),
+                        ),
+                        onPressed: state.isLoading
+                            ? null
+                            : () async {
+                          final logout = await showAlertDialog(
+                            context: context,
+                            title: _areSure,
+                            cancelActionText: _cancel,
+                            defaultActionText: _logout,
+                          );
+                          if (logout == true) {
+                            ref
+                                .read(accountScreenControllerProvider.notifier)
+                                .signOut();
+                          }
+                        },
+                        child: Text(_logout,
+                            style: const TextStyle(
+                                fontFamily: 'HeeboMedium',
+                                color: Colors.white))),
+                  )),
+            ],
+          )),
     );
+  }
+
+  Future<void> _forgotPassword(BuildContext context, WidgetRef ref, String email) async {
+    final controller = ref.read(accountScreenControllerProvider.notifier);
+    await controller.forgotPassword(email: email);
   }
 }

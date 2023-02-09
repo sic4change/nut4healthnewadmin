@@ -192,6 +192,7 @@ class _HomePageState extends State<HomePage> {
   late SampleModel sampleListModel;
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final ScrollController controller = ScrollController();
+
   @override
   void initState() {
     sampleListModel = SampleModel.instance;

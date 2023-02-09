@@ -12,6 +12,17 @@ class AccountScreenController extends AutoDisposeAsyncNotifier<void> {
     // ok to leave this empty if the return type is FutureOr<void>
   }
 
+  Future<void> forgotPassword(
+      {required String email}) async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() => _resetPassword(email));
+  }
+
+  Future<void> _resetPassword(String email) {
+    final authRepository = ref.read(authRepositoryProvider);
+    return authRepository.resetPassword(email);
+  }
+
   Future<void> signOut() async {
     final authRepository = ref.read(authRepositoryProvider);
     state = const AsyncLoading();

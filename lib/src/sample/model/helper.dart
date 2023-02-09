@@ -804,7 +804,7 @@ void showBottomSettingsPanel(SampleModel model, BuildContext context) {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text('Configuración',
+                        Text(_configuration,
                             style: TextStyle(
                                 color: model.textColor,
                                 fontSize: 18,
@@ -840,25 +840,16 @@ void showBottomSettingsPanel(SampleModel model, BuildContext context) {
                                 0: Container(
                                     width: width,
                                     alignment: Alignment.center,
-                                    child: Text('System theme',
+                                    child: Text(_lightMode,
                                         style: TextStyle(
-                                            color: selectedIndex == 0
+                                            color: selectedIndex == 1
                                                 ? Colors.white
                                                 : textColor,
                                             fontFamily: 'HeeboMedium'))),
                                 1: Container(
                                     width: width,
                                     alignment: Alignment.center,
-                                    child: Text('Tema claro',
-                                        style: TextStyle(
-                                            color: selectedIndex == 1
-                                                ? Colors.white
-                                                : textColor,
-                                            fontFamily: 'HeeboMedium'))),
-                                2: Container(
-                                    width: width,
-                                    alignment: Alignment.center,
-                                    child: Text('Tema oscuro',
+                                    child: Text(_darkMode,
                                         style: TextStyle(
                                             color: selectedIndex == 2
                                                 ? Colors.white
@@ -951,8 +942,8 @@ void showBottomSettingsPanel(SampleModel model, BuildContext context) {
                         ),
                         onPressed: () => _applyThemeAndPaletteColor(
                             model, context, selectedIndex),
-                        child: const Text('Aplicar',
-                            style: TextStyle(
+                        child: Text(_set,
+                            style: const TextStyle(
                                 fontFamily: 'HeeboMedium',
                                 color: Colors.white))),
                   ))
