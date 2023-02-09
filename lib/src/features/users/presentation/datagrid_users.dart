@@ -49,7 +49,7 @@ class UserDataGrid extends LocalizationSampleView {
   _UserDataGridState createState() => _UserDataGridState();
 }
 
-class _UserDataGridState extends SampleViewState {
+class _UserDataGridState extends LocalizationSampleViewState {
 
   final GlobalKey<SfDataGridState> _key = GlobalKey<SfDataGridState>();
 
@@ -165,7 +165,10 @@ class _UserDataGridState extends SampleViewState {
                           width: constraint.maxWidth,
                           child: SfDataGridTheme(
                               data: SfDataGridThemeData(headerColor: Colors.blueAccent),
-                              child: _buildDataGrid()
+                              child: Directionality(
+                                textDirection: TextDirection.ltr,
+                                  child: _buildDataGrid()
+                              )
                           ),
                         ),
                       ],
@@ -333,10 +336,10 @@ class _UserDataGridState extends SampleViewState {
 
     return Row(
       children: <Widget>[
-        _buildCreatingButton(_newUser),
-        _buildImportButton(_importCSV),
+        _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
         _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
-        _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf)
+        _buildImportButton(_importCSV),
+        _buildCreatingButton(_newUser),
       ],
     );
   }
@@ -400,15 +403,18 @@ class _UserDataGridState extends SampleViewState {
       addMorePage  = 1;
     }
 
-    return SfDataPager(
-        delegate: userDataGridSource,
-        availableRowsPerPage: const <int>[15, 20, 25],
-        pageCount: (userDataGridSource.rows.length / _rowsPerPage) + addMorePage,
-        onRowsPerPageChanged: (int? rowsPerPage) {
-          setState(() {
-            _rowsPerPage = rowsPerPage!;
-          });
-        },
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: SfDataPager(
+          delegate: userDataGridSource,
+          availableRowsPerPage: const <int>[15, 20, 25],
+          pageCount: (userDataGridSource.rows.length / _rowsPerPage) + addMorePage,
+          onRowsPerPageChanged: (int? rowsPerPage) {
+            setState(() {
+              _rowsPerPage = rowsPerPage!;
+            });
+          },
+      ),
     );
   }
 
@@ -1152,13 +1158,13 @@ class _UserDataGridState extends SampleViewState {
 
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildSample(BuildContext context) {
     return Consumer(
         builder: (context, ref, child) {
           ref.listen<AsyncValue>(
             usersScreenControllerProvider,
                 (_, state) => {
-                },
+            },
           );
           final usersAsyncValue = ref.watch(usersStreamProvider);
           final pointsAsyncValue = ref.watch(pointsStreamProvider);
@@ -1176,6 +1182,7 @@ class _UserDataGridState extends SampleViewState {
           return _buildView(usersAsyncValue);
         });
   }
+
 }
 
 
