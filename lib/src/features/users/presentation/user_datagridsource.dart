@@ -12,7 +12,6 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../configurations/domain/configuration.dart';
 import '../domain/UserWithConfigurationAndPoint.dart';
-import '../domain/user.dart';
 
 /// Set user's data collection to data grid source.
 class UserDataGridSource extends DataGridSource {

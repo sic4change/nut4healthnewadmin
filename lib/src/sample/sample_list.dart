@@ -1,6 +1,7 @@
 import 'package:adminnut4health/src/features/users/presentation/datagrid_users.dart';
 import 'package:flutter/foundation.dart';
 
+import '../features/countries/presentation/datagrid_countries.dart';
 import 'samples/barcodes/data_matrix.dart';
 import 'samples/barcodes/one_dimensional.dart';
 import 'samples/barcodes/qr_code.dart';
@@ -52,10 +53,10 @@ import 'samples/chart/cartesian_charts/chart_types/area/default_area_chart.dart'
 import 'samples/chart/cartesian_charts/chart_types/area/vertical_area_chart.dart';
 import 'samples/chart/cartesian_charts/chart_types/bar/animation_bar_chart.dart';
 import 'samples/chart/cartesian_charts/chart_types/bar/bar_width_and_spacing.dart';
-import 'samples/chart/cartesian_charts/chart_types/bar/bar_with_rounded_corners.dart';
 import 'samples/chart/cartesian_charts/chart_types/bar/bar_with_track.dart';
 import 'samples/chart/cartesian_charts/chart_types/bar/customized_bar_chart.dart';
 import 'samples/chart/cartesian_charts/chart_types/bar/default_bar_chart.dart';
+import 'samples/chart/cartesian_charts/chart_types/bar/bar_with_rounded_corners.dart';
 import 'samples/chart/cartesian_charts/chart_types/box_whisker.dart';
 import 'samples/chart/cartesian_charts/chart_types/bubble/animation_bubble_chart.dart';
 import 'samples/chart/cartesian_charts/chart_types/bubble/bubble_filled_with_gradient.dart';
@@ -908,6 +909,8 @@ Map<String, Function> getSampleWidget() {
 
     //dataGridSample
     'user_datagrid': (Key key) => UserDataGrid(key: key),
+    'country_datagrid': (Key key) => CountryDataGrid(key: key),
+
     'getting_started_datagrid': (Key key) => GettingStartedDataGrid(key: key),
 
     'column_types_datagrid': (Key key) => ColumnTypeDataGrid(key: key),
