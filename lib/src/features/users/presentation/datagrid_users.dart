@@ -200,7 +200,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
         List<List<dynamic>> rowsAsListOfValues =
             const CsvToListConverter().convert(it);
         for (final row in rowsAsListOfValues) {
-          if (row.length > 1) {
+          if (row.isNotEmpty) {
             final email = row[5].toString();
             try {
               final userFoundByEmail = userDataGridSource
@@ -450,13 +450,13 @@ class _UserDataGridState extends LocalizationSampleViewState {
     if (keyboardType == TextInputType.number) {
       return RegExp('[0-9]');
     } else if (keyboardType == TextInputType.text) {
-      return RegExp(r'^[a-zA-Z0-9]+$');
+      return RegExp('.');
     } else if (keyboardType == TextInputType.phone) {
       return RegExp(r"^[\d+]+$");
     } else if (keyboardType == TextInputType.emailAddress) {
       return RegExp(r"[a-zA-Z0-9@.]+");
     } else {
-      return RegExp(r'^[a-zA-Z0-9]+$');
+      return RegExp('.');
     }
   }
 

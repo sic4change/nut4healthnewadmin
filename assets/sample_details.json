@@ -34,7 +34,7 @@
               {
                 "type": "sample",
                 "title": "Municipios",
-                "key": "user_datagrid"
+                "key": "province_datagrid"
               },
               {
                 "type": "sample",

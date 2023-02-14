@@ -2,6 +2,7 @@
 /// import 'package:flutter/foundation.dart';
 
 
+import 'package:adminnut4health/src/features/provinces/domain/province.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,13 +17,13 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
-
 import '../../../sample/model/sample_view.dart';
+import '../../countries/domain/country.dart';
 import '../data/firestore_repository.dart';
+import '../domain/ProvinceWithCountry.dart';
 /// Local import
-import '../domain/country.dart';
-import 'countries_screen_controller.dart';
-import 'country_datagridsource.dart';
+import 'provinces_screen_controller.dart';
+import 'province_datagridsource.dart';
 
 import 'package:file_picker/file_picker.dart';
 import 'dart:html' show FileReader;
@@ -35,21 +36,21 @@ import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column, Row, Border;
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-/// Render country data grid
-class CountryDataGrid extends LocalizationSampleView {
+/// Render province data grid
+class ProvinceDataGrid extends LocalizationSampleView {
   /// Creates getting started data grid
-  const CountryDataGrid({Key? key}) : super(key: key);
+  const ProvinceDataGrid({Key? key}) : super(key: key);
 
   @override
-  _CountryDataGridState createState() => _CountryDataGridState();
+  _ProvinceDataGridState createState() => _ProvinceDataGridState();
 }
 
-class _CountryDataGridState extends LocalizationSampleViewState {
+class _ProvinceDataGridState extends LocalizationSampleViewState {
 
   final GlobalKey<SfDataGridState> _key = GlobalKey<SfDataGridState>();
 
   /// DataGridSource required for SfDataGrid to obtain the row data.
-  late CountryDataGridSource countryDataGridSource;
+  late ProvinceDataGridSource provinceDataGridSource;
 
   static const double dataPagerHeight = 60;
   int _rowsPerPage = 15;
@@ -58,14 +59,14 @@ class _CountryDataGridState extends LocalizationSampleViewState {
   late String selectedLocale;
 
   /// Translate names
-  late String _id, _name, _code, _active,  _newCountry, _importCSV, _exportXLS,
-      _exportPDF, _total, _editCountry, _removeCountry, _save, _cancel,
-      _countries, _removedCountry;
+  late String _id, _name, _country, _active,  _newProvince, _importCSV, _exportXLS,
+      _exportPDF, _total, _editProvince, _removeProvince, _save, _cancel,
+      _provinces, _removedProvince;
 
   late Map<String, double> columnWidths = {
     'Id': 150,
     'Nombre': 150,
-    'Código': 150,
+    'País': 150,
     'Activo': 150,
   };
 
@@ -73,7 +74,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
   TextEditingController?
       idController,
       nameController,
-      codeController,
+      countryController,
       activeController;
 
   /// Used to validate the forms
@@ -92,16 +93,24 @@ class _CountryDataGridState extends LocalizationSampleViewState {
 
   _saveCountries(AsyncValue<List<Country>>? countries) {
     if (countries == null) {
-      countryDataGridSource.setCountries(List.empty());
+      provinceDataGridSource.setCountries(List.empty());
     } else {
-      countryDataGridSource.setCountries(countries.value);
+      provinceDataGridSource.setCountries(countries.value!);
     }
   }
 
-  Widget _buildView(AsyncValue<List<Country>> countries) {
-    if (countries.value != null && countries.value!.isNotEmpty) {
-      countryDataGridSource.buildDataGridRows();
-      countryDataGridSource.updateDataSource();
+  _saveProvinces(AsyncValue<List<ProvinceWithCountry>>? provinces) {
+    if (provinces == null) {
+      provinceDataGridSource.setProvinces(List.empty());
+    } else {
+      provinceDataGridSource.setProvinces(provinces.value);
+    }
+  }
+
+  Widget _buildView(AsyncValue<List<ProvinceWithCountry>> provinces) {
+    if (provinces.value != null && provinces.value!.isNotEmpty) {
+      provinceDataGridSource.buildDataGridRows();
+      provinceDataGridSource.updateDataSource();
       selectedLocale = model.locale.toString();
       return _buildLayoutBuilder();
     } else {
@@ -155,7 +164,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
         });
   }
 
-  void _importCountries() async {
+  void _importProvinces() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
       final myUint8List = Uint8List.fromList(result.files.single.bytes!);
@@ -165,11 +174,15 @@ class _CountryDataGridState extends LocalizationSampleViewState {
         const CsvToListConverter().convert(it);
         for (final row in rowsAsListOfValues) {
           if (row.isNotEmpty) {
-            ref.read(countriesScreenControllerProvider.notifier).addCountry(
-                Country(
-                  countryId: "",
+            ref.read(provincesScreenControllerProvider.notifier).addProvince(
+                Province(
+                  provinceId: "",
                   name: row[0].toString(),
-                  code: row[1].toString(),
+                  country: provinceDataGridSource
+                      .getCountries()
+                      .firstWhere(
+                          (element) => element.name == row[1].toString())
+                      .countryId,
                   active: row[2].toString() == 'true' ? true : false,
                 )
             );
@@ -188,7 +201,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
     return reader.result as String;
   }
 
-  void _createCountry() {
+  void _createProvince() {
     _createTextFieldContext();
     showDialog<String>(
       context: context,
@@ -196,7 +209,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
         scrollable: true,
         titleTextStyle: TextStyle(
             color: model.textColor, fontWeight: FontWeight.bold, fontSize: 16),
-        title: Text(_newCountry),
+        title: Text(_newProvince),
         actions: _buildActionCreateButtons(context),
         content: Scrollbar(
           child: SingleChildScrollView(
@@ -219,7 +232,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
           });
       final List<int> bytes = workbook.saveAsStream();
       workbook.dispose();
-      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_countries..xlsx');
+      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_provinces..xlsx');
     }
 
     Future<void> exportDataGridToPdf() async {
@@ -240,7 +253,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
                 Rect.fromLTWH(width - 148, 0, 148, 60));
 
             header.graphics.drawString(
-              _countries,
+              _provinces,
               PdfStandardFont(PdfFontFamily.helvetica, 13,
                   style: PdfFontStyle.bold),
               bounds: const Rect.fromLTWH(0, 25, 200, 60),
@@ -249,7 +262,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
             details.pdfDocumentTemplate.top = header;
           });
       final List<int> bytes = document.saveSync();
-      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_countries.pdf');
+      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_provinces.pdf');
       document.dispose();
     }
 
@@ -258,7 +271,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
         _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
         _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
         _buildImportButton(_importCSV),
-        _buildCreatingButton(_newCountry),
+        _buildCreatingButton(_newProvince),
       ],
     );
   }
@@ -272,7 +285,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
             FontAwesomeIcons.fileCsv,
             color: Colors.blueAccent,
           ),
-          onPressed: _importCountries,)
+          onPressed: _importProvinces,)
     );
   }
 
@@ -285,7 +298,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
             FontAwesomeIcons.plus,
             color: Colors.blueAccent,
           ),
-          onPressed: _createCountry,)
+          onPressed: _createProvince,)
     );
   }
 
@@ -318,16 +331,16 @@ class _CountryDataGridState extends LocalizationSampleViewState {
 
   Widget _buildDataPager() {
     var addMorePage = 0;
-    if ((countryDataGridSource.rows.length / _rowsPerPage).remainder(1) != 0) {
+    if ((provinceDataGridSource.rows.length / _rowsPerPage).remainder(1) != 0) {
       addMorePage  = 1;
     }
 
     return Directionality(
       textDirection: TextDirection.ltr,
       child: SfDataPager(
-        delegate: countryDataGridSource,
+        delegate: provinceDataGridSource,
         availableRowsPerPage: const <int>[15, 20, 25],
-        pageCount: (countryDataGridSource.rows.length / _rowsPerPage) + addMorePage,
+        pageCount: (provinceDataGridSource.rows.length / _rowsPerPage) + addMorePage,
         onRowsPerPageChanged: (int? rowsPerPage) {
           setState(() {
             _rowsPerPage = rowsPerPage!;
@@ -414,15 +427,6 @@ class _CountryDataGridState extends LocalizationSampleViewState {
   Widget _buildRow(
       {required TextEditingController controller, required String columnName, required String text}) {
     TextInputType keyboardType = TextInputType.text;
-    if (<String>['Puntos'].contains(columnName)) {
-      keyboardType =  TextInputType.number;
-    } else if (<String>['Email'].contains(columnName)) {
-      keyboardType =  TextInputType.emailAddress;
-    } else if (<String>['Teléfono'].contains(columnName)) {
-      keyboardType =  TextInputType.phone;
-    } else {
-      keyboardType =  TextInputType.text;
-    }
     // Holds the regular expression pattern based on the column type.
     final RegExp regExp = _getRegExp(keyboardType, columnName);
 
@@ -458,7 +462,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
     return Column(
       children: <Widget>[
         _buildRow(controller: nameController!, columnName: 'Nombre', text: _name),
-        _buildRow(controller: codeController!, columnName: 'Código', text: _code),
+        _buildRow(controller: countryController!, columnName: 'País', text: _country),
         _buildRowComboSelection(controller: activeController!, columnName: 'Activo',
             dropDownMenuItems: activeOptions, text: _active),
       ],
@@ -468,10 +472,13 @@ class _CountryDataGridState extends LocalizationSampleViewState {
   /// Building the forms to create the data
   Widget _buildAlertDialogCreateContent() {
     final activeOptions = ["✔", "✘"];
+    final countryOptions = provinceDataGridSource.getCountries().map((e) => e.name).toList();
+    countryOptions.insert(0, "");
     return Column(
       children: <Widget>[
         _buildRow(controller: nameController!, columnName: 'Nombre', text: _name),
-        _buildRow(controller: codeController!, columnName: 'Código', text: _code),
+        _buildRowComboSelection(controller: countryController!, columnName: 'País',
+            dropDownMenuItems: countryOptions, text: _country),
         _buildRowComboSelection(controller: activeController!, columnName: 'Activo',
             dropDownMenuItems: activeOptions, text: _active),
       ],
@@ -481,13 +488,12 @@ class _CountryDataGridState extends LocalizationSampleViewState {
   void _createTextFieldContext() {
     idController!.text = '';
     nameController!.text = '';
-    codeController!.text = '';
+    countryController!.text = '';
     activeController!.text = '';
   }
 
   // Updating the data to the TextEditingController
   void _updateTextFieldContext(DataGridRow row) {
-
     final String? id = row
         .getCells()
         .firstWhere(
@@ -509,11 +515,11 @@ class _CountryDataGridState extends LocalizationSampleViewState {
     final String? code = row
         .getCells()
         .firstWhere(
-            (DataGridCell element) => element.columnName == 'Código')
+            (DataGridCell element) => element.columnName == 'País')
         ?.value
         .toString();
 
-    codeController!.text = code ?? '';
+    countryController!.text = code ?? '';
 
 
     final String? active = row
@@ -537,7 +543,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
         scrollable: true,
         titleTextStyle: TextStyle(
             color: model.textColor, fontWeight: FontWeight.bold, fontSize: 16),
-        title: Text(_editCountry),
+        title: Text(_editProvince),
         actions: _buildActionButtons(row, context),
         content: Scrollbar(
           child: SingleChildScrollView(
@@ -554,11 +560,11 @@ class _CountryDataGridState extends LocalizationSampleViewState {
 
   void _processCellCreate(BuildContext buildContext) async {
     if (_formKey.currentState!.validate()) {
-      ref.read(countriesScreenControllerProvider.notifier).addCountry(
-          Country(
-              countryId: "",
+      ref.read(provincesScreenControllerProvider.notifier).addProvince(
+          Province(
+              provinceId: "",
               name: nameController!.text,
-              code: codeController!.text,
+              country: provinceDataGridSource.getCountries().firstWhere((element) => element.name == countryController!.text).countryId,
               active: activeController!.text == '✔' ? true : false)
       );
       Navigator.pop(buildContext);
@@ -568,12 +574,12 @@ class _CountryDataGridState extends LocalizationSampleViewState {
   /// Updating the DataGridRows after changing the value and notify the DataGrid
   /// to refresh the view
   void _processCellUpdate(DataGridRow row, BuildContext buildContext) {
-    final String? id = countryDataGridSource.getCountries()?.firstWhere((element) => element.countryId == row.getCells()[0].value).countryId;
+    final String? id = provinceDataGridSource.getProvinces()?.firstWhere((element) => element.province.provinceId == row.getCells()[0].value).province.provinceId;
     if (_formKey.currentState!.validate()) {
-      ref.read(countriesScreenControllerProvider.notifier).updateCountry(
-          Country(countryId: id!,
+      ref.read(provincesScreenControllerProvider.notifier).updateProvince(
+          Province(provinceId: id!,
               name: nameController!.text,
-              code: codeController!.text,
+              country: provinceDataGridSource.getCountries().firstWhere((element) => element.name == countryController!.text).countryId,
               active: activeController!.text == '✔' ? true : false
           )
       );
@@ -622,9 +628,10 @@ class _CountryDataGridState extends LocalizationSampleViewState {
 
   /// Deleting the DataGridRow
   void _handleDeleteWidgetTap(DataGridRow row) {
-    final country = countryDataGridSource.getCountries()?.firstWhere((element) => element.countryId == row.getCells()[0].value);
-    if (country != null) {
-      ref.read(countriesScreenControllerProvider.notifier).deleteCountry(country);
+    final province = provinceDataGridSource.getProvinces()?.
+      firstWhere((element) => element.province.provinceId == row.getCells()[0].value).province;
+    if (province != null) {
+      ref.read(provincesScreenControllerProvider.notifier).deleteProvince(province);
       _showDialogDeleteConfirmation();
     }
   }
@@ -642,7 +649,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
             ),
           ),
         ],
-        content: Text(_removedCountry),
+        content: Text(_removedProvince),
       ),
     );
   }
@@ -661,7 +668,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
             Icon(Icons.edit, color: Colors.white, size: 16),
             SizedBox(width: 8.0),
             Text(
-              _editCountry,
+              _editProvince,
               style: TextStyle(color: Colors.white, fontSize: 12),
             )
           ],
@@ -684,7 +691,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
             const Icon(Icons.delete, color: Colors.white, size: 16),
             const SizedBox(width: 8.0),
             Text(
-              _removeCountry,
+              _removeProvince,
               style: TextStyle(color: Colors.white, fontSize: 12),
             ),
           ],
@@ -699,57 +706,58 @@ class _CountryDataGridState extends LocalizationSampleViewState {
       case 'en_US':
         _id = 'Id';
         _name = 'Name';
-        _code = 'Code';
+        _country = 'Country';
         _active = 'Active';
+        _newProvince = 'New Municipality';
         _importCSV = 'Import CSV';
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
-        _total = 'Total Countries';
-        _editCountry = 'Edit';
-        _removeCountry = 'Remove';
+        _total = 'Total Municipalities';
+        _editProvince = 'Edit';
+        _removeProvince = 'Remove';
         _cancel = 'Cancel';
         _save = 'Save';
-        _countries = 'Countries';
-        _removedCountry = 'Country deleted successfully.';
+        _provinces = 'Municipalities';
+        _removedProvince = 'Municipality deleted successfully.';
         break;
       case 'es_ES':
         _id = 'Id';
         _name = 'Nombre';
-        _code = 'Código';
+        _country = 'País';
         _active = 'Activo';
-        _newCountry = 'Crear País';
+        _newProvince = 'Crear Municipio';
         _importCSV = 'Importar CSV';
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
-        _total = 'Países totales';
-        _editCountry = 'Editar';
-        _removeCountry = 'Eliminar';
+        _total = 'Municipios totales';
+        _editProvince = 'Editar';
+        _removeProvince = 'Eliminar';
         _cancel = 'Cancelar';
         _save = 'Guardar';
-        _countries = 'Países';
-        _removedCountry = 'País eliminado correctamente';
+        _provinces = 'Municipios';
+        _removedProvince = 'Municipio eliminado correctamente';
         break;
       case 'fr_FR':
         _id = 'Id';
         _name = 'Nom';
-        _code = 'Code';
+        _country = 'Code';
         _active = 'Actif';
-        _newCountry = 'Créer un pays';
+        _newProvince = 'Créer un Municipalité';
         _importCSV = 'Importer CSV';
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
-        _total = 'Total des pays';
-        _editCountry = 'Modifier';
-        _removeCountry = 'Supprimer';
+        _total = 'Total des municipalités';
+        _editProvince = 'Modifier';
+        _removeProvince = 'Supprimer';
         _cancel = 'Annuler';
         _save = 'Enregistrer';
-        _countries = 'Les pays';
-        _removedCountry = 'Pays supprimé avec succès.';
+        _provinces = 'Les municipalités';
+        _removedProvince = 'Municipalité supprimé avec succès.';
         break;
     }
     return SfDataGrid(
       key: _key,
-      source: countryDataGridSource,
+      source: provinceDataGridSource,
       rowsPerPage: _rowsPerPage,
       tableSummaryRows: _getTableSummaryRows(),
       allowSwiping: true,
@@ -793,13 +801,13 @@ class _CountryDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
-          columnName: 'Código',
-          width: columnWidths['Código']!,
+          columnName: 'País',
+          width: columnWidths['País']!,
           label: Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              _code,
+              _country,
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -822,28 +830,28 @@ class _CountryDataGridState extends LocalizationSampleViewState {
   @override
   void initState() {
     super.initState();
-    countryDataGridSource = CountryDataGridSource(List.empty());
+    provinceDataGridSource = ProvinceDataGridSource(List.empty(), List.empty());
     idController = TextEditingController();
     nameController = TextEditingController();
-    codeController = TextEditingController();
+    countryController = TextEditingController();
     activeController = TextEditingController();
     selectedLocale = model.locale.toString();
 
     _id = 'Id';
     _name = 'Nombre';
-    _code = 'Código';
+    _country = 'País';
     _active = 'Activo';
-    _newCountry = 'Crear País';
+    _newProvince = 'Crear Municipio';
     _importCSV = 'Importar CSV';
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';
     _total = 'Usuarios totales';
-    _editCountry = 'Editar';
-    _removeCountry = 'Eliminar';
+    _editProvince = 'Editar';
+    _removeProvince = 'Eliminar';
     _cancel = 'Cancelar';
     _save = 'Guardar';
-    _countries = 'Países';
-    _removedCountry = '';
+    _provinces = 'Provincias';
+    _removedProvince = '';
   }
 
 
@@ -852,16 +860,19 @@ class _CountryDataGridState extends LocalizationSampleViewState {
     return Consumer(
         builder: (context, ref, child) {
           ref.listen<AsyncValue>(
-            countriesScreenControllerProvider,
+            provincesScreenControllerProvider,
                 (_, state) => {
             },
           );
-
           final countriesAsyncValue = ref.watch(countriesStreamProvider);
+          final provinciesAsyncValue = ref.watch(provincesStreamProvider);
           if (countriesAsyncValue.value != null) {
             _saveCountries(countriesAsyncValue);
           }
-          return _buildView(countriesAsyncValue);
+          if (provinciesAsyncValue.value != null) {
+            _saveProvinces(provinciesAsyncValue);
+          }
+          return _buildView(provinciesAsyncValue);
         });
   }
 

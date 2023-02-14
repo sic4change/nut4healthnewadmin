@@ -54,7 +54,7 @@ class CountryDataGridSource extends DataGridSource {
 
   final Map<String, Image> _images = <String, Image>{
     '✔': Image.asset('images/Perfect.png'),
-    'x': Image.asset('images/Insufficient.png'),
+    '✘': Image.asset('images/Insufficient.png'),
   };
 
   Widget _buildActive(bool value) {
@@ -66,7 +66,7 @@ class CountryDataGridSource extends DataGridSource {
     } else  {
       return Padding(
         padding: const EdgeInsets.only(left: 16.0),
-        child: _getWidget(_images['x']!, ''),
+        child: _getWidget(_images['✘']!, ''),
       );
     }
   }
