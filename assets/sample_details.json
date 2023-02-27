@@ -39,7 +39,7 @@
               {
                 "type": "sample",
                 "title": "Comunidades",
-                "key": "user_datagrid"
+                "key": "city_datagrid"
               }
             ]
           }
