@@ -40,6 +40,11 @@
                 "type": "sample",
                 "title": "Comunidades",
                 "key": "city_datagrid"
+              },
+              {
+                "type": "sample",
+                "title": "Puestos de Salud",
+                "key": "point_datagrid"
               }
             ]
           }

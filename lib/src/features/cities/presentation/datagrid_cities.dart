@@ -95,8 +95,6 @@ class _CityDataGridState extends LocalizationSampleViewState {
   /// Used to validate the forms
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  List<Province> provinces = List.empty();
-
   Widget getLocationWidget(String location) {
     return Row(
       children: <Widget>[
@@ -209,7 +207,7 @@ class _CityDataGridState extends LocalizationSampleViewState {
                       .firstWhere(
                           (element) => element.name == row[2].toString())
                       .countryId,
-                  active: row[2].toString() == 'true' ? true : false,
+                  active: row[3].toString() == 'true' ? true : false,
                 ));
           }
         }
@@ -955,7 +953,7 @@ class _CityDataGridState extends LocalizationSampleViewState {
     _importCSV = 'Importar CSV';
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';
-    _total = 'Usuarios totales';
+    _total = 'Comunidades totales';
     _editCity = 'Editar';
     _removeCity = 'Eliminar';
     _cancel = 'Cancelar';

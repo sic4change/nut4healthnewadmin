@@ -1,10 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../../authentication/data/firebase_auth_repository.dart';
 import '../../../common_data/firestore_data_source.dart';
+import '../../countries/domain/country.dart';
+import '../../provinces/domain/province.dart';
 import '../domain/point.dart';
+import '../domain/pointWithProvinceAndCountry.dart';
 
 String documentIdFromCurrentDate() {
   final iso = DateTime.now().toIso8601String();
@@ -12,6 +16,10 @@ String documentIdFromCurrentDate() {
 }
 
 class FirestorePath {
+  static String country(String uid) => 'countries/$uid';
+  static String countries() => 'countries';
+  static String province(String uid) => 'provinces/$uid';
+  static String provinces() => 'provinces';
   static String point(String uid) => 'points/$uid';
   static String points() => 'points';
 }
@@ -56,19 +64,87 @@ class FirestoreRepository {
         builder: (data, documentId) => Point.fromMap(data, documentId),
       );
 
+  Future<Point> fetchPoint({required PointID pointId}) =>
+      _dataSource.fetchDocument(
+        path: FirestorePath.point(pointId),
+        builder: (data, documentId) => Point.fromMap(data, documentId),
+      );
+
+  Stream<List<Province>> watchProvincesInCountry({required CountryID countryId}) {
+    return _dataSource.watchCollection(
+      path: FirestorePath.provinces(),
+      builder: (data, documentId) => Province.fromMap(data, documentId),
+    ).map((event) => event.where((element) => element.country == countryId).toList());
+  }
+
+  Stream<List<Country>> watchCountries() =>
+      _dataSource.watchCollection(
+        path: FirestorePath.countries(),
+        builder: (data, documentId) => Country.fromMap(data, documentId),
+      );
+
+  Stream<List<Province>> watchProvinces() =>
+      _dataSource.watchCollection(
+        path: FirestorePath.provinces(),
+        builder: (data, documentId) => Province.fromMap(data, documentId),
+      );
+
+
+  Stream<List<PointWithProvinceAndCountry>> watchPointsWithProvincesAndCountrys() {
+    return CombineLatestStream.combine3(watchPoints(), watchProvinces(), watchCountries(),
+            (List<Point> points, List<Province> provinces, List<Country> countries) {
+          final Map<String, Province> provinceMap = Map.fromEntries(
+            provinces.map((province) => MapEntry(province.provinceId, province)),
+          );
+          final Map<String, Country> countryMap = Map.fromEntries(
+            countries.map((country) => MapEntry(country.countryId, country)),
+          );
+          return points.map((point)  {
+            try {
+              final Province province = provinceMap[point.province]!;
+              final Country country = countryMap[point.country]!;
+              return PointWithProvinceAndCountry(point, province, country);
+            } catch(e) {
+              const Province province = Province(provinceId: '', name: '', country: '', active: false);
+              const Country country = Country(countryId: '', name: '', code: '', active: false);
+              return PointWithProvinceAndCountry(point, province, country);
+            }
+          }).toList();
+        });
+  }
+
 }
 
 final databaseProvider = Provider<FirestoreRepository>((ref) {
   return FirestoreRepository(ref.watch(firestoreDataSourceProvider));
 });
 
-final pointsStreamProvider = StreamProvider.autoDispose<List<Point>>((ref) {
-  final point = ref.watch(authStateChangesProvider).value;
-  if (point == null) {
-    throw AssertionError('Point can\'t be null');
+final pointsStreamProvider = StreamProvider.autoDispose<List<PointWithProvinceAndCountry>>((ref) {
+  final user = ref.watch(authStateChangesProvider).value;
+  if (user == null) {
+    throw AssertionError('User can\'t be null');
   }
   final database = ref.watch(databaseProvider);
-  return database.watchPoints();
+  return database.watchPointsWithProvincesAndCountrys();
+});
+
+final provincesStreamProvider = StreamProvider.autoDispose<List<Province>>((ref) {
+  final user = ref.watch(authStateChangesProvider).value;
+  if (user == null) {
+    throw AssertionError('User can\'t be null');
+  }
+  final database = ref.watch(databaseProvider);
+  return database.watchProvinces();
+});
+
+
+final countriesStreamProvider = StreamProvider.autoDispose<List<Country>>((ref) {
+  final user = ref.watch(authStateChangesProvider).value;
+  if (user == null) {
+    throw AssertionError('User can\'t be null');
+  }
+  final database = ref.watch(databaseProvider);
+  return database.watchCountries();
 });
 
 final pointStreamProvider =

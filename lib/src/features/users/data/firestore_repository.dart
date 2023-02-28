@@ -115,6 +115,7 @@ class FirestoreRepository {
                         Point(pointId: "",
                             name: "",
                             fullName: "",
+                            active: false,
                             country: "",
                             province: "",
                             phoneCode: ""));
@@ -134,6 +135,7 @@ class FirestoreRepository {
                             name: "",
                             fullName: "",
                             country: "",
+                            active: false,
                             province: "",
                             phoneCode: "")
                     );
