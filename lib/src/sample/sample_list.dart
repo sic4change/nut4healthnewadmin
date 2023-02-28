@@ -2,6 +2,7 @@ import 'package:adminnut4health/src/features/users/presentation/datagrid_users.d
 import 'package:flutter/foundation.dart';
 
 import '../features/cities/presentation/datagrid_cities.dart';
+import '../features/configurations/presentation/datagrid_configurations.dart';
 import '../features/countries/presentation/datagrid_countries.dart';
 import '../features/points/presentation/datagrid_points.dart';
 import '../features/provinces/presentation/datagrid_provinces.dart';
@@ -912,6 +913,7 @@ Map<String, Function> getSampleWidget() {
 
     //dataGridSample
     'user_datagrid': (Key key) => UserDataGrid(key: key),
+    'configuration_datagrid': (Key key) => ConfigurationDataGrid(key: key),
     'country_datagrid': (Key key) => CountryDataGrid(key: key),
     'province_datagrid': (Key key) => ProvinceDataGrid(key: key),
     'city_datagrid': (Key key) => CityDataGrid(key: key),

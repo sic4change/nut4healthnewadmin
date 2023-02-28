@@ -24,6 +24,17 @@
           },
           {
             "type": "child",
+            "title": "Configuraciones",
+            "subItems": [
+              {
+                "type": "sample",
+                "title": "Configuraciones",
+                "key": "configuration_datagrid"
+              }
+            ]
+          },
+          {
+            "type": "child",
             "title": "Ubicaciones",
             "subItems": [
               {
