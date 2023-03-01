@@ -24,6 +24,17 @@
           },
           {
             "type": "child",
+            "title": "Diagnósticos",
+            "subItems": [
+              {
+                "type": "sample",
+                "title": "Diagnósticos",
+                "key": "contract_datagrid"
+              }
+            ]
+          },
+          {
+            "type": "child",
             "title": "Configuraciones",
             "subItems": [
               {

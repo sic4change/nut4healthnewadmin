@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 
 import '../features/cities/presentation/datagrid_cities.dart';
 import '../features/configurations/presentation/datagrid_configurations.dart';
+import '../features/contracts/presentation/datagrid_contracts.dart';
 import '../features/countries/presentation/datagrid_countries.dart';
 import '../features/points/presentation/datagrid_points.dart';
 import '../features/provinces/presentation/datagrid_provinces.dart';
@@ -913,6 +914,7 @@ Map<String, Function> getSampleWidget() {
 
     //dataGridSample
     'user_datagrid': (Key key) => UserDataGrid(key: key),
+    'contract_datagrid': (Key key) => ContractDataGrid(key: key),
     'configuration_datagrid': (Key key) => ConfigurationDataGrid(key: key),
     'country_datagrid': (Key key) => CountryDataGrid(key: key),
     'province_datagrid': (Key key) => ProvinceDataGrid(key: key),
