@@ -9,7 +9,8 @@ class Contract extends Equatable {
 
   const Contract({required this.contractId, this.status, this.code, this.point,
     this.screenerId, this.medicalId, this.armCircunference, this.armCircumferenceMedical,
-    this.weight, this.height
+    this.weight, this.height, this.childName, this.childSurname, this.sex, this.childDNI,
+    this.childTutor, this.childPhoneContract, this.childAddress
   });
 
   final ContractID contractId;
@@ -22,11 +23,19 @@ class Contract extends Equatable {
   final double? armCircumferenceMedical;
   final double? weight;
   final double? height;
+  final String? childName;
+  final String? childSurname;
+  final String? sex;
+  final String? childDNI;
+  final String? childTutor;
+  final String? childPhoneContract;
+  final String? childAddress;
 
   @override
   List<Object> get props => [contractId, status ?? "", code ?? "", point ?? "",
     screenerId ?? "", medicalId ?? "", armCircunference ?? 0.0, armCircumferenceMedical ?? 0.0,
-    weight ?? 0.0, height ?? 0.0
+    weight ?? 0.0, height ?? 0.0, childName ?? "", childSurname ?? "", sex ?? "",
+    childDNI ?? "", childTutor ?? "", childPhoneContract ?? "", childAddress ?? ""
   ];
 
   @override
@@ -47,6 +56,13 @@ class Contract extends Equatable {
     final armCircumferenceMedical = data['arm_circumference_medical']  ?? 0.0;
     final weight = data['weight']  ?? 0.0;
     final height = data['height']  ?? 0.0;
+    final childName = data['childName']  ?? "";
+    final childSurname = data['childSurname'] ?? "";
+    final sex = data['sex'] ?? "";
+    final childDNI = data['childDNI'] ?? "";
+    final childTutor = data['childTutor'] ?? "";
+    final childPhoneContract = data['childPhoneContract'] ?? "";
+    final childAddress = data['childAddress'] ?? "";
 
     return Contract(
         contractId: documentId,
@@ -58,13 +74,19 @@ class Contract extends Equatable {
         armCircunference: armCircunference,
         armCircumferenceMedical: armCircumferenceMedical,
         weight: weight,
-        height: height
+        height: height,
+        childName: childName,
+        childSurname: childSurname,
+        sex: sex,
+        childDNI: childDNI,
+        childTutor: childTutor,
+        childPhoneContract: childPhoneContract,
+        childAddress: childAddress
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-
       'status': status,
       'code': code,
       'point': point,
@@ -74,16 +96,16 @@ class Contract extends Equatable {
       'arm_circumference_medical': armCircumferenceMedical,
       'weight': weight,
       'height': height,
-
-      /*
-      'weight': weight,
       'childName': childName,
       'childSurname': childSurname,
-      'childPhoneContract': childPhoneContract,
+      'sex': sex,
       'childDNI': childDNI,
       'childTutor': childTutor,
-      'sex': sex,
+      'childPhoneContract': childPhoneContract,
       'childAddress': childAddress,
+      /*
+
+
       'medicalId': medicalId,
 
       'smsSent': smsSent,

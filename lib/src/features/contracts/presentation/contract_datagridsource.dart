@@ -40,6 +40,14 @@ class ContractDataGridSource extends DataGridSource {
               value: contractWithScreenerAndMedicalAndPoint.contract.weight == 0 ? null : contractWithScreenerAndMedicalAndPoint.contract.weight),
           DataGridCell<double>(columnName: 'Altura (cm)',
               value: contractWithScreenerAndMedicalAndPoint.contract.height == 0 ? null : contractWithScreenerAndMedicalAndPoint.contract.height),
+          DataGridCell<String>(columnName: 'Nombre', value: contractWithScreenerAndMedicalAndPoint.contract.childName),
+          DataGridCell<String>(columnName: 'Apellidos', value: contractWithScreenerAndMedicalAndPoint.contract.childSurname),
+          DataGridCell<String>(columnName: 'Sexo', value: contractWithScreenerAndMedicalAndPoint.contract.sex),
+          DataGridCell<String>(columnName: 'Código Identificación', value: contractWithScreenerAndMedicalAndPoint.contract.childDNI),
+          DataGridCell<String>(columnName: 'Madre, Padre o Tutor', value: contractWithScreenerAndMedicalAndPoint.contract.childTutor),
+          DataGridCell<String>(columnName: 'Contacto', value: contractWithScreenerAndMedicalAndPoint.contract.childPhoneContract),
+          DataGridCell<String>(columnName: 'Lugar', value: contractWithScreenerAndMedicalAndPoint.contract.childAddress),
+
         ]);
       }).toList();
     }
@@ -168,6 +176,41 @@ class ContractDataGridSource extends DataGridSource {
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[6].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[7].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[8].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[9].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[10].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[11].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[12].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[13].value.toString()),
       ),
     ]);
   }

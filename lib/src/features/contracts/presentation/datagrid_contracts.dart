@@ -61,7 +61,9 @@ class _ContractDataGridState extends LocalizationSampleViewState {
 
   /// Translate names
   late String _id, _code, _status, _exportXLS, _exportPDF, _total, _contracts,
-      _armCircunference, _armCircunferenceConfirmed, _weight, _height;
+      _armCircunference, _armCircunferenceConfirmed, _weight, _height, _name,
+      _surnames, _sex, _dni, _tutor, _contact, _address
+  ;
 
   late Map<String, double> columnWidths = {
     'Id': 150,
@@ -71,6 +73,13 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     'Perímetro braquial confirmado (cm)': 150,
     'Peso (kg)': 150,
     'Altura (cm)': 150,
+    'Nombre': 150,
+    'Apellidos': 150,
+    'Sexo': 150,
+    'Código Identificación': 150,
+    'Madre, Padre o Tutor': 150,
+    'Contacto': 150,
+    'Lugar': 150,
   };
 
   /// Used to validate the forms
@@ -288,6 +297,13 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _armCircunferenceConfirmed = 'Confirmed brachial circumference (cm)';
         _weight = 'Weight (kg)';
         _height = 'Height (cm)';
+        _name = 'Name';
+        _surnames = 'Surnames';
+        _sex = 'Sex';
+        _dni = 'Identification Code';
+        _tutor = 'Mother, Father or Guardian';
+        _contact = 'Contact';
+        _address = 'Address';
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
         _total = 'Total Diagnosis';
@@ -301,6 +317,13 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _armCircunferenceConfirmed = 'Perímetro braquial confirmado (cm)';
         _weight = 'Peso (kg)';
         _height = 'Altura (cm)';
+        _name = 'Nombre';
+        _surnames = 'Apellidos';
+        _sex = 'Sexo';
+        _dni = 'Código Identificación';
+        _tutor = 'Madre, Padre o Tutor';
+        _contact = 'Contacto';
+        _address = 'Lugar';
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
         _total = 'Diagnósticos totale';
@@ -313,6 +336,13 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _armCircunferenceConfirmed = 'Circonférence brachiale confirme (cm)';
         _weight = 'Poids (kg)';
         _height = 'Taille (cm)';
+        _name = 'Nom';
+        _surnames = 'Nom de famille';
+        _sex = 'Sexe';
+        _dni = 'Code identification';
+        _tutor = 'Mère, père ou tuteur';
+        _contact = 'Contact';
+        _address = 'Adresse';
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
         _total = 'Total des diagnostics';
@@ -417,6 +447,90 @@ class _ContractDataGridState extends LocalizationSampleViewState {
             ),
           ),
         ),
+        GridColumn(
+          columnName: 'Nombre',
+          width: columnWidths['Nombre']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _name.toString(),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+        GridColumn(
+          columnName: 'Apellidos',
+          width: columnWidths['Apellidos']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _surnames.toString(),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+        GridColumn(
+          columnName: 'Sexo',
+          width: columnWidths['Sexo']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _sex.toString(),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+        GridColumn(
+          columnName: 'Código Identificación',
+          width: columnWidths['Código Identificación']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _dni.toString(),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+        GridColumn(
+          columnName: 'Madre, Padre o Tutor',
+          width: columnWidths['Madre, Padre o Tutor']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _tutor.toString(),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+        GridColumn(
+          columnName: 'Contacto',
+          width: columnWidths['Contacto']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _contact.toString(),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+        GridColumn(
+          columnName: 'Lugar',
+          width: columnWidths['Lugar']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _address.toString(),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -436,6 +550,13 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     _armCircunferenceConfirmed = 'Perímetro braquial confirmado (cm)';
     _weight = 'Peso (kg)';
     _height = 'Altura (cm)';
+    _name = 'Nombre';
+    _surnames = 'Apellidos';
+    _sex = 'Sexo';
+    _dni = 'Código Identificación';
+    _tutor = 'Madre, Padre o Tutor';
+    _contact = 'Contacto';
+    _address = 'Lugar';
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';
     _total = 'Diagnósticos totale';
