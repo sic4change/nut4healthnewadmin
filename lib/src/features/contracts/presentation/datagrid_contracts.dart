@@ -60,7 +60,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
   late String selectedLocale;
 
   /// Translate names
-  late String _id, _code, _status, _exportXLS, _exportPDF, _total, _contracts, _armCircunference, _armCircunferenceConfirmed;
+  late String _id, _code, _status, _exportXLS, _exportPDF, _total, _contracts,
+      _armCircunference, _armCircunferenceConfirmed, _weight, _height;
 
   late Map<String, double> columnWidths = {
     'Id': 150,
@@ -68,6 +69,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     'Estado': 150,
     'Perímetro braquial (cm)': 150,
     'Perímetro braquial confirmado (cm)': 150,
+    'Peso (kg)': 150,
+    'Altura (cm)': 150,
   };
 
   /// Used to validate the forms
@@ -283,6 +286,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _status = 'Status';
         _armCircunference = 'Brachial circumference (cm)';
         _armCircunferenceConfirmed = 'Confirmed brachial circumference (cm)';
+        _weight = 'Weight (kg)';
+        _height = 'Height (cm)';
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
         _total = 'Total Diagnosis';
@@ -294,6 +299,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _status = 'Estado';
         _armCircunference = 'Perímetro braquial (cm)';
         _armCircunferenceConfirmed = 'Perímetro braquial confirmado (cm)';
+        _weight = 'Peso (kg)';
+        _height = 'Altura (cm)';
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
         _total = 'Diagnósticos totale';
@@ -302,7 +309,10 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _id = 'Identifiant';
         _code = 'Code';
         _status = 'Statut';
-        _armCircunferenceConfirmed = 'Circonférence brachiale confirmée (cm)';
+        _armCircunference = 'Circonférence brachiale (cm)';
+        _armCircunferenceConfirmed = 'Circonférence brachiale confirme (cm)';
+        _weight = 'Poids (kg)';
+        _height = 'Taille (cm)';
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
         _total = 'Total des diagnostics';
@@ -383,6 +393,30 @@ class _ContractDataGridState extends LocalizationSampleViewState {
             ),
           ),
         ),
+        GridColumn(
+          columnName: 'Peso (kg)',
+          width: columnWidths['Peso (kg)']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _weight.toString(),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+        GridColumn(
+          columnName: 'Altura (cm)',
+          width: columnWidths['Altura (cm)']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _height.toString(),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -400,6 +434,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     _status = 'Estado';
     _armCircunference = 'Perímetro braquial (cm)';
     _armCircunferenceConfirmed = 'Perímetro braquial confirmado (cm)';
+    _weight = 'Peso (kg)';
+    _height = 'Altura (cm)';
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';
     _total = 'Diagnósticos totale';

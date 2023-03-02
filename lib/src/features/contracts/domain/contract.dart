@@ -8,7 +8,9 @@ typedef ContractID = String;
 class Contract extends Equatable {
 
   const Contract({required this.contractId, this.status, this.code, this.point,
-    this.screenerId, this.medicalId, this.armCircunference, this.armCircumferenceMedical});
+    this.screenerId, this.medicalId, this.armCircunference, this.armCircumferenceMedical,
+    this.weight, this.height
+  });
 
   final ContractID contractId;
   final String? status;
@@ -18,10 +20,14 @@ class Contract extends Equatable {
   final String? medicalId;
   final double? armCircunference;
   final double? armCircumferenceMedical;
+  final double? weight;
+  final double? height;
 
   @override
   List<Object> get props => [contractId, status ?? "", code ?? "", point ?? "",
-    screenerId ?? "", medicalId ?? "", armCircunference ?? 0.0, armCircumferenceMedical ?? 0.0];
+    screenerId ?? "", medicalId ?? "", armCircunference ?? 0.0, armCircumferenceMedical ?? 0.0,
+    weight ?? 0.0, height ?? 0.0
+  ];
 
   @override
   bool get stringify => true;
@@ -39,7 +45,8 @@ class Contract extends Equatable {
     final medicalId = data['medicalId'] ?? "";
     final armCircunference = data['arm_circumference']  ?? 0.0;
     final armCircumferenceMedical = data['arm_circumference_medical']  ?? 0.0;
-
+    final weight = data['weight']  ?? 0.0;
+    final height = data['height']  ?? 0.0;
 
     return Contract(
         contractId: documentId,
@@ -50,6 +57,8 @@ class Contract extends Equatable {
         medicalId: medicalId,
         armCircunference: armCircunference,
         armCircumferenceMedical: armCircumferenceMedical,
+        weight: weight,
+        height: height
     );
   }
 
@@ -62,11 +71,11 @@ class Contract extends Equatable {
       'screenerId': screenerId,
       'medicalId': medicalId,
       'arm_circumference': armCircunference,
-      'arm_circumference_medical': armCircumferenceMedical
-      /*
       'arm_circumference_medical': armCircumferenceMedical,
-
+      'weight': weight,
       'height': height,
+
+      /*
       'weight': weight,
       'childName': childName,
       'childSurname': childSurname,
