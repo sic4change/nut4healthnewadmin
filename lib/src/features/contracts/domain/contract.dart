@@ -7,7 +7,8 @@ typedef ContractID = String;
 @immutable
 class Contract extends Equatable {
 
-  const Contract({required this.contractId, this.status, this.code, this.point, this.screenerId, this.medicalId});
+  const Contract({required this.contractId, this.status, this.code, this.point,
+    this.screenerId, this.medicalId, this.armCircunference, this.armCircumferenceMedical});
 
   final ContractID contractId;
   final String? status;
@@ -15,10 +16,12 @@ class Contract extends Equatable {
   final String? point;
   final String? screenerId;
   final String? medicalId;
+  final double? armCircunference;
+  final double? armCircumferenceMedical;
 
   @override
   List<Object> get props => [contractId, status ?? "", code ?? "", point ?? "",
-    screenerId ?? "", medicalId ?? ""];
+    screenerId ?? "", medicalId ?? "", armCircunference ?? 0.0, armCircumferenceMedical ?? 0.0];
 
   @override
   bool get stringify => true;
@@ -34,6 +37,9 @@ class Contract extends Equatable {
     final point = data['point'] ?? "";
     final screenerId = data['screenerId'] ?? "";
     final medicalId = data['medicalId'] ?? "";
+    final armCircunference = data['arm_circumference']  ?? 0.0;
+    final armCircumferenceMedical = data['arm_circumference_medical']  ?? 0.0;
+
 
     return Contract(
         contractId: documentId,
@@ -41,7 +47,9 @@ class Contract extends Equatable {
         code: code,
         point: point,
         screenerId: screenerId,
-        medicalId: medicalId
+        medicalId: medicalId,
+        armCircunference: armCircunference,
+        armCircumferenceMedical: armCircumferenceMedical,
     );
   }
 
@@ -52,8 +60,10 @@ class Contract extends Equatable {
       'code': code,
       'point': point,
       'screenerId': screenerId,
-      'medicalId': medicalId
-      /*'arm_circumference': armCircunference,
+      'medicalId': medicalId,
+      'arm_circumference': armCircunference,
+      'arm_circumference_medical': armCircumferenceMedical
+      /*
       'arm_circumference_medical': armCircumferenceMedical,
 
       'height': height,

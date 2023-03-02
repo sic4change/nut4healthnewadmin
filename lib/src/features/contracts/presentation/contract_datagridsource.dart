@@ -32,7 +32,10 @@ class ContractDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Id', value: contractWithScreenerAndMedicalAndPoint.contract.contractId),
           DataGridCell<String>(columnName: 'Código', value: contractWithScreenerAndMedicalAndPoint.contract.code),
           DataGridCell<String>(columnName: 'Estado', value: contractWithScreenerAndMedicalAndPoint.contract.status),
-
+          DataGridCell<double>(columnName: 'Perímetro braquial (cm)',
+              value: contractWithScreenerAndMedicalAndPoint.contract.armCircunference == 0 ? null : contractWithScreenerAndMedicalAndPoint.contract.armCircunference),
+          DataGridCell<double>(columnName: 'Perímetro braquial confirmado (cm)',
+              value: contractWithScreenerAndMedicalAndPoint.contract.armCircumferenceMedical == 0 ? null : contractWithScreenerAndMedicalAndPoint.contract.armCircumferenceMedical),
         ]);
       }).toList();
     }
@@ -142,11 +145,21 @@ class ContractDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[2].value.toString()),
       ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[3].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[4].value.toString()),
+      ),
     ]);
   }
 
-  setContracts(List<ContractWithScreenerAndMedicalAndPoint>? contracData) {
-    _contracts = contracData;
+  setContracts(List<ContractWithScreenerAndMedicalAndPoint>? contractData) {
+    _contracts = contractData;
   }
 
   List<ContractWithScreenerAndMedicalAndPoint>? getContracts() {

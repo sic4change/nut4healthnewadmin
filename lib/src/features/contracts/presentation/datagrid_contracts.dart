@@ -60,12 +60,14 @@ class _ContractDataGridState extends LocalizationSampleViewState {
   late String selectedLocale;
 
   /// Translate names
-  late String _id, _code, _status, _exportXLS, _exportPDF, _total, _contracts;
+  late String _id, _code, _status, _exportXLS, _exportPDF, _total, _contracts, _armCircunference, _armCircunferenceConfirmed;
 
   late Map<String, double> columnWidths = {
     'Id': 150,
     'Código': 150,
     'Estado': 150,
+    'Perímetro braquial (cm)': 150,
+    'Perímetro braquial confirmado (cm)': 150,
   };
 
   /// Used to validate the forms
@@ -163,7 +165,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
           });
       final List<int> bytes = workbook.saveAsStream();
       workbook.dispose();
-      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_contracts..xlsx');
+      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_contracts.xlsx');
     }
 
     Future<void> exportDataGridToPdf() async {
@@ -279,6 +281,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _id = 'Id';
         _code = 'Code';
         _status = 'Status';
+        _armCircunference = 'Brachial circumference (cm)';
+        _armCircunferenceConfirmed = 'Confirmed brachial circumference (cm)';
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
         _total = 'Total Diagnosis';
@@ -288,6 +292,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _id = 'Id';
         _code = 'Código';
         _status = 'Estado';
+        _armCircunference = 'Perímetro braquial (cm)';
+        _armCircunferenceConfirmed = 'Perímetro braquial confirmado (cm)';
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
         _total = 'Diagnósticos totale';
@@ -296,6 +302,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _id = 'Identifiant';
         _code = 'Code';
         _status = 'Statut';
+        _armCircunferenceConfirmed = 'Circonférence brachiale confirmée (cm)';
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
         _total = 'Total des diagnostics';
@@ -352,6 +359,30 @@ class _ContractDataGridState extends LocalizationSampleViewState {
             ),
           ),
         ),
+        GridColumn(
+          columnName: 'Perímetro braquial (cm)',
+          width: columnWidths['Perímetro braquial (cm)']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _armCircunference.toString(),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+        GridColumn(
+          columnName: 'Perímetro braquial confirmado (cm)',
+          width: columnWidths['Perímetro braquial confirmado (cm)']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _armCircunferenceConfirmed.toString(),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -365,7 +396,10 @@ class _ContractDataGridState extends LocalizationSampleViewState {
 
     _id = 'Id';
     _code = 'Código';
+    _contracts = 'Diagnosis';
     _status = 'Estado';
+    _armCircunference = 'Perímetro braquial (cm)';
+    _armCircunferenceConfirmed = 'Perímetro braquial confirmado (cm)';
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';
     _total = 'Diagnósticos totale';
