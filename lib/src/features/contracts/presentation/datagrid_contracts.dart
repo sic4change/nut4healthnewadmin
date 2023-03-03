@@ -62,7 +62,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
   /// Translate names
   late String _id, _code, _status, _exportXLS, _exportPDF, _total, _contracts,
       _armCircunference, _armCircunferenceConfirmed, _weight, _height, _name,
-      _surnames, _sex, _dni, _tutor, _contact, _address
+      _surnames, _sex, _dni, _tutor, _contact, _address, _date
   ;
 
   late Map<String, double> columnWidths = {
@@ -80,6 +80,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     'Madre, Padre o Tutor': 150,
     'Contacto': 150,
     'Lugar': 150,
+    'Fecha': 150,
   };
 
   /// Used to validate the forms
@@ -308,6 +309,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _exportPDF = 'Export PDF';
         _total = 'Total Diagnosis';
         _contracts = 'Diagnosis';
+        _date = 'Date';
         break;
       case 'es_ES':
         _id = 'Id';
@@ -327,6 +329,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
         _total = 'Diagnósticos totale';
+        _contracts = 'Diagnósticos';
+        _date = 'Fecha';
         break;
       case 'fr_FR':
         _id = 'Identifiant';
@@ -346,6 +350,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
         _total = 'Total des diagnostics';
+        _contracts = 'Diagnostics';
+        _date = 'Date';
         break;
     }
     return SfDataGrid(
@@ -531,6 +537,18 @@ class _ContractDataGridState extends LocalizationSampleViewState {
             ),
           ),
         ),
+        GridColumn(
+          columnName: 'Fecha',
+          width: columnWidths['Fecha']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _date.toString(),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -559,7 +577,9 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     _address = 'Lugar';
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';
-    _total = 'Diagnósticos totale';
+    _total = 'Diagnósticos totales';
+    _contracts = 'Diagnósticos';
+    _date = 'Fecha';
   }
 
 

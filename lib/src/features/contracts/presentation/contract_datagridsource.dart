@@ -47,7 +47,7 @@ class ContractDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Madre, Padre o Tutor', value: contractWithScreenerAndMedicalAndPoint.contract.childTutor),
           DataGridCell<String>(columnName: 'Contacto', value: contractWithScreenerAndMedicalAndPoint.contract.childPhoneContract),
           DataGridCell<String>(columnName: 'Lugar', value: contractWithScreenerAndMedicalAndPoint.contract.childAddress),
-
+          DataGridCell<DateTime>(columnName: 'Fecha', value: contractWithScreenerAndMedicalAndPoint.contract.creationDate == DateTime(0, 0, 0) ? null : contractWithScreenerAndMedicalAndPoint.contract.creationDate),
         ]);
       }).toList();
     }
@@ -211,6 +211,11 @@ class ContractDataGridSource extends DataGridSource {
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[13].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[14].value.toString()),
       ),
     ]);
   }

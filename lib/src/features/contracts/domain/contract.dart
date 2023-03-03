@@ -1,6 +1,8 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
 
 typedef ContractID = String;
 
@@ -10,7 +12,7 @@ class Contract extends Equatable {
   const Contract({required this.contractId, this.status, this.code, this.point,
     this.screenerId, this.medicalId, this.armCircunference, this.armCircumferenceMedical,
     this.weight, this.height, this.childName, this.childSurname, this.sex, this.childDNI,
-    this.childTutor, this.childPhoneContract, this.childAddress
+    this.childTutor, this.childPhoneContract, this.childAddress, this.creationDate
   });
 
   final ContractID contractId;
@@ -30,12 +32,14 @@ class Contract extends Equatable {
   final String? childTutor;
   final String? childPhoneContract;
   final String? childAddress;
+  final DateTime? creationDate;
 
   @override
   List<Object> get props => [contractId, status ?? "", code ?? "", point ?? "",
     screenerId ?? "", medicalId ?? "", armCircunference ?? 0.0, armCircumferenceMedical ?? 0.0,
     weight ?? 0.0, height ?? 0.0, childName ?? "", childSurname ?? "", sex ?? "",
-    childDNI ?? "", childTutor ?? "", childPhoneContract ?? "", childAddress ?? ""
+    childDNI ?? "", childTutor ?? "", childPhoneContract ?? "", childAddress ?? "",
+    creationDate ?? DateTime(0, 0, 0)
   ];
 
   @override
@@ -63,6 +67,9 @@ class Contract extends Equatable {
     final childTutor = data['childTutor'] ?? "";
     final childPhoneContract = data['childPhoneContract'] ?? "";
     final childAddress = data['childAddress'] ?? "";
+    final creationDate = DateTime.fromMillisecondsSinceEpoch( data['creationDateMiliseconds']);
+    print("Aqui $childName");
+    print("Aqui $creationDate");
 
     return Contract(
         contractId: documentId,
@@ -81,7 +88,8 @@ class Contract extends Equatable {
         childDNI: childDNI,
         childTutor: childTutor,
         childPhoneContract: childPhoneContract,
-        childAddress: childAddress
+        childAddress: childAddress,
+        creationDate: creationDate
     );
   }
 
@@ -103,11 +111,10 @@ class Contract extends Equatable {
       'childTutor': childTutor,
       'childPhoneContract': childPhoneContract,
       'childAddress': childAddress,
+      'creationDate': creationDate
+
       /*
-
-
       'medicalId': medicalId,
-
       'smsSent': smsSent,
       'duration': duration*/
     };
