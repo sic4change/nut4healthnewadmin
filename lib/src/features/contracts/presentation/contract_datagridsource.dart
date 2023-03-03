@@ -1,15 +1,12 @@
 /// Dart import
 import 'dart:math' as math;
 
-import 'package:adminnut4health/src/features/points/domain/point.dart';
 /// Packages import
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 /// DataGrid import
 // ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-import '../../users/domain/user.dart';
 import '../domain/ContractWithScreenerAndMedicalAndPoint.dart';
 
 /// Set contracts's data collection to data grid source.
@@ -51,6 +48,9 @@ class ContractDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Puesto Salud', value: contractWithScreenerAndMedicalAndPoint.point?.fullName ?? ""),
           DataGridCell<String>(columnName: 'Agente Salud', value: contractWithScreenerAndMedicalAndPoint.screener == null ? "" : "${contractWithScreenerAndMedicalAndPoint.screener?.name} ${contractWithScreenerAndMedicalAndPoint.screener?.surname}"),
           DataGridCell<String>(columnName: 'Servicio Salud', value: contractWithScreenerAndMedicalAndPoint.medical == null ? "" : "${contractWithScreenerAndMedicalAndPoint.medical?.name} ${contractWithScreenerAndMedicalAndPoint.medical?.surname}"),
+          DataGridCell<DateTime>(columnName: 'Fecha Atención Médica', value: contractWithScreenerAndMedicalAndPoint.contract.medicalDate == DateTime(0, 0, 0) ? null : contractWithScreenerAndMedicalAndPoint.contract.medicalDate),
+          DataGridCell<bool>(columnName: 'SMS Enviado', value: contractWithScreenerAndMedicalAndPoint.contract.smsSent ?? false),
+          DataGridCell<String>(columnName: 'Duration', value: contractWithScreenerAndMedicalAndPoint.contract.duration),
         ]);
       }).toList();
     }
@@ -144,6 +144,25 @@ class ContractDataGridSource extends DataGridSource {
     }
   }
 
+  final Map<String, Image> _images = <String, Image>{
+    '✔': Image.asset('images/Perfect.png'),
+    '✘': Image.asset('images/Insufficient.png'),
+  };
+
+  Widget _buildSMSSent(bool value) {
+    if (value) {
+      return Padding(
+        padding: const EdgeInsets.only(left: 16.0),
+        child: _getWidget(_images['✔']!, ''),
+      );
+    } else  {
+      return Padding(
+        padding: const EdgeInsets.only(left: 16.0),
+        child: _getWidget(_images['✘']!, ''),
+      );
+    }
+  }
+
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(cells: <Widget>[
@@ -220,6 +239,17 @@ class ContractDataGridSource extends DataGridSource {
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[17].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[18].value.toString()),
+      ),
+      _buildSMSSent(row.getCells()[19].value),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[20].value.toString()),
       ),
     ]);
   }

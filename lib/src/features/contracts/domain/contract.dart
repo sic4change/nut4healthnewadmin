@@ -10,7 +10,8 @@ class Contract extends Equatable {
   const Contract({required this.contractId, this.status, this.code, this.point,
     this.screenerId, this.medicalId, this.armCircunference, this.armCircumferenceMedical,
     this.weight, this.height, this.childName, this.childSurname, this.sex, this.childDNI,
-    this.childTutor, this.childPhoneContract, this.childAddress, this.creationDate
+    this.childTutor, this.childPhoneContract, this.childAddress, this.creationDate,
+    this.medicalDate, this.smsSent, this.duration
   });
 
   final ContractID contractId;
@@ -31,13 +32,17 @@ class Contract extends Equatable {
   final String? childPhoneContract;
   final String? childAddress;
   final DateTime? creationDate;
+  final DateTime? medicalDate;
+  final bool? smsSent;
+  final String? duration;
 
   @override
   List<Object> get props => [contractId, status ?? "", code ?? "", point ?? "",
     screenerId ?? "", medicalId ?? "", armCircunference ?? 0.0, armCircumferenceMedical ?? 0.0,
     weight ?? 0.0, height ?? 0.0, childName ?? "", childSurname ?? "", sex ?? "",
     childDNI ?? "", childTutor ?? "", childPhoneContract ?? "", childAddress ?? "",
-    creationDate ?? DateTime(0, 0, 0)
+    creationDate ?? DateTime(0, 0, 0,), medicalDate ?? DateTime(0, 0, 0), smsSent ?? false,
+    duration ?? ""
   ];
 
   @override
@@ -66,6 +71,9 @@ class Contract extends Equatable {
     final childPhoneContract = data['childPhoneContract'] ?? "";
     final childAddress = data['childAddress'] ?? "";
     final creationDate = DateTime.fromMillisecondsSinceEpoch( data['creationDateMiliseconds']);
+    final medicalDate = DateTime.fromMillisecondsSinceEpoch( data['medicalDateMiliseconds']);
+    final smsSent = data['smsSent'] ?? false;
+    final duration = data['duration'] ?? "";
 
     return Contract(
         contractId: documentId,
@@ -85,7 +93,10 @@ class Contract extends Equatable {
         childTutor: childTutor,
         childPhoneContract: childPhoneContract,
         childAddress: childAddress,
-        creationDate: creationDate
+        creationDate: creationDate,
+        medicalDate: medicalDate,
+        smsSent: smsSent,
+        duration: duration
     );
   }
 
@@ -107,12 +118,10 @@ class Contract extends Equatable {
       'childTutor': childTutor,
       'childPhoneContract': childPhoneContract,
       'childAddress': childAddress,
-      'creationDate': creationDate
-
-      /*
-      'medicalId': medicalId,
+      'creationDate': creationDate,
+      'medicalDate': medicalDate,
       'smsSent': smsSent,
-      'duration': duration*/
+      'duration': duration
     };
   }
 }

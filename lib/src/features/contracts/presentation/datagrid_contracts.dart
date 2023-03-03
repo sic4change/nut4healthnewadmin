@@ -61,7 +61,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
   late String _id, _code, _status, _exportXLS, _exportPDF, _total, _contracts,
       _armCircunference, _armCircunferenceConfirmed, _weight, _height, _name,
       _surnames, _sex, _dni, _tutor, _contact, _address, _date, _point, _agent,
-      _medical
+      _medical, _medicalDate, _smsSent, _duration
   ;
 
   late Map<String, double> columnWidths = {
@@ -83,6 +83,9 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     'Puesto Salud': 150,
     'Agente Salud': 150,
     'Servicio Salud': 150,
+    'Fecha Atención Médica': 150,
+    'SMS Enviado': 150,
+    'Duración': 150,
   };
 
   /// Used to validate the forms
@@ -315,6 +318,9 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _point = 'Healthcare Position';
         _agent = 'Healthcare Agent';
         _medical = 'Healtcare Service';
+        _medicalDate = 'Medical Appointment Date';
+        _smsSent = 'SMS Sent';
+        _duration = 'Duration';
         break;
       case 'es_ES':
         _id = 'Id';
@@ -339,6 +345,9 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _point = 'Puesto Salud';
         _agent = 'Agente Salud';
         _medical = 'Servicio Salud';
+        _medicalDate = 'Fecha Atención Médica';
+        _smsSent = 'SMS Enviado';
+        _duration = 'Duración';
         break;
       case 'fr_FR':
         _id = 'Identifiant';
@@ -363,6 +372,9 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _point = 'Poste de santé';
         _agent = 'Agent de santé';
         _medical = 'Servicio de santé';
+        _medicalDate = 'Date de consultation médicale';
+        _smsSent = 'SMS envoyé';
+        _duration = 'Durée';
         break;
     }
     return SfDataGrid(
@@ -592,10 +604,44 @@ class _ContractDataGridState extends LocalizationSampleViewState {
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              _agent.toString(),
+              _medical.toString(),
               overflow: TextOverflow.ellipsis,
             ),
           ),
+        ),
+        GridColumn(
+          columnName: 'Fecha Atención Médica',
+          width: columnWidths['Fecha Atención Médica']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _medicalDate.toString(),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+        GridColumn(
+          columnName: 'SMS Enviado',
+          width: columnWidths['SMS Enviado']!,
+          label: Container(
+              padding: const EdgeInsets.all(8.0),
+              alignment: Alignment.center,
+              child: Text(
+                _smsSent,
+                overflow: TextOverflow.ellipsis,
+              )),
+        ),
+        GridColumn(
+          columnName: 'Duración',
+          width: columnWidths['Duración']!,
+          label: Container(
+              padding: const EdgeInsets.all(8.0),
+              alignment: Alignment.center,
+              child: Text(
+                _duration,
+                overflow: TextOverflow.ellipsis,
+              )),
         ),
       ],
     );
@@ -631,6 +677,9 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     _point = 'Puesto Salud';
     _agent = 'Agente Salud';
     _medical = 'Servicio Salud';
+    _medicalDate = 'Fecha Atención Médica';
+    _smsSent = 'SMS Enviado';
+    _duration = 'Duración';
   }
 
 
