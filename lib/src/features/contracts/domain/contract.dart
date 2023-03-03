@@ -66,8 +66,6 @@ class Contract extends Equatable {
     final childPhoneContract = data['childPhoneContract'] ?? "";
     final childAddress = data['childAddress'] ?? "";
     final creationDate = DateTime.fromMillisecondsSinceEpoch( data['creationDateMiliseconds']);
-    print("Aqui $childName");
-    print("Aqui $creationDate");
 
     return Contract(
         contractId: documentId,

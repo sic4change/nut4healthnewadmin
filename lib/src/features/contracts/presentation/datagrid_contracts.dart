@@ -17,8 +17,6 @@ import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 import '../../../sample/model/sample_view.dart';
-import '../../points/domain/point.dart';
-import '../../users/domain/user.dart';
 /// Local import
 import '../data/firestore_repository.dart';
 import '../domain/ContractWithScreenerAndMedicalAndPoint.dart';
@@ -62,7 +60,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
   /// Translate names
   late String _id, _code, _status, _exportXLS, _exportPDF, _total, _contracts,
       _armCircunference, _armCircunferenceConfirmed, _weight, _height, _name,
-      _surnames, _sex, _dni, _tutor, _contact, _address, _date, _point
+      _surnames, _sex, _dni, _tutor, _contact, _address, _date, _point, _agent,
+      _medical
   ;
 
   late Map<String, double> columnWidths = {
@@ -82,6 +81,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     'Lugar': 150,
     'Fecha': 150,
     'Puesto Salud': 150,
+    'Agente Salud': 150,
+    'Servicio Salud': 150,
   };
 
   /// Used to validate the forms
@@ -312,6 +313,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _contracts = 'Diagnosis';
         _date = 'Date';
         _point = 'Healthcare Position';
+        _agent = 'Healthcare Agent';
+        _medical = 'Healtcare Service';
         break;
       case 'es_ES':
         _id = 'Id';
@@ -334,6 +337,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _contracts = 'Diagnósticos';
         _date = 'Fecha';
         _point = 'Puesto Salud';
+        _agent = 'Agente Salud';
+        _medical = 'Servicio Salud';
         break;
       case 'fr_FR':
         _id = 'Identifiant';
@@ -356,6 +361,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _contracts = 'Diagnostics';
         _date = 'Date';
         _point = 'Poste de santé';
+        _agent = 'Agent de santé';
+        _medical = 'Servicio de santé';
         break;
     }
     return SfDataGrid(
@@ -566,6 +573,30 @@ class _ContractDataGridState extends LocalizationSampleViewState {
             ),
           ),
         ),
+        GridColumn(
+          columnName: 'Agente Salud',
+          width: columnWidths['Agente Salud']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _agent.toString(),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+        GridColumn(
+          columnName: 'Servicio Salud',
+          width: columnWidths['Servicio Salud']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _agent.toString(),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -598,6 +629,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     _contracts = 'Diagnósticos';
     _date = 'Fecha';
     _point = 'Puesto Salud';
+    _agent = 'Agente Salud';
+    _medical = 'Servicio Salud';
   }
 
 
