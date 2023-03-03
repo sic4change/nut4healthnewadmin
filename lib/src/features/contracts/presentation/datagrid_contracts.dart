@@ -62,7 +62,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
   /// Translate names
   late String _id, _code, _status, _exportXLS, _exportPDF, _total, _contracts,
       _armCircunference, _armCircunferenceConfirmed, _weight, _height, _name,
-      _surnames, _sex, _dni, _tutor, _contact, _address, _date
+      _surnames, _sex, _dni, _tutor, _contact, _address, _date, _point
   ;
 
   late Map<String, double> columnWidths = {
@@ -81,6 +81,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     'Contacto': 150,
     'Lugar': 150,
     'Fecha': 150,
+    'Puesto Salud': 150,
   };
 
   /// Used to validate the forms
@@ -310,6 +311,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _total = 'Total Diagnosis';
         _contracts = 'Diagnosis';
         _date = 'Date';
+        _point = 'Healthcare Position';
         break;
       case 'es_ES':
         _id = 'Id';
@@ -331,6 +333,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _total = 'Diagnósticos totale';
         _contracts = 'Diagnósticos';
         _date = 'Fecha';
+        _point = 'Puesto Salud';
         break;
       case 'fr_FR':
         _id = 'Identifiant';
@@ -352,6 +355,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _total = 'Total des diagnostics';
         _contracts = 'Diagnostics';
         _date = 'Date';
+        _point = 'Poste de santé';
         break;
     }
     return SfDataGrid(
@@ -373,6 +377,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         GridColumn(
             width: columnWidths['Id']!,
             columnName: 'Id',
+            visible: false,
             label: Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(8.0),
@@ -549,6 +554,18 @@ class _ContractDataGridState extends LocalizationSampleViewState {
             ),
           ),
         ),
+        GridColumn(
+          columnName: 'Puesto Salud',
+          width: columnWidths['Puesto Salud']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _point.toString(),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -580,6 +597,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     _total = 'Diagnósticos totales';
     _contracts = 'Diagnósticos';
     _date = 'Fecha';
+    _point = 'Puesto Salud';
   }
 
 

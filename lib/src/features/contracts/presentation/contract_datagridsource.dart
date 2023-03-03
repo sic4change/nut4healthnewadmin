@@ -48,6 +48,7 @@ class ContractDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Contacto', value: contractWithScreenerAndMedicalAndPoint.contract.childPhoneContract),
           DataGridCell<String>(columnName: 'Lugar', value: contractWithScreenerAndMedicalAndPoint.contract.childAddress),
           DataGridCell<DateTime>(columnName: 'Fecha', value: contractWithScreenerAndMedicalAndPoint.contract.creationDate == DateTime(0, 0, 0) ? null : contractWithScreenerAndMedicalAndPoint.contract.creationDate),
+          DataGridCell<String>(columnName: 'Puesto Salud', value: contractWithScreenerAndMedicalAndPoint.point?.name ?? ""),
         ]);
       }).toList();
     }
@@ -98,7 +99,7 @@ class ContractDataGridSource extends DataGridSource {
     }
   }
 
-  Widget _buildRole(dynamic value) {
+  Widget _buildStatus(dynamic value) {
     return Center(
       child: Text(
         value,
@@ -128,12 +129,14 @@ class ContractDataGridSource extends DataGridSource {
   }
 
   TextStyle _getStatusTextStyle(dynamic value) {
-    if (value.toString() == 'Servicio Salud') {
-      return const TextStyle(color: Colors.green);
-    } else if (value.toString() == 'Agente Salud') {
-      return TextStyle(color: Colors.blueAccent);
-    } else if (value.toString() == 'Super Admin') {
+    if (value.toString() == 'DUPLICATED') {
+      return const TextStyle(color: Colors.orange);
+    } else if (value.toString() == 'REGISTERED') {
+      return TextStyle(color: Colors.green);
+    } else if (value.toString() == 'DERIVED') {
       return const TextStyle(color: Colors.red);
+    } else if (value.toString() == 'ADMITTED') {
+      return const TextStyle(color: Colors.purple);
     } else {
       return const TextStyle(color: Colors.orange);
     }
@@ -152,11 +155,7 @@ class ContractDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[1].value.toString()),
       ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[2].value.toString()),
-      ),
+      _buildStatus(row.getCells()[2].value.toString()),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
@@ -202,21 +201,14 @@ class ContractDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[11].value.toString()),
       ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[12].value.toString()),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[13].value.toString()),
-      ),
+      _buildPhone(row.getCells()[12].value.toString()),
+      _buildPoint(row.getCells()[13].value.toString()),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[14].value.toString()),
       ),
+      _buildPoint(row.getCells()[15].value.toString()),
     ]);
   }
 
