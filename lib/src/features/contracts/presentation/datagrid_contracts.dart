@@ -61,13 +61,14 @@ class _ContractDataGridState extends LocalizationSampleViewState {
   late String _id, _code, _status, _exportXLS, _exportPDF, _total, _contracts,
       _armCircunference, _armCircunferenceConfirmed, _weight, _height, _name,
       _surnames, _sex, _dni, _tutor, _contact, _address, _date, _point, _agent,
-      _medical, _medicalDate, _smsSent, _duration
+      _medical, _medicalDate, _smsSent, _duration, _desnutrition
   ;
 
   late Map<String, double> columnWidths = {
     'Id': 150,
     'Código': 150,
     'Estado': 150,
+    'Desnutrición': 150,
     'Perímetro braquial (cm)': 150,
     'Perímetro braquial confirmado (cm)': 150,
     'Peso (kg)': 150,
@@ -323,6 +324,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _medicalDate = 'Medical Appointment Date';
         _smsSent = 'SMS Sent';
         _duration = 'Duration';
+        _desnutrition = 'Desnutrition';
         break;
       case 'es_ES':
         _id = 'Id';
@@ -350,6 +352,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _medicalDate = 'Fecha Atención Médica';
         _smsSent = 'SMS Enviado';
         _duration = 'Duración';
+        _desnutrition = 'Desnutrición';
         break;
       case 'fr_FR':
         _id = 'Identifiant';
@@ -377,6 +380,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _medicalDate = 'Date de consultation médicale';
         _smsSent = 'SMS envoyé';
         _duration = 'Durée';
+        _desnutrition = 'Désnutrition';
         break;
     }
     return SfDataGrid(
@@ -427,6 +431,18 @@ class _ContractDataGridState extends LocalizationSampleViewState {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               _status,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+        GridColumn(
+          columnName: 'Desnutrición',
+          width: columnWidths['Desnutrición']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _desnutrition,
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -686,6 +702,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     _medicalDate = 'Fecha Atención Médica';
     _smsSent = 'SMS Enviado';
     _duration = 'Duración';
+    _desnutrition = 'Desnutrición';
   }
 
 

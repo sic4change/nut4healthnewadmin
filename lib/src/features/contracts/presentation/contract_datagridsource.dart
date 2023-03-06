@@ -23,12 +23,22 @@ class ContractDataGridSource extends DataGridSource {
   /// Building DataGridRows
   void buildDataGridRows() {
     if (_contracts != null && _contracts!.isNotEmpty) {
+
       _dataGridRows = _contracts!.map<DataGridRow>(
               (ContractWithScreenerAndMedicalAndPoint contractWithScreenerAndMedicalAndPoint) {
+                var desnutritionValue = 'Normopeso (NW)';
+                if (contractWithScreenerAndMedicalAndPoint.contract.percentage! < 50) {
+                  desnutritionValue = 'Normopeso (NW)';
+                } else if (contractWithScreenerAndMedicalAndPoint.contract.percentage == 50) {
+                  desnutritionValue = 'Desnutrición Aguda Moderada (MAM)';
+                } else {
+                  desnutritionValue =  'Desnutrición Aguda Severa (SAM)';
+                }
         return DataGridRow(cells: <DataGridCell>[
           DataGridCell<String>(columnName: 'Id', value: contractWithScreenerAndMedicalAndPoint.contract.contractId),
           DataGridCell<String>(columnName: 'Código', value: contractWithScreenerAndMedicalAndPoint.contract.code),
           DataGridCell<String>(columnName: 'Estado', value: contractWithScreenerAndMedicalAndPoint.contract.status),
+          DataGridCell<String>(columnName: 'Desnutrición', value: desnutritionValue),
           DataGridCell<double>(columnName: 'Perímetro braquial (cm)',
               value: contractWithScreenerAndMedicalAndPoint.contract.armCircunference == 0 ? null : contractWithScreenerAndMedicalAndPoint.contract.armCircunference),
           DataGridCell<double>(columnName: 'Perímetro braquial confirmado (cm)',
@@ -101,6 +111,16 @@ class ContractDataGridSource extends DataGridSource {
     }
   }
 
+  Widget _buildDesnutritionStatus(dynamic value) {
+    return Center(
+      child: Text(
+        value,
+        style: _getDesnutritionStatusTextStyle(value),
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+  }
+
   Widget _buildStatus(dynamic value) {
     return Center(
       child: Text(
@@ -128,6 +148,18 @@ class ContractDataGridSource extends DataGridSource {
         ],
       ),
     );
+  }
+
+  TextStyle _getDesnutritionStatusTextStyle(dynamic value) {
+    if (value.toString() == 'Desnutrición Aguda Moderada (MAM)') {
+      return const TextStyle(color: Colors.orange);
+    } else if (value.toString() == 'Normopeso (NW)') {
+      return TextStyle(color: Colors.green);
+    } else if (value.toString() == 'Desnutrición Aguda Severa (SAM)') {
+      return const TextStyle(color: Colors.red);
+    }  else {
+      return const TextStyle(color: Colors.orange);
+    }
   }
 
   TextStyle _getStatusTextStyle(dynamic value) {
@@ -177,17 +209,13 @@ class ContractDataGridSource extends DataGridSource {
         child: Text(row.getCells()[1].value.toString()),
       ),
       _buildStatus(row.getCells()[2].value.toString()),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[3].value.toString()),
-      ),
-
+      _buildDesnutritionStatus(row.getCells()[3].value.toString()),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[4].value.toString()),
       ),
+
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
@@ -198,12 +226,12 @@ class ContractDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[6].value.toString()),
       ),
-
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[7].value.toString()),
       ),
+
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
@@ -224,35 +252,40 @@ class ContractDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[11].value.toString()),
       ),
-      _buildPhone(row.getCells()[12].value.toString()),
-      _buildPoint(row.getCells()[13].value.toString()),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[14].value.toString()),
+        child: Text(row.getCells()[12].value.toString()),
       ),
-      _buildPoint(row.getCells()[15].value.toString()),
+      _buildPhone(row.getCells()[13].value.toString()),
+      _buildPoint(row.getCells()[14].value.toString()),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[16].value.toString()),
+        child: Text(row.getCells()[15].value.toString()),
       ),
+      _buildPoint(row.getCells()[16].value.toString()),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[17].value.toString()),
       ),
-
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[18].value.toString()),
       ),
-      _buildSMSSent(row.getCells()[19].value),
+
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[20].value.toString()),
+        child: Text(row.getCells()[19].value.toString()),
+      ),
+      _buildSMSSent(row.getCells()[20].value),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[21].value.toString()),
       ),
     ]);
   }
