@@ -42,7 +42,7 @@ class Contract extends Equatable {
     weight ?? 0.0, height ?? 0.0, childName ?? "", childSurname ?? "", sex ?? "",
     childDNI ?? "", childTutor ?? "", childPhoneContract ?? "", childAddress ?? "",
     creationDate ?? DateTime(0, 0, 0,), medicalDate ?? DateTime(0, 0, 0), smsSent ?? false,
-    duration ?? ""
+    duration ?? "0"
   ];
 
   @override
@@ -63,17 +63,17 @@ class Contract extends Equatable {
     final armCircumferenceMedical = data['arm_circumference_medical']  ?? 0.0;
     final weight = data['weight']  ?? 0.0;
     final height = data['height']  ?? 0.0;
-    final childName = data['childName']  ?? "";
+    final childName = data['childName'] ?? "";
     final childSurname = data['childSurname'] ?? "";
     final sex = data['sex'] ?? "";
     final childDNI = data['childDNI'] ?? "";
     final childTutor = data['childTutor'] ?? "";
     final childPhoneContract = data['childPhoneContract'] ?? "";
-    final childAddress = data['childAddress'] ?? "";
+    final childAddress = data['childAddress']?? "";
     final creationDate = DateTime.fromMillisecondsSinceEpoch( data['creationDateMiliseconds']);
     final medicalDate = DateTime.fromMillisecondsSinceEpoch( data['medicalDateMiliseconds']);
     final smsSent = data['smsSent'] ?? false;
-    final duration = data['duration'] ?? "";
+    final duration = data['duration'] ?? "0";
 
     return Contract(
         contractId: documentId,

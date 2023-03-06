@@ -178,6 +178,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
   Widget _buildHeaderButtons() {
     Future<void> exportDataGridToExcel() async {
       final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
+          excludeColumns: ['Id', 'Nombre', 'Apellidos', 'Lugar', 'Madre, Padre o Tutor', 'Contacto'],
           cellExport: (DataGridCellExcelExportDetails details) {
 
           });
@@ -190,6 +191,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
       final ByteData data = await rootBundle.load('images/nut_logo.jpg');
       final PdfDocument document = _key.currentState!.exportToPdfDocument(
           fitAllColumnsInOnePage: true,
+          excludeColumns: ['Id', 'Nombre', 'Apellidos', 'Lugar', 'Madre, Padre o Tutor', 'Contacto'],
           cellExport: (DataGridCellPdfExportDetails details) {
 
           },
@@ -441,6 +443,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
             ),
           ),
         ),
+
         GridColumn(
           columnName: 'Perímetro braquial confirmado (cm)',
           width: columnWidths['Perímetro braquial confirmado (cm)']!,
@@ -477,6 +480,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
             ),
           ),
         ),
+
         GridColumn(
           columnName: 'Nombre',
           width: columnWidths['Nombre']!,
@@ -597,6 +601,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
             ),
           ),
         ),
+
         GridColumn(
           columnName: 'Servicio Salud',
           width: columnWidths['Servicio Salud']!,
@@ -609,6 +614,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
             ),
           ),
         ),
+
         GridColumn(
           columnName: 'Fecha Atención Médica',
           width: columnWidths['Fecha Atención Médica']!,

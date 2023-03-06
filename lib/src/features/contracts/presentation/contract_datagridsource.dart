@@ -37,20 +37,20 @@ class ContractDataGridSource extends DataGridSource {
               value: contractWithScreenerAndMedicalAndPoint.contract.weight == 0 ? null : contractWithScreenerAndMedicalAndPoint.contract.weight),
           DataGridCell<double>(columnName: 'Altura (cm)',
               value: contractWithScreenerAndMedicalAndPoint.contract.height == 0 ? null : contractWithScreenerAndMedicalAndPoint.contract.height),
-          DataGridCell<String>(columnName: 'Nombre', value: contractWithScreenerAndMedicalAndPoint.contract.childName),
-          DataGridCell<String>(columnName: 'Apellidos', value: contractWithScreenerAndMedicalAndPoint.contract.childSurname),
+          DataGridCell<String>(columnName: 'Nombre', value: contractWithScreenerAndMedicalAndPoint.contract.childName?.replaceAll('ء', '\\u1574')),
+          DataGridCell<String>(columnName: 'Apellidos', value: contractWithScreenerAndMedicalAndPoint.contract.childSurname?.replaceAll('ء', '\\u1574')),
           DataGridCell<String>(columnName: 'Sexo', value: contractWithScreenerAndMedicalAndPoint.contract.sex),
           DataGridCell<String>(columnName: 'Código Identificación', value: contractWithScreenerAndMedicalAndPoint.contract.childDNI),
-          DataGridCell<String>(columnName: 'Madre, Padre o Tutor', value: contractWithScreenerAndMedicalAndPoint.contract.childTutor),
+          DataGridCell<String>(columnName: 'Madre, Padre o Tutor', value: contractWithScreenerAndMedicalAndPoint.contract.childTutor?.replaceAll('ء', '\\u1574')),
           DataGridCell<String>(columnName: 'Contacto', value: contractWithScreenerAndMedicalAndPoint.contract.childPhoneContract),
-          DataGridCell<String>(columnName: 'Lugar', value: contractWithScreenerAndMedicalAndPoint.contract.childAddress),
+          DataGridCell<String>(columnName: 'Lugar', value: contractWithScreenerAndMedicalAndPoint.contract.childAddress?.replaceAll('ء', '\\u1574')),
           DataGridCell<DateTime>(columnName: 'Fecha', value: contractWithScreenerAndMedicalAndPoint.contract.creationDate == DateTime(0, 0, 0) ? null : contractWithScreenerAndMedicalAndPoint.contract.creationDate),
-          DataGridCell<String>(columnName: 'Puesto Salud', value: contractWithScreenerAndMedicalAndPoint.point?.fullName ?? ""),
+          DataGridCell<String>(columnName: 'Puesto Salud', value: contractWithScreenerAndMedicalAndPoint.point?.fullName?.replaceAll('ء', '\\u1574') ?? ""),
           DataGridCell<String>(columnName: 'Agente Salud', value: contractWithScreenerAndMedicalAndPoint.screener == null ? "" : "${contractWithScreenerAndMedicalAndPoint.screener?.name} ${contractWithScreenerAndMedicalAndPoint.screener?.surname}"),
           DataGridCell<String>(columnName: 'Servicio Salud', value: contractWithScreenerAndMedicalAndPoint.medical == null ? "" : "${contractWithScreenerAndMedicalAndPoint.medical?.name} ${contractWithScreenerAndMedicalAndPoint.medical?.surname}"),
           DataGridCell<DateTime>(columnName: 'Fecha Atención Médica', value: contractWithScreenerAndMedicalAndPoint.contract.medicalDate == DateTime(0, 0, 0) ? null : contractWithScreenerAndMedicalAndPoint.contract.medicalDate),
           DataGridCell<bool>(columnName: 'SMS Enviado', value: contractWithScreenerAndMedicalAndPoint.contract.smsSent ?? false),
-          DataGridCell<String>(columnName: 'Duration', value: contractWithScreenerAndMedicalAndPoint.contract.duration),
+          DataGridCell<String>(columnName: 'Duración', value: contractWithScreenerAndMedicalAndPoint.contract.duration ?? "0"),
         ]);
       }).toList();
     }
@@ -182,6 +182,7 @@ class ContractDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[3].value.toString()),
       ),
+
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
@@ -197,6 +198,7 @@ class ContractDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[6].value.toString()),
       ),
+
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
@@ -240,6 +242,7 @@ class ContractDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[17].value.toString()),
       ),
+
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
