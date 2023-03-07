@@ -68,6 +68,8 @@ class _PointDataGridState extends LocalizationSampleViewState {
       _country,
       _province,
       _active,
+      _latitude,
+      _longitude,
       _newPoint,
       _importCSV,
       _exportXLS,
@@ -87,13 +89,17 @@ class _PointDataGridState extends LocalizationSampleViewState {
     'País': 150,
     'Municipio': 150,
     'Activo': 150,
+    'Latitud': 200,
+    'Longitud': 200,
   };
 
   /// Editing controller for forms to perform update the values.
   TextEditingController? idController,
       nameController,
       codeController,
-      activeController;
+      activeController,
+      latitudeController,
+      longitudeController;
 
   /// Used to validate the forms
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -213,6 +219,8 @@ class _PointDataGridState extends LocalizationSampleViewState {
                           (element) => element.name == row[3].toString())
                       .countryId,
                   active: row[4].toString() == 'true' ? true : false,
+                  latitude: row[5] as double,
+                  longitude: row[6] as double,
                 ));
           }
         }
@@ -395,12 +403,8 @@ class _PointDataGridState extends LocalizationSampleViewState {
   RegExp _getRegExp(TextInputType keyboardType, String columnName) {
     if (keyboardType == TextInputType.number) {
       return RegExp('[0-9]');
-    } else if (keyboardType == TextInputType.text) {
-      return RegExp('.');
-    } else if (keyboardType == TextInputType.phone) {
-      return RegExp(r"^[\d+]+$");
-    } else if (keyboardType == TextInputType.emailAddress) {
-      return RegExp(r"[a-zA-Z0-9@.]+");
+    } else if (keyboardType == const TextInputType.numberWithOptions(decimal: true, signed: true)) {
+      return RegExp(r'(^\-?\d*\.?\d*)');
     } else {
       return RegExp('.');
     }
@@ -480,9 +484,17 @@ class _PointDataGridState extends LocalizationSampleViewState {
       required String columnName,
       required String text}) {
     TextInputType keyboardType = TextInputType.text;
+    if (<String>['Latitud'].contains(columnName)) {
+      keyboardType =  const TextInputType.numberWithOptions(decimal: true, signed: true);
+    } else if (<String>['Longitud'].contains(columnName)) {
+      keyboardType =  const TextInputType.numberWithOptions(decimal: true, signed: true);
+    } else if (<String>['Código'].contains(columnName)) {
+      keyboardType =  TextInputType.number;
+    } else {
+      keyboardType =  TextInputType.text;
+    }
     // Holds the regular expression pattern based on the column type.
     final RegExp regExp = _getRegExp(keyboardType, columnName);
-
     return Row(
       children: <Widget>[
         Container(
@@ -537,6 +549,8 @@ class _PointDataGridState extends LocalizationSampleViewState {
             columnName: 'Activo',
             dropDownMenuItems: activeOptions,
             text: _active),
+        _buildRow(controller: latitudeController!, columnName: 'Latitud', text: _latitude),
+        _buildRow(controller: longitudeController!, columnName: 'Longitud', text: _longitude),
       ],
     );
   }
@@ -569,7 +583,9 @@ class _PointDataGridState extends LocalizationSampleViewState {
             optionSelected: activeController!.text,
             columnName: 'Activo',
             dropDownMenuItems: activeOptions,
-            text: _active)
+            text: _active),
+        _buildRow(controller: latitudeController!, columnName: 'Latitud', text: _latitude),
+        _buildRow(controller: longitudeController!, columnName: 'Longitud', text: _longitude),
       ],
     );
   }
@@ -579,6 +595,8 @@ class _PointDataGridState extends LocalizationSampleViewState {
     nameController!.text = '';
     codeController!.text = '';
     activeController!.text = '✔';
+    latitudeController!.text = '';
+    longitudeController!.text = '';
   }
 
   // Updating the data to the TextEditingController
@@ -636,6 +654,22 @@ class _PointDataGridState extends LocalizationSampleViewState {
         .toString();
 
     activeController!.text = active != "false" ? '✔' : '✘';
+
+    final String? latitude = row
+        .getCells()
+        .firstWhere((DataGridCell element) => element.columnName == 'Latitud')
+        ?.value
+        .toString();
+
+    latitudeController!.text = latitude ?? '';
+
+    final String? longitude = row
+        .getCells()
+        .firstWhere((DataGridCell element) => element.columnName == 'Longitud')
+        ?.value
+        .toString();
+
+    longitudeController!.text = longitude ?? '';
   }
 
   /// Editing the DataGridRow
@@ -672,7 +706,9 @@ class _PointDataGridState extends LocalizationSampleViewState {
           name: nameController!.text,
           province: ref.watch(pointsScreenControllerProvider.notifier).getProvinceSelected().provinceId,
           country: ref.watch(pointsScreenControllerProvider.notifier).getCountrySelected().countryId,
-          active: activeController!.text == '✔' ? true : false));
+          active: activeController!.text == '✔' ? true : false,
+          latitude: double.parse(latitudeController!.text),
+          longitude: double.parse(longitudeController!.text)));
       Navigator.pop(buildContext);
     }
   }
@@ -694,7 +730,9 @@ class _PointDataGridState extends LocalizationSampleViewState {
           phoneCode: codeController!.text,
           country: ref.watch(pointsScreenControllerProvider.notifier).getCountrySelected().countryId,
           province: ref.watch(pointsScreenControllerProvider.notifier).getProvinceSelected().provinceId,
-          active: activeController!.text == '✔' ? true : false));
+          active: activeController!.text == '✔' ? true : false,
+          latitude: double.parse(latitudeController!.text),
+          longitude: double.parse(longitudeController!.text)));
       Navigator.pop(buildContext);
     }
   }
@@ -836,6 +874,8 @@ class _PointDataGridState extends LocalizationSampleViewState {
         _save = 'Save';
         _points = 'Points';
         _removedPoint = 'Point deleted successfully.';
+        _latitude = 'Latitude';
+        _longitude = 'Longitude';
         break;
       case 'es_ES':
         _id = 'Id';
@@ -855,6 +895,8 @@ class _PointDataGridState extends LocalizationSampleViewState {
         _save = 'Guardar';
         _points = 'Puntos';
         _removedPoint = 'Punto eliminado correctamente';
+        _latitude = 'Latitud';
+        _longitude = 'Longitud';
         break;
       case 'fr_FR':
         _id = 'Id';
@@ -874,6 +916,8 @@ class _PointDataGridState extends LocalizationSampleViewState {
         _save = 'Enregistrer';
         _points = 'Les Points';
         _removedPoint = 'Point supprimé avec succès.';
+        _latitude = 'Latitude';
+        _longitude = 'Longitude';
         break;
     }
     return SfDataGrid(
@@ -965,6 +1009,28 @@ class _PointDataGridState extends LocalizationSampleViewState {
                 overflow: TextOverflow.ellipsis,
               )),
         ),
+        GridColumn(
+            columnName: 'Latitud',
+            width: columnWidths['Latitud']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _latitude,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )),
+        GridColumn(
+            columnName: 'Longitud',
+            width: columnWidths['Longitud']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _longitude,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )),
       ],
     );
   }
@@ -977,6 +1043,8 @@ class _PointDataGridState extends LocalizationSampleViewState {
     nameController = TextEditingController();
     codeController = TextEditingController();
     activeController = TextEditingController();
+    latitudeController = TextEditingController();
+    longitudeController = TextEditingController();
     selectedLocale = model.locale.toString();
 
     _id = 'Id';
@@ -985,6 +1053,8 @@ class _PointDataGridState extends LocalizationSampleViewState {
     _country = 'País';
     _province = 'Municipio';
     _active = 'Activo';
+    _latitude = 'Latitud';
+    _longitude = 'Longitud';
     _newPoint = 'Crear Punto';
     _importCSV = 'Importar CSV';
     _exportXLS = 'Exportar XLS';

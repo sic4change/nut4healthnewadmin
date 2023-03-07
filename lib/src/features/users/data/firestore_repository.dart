@@ -118,7 +118,9 @@ class FirestoreRepository {
                             active: false,
                             country: "",
                             province: "",
-                            phoneCode: ""));
+                            phoneCode: "",
+                        latitude: 0.0,
+                        longitude: 0.0));
                   } catch (e) {
                     return UserWithConfigurationAndPoint(
                         user,
@@ -137,8 +139,9 @@ class FirestoreRepository {
                             country: "",
                             active: false,
                             province: "",
-                            phoneCode: "")
-                    );
+                            phoneCode: "",
+                            latitude: 0.0,
+                            longitude: 0.0));
                   }
                 }
               }

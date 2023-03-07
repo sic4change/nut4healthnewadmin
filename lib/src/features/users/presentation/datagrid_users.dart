@@ -438,14 +438,6 @@ class _UserDataGridState extends LocalizationSampleViewState {
     ];
   }
 
-  /*RegExp _getRegExp(TextInputType keyboardType, String columnName) {
-    return keyboardType == TextInputType.number
-        ? columnName == 'Freight' || columnName == 'Price'
-        ? RegExp('[0-9.]')
-        : RegExp('[0-9]')
-        : RegExp('[a-zA-Z ]');
-  }*/
-
   RegExp _getRegExp(TextInputType keyboardType, String columnName) {
     if (keyboardType == TextInputType.number) {
       return RegExp('[0-9]');

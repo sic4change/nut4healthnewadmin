@@ -10,7 +10,8 @@ class Point extends Equatable {
 
   const Point({required this.pointId, required this.name , required this.fullName,
     required this.country, required this.province,
-    required this.phoneCode, required this.active});
+    required this.phoneCode, required this.active, required this.latitude,
+    required this.longitude});
 
   final PointID pointId;
   final String name;
@@ -19,10 +20,12 @@ class Point extends Equatable {
   final String province;
   final String phoneCode;
   final bool active;
+  final double latitude;
+  final double longitude;
 
   @override
   List<Object> get props => [pointId, name, fullName, country, province,
-    phoneCode, active];
+    phoneCode, active, latitude, longitude];
 
   @override
   bool get stringify => true;
@@ -38,6 +41,8 @@ class Point extends Equatable {
     final province = data['province'];
     final phoneCode = data['phoneCode'];
     final active = data['active'] as bool;
+    final latitude = data['latitude'] as double;
+    final longitude = data['longitude'] as double;
 
     return Point(
         pointId: documentId,
@@ -46,7 +51,9 @@ class Point extends Equatable {
         country: country,
         province: province,
         phoneCode: phoneCode,
-        active: active);
+        active: active,
+        latitude: latitude,
+        longitude: longitude);
   }
 
   Map<String, dynamic> toMap() {
@@ -57,6 +64,8 @@ class Point extends Equatable {
       'province': province,
       'phoneCode': phoneCode,
       'active': active,
+      'latitude': latitude,
+      'longitude': longitude,
     };
   }
 }

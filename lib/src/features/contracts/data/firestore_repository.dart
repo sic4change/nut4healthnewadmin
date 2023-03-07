@@ -81,7 +81,7 @@ class FirestoreRepository {
   Stream<List<ContractWithScreenerAndMedicalAndPoint>> watchContractWithConfigurationAndPoints() {
     const emptyUser = User(userId: '', name: '', email: '', role: '');
     const emptyPoint = Point(pointId: '', name: '', fullName: '', country: '',
-        province: '', phoneCode: '', active: false);
+        province: '', phoneCode: '', active: false, latitude: 0.0, longitude: 0.0);
     return CombineLatestStream.combine3(
         watchContracts(), watchUsers(), watchPoints(),
           (List<Contract> contracts, List<User> users, List<Point> points) {
