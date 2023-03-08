@@ -5,6 +5,8 @@ import '../features/cities/presentation/datagrid_cities.dart';
 import '../features/configurations/presentation/datagrid_configurations.dart';
 import '../features/contracts/presentation/datagrid_contracts.dart';
 import '../features/countries/presentation/datagrid_countries.dart';
+import '../features/maps/country/country_map.dart';
+import '../features/maps/point/point_map.dart';
 import '../features/points/presentation/datagrid_points.dart';
 import '../features/provinces/presentation/datagrid_provinces.dart';
 import 'samples/barcodes/data_matrix.dart';
@@ -912,7 +914,7 @@ Map<String, Function> getSampleWidget() {
     'range_selector_with_bar_chart': (Key key) =>
         RangeSelectorBarChartPage(key),
 
-    //dataGridSample
+    //tablas
     'user_datagrid': (Key key) => UserDataGrid(key: key),
     'contract_datagrid': (Key key) => ContractDataGrid(key: key),
     'configuration_datagrid': (Key key) => ConfigurationDataGrid(key: key),
@@ -920,6 +922,10 @@ Map<String, Function> getSampleWidget() {
     'province_datagrid': (Key key) => ProvinceDataGrid(key: key),
     'city_datagrid': (Key key) => CityDataGrid(key: key),
     'point_datagrid': (Key key) => PointDataGrid(key: key),
+
+    //mapas
+    'country_map': (Key key) => MapCountryPage(key),
+    'point_map': (Key key) => MapPointPage(key),
 
     'getting_started_datagrid': (Key key) => GettingStartedDataGrid(key: key),
 

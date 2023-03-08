@@ -65,8 +65,50 @@
               },
               {
                 "type": "sample",
-                "title": "Puestos de Salud",
+                "title": "Puestos de salud",
                 "key": "point_datagrid"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "categoryName": "Geolocalización de datos",
+    "mobileCategoryId": 2,
+    "webCategoryId": 2,
+    "controlList": [
+      {
+        "title": "Geolocalización de datos",
+        "description": "Mapas",
+        "image": "images/map.png",
+        "displayType": "tab",
+        "controlId": 2,
+        "subItems": [
+          {
+            "type": "child",
+            "title": "Por paises",
+            "displayType": "tab",
+            "subItems": [
+              {
+                "type": "sample",
+                "title": "Por paises",
+                "key": "country_map",
+                "codeLink": ""
+              }
+            ]
+          },
+          {
+            "type": "child",
+            "title": "Por puestos de salud",
+            "displayType": "tab",
+            "subItems": [
+              {
+                "type": "sample",
+                "title": "Por puestos de salud",
+                "key": "point_map",
+                "codeLink": ""
               }
             ]
           }
