@@ -25,11 +25,10 @@ class _MapCountryPageState extends SampleViewState
   _MapCountryPageState();
 
   late MapShapeSource _mapSource;
-  late MapShapeSource _facebookMapSource;
-  late MapShapeSource _twitterMapSource;
-  late MapShapeSource _tikTokMapSorce;
-  late MapShapeSource _instagramMapSource;
-  late MapShapeSource _snapChatMapSource;
+  late MapShapeSource _casesMapSource;
+  late MapShapeSource _casesnormopesoMapSource;
+  late MapShapeSource _casesseveraMapSource;
+  late MapShapeSource _casesmoderadaMapSource;
 
   late bool _isLightTheme;
 
@@ -43,29 +42,25 @@ class _MapCountryPageState extends SampleViewState
 
   late String _currentDelegate;
 
-  BoxDecoration? _facebookBoxDecoration;
-  BoxDecoration? _twitterBoxDecoration;
-  BoxDecoration? _instagramBoxDecoration;
-  BoxDecoration? _snapchatBoxDecoration;
-  BoxDecoration? _tiktokBoxDecoration;
+  BoxDecoration? _casesBoxDecoration;
+  BoxDecoration? _casesnormopesoBoxDecoration;
+  BoxDecoration? _casesseveraBoxDecoration;
+  BoxDecoration? _casesmoderadaBoxDecoration;
 
-  late List<_UserDetails> _facebookUsers;
-  late List<_UserDetails> _twitterUsers;
-  late List<_UserDetails> _tikTokUsers;
-  late List<_UserDetails> _snapChatUsers;
-  late List<_UserDetails> _instagramUsers;
+  late List<_UserDetails> _casesUsers;
+  late List<_UserDetails> _casesnormopesoUsers;
+  late List<_UserDetails> _casesmoderadaUsers;
+  late List<_UserDetails> _casesseveraUsers;
 
-  late AnimationController _facebookController;
-  late AnimationController _twitterController;
-  late AnimationController _tiktokController;
-  late AnimationController _instagramController;
-  late AnimationController _snapchatController;
+  late AnimationController _casesController;
+  late AnimationController _casesnormopesoController;
+  late AnimationController _casesseveraController;
+  late AnimationController _casesmoderadaController;
 
-  late Animation<double> _facebookAnimation;
-  late Animation<double> _twitterAnimation;
-  late Animation<double> _tiktokAnimation;
-  late Animation<double> _instagramAnimation;
-  late Animation<double> _snapchatAnimation;
+  late Animation<double> _casesAnimation;
+  late Animation<double> _casesnormopesoAnimation;
+  late Animation<double> _casesseveraAnimation;
+  late Animation<double> _casesmoderadaAnimation;
 
   @override
   void initState() {
@@ -73,42 +68,35 @@ class _MapCountryPageState extends SampleViewState
 
     _isLightTheme = model.themeData.colorScheme.brightness == Brightness.light;
 
-    _facebookController = AnimationController(
+    _casesController = AnimationController(
         duration: const Duration(milliseconds: 500),
         vsync: this,
         lowerBound: 0.6);
-    _facebookAnimation =
-        CurvedAnimation(parent: _facebookController, curve: Curves.easeInOut);
+    _casesAnimation =
+        CurvedAnimation(parent: _casesController, curve: Curves.easeInOut);
 
-    _twitterController = AnimationController(
+    _casesnormopesoController = AnimationController(
         duration: const Duration(milliseconds: 500),
         vsync: this,
         lowerBound: 0.6);
-    _twitterAnimation =
-        CurvedAnimation(parent: _twitterController, curve: Curves.easeInOut);
+    _casesnormopesoAnimation =
+        CurvedAnimation(parent: _casesnormopesoController, curve: Curves.easeInOut);
 
-    _instagramController = AnimationController(
+    _casesseveraController = AnimationController(
         duration: const Duration(milliseconds: 500),
         vsync: this,
         lowerBound: 0.6);
-    _instagramAnimation =
-        CurvedAnimation(parent: _instagramController, curve: Curves.easeInOut);
+    _casesseveraAnimation =
+        CurvedAnimation(parent: _casesseveraController, curve: Curves.easeInOut);
 
-    _tiktokController = AnimationController(
+    _casesmoderadaController = AnimationController(
         duration: const Duration(milliseconds: 500),
         vsync: this,
         lowerBound: 0.6);
-    _tiktokAnimation =
-        CurvedAnimation(parent: _tiktokController, curve: Curves.easeInOut);
+    _casesmoderadaAnimation =
+        CurvedAnimation(parent: _casesmoderadaController, curve: Curves.easeInOut);
 
-    _snapchatController = AnimationController(
-        duration: const Duration(milliseconds: 500),
-        vsync: this,
-        lowerBound: 0.6);
-    _snapchatAnimation =
-        CurvedAnimation(parent: _snapchatController, curve: Curves.easeInOut);
-
-    _facebookController.forward();
+    _casesController.forward();
 
     // Data source to the map.
     //
@@ -119,99 +107,28 @@ class _MapCountryPageState extends SampleViewState
     //
     // [usersCount]: On the basis of this value, color mapping color has been
     // applied to the shape.
-    _facebookUsers = <_UserDetails>[
-      _UserDetails('India', 280),
-      _UserDetails('United States of America', 190),
-      _UserDetails('Indonesia', 130),
-      _UserDetails('Brazil', 120),
-      _UserDetails('Mexico', 86),
-      _UserDetails('Philippines', 72),
-      _UserDetails('Vietnam', 63),
-      _UserDetails('Thailand', 48),
-      _UserDetails('Egypt', 41),
-      _UserDetails('Bangladesh', 37),
-      _UserDetails('Pakistan', 37),
-      _UserDetails('Turkey', 37),
-      _UserDetails('United Kingdom', 37),
-      _UserDetails('Colombia', 33),
-      _UserDetails('France', 32),
+    _casesUsers = <_UserDetails>[
+      _UserDetails('Guatemala', 280),
+      _UserDetails('Mauritania', 280),
     ];
 
-    _twitterUsers = <_UserDetails>[
-      _UserDetails('United States of America', 64),
-      _UserDetails('Japan', 48),
-      _UserDetails('Russia', 23),
-      _UserDetails('United Kingdom', 17),
-      _UserDetails('Saudi Arabia', 15),
-      _UserDetails('Brazil', 14),
-      _UserDetails('Turkey', 13),
-      _UserDetails('India', 13),
-      _UserDetails('Indonesia', 11),
-      _UserDetails('Mexico', 10),
-      _UserDetails('France', 8),
-      _UserDetails('Spain', 8),
-      _UserDetails('Canada', 8),
-      _UserDetails('Thailand', 7),
-      _UserDetails('Philippines', 7),
-      _UserDetails('South Africa', 6),
+    _casesnormopesoUsers = <_UserDetails>[
+      _UserDetails('Guatemala', 260),
+      _UserDetails('Mauritania', 260),
     ];
 
-    _tikTokUsers = <_UserDetails>[
-      _UserDetails('United States of America', 39),
-      _UserDetails('Turkey', 28),
-      _UserDetails('Russia', 24),
-      _UserDetails('Mexico', 19),
-      _UserDetails('Brazil', 18),
-      _UserDetails('Pakistan', 11),
-      _UserDetails('Saudi Arabia', 9),
-      _UserDetails('France', 9),
-      _UserDetails('Germany', 8),
-      _UserDetails('Egypt', 8),
-      _UserDetails('Italy', 7),
-      _UserDetails('United Kingdom', 6),
-      _UserDetails('Spain', 6),
-      _UserDetails('Poland', 5),
+
+    _casesseveraUsers = <_UserDetails>[
+      _UserDetails('Guatemala', 12),
+      _UserDetails('Mauritania', 12),
     ];
 
-    _instagramUsers = <_UserDetails>[
-      _UserDetails('United States of America', 120),
-      _UserDetails('India', 88),
-      _UserDetails('Brazil', 82),
-      _UserDetails('Indonesia', 64),
-      _UserDetails('Russia', 46),
-      _UserDetails('Turkey', 39),
-      _UserDetails('Japan', 31),
-      _UserDetails('Mexico', 26),
-      _UserDetails('United Kingdom', 25),
-      _UserDetails('Germany', 22),
-      _UserDetails('Italy', 21),
-      _UserDetails('France', 19),
-      _UserDetails('Argentina', 18),
-      _UserDetails('Spain', 17),
-      _UserDetails('Canada', 13),
-      _UserDetails('South Korea', 13),
+    _casesmoderadaUsers = <_UserDetails>[
+      _UserDetails('Guatemala', 8),
+      _UserDetails('Mauritania', 8),
     ];
 
-    _snapChatUsers = <_UserDetails>[
-      _UserDetails('United States of America', 102),
-      _UserDetails('India', 28),
-      _UserDetails('France', 21),
-      _UserDetails('United Kingdom', 18),
-      _UserDetails('Saudi Arabia', 16),
-      _UserDetails('Mexico', 16),
-      _UserDetails('Japan', 31),
-      _UserDetails('Mexico', 26),
-      _UserDetails('Brazil', 13),
-      _UserDetails('Germany', 11),
-      _UserDetails('Canada', 9),
-      _UserDetails('Turkey', 8),
-      _UserDetails('Russia', 8),
-      _UserDetails('Philippines', 8),
-      _UserDetails('Iraq', 7),
-      _UserDetails('Egypt', 7),
-    ];
-
-    _facebookMapSource = MapShapeSource.asset(
+    _casesMapSource = MapShapeSource.asset(
       // Path of the GeoJSON file.
       'assets/worldmap.json',
       // Field or group name in the .json file to identify the shapes.
@@ -226,48 +143,39 @@ class _MapCountryPageState extends SampleViewState
       // exactly matched with the value of the [shapeDataField]
       // in the .json file. This is how the mapping between the
       // data source and the shapes in the .json file is done.
-      dataCount: _facebookUsers.length,
-      primaryValueMapper: (int index) => _facebookUsers[index].country,
+      dataCount: _casesUsers.length,
+      primaryValueMapper: (int index) => _casesUsers[index].country,
       // The value returned from this callback will be used as a factor to
       // calculate the radius of the bubble between the
       // [MapBubbleSettings.minRadius] and [MapBubbleSettings.maxRadius].
-      bubbleSizeMapper: (int index) => _facebookUsers[index].usersCount,
+      bubbleSizeMapper: (int index) => _casesUsers[index].usersCount,
     );
 
-    _twitterMapSource = MapShapeSource.asset(
+    _casesnormopesoMapSource = MapShapeSource.asset(
       'assets/worldmap.json',
       shapeDataField: 'name',
-      dataCount: _twitterUsers.length,
-      primaryValueMapper: (int index) => _twitterUsers[index].country,
-      bubbleSizeMapper: (int index) => _twitterUsers[index].usersCount,
+      dataCount: _casesnormopesoUsers.length,
+      primaryValueMapper: (int index) => _casesnormopesoUsers[index].country,
+      bubbleSizeMapper: (int index) => _casesnormopesoUsers[index].usersCount,
     );
-
-    _tikTokMapSorce = MapShapeSource.asset(
+    _casesseveraMapSource = MapShapeSource.asset(
       'assets/worldmap.json',
       shapeDataField: 'name',
-      dataCount: _tikTokUsers.length,
-      primaryValueMapper: (int index) => _tikTokUsers[index].country,
-      bubbleSizeMapper: (int index) => _tikTokUsers[index].usersCount,
+      dataCount: _casesseveraUsers.length,
+      primaryValueMapper: (int index) => _casesseveraUsers[index].country,
+      bubbleSizeMapper: (int index) => _casesseveraUsers[index].usersCount,
     );
 
-    _instagramMapSource = MapShapeSource.asset(
+    _casesmoderadaMapSource = MapShapeSource.asset(
       'assets/worldmap.json',
       shapeDataField: 'name',
-      dataCount: _instagramUsers.length,
-      primaryValueMapper: (int index) => _instagramUsers[index].country,
-      bubbleSizeMapper: (int index) => _instagramUsers[index].usersCount,
+      dataCount: _casesmoderadaUsers.length,
+      primaryValueMapper: (int index) => _casesmoderadaUsers[index].country,
+      bubbleSizeMapper: (int index) => _casesmoderadaUsers[index].usersCount,
     );
 
-    _snapChatMapSource = MapShapeSource.asset(
-      'assets/worldmap.json',
-      shapeDataField: 'name',
-      dataCount: _snapChatUsers.length,
-      primaryValueMapper: (int index) => _snapChatUsers[index].country,
-      bubbleSizeMapper: (int index) => _snapChatUsers[index].usersCount,
-    );
-
-    _mapSource = _facebookMapSource;
-    _currentDelegate = 'FaceBook';
+    _mapSource = _casesMapSource;
+    _currentDelegate = 'Casos';
     _shapeColor = _isLightTheme
         ? const Color.fromRGBO(57, 110, 218, 0.35)
         : const Color.fromRGBO(72, 132, 255, 0.35);
@@ -281,24 +189,21 @@ class _MapCountryPageState extends SampleViewState
         : const Color.fromRGBO(52, 85, 176, 1);
     _tooltipStrokeColor = Colors.white;
     _tooltipTextColor = Colors.white;
-    _facebookBoxDecoration = _getBoxDecoration(
+    _casesBoxDecoration = _getBoxDecoration(
         const Color.fromARGB(255, 52, 85, 176)
             .withOpacity(_isLightTheme ? 0.1 : 0.3));
   }
 
   @override
   void dispose() {
-    _facebookUsers.clear();
-    _twitterUsers.clear();
-    _tikTokUsers.clear();
-    _instagramUsers.clear();
-    _tikTokUsers.clear();
+    _casesUsers.clear();
+    _casesnormopesoUsers.clear();
+    _casesseveraUsers.clear();
 
-    _facebookController.dispose();
-    _twitterController.dispose();
-    _tiktokController.dispose();
-    _instagramController.dispose();
-    _snapchatController.dispose();
+    _casesController.dispose();
+    _casesnormopesoController.dispose();
+    _casesseveraController.dispose();
+    _casesmoderadaController.dispose();
 
     super.dispose();
   }
@@ -403,16 +308,16 @@ class _MapCountryPageState extends SampleViewState
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  decoration: _facebookBoxDecoration,
+                  decoration: _casesBoxDecoration,
                   child: ScaleTransition(
-                    scale: _facebookAnimation,
+                    scale: _casesAnimation,
                     child: IconButton(
-                      icon: Image.asset('images/maps_facebook.png'),
+                      icon: Image.asset('images/maps_cases.png'),
                       iconSize: 50,
                       onPressed: () {
                         setState(() {
-                          _mapSource = _facebookMapSource;
-                          _currentDelegate = 'FaceBook';
+                          _mapSource = _casesMapSource;
+                          _currentDelegate = 'Casos';
                           _shapeColor = _isLightTheme
                               ? const Color.fromRGBO(57, 110, 218, 0.35)
                               : const Color.fromRGBO(72, 132, 255, 0.35);
@@ -429,19 +334,17 @@ class _MapCountryPageState extends SampleViewState
                           _tooltipStrokeColor = Colors.white;
                           _tooltipTextColor = Colors.white;
 
-                          _facebookController.forward();
+                          _casesController.forward();
 
-                          _tiktokController.reverse();
-                          _twitterController.reverse();
-                          _snapchatController.reverse();
-                          _instagramController.reverse();
+                          _casesnormopesoController.reverse();
+                          _casesmoderadaController.reverse();
+                          _casesseveraController.reverse();
 
-                          _twitterBoxDecoration = null;
-                          _instagramBoxDecoration = null;
-                          _snapchatBoxDecoration = null;
-                          _tiktokBoxDecoration = null;
+                          _casesnormopesoBoxDecoration = null;
+                          _casesseveraBoxDecoration = null;
+                          _casesmoderadaBoxDecoration = null;
 
-                          _facebookBoxDecoration = _getBoxDecoration(
+                          _casesBoxDecoration = _getBoxDecoration(
                               const Color.fromARGB(255, 52, 85, 176)
                                   .withOpacity(_isLightTheme ? 0.1 : 0.3));
                         });
@@ -450,16 +353,16 @@ class _MapCountryPageState extends SampleViewState
                   ),
                 ),
                 Container(
-                  decoration: _twitterBoxDecoration,
+                  decoration: _casesnormopesoBoxDecoration,
                   child: ScaleTransition(
-                    scale: _twitterAnimation,
+                    scale: _casesnormopesoAnimation,
                     child: IconButton(
-                      icon: Image.asset('images/maps_twitter.png'),
+                      icon: Image.asset('images/maps_normopeso.png'),
                       iconSize: 50,
                       onPressed: () {
                         setState(() {
-                          _mapSource = _twitterMapSource;
-                          _currentDelegate = 'Twitter';
+                          _mapSource = _casesnormopesoMapSource;
+                          _currentDelegate = 'Normopeso';
                           _shapeColor = _isLightTheme
                               ? const Color.fromRGBO(86, 170, 235, 0.35)
                               : const Color.fromRGBO(32, 154, 255, 0.35);
@@ -476,19 +379,17 @@ class _MapCountryPageState extends SampleViewState
                           _tooltipStrokeColor = Colors.white;
                           _tooltipTextColor = Colors.white;
 
-                          _twitterController.forward();
+                          _casesnormopesoController.forward();
 
-                          _facebookController.reverse();
-                          _tiktokController.reverse();
-                          _snapchatController.reverse();
-                          _instagramController.reverse();
+                          _casesController.reverse();
+                          _casesmoderadaController.reverse();
+                          _casesseveraController.reverse();
 
-                          _facebookBoxDecoration = null;
-                          _instagramBoxDecoration = null;
-                          _snapchatBoxDecoration = null;
-                          _tiktokBoxDecoration = null;
+                          _casesBoxDecoration = null;
+                          _casesseveraBoxDecoration = null;
+                          _casesmoderadaBoxDecoration = null;
 
-                          _twitterBoxDecoration = _getBoxDecoration(
+                          _casesnormopesoBoxDecoration = _getBoxDecoration(
                               const Color.fromARGB(255, 0, 122, 202)
                                   .withOpacity(_isLightTheme ? 0.1 : 0.3));
                         });
@@ -496,64 +397,18 @@ class _MapCountryPageState extends SampleViewState
                     ),
                   ),
                 ),
+
                 Container(
-                  decoration: _instagramBoxDecoration,
+                  decoration: _casesmoderadaBoxDecoration,
                   child: ScaleTransition(
-                    scale: _instagramAnimation,
+                    scale: _casesmoderadaAnimation,
                     child: IconButton(
-                      icon: Image.asset('images/maps_instagram.png'),
+                      icon: Image.asset('images/maps_moderada.png'),
                       iconSize: 50,
                       onPressed: () {
                         setState(() {
-                          _mapSource = _instagramMapSource;
-                          _currentDelegate = 'Instagram';
-                          _shapeColor = _isLightTheme
-                              ? const Color.fromRGBO(159, 119, 213, 0.35)
-                              : const Color.fromRGBO(166, 104, 246, 0.35);
-                          _shapeStrokeColor =
-                              const Color.fromARGB(255, 238, 46, 73)
-                                  .withOpacity(0);
-                          _bubbleColor = _isLightTheme
-                              ? const Color.fromRGBO(249, 99, 20, 0.5)
-                              : const Color.fromRGBO(253, 173, 38, 0.5);
-                          _tooltipColor = _isLightTheme
-                              ? const Color.fromRGBO(175, 90, 66, 1)
-                              : const Color.fromRGBO(202, 130, 8, 1);
-                          _bubbleStrokeColor = Colors.white;
-                          _tooltipStrokeColor = Colors.white;
-                          _tooltipTextColor = Colors.white;
-
-                          _instagramController.forward();
-
-                          _facebookController.reverse();
-                          _tiktokController.reverse();
-                          _twitterController.reverse();
-                          _snapchatController.reverse();
-
-                          _facebookBoxDecoration = null;
-                          _twitterBoxDecoration = null;
-                          _snapchatBoxDecoration = null;
-                          _tiktokBoxDecoration = null;
-
-                          _instagramBoxDecoration = _getBoxDecoration(
-                              const Color.fromARGB(255, 238, 46, 73)
-                                  .withOpacity(_isLightTheme ? 0.1 : 0.3));
-                        });
-                      },
-                    ),
-                  ),
-                ),
-                Container(
-                  decoration: _snapchatBoxDecoration,
-                  child: ScaleTransition(
-                    scale: _snapchatAnimation,
-                    child: IconButton(
-                      icon: Image.asset('images/maps_snapchat.png'),
-                      iconSize: 50,
-                      onPressed: () {
-                        setState(() {
-                          _mapSource = _snapChatMapSource;
-                          _currentDelegate = 'SnapChat';
+                          _mapSource = _casesmoderadaMapSource;
+                          _currentDelegate = 'Moderada';
                           _shapeColor = _isLightTheme
                               ? const Color.fromRGBO(212, 185, 48, 0.35)
                               : const Color.fromRGBO(227, 226, 73, 0.35);
@@ -573,19 +428,17 @@ class _MapCountryPageState extends SampleViewState
                           _tooltipTextColor =
                           _isLightTheme ? Colors.white : Colors.black;
 
-                          _snapchatController.forward();
+                          _casesmoderadaController.forward();
 
-                          _facebookController.reverse();
-                          _tiktokController.reverse();
-                          _twitterController.reverse();
-                          _instagramController.reverse();
+                          _casesController.reverse();
+                          _casesnormopesoController.reverse();
+                          _casesseveraController.reverse();
 
-                          _facebookBoxDecoration = null;
-                          _twitterBoxDecoration = null;
-                          _instagramBoxDecoration = null;
-                          _tiktokBoxDecoration = null;
+                          _casesBoxDecoration = null;
+                          _casesnormopesoBoxDecoration = null;
+                          _casesseveraBoxDecoration = null;
 
-                          _snapchatBoxDecoration = _getBoxDecoration(
+                          _casesmoderadaBoxDecoration = _getBoxDecoration(
                               const Color.fromARGB(255, 255, 221, 0)
                                   .withOpacity(_isLightTheme ? 0.2 : 0.3));
                         });
@@ -594,44 +447,45 @@ class _MapCountryPageState extends SampleViewState
                   ),
                 ),
                 Container(
-                  decoration: _tiktokBoxDecoration,
+                  decoration: _casesseveraBoxDecoration,
                   child: ScaleTransition(
-                    scale: _tiktokAnimation,
+                    scale: _casesseveraAnimation,
                     child: IconButton(
-                      icon: Image.asset('images/maps_tiktok.png'),
+                      icon: Image.asset('images/maps_severa.png'),
                       iconSize: 50,
                       onPressed: () {
                         setState(() {
-                          _mapSource = _tikTokMapSorce;
-                          _currentDelegate = 'Tiktok';
+                          _mapSource = _casesseveraMapSource;
+                          _currentDelegate = 'Severa';
                           _shapeColor = _isLightTheme
-                              ? const Color.fromRGBO(72, 193, 188, 0.35)
-                              : const Color.fromRGBO(50, 216, 210, 0.35);
-                          _shapeStrokeColor = Colors.black54.withOpacity(0);
+                              ? const Color.fromRGBO(159, 119, 213, 0.35)
+                              : const Color.fromRGBO(166, 104, 246, 0.35);
+                          _shapeStrokeColor =
+                              const Color.fromARGB(255, 238, 46, 73)
+                                  .withOpacity(0);
                           _bubbleColor = _isLightTheme
-                              ? const Color.fromRGBO(250, 60, 114, 0.5)
-                              : const Color.fromRGBO(218, 11, 69, 0.5);
+                              ? const Color.fromRGBO(249, 99, 20, 0.5)
+                              : const Color.fromRGBO(253, 173, 38, 0.5);
                           _tooltipColor = _isLightTheme
-                              ? const Color.fromRGBO(186, 57, 108, 1)
-                              : const Color.fromRGBO(189, 74, 119, 1);
+                              ? const Color.fromRGBO(175, 90, 66, 1)
+                              : const Color.fromRGBO(202, 130, 8, 1);
                           _bubbleStrokeColor = Colors.white;
                           _tooltipStrokeColor = Colors.white;
                           _tooltipTextColor = Colors.white;
 
-                          _tiktokController.forward();
+                          _casesseveraController.forward();
 
-                          _facebookController.reverse();
-                          _twitterController.reverse();
-                          _snapchatController.reverse();
-                          _instagramController.reverse();
+                          _casesController.reverse();
+                          _casesnormopesoController.reverse();
+                          _casesmoderadaController.reverse();
 
-                          _facebookBoxDecoration = null;
-                          _twitterBoxDecoration = null;
-                          _instagramBoxDecoration = null;
-                          _snapchatBoxDecoration = null;
+                          _casesBoxDecoration = null;
+                          _casesnormopesoBoxDecoration = null;
+                          _casesmoderadaBoxDecoration = null;
 
-                          _tiktokBoxDecoration = _getBoxDecoration(Colors.black
-                              .withOpacity(_isLightTheme ? 0.1 : 0.3));
+                          _casesseveraBoxDecoration = _getBoxDecoration(
+                              const Color.fromARGB(255, 238, 46, 73)
+                                  .withOpacity(_isLightTheme ? 0.1 : 0.3));
                         });
                       },
                     ),
@@ -647,32 +501,26 @@ class _MapCountryPageState extends SampleViewState
 
   String _getCustomizedString(int index) {
     switch (_currentDelegate) {
-      case 'FaceBook':
-        return _facebookUsers[index].country +
+      case 'Casos':
+        return _casesUsers[index].country +
             ' : ' +
-            _facebookUsers[index].usersCount.toStringAsFixed(0) +
-            'M users';
-      case 'Twitter':
-        return _twitterUsers[index].country +
+            _casesUsers[index].usersCount.toStringAsFixed(0) +
+            ' casos';
+      case 'Normopeso':
+        return _casesnormopesoUsers[index].country +
             ' : ' +
-            _twitterUsers[index].usersCount.toStringAsFixed(0) +
-            'M users';
-      case 'Instagram':
-        return _instagramUsers[index].country +
+            _casesnormopesoUsers[index].usersCount.toStringAsFixed(0) +
+            ' casos';
+      case 'Severa':
+        return _casesseveraUsers[index].country +
             ' : ' +
-            _instagramUsers[index].usersCount.toStringAsFixed(0) +
-            'M users';
-
-      case 'SnapChat':
-        return _snapChatUsers[index].country +
+            _casesseveraUsers[index].usersCount.toStringAsFixed(0) +
+            ' casos';
+      case 'Moderada':
+        return _casesmoderadaUsers[index].country +
             ' : ' +
-            _snapChatUsers[index].usersCount.toStringAsFixed(0) +
-            'M users';
-      case 'Tiktok':
-        return _tikTokUsers[index].country +
-            ' : ' +
-            _tikTokUsers[index].usersCount.toStringAsFixed(0) +
-            'M users';
+            _casesmoderadaUsers[index].usersCount.toStringAsFixed(0) +
+            ' casos';
       default:
         return '';
     }
