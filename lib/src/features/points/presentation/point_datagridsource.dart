@@ -41,6 +41,10 @@ class PointDataGridSource extends DataGridSource {
           DataGridCell<bool>(columnName: 'Activo', value: pointWithProvinceAndCountry.point.active),
           DataGridCell<double>(columnName: 'Latitud', value: pointWithProvinceAndCountry.point.latitude),
           DataGridCell(columnName: 'Longitud',  value: pointWithProvinceAndCountry.point.longitude),
+          DataGridCell<int>(columnName: 'Casos', value: pointWithProvinceAndCountry.point.cases),
+          DataGridCell<int>(columnName: 'Casos Normopeso', value: pointWithProvinceAndCountry.point.casesnormopeso),
+          DataGridCell<int>(columnName: 'Casos Moderada', value: pointWithProvinceAndCountry.point.casesmoderada),
+          DataGridCell<int>(columnName: 'Casos Severa', value: pointWithProvinceAndCountry.point.casessevera),
         ]);
       }).toList();
     }
@@ -140,6 +144,26 @@ class PointDataGridSource extends DataGridSource {
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[7].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[8].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[9].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[10].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[11].value.toString()),
       ),
 
     ]);

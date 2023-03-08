@@ -11,7 +11,8 @@ class Point extends Equatable {
   const Point({required this.pointId, required this.name , required this.fullName,
     required this.country, required this.province,
     required this.phoneCode, required this.active, required this.latitude,
-    required this.longitude});
+    required this.longitude, required this.cases, required this.casesnormopeso,
+    required this.casesmoderada, required this.casessevera});
 
   final PointID pointId;
   final String name;
@@ -22,10 +23,14 @@ class Point extends Equatable {
   final bool active;
   final double latitude;
   final double longitude;
+  final int cases;
+  final int casesnormopeso;
+  final int casesmoderada;
+  final int casessevera;
 
   @override
   List<Object> get props => [pointId, name, fullName, country, province,
-    phoneCode, active, latitude, longitude];
+    phoneCode, active, latitude, longitude, cases, casesnormopeso, casesmoderada, casessevera];
 
   @override
   bool get stringify => true;
@@ -43,6 +48,10 @@ class Point extends Equatable {
     final active = data['active'] as bool;
     final latitude = data['latitude'] as double;
     final longitude = data['longitude'] as double;
+    final cases = data['cases'] as int;
+    final casesnormopeso = data['casesnormopeso'] as int;
+    final casesmoderada = data['casesmoderada'] as int;
+    final casessevera = data['casessevera'] as int;
 
     return Point(
         pointId: documentId,
@@ -53,7 +62,11 @@ class Point extends Equatable {
         phoneCode: phoneCode,
         active: active,
         latitude: latitude,
-        longitude: longitude);
+        longitude: longitude,
+        cases: cases,
+        casesnormopeso: casesnormopeso,
+        casesmoderada: casesmoderada,
+        casessevera: casessevera);
   }
 
   Map<String, dynamic> toMap() {
@@ -66,6 +79,10 @@ class Point extends Equatable {
       'active': active,
       'latitude': latitude,
       'longitude': longitude,
+      'cases': cases,
+      'casesnormopeso': casesnormopeso,
+      'casesmoderada': casesmoderada,
+      'casessevera': casessevera,
     };
   }
 }

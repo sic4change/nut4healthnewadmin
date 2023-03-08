@@ -95,7 +95,7 @@ class FirestoreRepository {
                   final Point point = pointMap[user.point]!;
                   return UserWithConfigurationAndPoint(
                       user,
-                      Configuration(
+                      const Configuration(
                           id: '',
                           name: '',
                           money: '',
@@ -110,39 +110,50 @@ class FirestoreRepository {
                     final Configuration configuration = configurationMap[user
                         .configuration]!;
                     return UserWithConfigurationAndPoint(
-                        user,
-                        configuration,
-                        Point(pointId: "",
-                            name: "",
-                            fullName: "",
-                            active: false,
-                            country: "",
-                            province: "",
-                            phoneCode: "",
-                        latitude: 0.0,
-                        longitude: 0.0));
-                  } catch (e) {
+                  user,
+                  configuration,
+                  const Point(
+                      pointId: "",
+                      name: "",
+                      fullName: "",
+                      active: false,
+                      country: "",
+                      province: "",
+                      phoneCode: "",
+                      latitude: 0.0,
+                      longitude: 0.0,
+                      cases: 0,
+                      casesnormopeso: 0,
+                      casesmoderada: 0,
+                      casessevera: 0));
+            } catch (e) {
                     return UserWithConfigurationAndPoint(
-                        user,
-                        Configuration(
-                            id: '',
-                            name: '',
-                            money: '',
-                            payByConfirmation: 0,
-                            payByDiagnosis: 0,
-                            pointByConfirmation: 0,
-                            pointsByDiagnosis: 0,
-                            monthlyPayment: 0),
-                        Point(pointId: "",
-                            name: "",
-                            fullName: "",
-                            country: "",
-                            active: false,
-                            province: "",
-                            phoneCode: "",
-                            latitude: 0.0,
-                            longitude: 0.0));
-                  }
+                  user,
+                  const Configuration(
+                      id: '',
+                      name: '',
+                      money: '',
+                      payByConfirmation: 0,
+                      payByDiagnosis: 0,
+                      pointByConfirmation: 0,
+                      pointsByDiagnosis: 0,
+                      monthlyPayment: 0),
+                  const Point(
+                    pointId: "",
+                    name: "",
+                    fullName: "",
+                    country: "",
+                    active: false,
+                    province: "",
+                    phoneCode: "",
+                    latitude: 0.0,
+                    longitude: 0.0,
+                    cases: 0,
+                    casesnormopeso: 0,
+                    casesmoderada: 0,
+                    casessevera: 0,
+                  ));
+            }
                 }
               }
             }).toList();

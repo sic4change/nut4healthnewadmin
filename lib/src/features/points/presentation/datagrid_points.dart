@@ -70,6 +70,10 @@ class _PointDataGridState extends LocalizationSampleViewState {
       _active,
       _latitude,
       _longitude,
+      _cases,
+      _casesnormopeso,
+      _casesmoderada,
+      _casessevera,
       _newPoint,
       _importCSV,
       _exportXLS,
@@ -91,6 +95,10 @@ class _PointDataGridState extends LocalizationSampleViewState {
     'Activo': 150,
     'Latitud': 200,
     'Longitud': 200,
+    'Casos': 150,
+    'Casos Normopeso': 150,
+    'Casos Moderada': 150,
+    'Casos Severa': 150,
   };
 
   /// Editing controller for forms to perform update the values.
@@ -99,7 +107,12 @@ class _PointDataGridState extends LocalizationSampleViewState {
       codeController,
       activeController,
       latitudeController,
-      longitudeController;
+      longitudeController,
+      casesController,
+      casesnormopesoController,
+      casesmoderadaController,
+      casesseveraController;
+
 
   /// Used to validate the forms
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -221,6 +234,10 @@ class _PointDataGridState extends LocalizationSampleViewState {
                   active: row[4].toString() == 'true' ? true : false,
                   latitude: row[5] as double,
                   longitude: row[6] as double,
+                  cases: row[7] as int,
+                  casesnormopeso: row[8] as int,
+                  casesmoderada: row[9] as int,
+                  casessevera: row[10] as int,
                 ));
           }
         }
@@ -670,6 +687,38 @@ class _PointDataGridState extends LocalizationSampleViewState {
         .toString();
 
     longitudeController!.text = longitude ?? '';
+
+    final String? cases = row
+        .getCells()
+        .firstWhere((DataGridCell element) => element.columnName == 'Casos')
+        ?.value
+        .toString();
+
+    casesController!.text = cases ?? '';
+
+    final String? casesNormopeso = row
+        .getCells()
+        .firstWhere((DataGridCell element) => element.columnName == 'Casos Normopeso')
+        ?.value
+        .toString();
+
+    casesnormopesoController!.text = casesNormopeso ?? '';
+
+    final String? casesModerada = row
+        .getCells()
+        .firstWhere((DataGridCell element) => element.columnName == 'Casos Moderada')
+        ?.value
+        .toString();
+
+    casesmoderadaController!.text= casesModerada ?? '';
+
+    final String? casesSevera = row
+        .getCells()
+        .firstWhere((DataGridCell element) => element.columnName == 'Casos Severa')
+        ?.value
+        .toString();
+
+    casesseveraController!.text= casesSevera ?? '';
   }
 
   /// Editing the DataGridRow
@@ -699,16 +748,27 @@ class _PointDataGridState extends LocalizationSampleViewState {
   void _processCellCreate(BuildContext buildContext) async {
     if (_formKey.currentState!.validate()) {
       ref.read(pointsScreenControllerProvider.notifier).addPoint(
-          Point(
-          pointId: "",
-          fullName: "",
-          phoneCode: codeController!.text,
-          name: nameController!.text,
-          province: ref.watch(pointsScreenControllerProvider.notifier).getProvinceSelected().provinceId,
-          country: ref.watch(pointsScreenControllerProvider.notifier).getCountrySelected().countryId,
-          active: activeController!.text == '✔' ? true : false,
-          latitude: double.parse(latitudeController!.text),
-          longitude: double.parse(longitudeController!.text)));
+        Point(
+                pointId: "",
+                fullName: "",
+                phoneCode: codeController!.text,
+                name: nameController!.text,
+                province: ref
+                    .watch(pointsScreenControllerProvider.notifier)
+                    .getProvinceSelected()
+                    .provinceId,
+                country: ref
+                    .watch(pointsScreenControllerProvider.notifier)
+                    .getCountrySelected()
+                    .countryId,
+                active: activeController!.text == '✔' ? true : false,
+                latitude: double.parse(latitudeController!.text),
+                longitude: double.parse(longitudeController!.text),
+                cases: 0,
+                casesnormopeso: 0,
+                casesmoderada: 0,
+                casessevera: 0),
+      );
       Navigator.pop(buildContext);
     }
   }
@@ -723,16 +783,27 @@ class _PointDataGridState extends LocalizationSampleViewState {
         .point
         .pointId;
     if (_formKey.currentState!.validate()) {
-      ref.read(pointsScreenControllerProvider.notifier).updatePoint(Point(
+      ref.read(pointsScreenControllerProvider.notifier).updatePoint(
+          Point(
           pointId: id!,
           name: nameController!.text,
           fullName: "",
           phoneCode: codeController!.text,
-          country: ref.watch(pointsScreenControllerProvider.notifier).getCountrySelected().countryId,
-          province: ref.watch(pointsScreenControllerProvider.notifier).getProvinceSelected().provinceId,
+          country: ref
+              .watch(pointsScreenControllerProvider.notifier)
+              .getCountrySelected()
+              .countryId,
+          province: ref
+              .watch(pointsScreenControllerProvider.notifier)
+              .getProvinceSelected()
+              .provinceId,
           active: activeController!.text == '✔' ? true : false,
           latitude: double.parse(latitudeController!.text),
-          longitude: double.parse(longitudeController!.text)));
+          longitude: double.parse(longitudeController!.text),
+          cases: int.parse(casesController!.text),
+          casesnormopeso: int.parse(casesnormopesoController!.text),
+          casesmoderada: int.parse(casesmoderadaController!.text),
+          casessevera: int.parse(casesseveraController!.text)));
       Navigator.pop(buildContext);
     }
   }
@@ -876,6 +947,10 @@ class _PointDataGridState extends LocalizationSampleViewState {
         _removedPoint = 'Point deleted successfully.';
         _latitude = 'Latitude';
         _longitude = 'Longitude';
+        _cases = 'Cases';
+        _casesnormopeso = 'Normal weight cases';
+        _casesmoderada = 'Moderate cases';
+        _casessevera = 'Severe cases';
         break;
       case 'es_ES':
         _id = 'Id';
@@ -897,6 +972,10 @@ class _PointDataGridState extends LocalizationSampleViewState {
         _removedPoint = 'Punto eliminado correctamente';
         _latitude = 'Latitud';
         _longitude = 'Longitud';
+        _cases = 'Casos';
+        _casesnormopeso = 'Casos Normopeso';
+        _casesmoderada = 'Casos Moderada';
+        _casessevera = 'Casos Severa';
         break;
       case 'fr_FR':
         _id = 'Id';
@@ -918,6 +997,10 @@ class _PointDataGridState extends LocalizationSampleViewState {
         _removedPoint = 'Point supprimé avec succès.';
         _latitude = 'Latitude';
         _longitude = 'Longitude';
+        _cases = 'Cas';
+        _casesnormopeso = 'Cas poids normal';
+        _casesmoderada = 'Cas modérés';
+        _casessevera = 'Cas sévères';
         break;
     }
     return SfDataGrid(
@@ -1031,6 +1114,50 @@ class _PointDataGridState extends LocalizationSampleViewState {
                 overflow: TextOverflow.ellipsis,
               ),
             )),
+        GridColumn(
+            columnName: 'Casos',
+            width: columnWidths['Casos']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _cases,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )),
+        GridColumn(
+            columnName: 'Casos Normopeso',
+            width: columnWidths['Casos Normopeso']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _casesnormopeso,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )),
+        GridColumn(
+            columnName: 'Casos Moderada',
+            width: columnWidths['Casos Moderada']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _casesmoderada,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )),
+        GridColumn(
+            columnName: 'Casos Severa',
+            width: columnWidths['Casos Severa']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _casessevera,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )),
       ],
     );
   }
@@ -1045,6 +1172,10 @@ class _PointDataGridState extends LocalizationSampleViewState {
     activeController = TextEditingController();
     latitudeController = TextEditingController();
     longitudeController = TextEditingController();
+    casesController = TextEditingController();
+    casesnormopesoController = TextEditingController();
+    casesmoderadaController = TextEditingController();
+    casesseveraController = TextEditingController();
     selectedLocale = model.locale.toString();
 
     _id = 'Id';
@@ -1055,6 +1186,10 @@ class _PointDataGridState extends LocalizationSampleViewState {
     _active = 'Activo';
     _latitude = 'Latitud';
     _longitude = 'Longitud';
+    _cases = 'Casos';
+    _casesnormopeso = 'Casos Normopeso';
+    _casesmoderada = 'Casos Moderada';
+    _casessevera = 'Casos Severa';
     _newPoint = 'Crear Punto';
     _importCSV = 'Importar CSV';
     _exportXLS = 'Exportar XLS';
