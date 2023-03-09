@@ -65,6 +65,9 @@ class _MapCountryPageState extends LocalizationSampleViewState
   late Animation<double> _casesseveraAnimation;
   late Animation<double> _casesmoderadaAnimation;
 
+  /// Translate names
+  late String _cases, _title;
+
   bool init = true;
 
   @override
@@ -103,15 +106,6 @@ class _MapCountryPageState extends LocalizationSampleViewState
 
     _casesController.forward();
 
-    // Data source to the map.
-    //
-    // [country]: Field name in the .json file to identify the shape.
-    // This is the name to be mapped with shapes in .json file.
-    // This should be exactly same as the value of the [shapeDataField]
-    // in the .json file
-    //
-    // [countriesCount]: On the basis of this value, color mapping color has been
-    // applied to the shape.
     _casesCountries = <_MarkerDetails>[];
     _casesnormopesoCountries = <_MarkerDetails>[];
     _casesseveraCountries = <_MarkerDetails>[];
@@ -248,6 +242,18 @@ class _MapCountryPageState extends LocalizationSampleViewState
   }
 
   Widget _buildMapsWidget(bool scrollEnabled) {
+    final selectedLocale = model.locale.toString();
+    switch (selectedLocale) {
+      case 'en_US':
+        _title = 'Statistics by countries';
+        break;
+      case 'es_ES':
+        _title = 'Estadísticas por países';
+        break;
+      case 'fr_FR':
+        _title = 'Statistiques par pays';
+        break;
+    }
     return Stack(
       children: <Widget>[
         Padding(
@@ -266,11 +272,11 @@ class _MapCountryPageState extends LocalizationSampleViewState
                 bubbleHoverStrokeWidth: 1.5,
               ),
               child: Column(children: <Widget>[
-                /*Padding(
+                Padding(
                     padding: const EdgeInsets.only(top: 15, bottom: 30),
                     child: Align(
-                        child: Text('Estadísticas por Países',
-                            style: Theme.of(context).textTheme.subtitle1))),*/
+                        child: Text(_title,
+                            style: Theme.of(context).textTheme.subtitle1))),
                 Expanded(
                   child: SfMaps(
                     layers: <MapLayer>[
@@ -323,45 +329,93 @@ class _MapCountryPageState extends LocalizationSampleViewState
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  decoration: _casesBoxDecoration,
+                  decoration: _casesseveraBoxDecoration,
                   child: ScaleTransition(
-                    scale: _casesAnimation,
+                    scale: _casesseveraAnimation,
                     child: IconButton(
-                      icon: Image.asset('images/maps_cases.png'),
+                      icon: Image.asset('images/maps_severa.png'),
                       iconSize: 50,
                       onPressed: () {
                         setState(() {
-                          _mapSource = _casesMapSource;
-                          _currentDelegate = 'Casos';
+                          _mapSource = _casesseveraMapSource;
+                          _currentDelegate = 'Severa';
                           _shapeColor = _isLightTheme
-                              ? const Color.fromRGBO(57, 110, 218, 0.35)
-                              : const Color.fromRGBO(72, 132, 255, 0.35);
+                              ? const Color.fromRGBO(159, 119, 213, 0.35)
+                              : const Color.fromRGBO(166, 104, 246, 0.35);
                           _shapeStrokeColor =
-                              const Color.fromARGB(255, 52, 85, 176)
+                              const Color.fromARGB(255, 238, 46, 73)
                                   .withOpacity(0);
                           _bubbleColor = _isLightTheme
-                              ? const Color.fromRGBO(15, 59, 177, 0.5)
-                              : const Color.fromRGBO(135, 167, 255, 0.6);
+                              ? const Color.fromRGBO(249, 99, 20, 0.5)
+                              : const Color.fromRGBO(253, 173, 38, 0.5);
                           _tooltipColor = _isLightTheme
-                              ? const Color.fromRGBO(35, 65, 148, 1)
-                              : const Color.fromRGBO(52, 85, 176, 1);
+                              ? const Color.fromRGBO(175, 90, 66, 1)
+                              : const Color.fromRGBO(202, 130, 8, 1);
                           _bubbleStrokeColor = Colors.white;
                           _tooltipStrokeColor = Colors.white;
                           _tooltipTextColor = Colors.white;
 
-                          _casesController.forward();
+                          _casesseveraController.forward();
 
+                          _casesController.reverse();
                           _casesnormopesoController.reverse();
                           _casesmoderadaController.reverse();
-                          _casesseveraController.reverse();
 
+                          _casesBoxDecoration = null;
                           _casesnormopesoBoxDecoration = null;
-                          _casesseveraBoxDecoration = null;
                           _casesmoderadaBoxDecoration = null;
 
-                          _casesBoxDecoration = _getBoxDecoration(
-                              const Color.fromARGB(255, 52, 85, 176)
+                          _casesseveraBoxDecoration = _getBoxDecoration(
+                              const Color.fromARGB(255, 238, 46, 73)
                                   .withOpacity(_isLightTheme ? 0.1 : 0.3));
+                        });
+                      },
+                    ),
+                  ),
+                ),
+                Container(
+                  decoration: _casesmoderadaBoxDecoration,
+                  child: ScaleTransition(
+                    scale: _casesmoderadaAnimation,
+                    child: IconButton(
+                      icon: Image.asset('images/maps_moderada.png'),
+                      iconSize: 50,
+                      onPressed: () {
+                        setState(() {
+                          _mapSource = _casesmoderadaMapSource;
+                          _currentDelegate = 'Moderada';
+                          _shapeColor = _isLightTheme
+                              ? const Color.fromRGBO(212, 185, 48, 0.35)
+                              : const Color.fromRGBO(227, 226, 73, 0.35);
+                          _shapeStrokeColor =
+                              const Color.fromARGB(255, 255, 126, 0)
+                                  .withOpacity(0);
+                          _bubbleColor = _isLightTheme
+                              ? const Color.fromRGBO(182, 150, 2, 0.5)
+                              : const Color.fromRGBO(254, 253, 2, 0.458);
+                          _tooltipColor = _isLightTheme
+                              ? const Color.fromRGBO(173, 144, 12, 1)
+                              : const Color.fromRGBO(225, 225, 30, 1);
+                          _bubbleStrokeColor =
+                          _isLightTheme ? Colors.black : Colors.white;
+                          _tooltipStrokeColor =
+                          _isLightTheme ? Colors.black : Colors.white;
+                          _tooltipTextColor =
+                          _isLightTheme ? Colors.white : Colors.black;
+
+                          _casesmoderadaController.forward();
+
+                          _casesController.reverse();
+                          _casesnormopesoController.reverse();
+                          _casesseveraController.reverse();
+
+                          _casesBoxDecoration = null;
+                          _casesnormopesoBoxDecoration = null;
+                          _casesseveraBoxDecoration = null;
+
+                          _casesmoderadaBoxDecoration = _getBoxDecoration(
+                              const Color.fromARGB(255, 255, 221, 0)
+                                  .withOpacity(_isLightTheme ? 0.2 : 0.3));
                         });
                       },
                     ),
@@ -412,94 +466,45 @@ class _MapCountryPageState extends LocalizationSampleViewState
                     ),
                   ),
                 ),
-
                 Container(
-                  decoration: _casesmoderadaBoxDecoration,
+                  decoration: _casesBoxDecoration,
                   child: ScaleTransition(
-                    scale: _casesmoderadaAnimation,
+                    scale: _casesAnimation,
                     child: IconButton(
-                      icon: Image.asset('images/maps_moderada.png'),
+                      icon: Image.asset('images/maps_cases.png'),
                       iconSize: 50,
                       onPressed: () {
                         setState(() {
-                          _mapSource = _casesmoderadaMapSource;
-                          _currentDelegate = 'Moderada';
+                          _mapSource = _casesMapSource;
+                          _currentDelegate = 'Casos';
                           _shapeColor = _isLightTheme
-                              ? const Color.fromRGBO(212, 185, 48, 0.35)
-                              : const Color.fromRGBO(227, 226, 73, 0.35);
+                              ? const Color.fromRGBO(57, 110, 218, 0.35)
+                              : const Color.fromRGBO(72, 132, 255, 0.35);
                           _shapeStrokeColor =
-                              const Color.fromARGB(255, 255, 126, 0)
+                              const Color.fromARGB(255, 52, 85, 176)
                                   .withOpacity(0);
                           _bubbleColor = _isLightTheme
-                              ? const Color.fromRGBO(182, 150, 2, 0.5)
-                              : const Color.fromRGBO(254, 253, 2, 0.458);
+                              ? const Color.fromRGBO(15, 59, 177, 0.5)
+                              : const Color.fromRGBO(135, 167, 255, 0.6);
                           _tooltipColor = _isLightTheme
-                              ? const Color.fromRGBO(173, 144, 12, 1)
-                              : const Color.fromRGBO(225, 225, 30, 1);
-                          _bubbleStrokeColor =
-                          _isLightTheme ? Colors.black : Colors.white;
-                          _tooltipStrokeColor =
-                          _isLightTheme ? Colors.black : Colors.white;
-                          _tooltipTextColor =
-                          _isLightTheme ? Colors.white : Colors.black;
-
-                          _casesmoderadaController.forward();
-
-                          _casesController.reverse();
-                          _casesnormopesoController.reverse();
-                          _casesseveraController.reverse();
-
-                          _casesBoxDecoration = null;
-                          _casesnormopesoBoxDecoration = null;
-                          _casesseveraBoxDecoration = null;
-
-                          _casesmoderadaBoxDecoration = _getBoxDecoration(
-                              const Color.fromARGB(255, 255, 221, 0)
-                                  .withOpacity(_isLightTheme ? 0.2 : 0.3));
-                        });
-                      },
-                    ),
-                  ),
-                ),
-                Container(
-                  decoration: _casesseveraBoxDecoration,
-                  child: ScaleTransition(
-                    scale: _casesseveraAnimation,
-                    child: IconButton(
-                      icon: Image.asset('images/maps_severa.png'),
-                      iconSize: 50,
-                      onPressed: () {
-                        setState(() {
-                          _mapSource = _casesseveraMapSource;
-                          _currentDelegate = 'Severa';
-                          _shapeColor = _isLightTheme
-                              ? const Color.fromRGBO(159, 119, 213, 0.35)
-                              : const Color.fromRGBO(166, 104, 246, 0.35);
-                          _shapeStrokeColor =
-                              const Color.fromARGB(255, 238, 46, 73)
-                                  .withOpacity(0);
-                          _bubbleColor = _isLightTheme
-                              ? const Color.fromRGBO(249, 99, 20, 0.5)
-                              : const Color.fromRGBO(253, 173, 38, 0.5);
-                          _tooltipColor = _isLightTheme
-                              ? const Color.fromRGBO(175, 90, 66, 1)
-                              : const Color.fromRGBO(202, 130, 8, 1);
+                              ? const Color.fromRGBO(35, 65, 148, 1)
+                              : const Color.fromRGBO(52, 85, 176, 1);
                           _bubbleStrokeColor = Colors.white;
                           _tooltipStrokeColor = Colors.white;
                           _tooltipTextColor = Colors.white;
 
-                          _casesseveraController.forward();
+                          _casesController.forward();
 
-                          _casesController.reverse();
                           _casesnormopesoController.reverse();
                           _casesmoderadaController.reverse();
+                          _casesseveraController.reverse();
 
-                          _casesBoxDecoration = null;
                           _casesnormopesoBoxDecoration = null;
+                          _casesseveraBoxDecoration = null;
                           _casesmoderadaBoxDecoration = null;
 
-                          _casesseveraBoxDecoration = _getBoxDecoration(
-                              const Color.fromARGB(255, 238, 46, 73)
+                          _casesBoxDecoration = _getBoxDecoration(
+                              const Color.fromARGB(255, 52, 85, 176)
                                   .withOpacity(_isLightTheme ? 0.1 : 0.3));
                         });
                       },
@@ -515,27 +520,39 @@ class _MapCountryPageState extends LocalizationSampleViewState
   }
 
   String _getCustomizedString(int index) {
+    final selectedLocale = model.locale.toString();
+    switch (selectedLocale) {
+      case 'en_US':
+        _cases = 'Cases';
+        break;
+      case 'es_ES':
+        _cases = 'Casos';
+        break;
+      case 'fr_FR':
+        _cases = 'Cas';
+        break;
+    }
     switch (_currentDelegate) {
       case 'Casos':
         return _casesCountries[index].country +
             ' : ' +
             _casesCountries[index].value.toStringAsFixed(0) +
-            ' casos';
+            ' ' + _cases;
       case 'Normopeso':
         return _casesnormopesoCountries[index].country +
             ' : ' +
             _casesnormopesoCountries[index].value.toStringAsFixed(0) +
-            ' casos';
+            ' ' + _cases;
       case 'Severa':
         return _casesseveraCountries[index].country +
             ' : ' +
             _casesseveraCountries[index].value.toStringAsFixed(0) +
-            ' casos';
+            ' ' + _cases;
       case 'Moderada':
         return _casesmoderadaCountries[index].country +
             ' : ' +
             _casesmoderadaCountries[index].value.toStringAsFixed(0) +
-            ' casos';
+            ' ' + _cases;
       default:
         return '';
     }
