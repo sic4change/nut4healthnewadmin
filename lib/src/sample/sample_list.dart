@@ -5,7 +5,7 @@ import '../features/cities/presentation/datagrid_cities.dart';
 import '../features/configurations/presentation/datagrid_configurations.dart';
 import '../features/contracts/presentation/datagrid_contracts.dart';
 import '../features/countries/presentation/datagrid_countries.dart';
-import '../features/maps/country/country_map.dart';
+import '../features/countries/presentation/country_map.dart';
 import '../features/maps/point/point_map.dart';
 import '../features/points/presentation/datagrid_points.dart';
 import '../features/provinces/presentation/datagrid_provinces.dart';

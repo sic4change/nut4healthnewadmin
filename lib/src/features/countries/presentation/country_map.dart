@@ -1,5 +1,7 @@
 ///Flutter package imports
+import 'package:adminnut4health/src/features/countries/data/firestore_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 ///Core theme import
 // ignore: depend_on_referenced_packages
@@ -9,10 +11,11 @@ import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
 
 import '../../../sample/model/sample_view.dart';
+import 'countries_screen_controller.dart';
 
 
 /// Renders the map widget with bubbles
-class MapCountryPage extends SampleView {
+class MapCountryPage extends LocalizationSampleView {
   /// Creates the map widget for a statistics
   const MapCountryPage(Key key) : super(key: key);
 
@@ -20,7 +23,7 @@ class MapCountryPage extends SampleView {
   _MapCountryPageState createState() => _MapCountryPageState();
 }
 
-class _MapCountryPageState extends SampleViewState
+class _MapCountryPageState extends LocalizationSampleViewState
     with TickerProviderStateMixin {
   _MapCountryPageState();
 
@@ -47,10 +50,10 @@ class _MapCountryPageState extends SampleViewState
   BoxDecoration? _casesseveraBoxDecoration;
   BoxDecoration? _casesmoderadaBoxDecoration;
 
-  late List<_UserDetails> _casesUsers;
-  late List<_UserDetails> _casesnormopesoUsers;
-  late List<_UserDetails> _casesmoderadaUsers;
-  late List<_UserDetails> _casesseveraUsers;
+  late List<_MarkerDetails> _casesCountries;
+  late List<_MarkerDetails> _casesnormopesoCountries;
+  late List<_MarkerDetails> _casesmoderadaCountries;
+  late List<_MarkerDetails> _casesseveraCountries;
 
   late AnimationController _casesController;
   late AnimationController _casesnormopesoController;
@@ -61,6 +64,8 @@ class _MapCountryPageState extends SampleViewState
   late Animation<double> _casesnormopesoAnimation;
   late Animation<double> _casesseveraAnimation;
   late Animation<double> _casesmoderadaAnimation;
+
+  bool init = true;
 
   @override
   void initState() {
@@ -105,100 +110,22 @@ class _MapCountryPageState extends SampleViewState
     // This should be exactly same as the value of the [shapeDataField]
     // in the .json file
     //
-    // [usersCount]: On the basis of this value, color mapping color has been
+    // [countriesCount]: On the basis of this value, color mapping color has been
     // applied to the shape.
-    _casesUsers = <_UserDetails>[
-      _UserDetails('Guatemala', 280),
-      _UserDetails('Mauritania', 280),
-    ];
-
-    _casesnormopesoUsers = <_UserDetails>[
-      _UserDetails('Guatemala', 260),
-      _UserDetails('Mauritania', 260),
-    ];
+    _casesCountries = <_MarkerDetails>[];
+    _casesnormopesoCountries = <_MarkerDetails>[];
+    _casesseveraCountries = <_MarkerDetails>[];
+    _casesmoderadaCountries = <_MarkerDetails>[];
 
 
-    _casesseveraUsers = <_UserDetails>[
-      _UserDetails('Guatemala', 12),
-      _UserDetails('Mauritania', 12),
-    ];
-
-    _casesmoderadaUsers = <_UserDetails>[
-      _UserDetails('Guatemala', 8),
-      _UserDetails('Mauritania', 8),
-    ];
-
-    _casesMapSource = MapShapeSource.asset(
-      // Path of the GeoJSON file.
-      'assets/worldmap.json',
-      // Field or group name in the .json file to identify the shapes.
-      //
-      // Which is used to map the respective shape to data source.
-      shapeDataField: 'name',
-      // The number of data in your data source collection.
-      //
-      // The callback for the [primaryValueMapper] will be called
-      // the number of times equal to the [dataCount].
-      // The value returned in the [primaryValueMapper] should be
-      // exactly matched with the value of the [shapeDataField]
-      // in the .json file. This is how the mapping between the
-      // data source and the shapes in the .json file is done.
-      dataCount: _casesUsers.length,
-      primaryValueMapper: (int index) => _casesUsers[index].country,
-      // The value returned from this callback will be used as a factor to
-      // calculate the radius of the bubble between the
-      // [MapBubbleSettings.minRadius] and [MapBubbleSettings.maxRadius].
-      bubbleSizeMapper: (int index) => _casesUsers[index].usersCount,
-    );
-
-    _casesnormopesoMapSource = MapShapeSource.asset(
-      'assets/worldmap.json',
-      shapeDataField: 'name',
-      dataCount: _casesnormopesoUsers.length,
-      primaryValueMapper: (int index) => _casesnormopesoUsers[index].country,
-      bubbleSizeMapper: (int index) => _casesnormopesoUsers[index].usersCount,
-    );
-    _casesseveraMapSource = MapShapeSource.asset(
-      'assets/worldmap.json',
-      shapeDataField: 'name',
-      dataCount: _casesseveraUsers.length,
-      primaryValueMapper: (int index) => _casesseveraUsers[index].country,
-      bubbleSizeMapper: (int index) => _casesseveraUsers[index].usersCount,
-    );
-
-    _casesmoderadaMapSource = MapShapeSource.asset(
-      'assets/worldmap.json',
-      shapeDataField: 'name',
-      dataCount: _casesmoderadaUsers.length,
-      primaryValueMapper: (int index) => _casesmoderadaUsers[index].country,
-      bubbleSizeMapper: (int index) => _casesmoderadaUsers[index].usersCount,
-    );
-
-    _mapSource = _casesMapSource;
-    _currentDelegate = 'Casos';
-    _shapeColor = _isLightTheme
-        ? const Color.fromRGBO(57, 110, 218, 0.35)
-        : const Color.fromRGBO(72, 132, 255, 0.35);
-    _shapeStrokeColor = const Color.fromARGB(255, 52, 85, 176).withOpacity(0);
-    _bubbleColor = _isLightTheme
-        ? const Color.fromRGBO(15, 59, 177, 0.5)
-        : const Color.fromRGBO(135, 167, 255, 0.6);
-    _bubbleStrokeColor = Colors.white;
-    _tooltipColor = _isLightTheme
-        ? const Color.fromRGBO(35, 65, 148, 1)
-        : const Color.fromRGBO(52, 85, 176, 1);
-    _tooltipStrokeColor = Colors.white;
-    _tooltipTextColor = Colors.white;
-    _casesBoxDecoration = _getBoxDecoration(
-        const Color.fromARGB(255, 52, 85, 176)
-            .withOpacity(_isLightTheme ? 0.1 : 0.3));
   }
 
   @override
   void dispose() {
-    _casesUsers.clear();
-    _casesnormopesoUsers.clear();
-    _casesseveraUsers.clear();
+    _casesCountries.clear();
+    _casesnormopesoCountries.clear();
+    _casesmoderadaCountries.clear();
+    _casesseveraCountries.clear();
 
     _casesController.dispose();
     _casesnormopesoController.dispose();
@@ -208,28 +135,116 @@ class _MapCountryPageState extends SampleViewState
     super.dispose();
   }
 
+  void _initCases(AsyncValue countriesAsyncValue) {
+    countriesAsyncValue.value?.forEach((element) {
+      if (element.active) {
+        _casesCountries.add(_MarkerDetails(element.name, element.cases));
+        _casesnormopesoCountries.add(_MarkerDetails(element.name, element.casesnormopeso));
+        _casesmoderadaCountries.add(_MarkerDetails(element.name, element.casesmoderada));
+        _casesseveraCountries.add(_MarkerDetails(element.name, element.casessevera));
+      }
+    });
+    _casesMapSource = MapShapeSource.asset(
+      'assets/worldmap.json',
+      shapeDataField: 'name',
+      dataCount: _casesCountries.length,
+      primaryValueMapper: (int index) => _casesCountries[index].country,
+      bubbleSizeMapper: (int index) => _casesCountries[index].value.toDouble(),
+    );
+
+    _casesnormopesoMapSource = MapShapeSource.asset(
+      'assets/worldmap.json',
+      shapeDataField: 'name',
+      dataCount: _casesnormopesoCountries.length,
+      primaryValueMapper: (int index) => _casesnormopesoCountries[index].country,
+      bubbleSizeMapper: (int index) => _casesnormopesoCountries[index].value.toDouble(),
+    );
+
+    _casesseveraMapSource = MapShapeSource.asset(
+      'assets/worldmap.json',
+      shapeDataField: 'name',
+      dataCount: _casesseveraCountries.length,
+      primaryValueMapper: (int index) => _casesseveraCountries[index].country,
+      bubbleSizeMapper: (int index) => _casesseveraCountries[index].value.toDouble(),
+    );
+
+    _casesmoderadaMapSource = MapShapeSource.asset(
+      'assets/worldmap.json',
+      shapeDataField: 'name',
+      dataCount: _casesmoderadaCountries.length,
+      primaryValueMapper: (int index) => _casesmoderadaCountries[index].country,
+      bubbleSizeMapper: (int index) => _casesmoderadaCountries[index].value.toDouble(),
+    );
+    if (init) {
+      init = false;
+      _mapSource = _casesMapSource;
+      _currentDelegate = 'Casos';
+      _shapeColor = _isLightTheme
+          ? const Color.fromRGBO(57, 110, 218, 0.35)
+          : const Color.fromRGBO(72, 132, 255, 0.35);
+      _shapeStrokeColor = const Color.fromARGB(255, 52, 85, 176).withOpacity(0);
+      _bubbleColor = _isLightTheme
+          ? const Color.fromRGBO(15, 59, 177, 0.5)
+          : const Color.fromRGBO(135, 167, 255, 0.6);
+      _bubbleStrokeColor = Colors.white;
+      _tooltipColor = _isLightTheme
+          ? const Color.fromRGBO(35, 65, 148, 1)
+          : const Color.fromRGBO(52, 85, 176, 1);
+      _tooltipStrokeColor = Colors.white;
+      _tooltipTextColor = Colors.white;
+      _casesBoxDecoration = _getBoxDecoration(
+          const Color.fromARGB(255, 52, 85, 176)
+              .withOpacity(_isLightTheme ? 0.1 : 0.3));
+    }
+  }
+
   @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          final bool scrollEnabled = constraints.maxHeight > 400;
-          double height = scrollEnabled ? constraints.maxHeight : 400;
-          if (model.isWebFullView ||
-              (model.isMobile &&
-                  MediaQuery.of(context).orientation == Orientation.landscape)) {
-            final double refHeight = height * 0.6;
-            height = height > 500 ? (refHeight < 500 ? 500 : refHeight) : height;
-          }
-          return Center(
-            child: SingleChildScrollView(
-              child: SizedBox(
-                width: constraints.maxWidth,
-                height: height,
-                child: _buildMapsWidget(scrollEnabled),
-              ),
-            ),
+  Widget buildSample(BuildContext context) {
+    return Consumer(
+
+        builder: (context, ref, child) {
+          ref.listen<AsyncValue>(
+            countriesScreenControllerProvider,
+                (_, state) => {
+            },
           );
+
+          final countriesAsyncValue = ref.watch(countriesStreamProvider);
+          if (countriesAsyncValue.value != null) {
+            _initCases(countriesAsyncValue);
+          }
+          if (_casesCountries.isEmpty) {
+            return const Center(
+                child: SizedBox(
+                  width: 200,
+                  height: 200,
+                  child: CircularProgressIndicator(),
+                )
+            );
+          } else {
+            return LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+                  final bool scrollEnabled = constraints.maxHeight > 400;
+                  double height = scrollEnabled ? constraints.maxHeight : 400;
+                  if (model.isWebFullView ||
+                      (model.isMobile &&
+                          MediaQuery.of(context).orientation == Orientation.landscape)) {
+                    final double refHeight = height * 0.6;
+                    height = height > 500 ? (refHeight < 500 ? 500 : refHeight) : height;
+                  }
+                  return Center(
+                    child: SingleChildScrollView(
+                      child: SizedBox(
+                        width: constraints.maxWidth,
+                        height: height,
+                        child: _buildMapsWidget(scrollEnabled),
+                      ),
+                    ),
+                  );
+                });
+          }
         });
+
   }
 
   Widget _buildMapsWidget(bool scrollEnabled) {
@@ -502,24 +517,24 @@ class _MapCountryPageState extends SampleViewState
   String _getCustomizedString(int index) {
     switch (_currentDelegate) {
       case 'Casos':
-        return _casesUsers[index].country +
+        return _casesCountries[index].country +
             ' : ' +
-            _casesUsers[index].usersCount.toStringAsFixed(0) +
+            _casesCountries[index].value.toStringAsFixed(0) +
             ' casos';
       case 'Normopeso':
-        return _casesnormopesoUsers[index].country +
+        return _casesnormopesoCountries[index].country +
             ' : ' +
-            _casesnormopesoUsers[index].usersCount.toStringAsFixed(0) +
+            _casesnormopesoCountries[index].value.toStringAsFixed(0) +
             ' casos';
       case 'Severa':
-        return _casesseveraUsers[index].country +
+        return _casesseveraCountries[index].country +
             ' : ' +
-            _casesseveraUsers[index].usersCount.toStringAsFixed(0) +
+            _casesseveraCountries[index].value.toStringAsFixed(0) +
             ' casos';
       case 'Moderada':
-        return _casesmoderadaUsers[index].country +
+        return _casesmoderadaCountries[index].country +
             ' : ' +
-            _casesmoderadaUsers[index].usersCount.toStringAsFixed(0) +
+            _casesmoderadaCountries[index].value.toStringAsFixed(0) +
             ' casos';
       default:
         return '';
@@ -538,9 +553,9 @@ class _MapCountryPageState extends SampleViewState
   }
 }
 
-class _UserDetails {
-  _UserDetails(this.country, this.usersCount);
+class _MarkerDetails {
+  _MarkerDetails(this.country, this.value);
 
   final String country;
-  final double usersCount;
+  final int value;
 }
