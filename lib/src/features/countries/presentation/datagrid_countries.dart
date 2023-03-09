@@ -58,15 +58,19 @@ class _CountryDataGridState extends LocalizationSampleViewState {
   late String selectedLocale;
 
   /// Translate names
-  late String _id, _name, _code, _active,  _newCountry, _importCSV, _exportXLS,
-      _exportPDF, _total, _editCountry, _removeCountry, _save, _cancel,
-      _countries, _removedCountry;
+  late String _id, _name, _code, _active, _cases, _casesNormopeso, _casesModerada,
+      _casesSevera, _newCountry, _importCSV, _exportXLS, _exportPDF, _total,
+      _editCountry, _removeCountry, _save, _cancel, _countries, _removedCountry;
 
   late Map<String, double> columnWidths = {
     'Id': 150,
     'Nombre': 150,
     'Código': 150,
     'Activo': 150,
+    'Casos': 150,
+    'Casos Normopeso': 150,
+    'Casos Moderada': 150,
+    'Casos Severa': 150,
   };
 
   /// Editing controller for forms to perform update the values.
@@ -74,7 +78,11 @@ class _CountryDataGridState extends LocalizationSampleViewState {
       idController,
       nameController,
       codeController,
-      activeController;
+      activeController,
+      casesController,
+      casesNormopesoController,
+      casesModeradaController,
+      casesSeveraController;
 
   /// Used to validate the forms
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -171,6 +179,10 @@ class _CountryDataGridState extends LocalizationSampleViewState {
                   name: row[0].toString(),
                   code: row[1].toString(),
                   active: row[2].toString() == 'true' ? true : false,
+                  cases: int.parse(row[3].toString()),
+                  casesnormopeso: int.parse(row[4].toString()),
+                  casesmoderada: int.parse(row[5].toString()),
+                  casessevera: int.parse(row[6].toString())
                 )
             );
           }
@@ -526,6 +538,42 @@ class _CountryDataGridState extends LocalizationSampleViewState {
 
     activeController!.text = active != "false" ? '✔' : '✘';
 
+    final String? cases = row
+        .getCells()
+        .firstWhere(
+            (DataGridCell element) => element.columnName == 'Casos')
+        ?.value
+        .toString();
+
+    casesController!.text = cases ?? '';
+
+    final String? casesNormopeso = row
+        .getCells()
+        .firstWhere(
+            (DataGridCell element) => element.columnName == 'Casos Normopeso')
+        ?.value
+        .toString();
+
+    casesNormopesoController!.text = casesNormopeso ?? '';
+
+    final String? casesModerada = row
+        .getCells()
+        .firstWhere(
+            (DataGridCell element) => element.columnName == 'Casos Moderada')
+        ?.value
+        .toString();
+
+    casesModeradaController!.text = casesModerada ?? '';
+
+    final String? casesSevera = row
+        .getCells()
+        .firstWhere(
+            (DataGridCell element) => element.columnName == 'Casos Severa')
+        ?.value
+        .toString();
+
+    casesSeveraController!.text = casesSevera ?? '';
+
   }
 
   /// Editing the DataGridRow
@@ -559,7 +607,12 @@ class _CountryDataGridState extends LocalizationSampleViewState {
               countryId: "",
               name: nameController!.text,
               code: codeController!.text,
-              active: activeController!.text == '✔' ? true : false)
+              active: activeController!.text == '✔' ? true : false,
+              cases: 0,
+              casesnormopeso: 0,
+              casesmoderada: 0,
+              casessevera: 0
+          )
       );
       Navigator.pop(buildContext);
     }
@@ -574,7 +627,11 @@ class _CountryDataGridState extends LocalizationSampleViewState {
           Country(countryId: id!,
               name: nameController!.text,
               code: codeController!.text,
-              active: activeController!.text == '✔' ? true : false
+              active: activeController!.text == '✔' ? true : false,
+              cases: int.parse(casesController!.text),
+              casesnormopeso: int.parse(casesNormopesoController!.text),
+              casesmoderada: int.parse(casesModeradaController!.text),
+              casessevera: int.parse(casesSeveraController!.text)
           )
       );
       Navigator.pop(buildContext);
@@ -701,6 +758,10 @@ class _CountryDataGridState extends LocalizationSampleViewState {
         _name = 'Name';
         _code = 'Code';
         _active = 'Active';
+        _cases = 'Cases';
+        _casesNormopeso = 'Normal weight cases';
+        _casesModerada = 'Moderate cases';
+        _casesSevera = 'Severe cases';
         _importCSV = 'Import CSV';
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
@@ -717,6 +778,10 @@ class _CountryDataGridState extends LocalizationSampleViewState {
         _name = 'Nombre';
         _code = 'Código';
         _active = 'Activo';
+        _cases = 'Casos';
+        _casesNormopeso = 'Casos Normopeso';
+        _casesModerada = 'Casos Moderada';
+        _casesSevera = 'Casos Severa';
         _newCountry = 'Crear País';
         _importCSV = 'Importar CSV';
         _exportXLS = 'Exportar XLS';
@@ -734,6 +799,10 @@ class _CountryDataGridState extends LocalizationSampleViewState {
         _name = 'Nom';
         _code = 'Code';
         _active = 'Actif';
+        _cases = 'Cas';
+        _casesNormopeso = 'Cas poids normal';
+        _casesModerada = 'Cas modérés';
+        _casesSevera = 'Cas sévères';
         _newCountry = 'Créer un pays';
         _importCSV = 'Importer CSV';
         _exportXLS = 'Exporter XLS';
@@ -815,6 +884,50 @@ class _CountryDataGridState extends LocalizationSampleViewState {
                 overflow: TextOverflow.ellipsis,
               )),
         ),
+        GridColumn(
+          columnName: 'Casos',
+          width: columnWidths['Casos']!,
+          label: Container(
+              padding: const EdgeInsets.all(8.0),
+              alignment: Alignment.center,
+              child: Text(
+                _cases,
+                overflow: TextOverflow.ellipsis,
+              )),
+        ),
+        GridColumn(
+          columnName: 'Casos Normopeso',
+          width: columnWidths['Casos Normopeso']!,
+          label: Container(
+              padding: const EdgeInsets.all(8.0),
+              alignment: Alignment.center,
+              child: Text(
+                _casesNormopeso,
+                overflow: TextOverflow.ellipsis,
+              )),
+        ),
+        GridColumn(
+          columnName: 'Casos Moderada',
+          width: columnWidths['Casos Moderada']!,
+          label: Container(
+              padding: const EdgeInsets.all(8.0),
+              alignment: Alignment.center,
+              child: Text(
+                _casesModerada,
+                overflow: TextOverflow.ellipsis,
+              )),
+        ),
+        GridColumn(
+          columnName: 'Casos Severa',
+          width: columnWidths['Casos Severa']!,
+          label: Container(
+              padding: const EdgeInsets.all(8.0),
+              alignment: Alignment.center,
+              child: Text(
+                _casesSevera,
+                overflow: TextOverflow.ellipsis,
+              )),
+        ),
       ],
     );
   }
@@ -827,12 +940,20 @@ class _CountryDataGridState extends LocalizationSampleViewState {
     nameController = TextEditingController();
     codeController = TextEditingController();
     activeController = TextEditingController();
+    casesController = TextEditingController();
+    casesNormopesoController = TextEditingController();
+    casesModeradaController = TextEditingController();
+    casesSeveraController = TextEditingController();
     selectedLocale = model.locale.toString();
 
     _id = 'Id';
     _name = 'Nombre';
     _code = 'Código';
     _active = 'Activo';
+    _cases = 'Casos';
+    _casesNormopeso = 'Casos Normopeso';
+    _casesModerada = 'Casos Moderada';
+    _casesSevera = 'Casos Severa';
     _newCountry = 'Crear País';
     _importCSV = 'Importar CSV';
     _exportXLS = 'Exportar XLS';

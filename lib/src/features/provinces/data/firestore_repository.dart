@@ -77,7 +77,9 @@ class FirestoreRepository {
                 final Country country = countryMap[province.country]!;
                 return ProvinceWithCountry(province, country);
               } catch(e) {
-                const Country country = Country(countryId: '', name: '', code: '', active: false);
+                const Country country = Country(countryId: '', name: '', code: '',
+                    active: false, cases: 0, casesnormopeso: 0, casesmoderada: 0,
+                casessevera: 0);
                 return ProvinceWithCountry(province, country);
               }
             }).toList();

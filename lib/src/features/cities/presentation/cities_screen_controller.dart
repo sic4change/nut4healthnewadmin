@@ -9,8 +9,10 @@ import '../domain/city.dart';
 
 class CitiesScreenController extends AutoDisposeAsyncNotifier<void> {
 
-  Country countrySelected = const Country(countryId: "", name: "", code: "", active: false);
-  Province provinceSelected = const Province(provinceId: '', country: "", name: "", active: false);
+  Country countrySelected = const Country(countryId: "", name: "", code: "",
+      active: false, cases: 0, casesnormopeso: 0, casesmoderada: 0, casessevera: 0);
+  Province provinceSelected = const Province(provinceId: '', country: "",
+      name: "", active: false);
   List<Province> provinceOptions = List.empty();
 
   @override

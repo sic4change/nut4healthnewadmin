@@ -28,6 +28,10 @@ class CountryDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Nombre', value: country.name),
           DataGridCell<String>(columnName: 'Código', value: country.code),
           DataGridCell<bool>(columnName: 'Activo', value: country.active),
+          DataGridCell<int>(columnName: 'Casos', value: country.cases),
+          DataGridCell<int>(columnName: 'Casos Normopeso', value: country.casesnormopeso),
+          DataGridCell<int>(columnName: 'Casos Moderada', value: country.casesmoderada),
+          DataGridCell<int>(columnName: 'Casos Severa', value: country.casessevera),
         ]);
       }).toList();
     }
@@ -105,7 +109,27 @@ class CountryDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[2].value.toString()),
       ),
-      _buildActive(row.getCells()[3].value)
+      _buildActive(row.getCells()[3].value),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[4].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[5].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[6].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[7].value.toString()),
+      ),
     ]);
   }
 
