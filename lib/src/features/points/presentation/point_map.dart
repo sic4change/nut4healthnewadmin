@@ -66,7 +66,10 @@ class _TileLayerSampleState extends LocalizationSampleViewState {
                 place: element.fullName,
                 latitude: element.latitude,
                 longitude: element.longitude,
-                description: element.cases.toString()
+                cases: element.cases.toString(),
+                casesnormopeso: element.casesnormopeso.toString(),
+                casesmoderada: element.casesmoderada.toString(),
+                casessevera: element.casessevera.toString(),
             ));
       }
     });
@@ -249,24 +252,100 @@ class _TileLayerSampleState extends LocalizationSampleViewState {
                                             children: <Widget>[
                                               Directionality(
                                                 textDirection: TextDirection.ltr,
-                                                child: Text(item.place,
-                                                    style: const TextStyle(
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 16),
-                                                    textAlign: TextAlign.start),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    const Icon(Icons.place),
+                                                    Text(item.place,
+                                                        style: const TextStyle(
+                                                            fontWeight: FontWeight.bold,
+                                                            fontSize: 16),
+                                                        textAlign: TextAlign.center),
+                                                  ],
+                                                ),
                                               ),
-                                              const SizedBox(height: 5),
-                                              Expanded(
-                                                  child: Directionality(
-                                                    textDirection: TextDirection.ltr,
-                                                    child: Text(
-                                                      item.description,
-                                                      style:
-                                                      TextStyle(fontSize: _isDesktop ? 14 : 11),
-                                                      overflow: TextOverflow.ellipsis,
-                                                      maxLines: (index == 2 || index == 6) ? 2 : 4,
+                                              const SizedBox(height: 10),
+                                              Directionality(
+                                                textDirection: TextDirection.ltr,
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                  children: <Widget>[
+                                                    Directionality(
+                                                        textDirection: TextDirection.ltr,
+                                                        child: Row(
+                                                          children: [
+                                                            Image.asset('images/maps_cases.png', width: 40, height: 40),
+                                                            const SizedBox(width: 5), // Separación entre el icono y el texto
+                                                            Text(
+                                                              item.cases,
+                                                              style:
+                                                              TextStyle(
+                                                                  fontSize: _isDesktop ? 14 : 11, color: Colors.blueAccent),
+                                                              overflow: TextOverflow.ellipsis,
+                                                              maxLines: (index == 2 || index == 6) ? 2 : 4,
+                                                            ),
+                                                          ],
+                                                        )),
+                                                    const SizedBox(height: 20),
+                                                    Directionality(
+                                                      textDirection: TextDirection.ltr,
+                                                      child: Row(
+                                                        children: <Widget>[
+                                                          Image.asset('images/maps_normopeso.png', width: 40, height: 40),
+                                                          const SizedBox(width: 5), // Separación entre el icono y el texto
+                                                          Text(
+                                                            item.casesnormopeso,
+                                                            style:
+                                                            TextStyle(
+                                                                fontSize: _isDesktop ? 14 : 11, color: Colors.green),
+                                                            overflow: TextOverflow.ellipsis,
+                                                            maxLines: (index == 2 || index == 6) ? 2 : 4,
+                                                          ),
+                                                        ],
+                                                      ),
+
                                                     ),
-                                                  ))
+                                                    const SizedBox(height: 20),
+                                                    Directionality(
+                                                      textDirection: TextDirection.ltr,
+                                                      child: Row(
+                                                        children: <Widget>[
+                                                          Image.asset('images/maps_moderada.png', width: 40, height: 40),
+                                                          const SizedBox(width: 5), // Separación entre el icono y el texto
+                                                          Text(
+                                                            item.casesmoderada,
+                                                            style:
+                                                            TextStyle(
+                                                                fontSize: _isDesktop ? 14 : 11, color: Colors.orange),
+                                                            overflow: TextOverflow.ellipsis,
+                                                            maxLines: (index == 2 || index == 6) ? 2 : 4,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 20),
+                                                    Directionality(
+                                                      textDirection: TextDirection.ltr,
+                                                      child: Row(
+                                                        children: <Widget>[
+                                                          Image.asset('images/maps_severa.png', width: 40, height: 40),
+                                                          const SizedBox(width: 5), // Separación entre el icono y el texto
+                                                          Text(
+                                                            item.casessevera,
+                                                            style:
+                                                            TextStyle(
+                                                                fontSize: _isDesktop ? 14 : 11, color: Colors.red),
+                                                            overflow: TextOverflow.ellipsis,
+                                                            maxLines: (index == 2 || index == 6) ? 2 : 4,
+                                                          ),
+                                                        ],
+                                                      ),
+
+                                                    ),
+                                                  ],
+                                                ),
+
+                                              ),
                                             ],
                                           ),
                                         )),
@@ -355,10 +434,16 @@ class _PointDetails {
       {required this.place,
         required this.latitude,
         required this.longitude,
-        required this.description});
+        required this.cases,
+        required this.casesnormopeso,
+        required this.casesmoderada,
+        required this.casessevera});
 
   final String place;
   final double latitude;
   final double longitude;
-  final String description;
+  final String cases;
+  final String casesnormopeso;
+  final String casesmoderada;
+  final String casessevera;
 }
