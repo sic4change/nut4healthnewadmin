@@ -35,6 +35,17 @@
           },
           {
             "type": "child",
+            "title": "Pagos",
+            "subItems": [
+              {
+                "type": "sample",
+                "title": "Pagos",
+                "key": "payment_datagrid"
+              }
+            ]
+          },
+          {
+            "type": "child",
             "title": "Configuraciones",
             "subItems": [
               {

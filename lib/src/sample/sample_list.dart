@@ -6,6 +6,7 @@ import '../features/configurations/presentation/datagrid_configurations.dart';
 import '../features/contracts/presentation/datagrid_contracts.dart';
 import '../features/countries/presentation/datagrid_countries.dart';
 import '../features/countries/presentation/country_map.dart';
+import '../features/payments/presentation/datagrid_payments.dart';
 import '../features/points/presentation/point_map.dart';
 import '../features/points/presentation/datagrid_points.dart';
 import '../features/provinces/presentation/datagrid_provinces.dart';
@@ -917,6 +918,7 @@ Map<String, Function> getSampleWidget() {
     //tablas
     'user_datagrid': (Key key) => UserDataGrid(key: key),
     'contract_datagrid': (Key key) => ContractDataGrid(key: key),
+    'payment_datagrid': (Key key) => PaymentDataGrid(key: key),
     'configuration_datagrid': (Key key) => ConfigurationDataGrid(key: key),
     'country_datagrid': (Key key) => CountryDataGrid(key: key),
     'province_datagrid': (Key key) => ProvinceDataGrid(key: key),

@@ -86,12 +86,6 @@ class FirestoreRepository {
     return CombineLatestStream.combine3(
         watchContracts(), watchUsers(), watchPoints(),
           (List<Contract> contracts, List<User> users, List<Point> points) {
-            final Map<String, User> userMap = Map.fromEntries(
-              users.map((user) => MapEntry(user.userId, user)),
-            );
-            final Map<String, Point> pointMap = Map.fromEntries(
-              points.map((point) => MapEntry(point.pointId, point)),
-            );
             return contracts.map((contract) {
               final Map<String, Point> pointMap = Map.fromEntries(
                 points.map((point) => MapEntry(point.pointId, point)),
