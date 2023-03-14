@@ -18,6 +18,7 @@ import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 import '../../../sample/model/sample_view.dart';
+import '../../authentication/data/firebase_auth_repository.dart';
 import '../data/firestore_repository.dart';
 /// Local import
 import '../domain/configuration.dart';
@@ -56,6 +57,8 @@ class _ConfigurationDataGridState extends LocalizationSampleViewState {
 
   /// Selected locale
   late String selectedLocale;
+
+  late String currentUserRole;
 
   /// Translate names
   late String _id, _name, _money, _newConfiguration, _payByConfirmation, _payByDiagnosis,
@@ -266,14 +269,23 @@ class _ConfigurationDataGridState extends LocalizationSampleViewState {
       document.dispose();
     }
 
-    return Row(
-      children: <Widget>[
-        _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
-        _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
-        _buildImportButton(_importCSV),
-        _buildCreatingButton(_newConfiguration),
-      ],
-    );
+    if (currentUserRole == 'super-admin') {
+      return Row(
+        children: <Widget>[
+          _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
+          _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
+          _buildImportButton(_importCSV),
+          _buildCreatingButton(_newConfiguration),
+        ],
+      );
+    } else {
+      return Row(
+        children: <Widget>[
+          _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
+          _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
+        ],
+      );
+    }
   }
 
   Widget _buildImportButton(String buttonName) {
@@ -793,7 +805,7 @@ class _ConfigurationDataGridState extends LocalizationSampleViewState {
       source: configurationDataGridSource,
       rowsPerPage: _rowsPerPage,
       tableSummaryRows: _getTableSummaryRows(),
-      allowSwiping: true,
+      allowSwiping: currentUserRole == 'super-admin' ? true : false,
       allowColumnsResizing: true,
       onColumnResizeUpdate: (ColumnResizeUpdateDetails details) {
         setState(() {
@@ -949,7 +961,17 @@ class _ConfigurationDataGridState extends LocalizationSampleViewState {
                 (_, state) => {
             },
           );
-
+          final user = ref.watch(authRepositoryProvider).currentUser;
+          if (user != null && user.metadata != null && user.metadata!.lastSignInTime != null) {
+            final claims = user.getIdTokenResult();
+            claims.then((value) => {
+              if (value.claims != null && value.claims!['donante'] == true) {
+                currentUserRole = 'donante',
+              } else if (value.claims != null && value.claims!['super-admin'] == true) {
+                currentUserRole = 'super-admin',
+              }
+            });
+          }
           final countriesAsyncValue = ref.watch(configurationsStreamProvider);
           if (countriesAsyncValue.value != null) {
             _saveConfigurations(countriesAsyncValue);

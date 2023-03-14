@@ -20,6 +20,7 @@ import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 import '../../../sample/model/sample_view.dart';
+import '../../authentication/data/firebase_auth_repository.dart';
 /// Local import
 import '../data/firestore_repository.dart';
 
@@ -58,6 +59,8 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
 
   /// Selected locale
   late String selectedLocale;
+
+  late String currentUserRole;
 
   /// Translate names
   late String _id, _date, _screenerName, _screenerDPI, _screenerEmail, _screenerPhone,
@@ -357,7 +360,7 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
       source: paymentDataGridSource,
       rowsPerPage: _rowsPerPage,
       tableSummaryRows: _getTableSummaryRows(),
-      allowSwiping: true,
+      allowSwiping: currentUserRole == 'super-admin' ? true : false,
       startSwipeActionsBuilder: _buildStartSwipeWidget,
       allowColumnsResizing: true,
       onColumnResizeUpdate: (ColumnResizeUpdateDetails details) {
@@ -670,6 +673,17 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
                 (_, state) => {
             },
           );
+          final user = ref.watch(authRepositoryProvider).currentUser;
+          if (user != null && user.metadata != null && user.metadata!.lastSignInTime != null) {
+            final claims = user.getIdTokenResult();
+            claims.then((value) => {
+              if (value.claims != null && value.claims!['donante'] == true) {
+                currentUserRole = 'donante',
+              } else if (value.claims != null && value.claims!['super-admin'] == true) {
+                currentUserRole = 'super-admin',
+              }
+            });
+          }
           final paymentsAsyncValue = ref.watch(paymentsStreamProvider);
           if (paymentsAsyncValue.value != null) {
             _savePayments(paymentsAsyncValue);

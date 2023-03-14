@@ -54,7 +54,13 @@ class AccountScreen extends ConsumerWidget {
     );
     final state = ref.watch(accountScreenControllerProvider);
     final user = ref.watch(authRepositoryProvider).currentUser;
-    final userDatabase = ref.watch(userDatabaseStreamProvider(user!.uid));
+    var userDatabase;
+    try {
+      userDatabase = ref.watch(userDatabaseStreamProvider(user!.uid));
+    } catch(e){
+      print(e);
+    }
+
 
     return Scaffold(
       appBar: AppBar(

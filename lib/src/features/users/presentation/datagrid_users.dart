@@ -21,6 +21,7 @@ import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
 
 import '../../../sample/model/sample_view.dart';
+import '../../authentication/data/firebase_auth_repository.dart';
 import '../../configurations/domain/configuration.dart';
 import '../../points/domain/point.dart';
 /// Local import
@@ -55,6 +56,8 @@ class _UserDataGridState extends LocalizationSampleViewState {
 
   /// DataGridSource required for SfDataGrid to obtain the row data.
   late UserDataGridSource userDataGridSource;
+
+  late String currentUserRole;
 
   static const double dataPagerHeight = 60;
   int _rowsPerPage = 15;
@@ -295,6 +298,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
   Widget _buildHeaderButtons() {
     Future<void> exportDataGridToExcel() async {
       final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
+          excludeColumns: ['Foto'],
           cellExport: (DataGridCellExcelExportDetails details) {
 
           });
@@ -307,6 +311,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
       final ByteData data = await rootBundle.load('images/nut_logo.jpg');
       final PdfDocument document = _key.currentState!.exportToPdfDocument(
           fitAllColumnsInOnePage: true,
+          excludeColumns: ['Foto'],
           cellExport: (DataGridCellPdfExportDetails details) {
 
           },
@@ -334,14 +339,23 @@ class _UserDataGridState extends LocalizationSampleViewState {
       document.dispose();
     }
 
-    return Row(
-      children: <Widget>[
-        _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
-        _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
-        _buildImportButton(_importCSV),
-        _buildCreatingButton(_newUser),
-      ],
-    );
+    if (currentUserRole == 'super-admin') {
+      return Row(
+        children: <Widget>[
+          _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
+          _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
+          _buildImportButton(_importCSV),
+          _buildCreatingButton(_newUser),
+        ],
+      );
+    } else {
+      return Row(
+        children: <Widget>[
+          _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
+          _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
+        ],
+      );
+    }
   }
 
   Widget _buildImportButton(String buttonName) {
@@ -948,7 +962,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
       source: userDataGridSource,
       rowsPerPage: _rowsPerPage,
       tableSummaryRows: _getTableSummaryRows(),
-      allowSwiping: true,
+      allowSwiping: currentUserRole == 'super-admin' ? true : false,
       allowColumnsResizing: true,
       onColumnResizeUpdate: (ColumnResizeUpdateDetails details) {
         setState(() {
@@ -1158,6 +1172,17 @@ class _UserDataGridState extends LocalizationSampleViewState {
                 (_, state) => {
             },
           );
+          final user = ref.watch(authRepositoryProvider).currentUser;
+          if (user != null && user.metadata != null && user.metadata!.lastSignInTime != null) {
+            final claims = user.getIdTokenResult();
+            claims.then((value) => {
+              if (value.claims != null && value.claims!['donante'] == true) {
+                currentUserRole = 'donante',
+              } else if (value.claims != null && value.claims!['super-admin'] == true) {
+                currentUserRole = 'super-admin',
+              }
+            });
+          }
           final usersAsyncValue = ref.watch(usersStreamProvider);
           final pointsAsyncValue = ref.watch(pointsStreamProvider);
           final configurationsAsyncValue = ref.watch(configurationsStreamProvider);

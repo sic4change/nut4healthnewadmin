@@ -13,6 +13,7 @@ import '../../../../constants/app_sizes.dart';
 import '../../../../sample/model/helper.dart';
 import '../../../../sample/model/model.dart';
 import '../../../../utils/alert_dialogs.dart';
+import '../../data/firebase_auth_repository.dart';
 import 'email_password_sign_in_controller.dart';
 import 'email_password_sign_in_form_type.dart';
 import 'email_password_sign_in_validators.dart';
@@ -108,13 +109,6 @@ class _EmailPasswordSignInContentsState
     _submit();
   }
 
-  void _updateFormType() {
-    // * Toggle between register and sign in form
-    setState(() => _formType = _formType.secondaryActionFormType);
-    // * Clear the password field when doing so
-    _passwordController.clear();
-  }
-
   Future<void> _forgotPassword() async {
     if (!canSubmitEmail(email)) {
       showExceptionAlertDialog(
@@ -135,6 +129,18 @@ class _EmailPasswordSignInContentsState
       (_, state) => state.showAlertDialogOnError(context),
     );
     final state = ref.watch(emailPasswordSignInControllerProvider);
+    final user = ref.watch(authRepositoryProvider).currentUser;
+
+    if (user != null && user.metadata != null && user.metadata!.lastSignInTime != null) {
+      final claims = user.getIdTokenResult();
+      claims.then((value) => {
+        if (value.claims != null && value.claims!['servicio-salud'] == true) {
+          ref.watch(authRepositoryProvider).signOut()
+        } else if (value.claims != null && value.claims!['agente-salud'] == true) {
+          ref.watch(authRepositoryProvider).signOut()
+        }
+      });
+    }
 
     return Center(
       child: ResponsiveScrollableCard(

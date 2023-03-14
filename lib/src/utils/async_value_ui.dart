@@ -24,5 +24,13 @@ extension AsyncValueUI on AsyncValue {
     }
   }
 
+  void showAlertDialogOnRoleError(BuildContext context) {
+    showExceptionAlertDialog(
+      context: context,
+      title: 'Error'.hardcoded,
+      exception: 'Acceso denegado. Solo usuarios administradores pueden acceder.'.hardcoded,
+    );
+  }
+
 
 }
