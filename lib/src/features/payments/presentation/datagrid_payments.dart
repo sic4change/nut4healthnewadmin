@@ -392,30 +392,6 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
             ),
           ),
         ),
-        /*GridColumn(
-          columnName: 'Cantidad',
-          width: columnWidths['Cantidad']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _quantity.toString(),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),*/
-        /*GridColumn(
-          columnName: 'Fecha',
-            width: columnWidths['Fecha']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _date,
-              overflow: TextOverflow.ellipsis,
-            ),
-          )
-        ),*/
         GridColumn(
           columnName: 'Nombre Agente Salud',
           width: columnWidths['Nombre Agente Salud']!,
@@ -465,33 +441,30 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
             ),
           ),
         ),
-
-        /*GridColumn(
-          columnName: 'Nombre Menor',
-          width: columnWidths['Nombre Menor']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _childName.toString(),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-
         GridColumn(
-          columnName: 'Dirección Menor',
-          width: columnWidths['Dirección Menor']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _childAddress.toString(),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),*/
-
+            columnName: 'Fecha',
+            width: columnWidths['Fecha']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _date,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Cantidad',
+            width: columnWidths['Cantidad']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _quantity,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
       ],
     );
   }

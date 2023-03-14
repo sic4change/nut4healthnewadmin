@@ -32,13 +32,8 @@ class PaymentDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'DNI/DPI Agente Salud', value: paymentWithScreenerAndContract.screener.dni),
           DataGridCell<String>(columnName: 'Email Agente Salud', value: paymentWithScreenerAndContract.screener.email),
           DataGridCell<String>(columnName: 'Teléfono Agente Salud', value: paymentWithScreenerAndContract.screener.phone),
-
-          //DataGridCell<String>(columnName: 'Nombre Menor', value: paymentWithScreenerAndContract.contract?.childName?.replaceAll('ء', '\\u1574')),
-          //DataGridCell<String>(columnName: 'Dirección Menor', value: paymentWithScreenerAndContract.contract?.childAddress?.replaceAll('ء', '\\u1574')),
-          //DataGridCell<double>(columnName: 'Cantidad', value: paymentWithScreenerAndContract.payment.quantity),
-          /*DataGridCell<DateTime>(columnName: 'Fecha', value: paymentWithScreenerAndContract.payment.creationDate),
-
-         */
+          DataGridCell<DateTime>(columnName: 'Fecha', value: paymentWithScreenerAndContract.payment.creationDate),
+          DataGridCell<double>(columnName: 'Cantidad', value: paymentWithScreenerAndContract.payment.quantity),
         ]);
       }).toList();
     }
@@ -174,29 +169,6 @@ class PaymentDataGridSource extends DataGridSource {
       ),
       _buildEmail(row.getCells()[5].value.toString()),
       _buildPhone(row.getCells()[6].value.toString()),
-      /*Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[7].value.toString()),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[8].value.toString()),
-      ),*/
-      /*Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[2].value.toString()),
-      ),
-
-      _buildEmail(row.getCells()[4].value.toString()),
-      _buildPhone(row.getCells()[5].value.toString()),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[6].value.toString()),
-      ),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
@@ -207,12 +179,6 @@ class PaymentDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[8].value.toString()),
       ),
-      _buildStatus(row.getCells()[9].value.toString()),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[10].value.toString()),
-      ),*/
     ]);
   }
 

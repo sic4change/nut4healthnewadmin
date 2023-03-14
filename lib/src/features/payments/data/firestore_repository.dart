@@ -81,10 +81,10 @@ class FirestoreRepository {
 
   Stream<List<PaymentWithScreener>> watchPaymentsWithScreenerAndContract() {
     const emptyUser = User(userId: '', name: '', email: '', role: '');
-    const emptyContract = Contract(contractId: '', code: '', point: '', screenerId: '',
+    /*const emptyContract = Contract(contractId: '', code: '', point: '', screenerId: '',
     medicalId: '', armCircunference: 0.0, armCircumferenceMedical: 0.0, weight: 0.0, height: 0.0,
     childName: '', childSurname: '', sex: '', childDNI: '', childTutor: '', childPhoneContract: '',
-    childAddress: '', smsSent: false, duration: '0', percentage: 0);
+    childAddress: '', smsSent: false, duration: '0', percentage: 0);*/
 
     return CombineLatestStream.combine2(
         watchPayments(), watchUsers(),

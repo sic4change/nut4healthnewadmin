@@ -1,5 +1,6 @@
 
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
@@ -11,30 +12,27 @@ class Payment extends Equatable {
   const Payment(
       {required this.paymentId,
         this.status,
-        //this.quantity,
+        this.quantity,
         this.type,
-        //this.creationDate,
+        this.creationDate,
         this.screenerId,
-        //this.contractId
   });
 
   final PaymentID paymentId;
   final String? status;
-  //final double? quantity;
+  final double? quantity;
   final String? type;
-  //final DateTime? creationDate;
+  final DateTime? creationDate;
   final String? screenerId;
-  //final String? contractId;
 
   @override
   List<Object> get props => [
     paymentId,
     status ?? "",
-    //quantity ?? 0.0,
+    quantity ?? 0.0,
     type ?? "",
-    //creationDate ?? DateTime(0, 0, 0,),
-    screenerId ?? "",
-    //contractId ?? ""
+    creationDate ?? DateTime(0, 0, 0,),
+    screenerId ?? ""
   ];
 
   @override
@@ -47,20 +45,34 @@ class Payment extends Equatable {
     }
 
     final status = data['status'] ?? "";
-    //final quantity = data['quantity'] as double? ?? 0.0;
+
+    var quantity = 0.0;
+    try {
+      quantity = data['quantity'] as double? ?? 0.0;
+    } catch (e) {
+      print("error quantity $e");
+      quantity = 0.0;
+    }
+
     final type = data['type'] ?? "";
-    //final creationDate = DateTime.fromMillisecondsSinceEpoch( data['creationDateMiliseconds'] ?? 0);
+    var creationDateMiliseconds = 0;
+    try {
+      creationDateMiliseconds = data['creationDateMiliseconds'] as int ?? 0;
+    } catch (e) {
+      print("error creationDateMiliseconds $e");
+      creationDateMiliseconds = 0;
+    }
+    final creationDate = DateTime.fromMillisecondsSinceEpoch(creationDateMiliseconds);
+
     final screenerId = data['screenerId'] ?? "";
-    //final contractId = data['contractId'] ?? "";
 
     return Payment(
         paymentId: documentId,
         status: status,
-        //quantity: quantity,
+        quantity: quantity,
         type: type,
-        //creationDate: creationDate,
-        screenerId: screenerId,
-        //contractId: contractId,
+        creationDate: creationDate,
+        screenerId: screenerId
     );
   }
 
@@ -68,8 +80,8 @@ class Payment extends Equatable {
     return {
       'status': status,
       'type': type,
-      //'contractId': contractId,
       'screenerId': screenerId,
+      'creationDate': creationDate,
     };
   }
 }
