@@ -2,6 +2,7 @@
 /// import 'package:flutter/foundation.dart';
 
 
+import 'package:adminnut4health/src/features/payments/domain/payment.dart';
 import 'package:adminnut4health/src/features/payments/presentation/payment_datagridsource.dart';
 import 'package:adminnut4health/src/features/payments/presentation/payments_screen_controller.dart';
 import 'package:flutter/material.dart';
@@ -61,8 +62,11 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
   /// Translate names
   late String _id, _date, _screenerName, _screenerDPI, _screenerEmail, _screenerPhone,
       _quantity, _childName, _childAddress, _status, _type, _exportXLS, _exportPDF,
-      _total, _payments
-  ;
+      _total, _payments,  _save, _cancel, _editPayment;
+
+  /// Editing controller for forms to perform update the values.
+  TextEditingController?
+      statusController;
 
   late Map<String, double> columnWidths = {
     'Id': 150,
@@ -303,6 +307,9 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
         _total = 'Total Diagnosis';
+        _cancel = 'Cancel';
+        _save = 'Save';
+        _editPayment = 'Edit';
         break;
       case 'es_ES':
         _id = 'Id';
@@ -320,6 +327,9 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
         _total = 'Diagnósticos totale';
+        _cancel = 'Cancelar';
+        _save = 'Guardar';
+        _editPayment = 'Editar';
         break;
       case 'fr_FR':
         _id = 'Identifiant';
@@ -337,7 +347,9 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
         _total = 'Total des diagnostics';
-
+        _cancel = 'Annuler';
+        _save = 'Enregistrer';
+        _editPayment = 'Modifier';
         break;
     }
     return SfDataGrid(
@@ -345,6 +357,8 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
       source: paymentDataGridSource,
       rowsPerPage: _rowsPerPage,
       tableSummaryRows: _getTableSummaryRows(),
+      allowSwiping: true,
+      startSwipeActionsBuilder: _buildStartSwipeWidget,
       allowColumnsResizing: true,
       onColumnResizeUpdate: (ColumnResizeUpdateDetails details) {
         setState(() {
@@ -469,9 +483,158 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
     );
   }
 
+  /// Callback for left swiping
+  Widget _buildStartSwipeWidget(
+      BuildContext context, DataGridRow row, int rowIndex) {
+    return GestureDetector(
+      onTap: () => _handleEditWidgetTap(row),
+      child: Container(
+        color: Colors.blueAccent,
+        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(Icons.edit, color: Colors.white, size: 16),
+            SizedBox(width: 8.0),
+            Text(
+              _editPayment,
+              style: TextStyle(color: Colors.white, fontSize: 12),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRowComboSelection({required TextEditingController controller,
+    required String columnName, required List<String> dropDownMenuItems,
+    required String text}) {
+    String value = controller.text;
+    if (value.isEmpty) {
+      value = dropDownMenuItems[0];
+    }
+    return Row(
+      children: <Widget>[
+        Container(
+            width: 150,
+            padding: const EdgeInsets.symmetric(vertical: 15),
+            child: Text(text)),
+        SizedBox(
+          width: 150,
+          child: DropdownButtonFormField<String>(
+              value: value,
+              autofocus: true,
+              focusColor: Colors.transparent,
+              icon: const Icon(Icons.arrow_drop_down_sharp),
+              isExpanded: false,
+              onChanged: (newValue) {
+                setState(() {
+                  value = newValue!;
+                  controller.text = newValue!;
+                });
+              },
+              items: dropDownMenuItems.map((option) {
+                return DropdownMenuItem<String>(
+                  value: option,
+                  child: Text(option.length > 12 ? option.substring(0, 12) + '...' : option),
+                );
+              }).toList()),
+        ),
+      ],
+    );
+  }
+
+  /// Updating the DataGridRows after changing the value and notify the DataGrid
+  /// to refresh the view
+  void _processCellUpdate(DataGridRow row, BuildContext buildContext) {
+    final Payment? payment = paymentDataGridSource.getPayments()?.firstWhere((element) => element.payment.paymentId == row.getCells()[0].value).payment;
+    if (_formKey.currentState!.validate()) {
+      ref.read(paymentsScreenControllerProvider.notifier).updatePayment(
+          Payment(paymentId: payment!.paymentId,
+              status: statusController!.text,
+              type: payment!.type,
+              creationDate: payment!.creationDate,
+              screenerId:payment!.screenerId
+          )
+      );
+      Navigator.pop(buildContext);
+    }
+  }
+
+  /// Building the forms to edit the data
+  Widget _buildAlertDialogContent() {
+    final statusOptions = ["CREATED", "PAID", "CANCELLED"];
+    return Column(
+      children: <Widget>[
+        _buildRowComboSelection(controller: statusController!, columnName: 'Estado',
+            dropDownMenuItems: statusOptions, text: _status),
+      ],
+    );
+  }
+
+  /// Building the option button on the bottom of the alert popup
+  List<Widget> _buildActionButtons(DataGridRow row, BuildContext buildContext) {
+    return <Widget>[
+      TextButton(
+        onPressed: () => _processCellUpdate(row, buildContext),
+        child: Text(
+          _save,
+          style: TextStyle(color: model.backgroundColor),
+        ),
+      ),
+      TextButton(
+        onPressed: () => Navigator.pop(buildContext),
+        child: Text(
+          _cancel,
+          style: TextStyle(color: model.backgroundColor),
+        ),
+      ),
+    ];
+  }
+
+  // Updating the data to the TextEditingController
+  void _updateTextFieldContext(DataGridRow row) {
+    final String? status = row
+        .getCells()
+        .firstWhere(
+          (DataGridCell element) => element.columnName == 'Estado',
+    )
+        ?.value
+        .toString();
+
+    statusController!.text = status ?? '';
+
+
+  }
+
+  /// Editing the DataGridRow
+  void _handleEditWidgetTap(DataGridRow row) {
+    _updateTextFieldContext(row);
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        scrollable: true,
+        titleTextStyle: TextStyle(
+            color: model.textColor, fontWeight: FontWeight.bold, fontSize: 16),
+        title: Text(_editPayment),
+        actions: _buildActionButtons(row, context),
+        content: Scrollbar(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Form(
+              key: _formKey,
+              child: _buildAlertDialogContent(),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
+    statusController = TextEditingController();
     paymentDataGridSource = PaymentDataGridSource(List.empty());
     selectedLocale = model.locale.toString();
     _id = 'Id';
@@ -493,6 +656,9 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
     _exportPDF = 'Exportar PDF';
     _total = 'Diagnósticos totales';
     _date = 'Fecha';
+    _cancel = 'Cancelar';
+    _save = 'Guardar';
+    _editPayment = 'Edit';
   }
 
   @override

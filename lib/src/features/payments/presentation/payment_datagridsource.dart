@@ -113,28 +113,15 @@ class PaymentDataGridSource extends DataGridSource {
     );
   }
 
-  TextStyle _getDesnutritionStatusTextStyle(dynamic value) {
-    if (value.toString() == 'Desnutrición Aguda Moderada (MAM)') {
-      return const TextStyle(color: Colors.orange);
-    } else if (value.toString() == 'Normopeso (NW)') {
-      return TextStyle(color: Colors.green);
-    } else if (value.toString() == 'Desnutrición Aguda Severa (SAM)') {
-      return const TextStyle(color: Colors.red);
-    }  else {
-      return const TextStyle(color: Colors.orange);
-    }
-  }
 
   TextStyle _getStatusTextStyle(dynamic value) {
-    if (value.toString() == 'DUPLICATED') {
+    if (value.toString() == 'CREATED') {
       return const TextStyle(color: Colors.orange);
-    } else if (value.toString() == 'REGISTERED') {
+    } else if (value.toString() == 'PAID') {
       return TextStyle(color: Colors.green);
-    } else if (value.toString() == 'DERIVED') {
+    } else if (value.toString() == 'CANCELLED') {
       return const TextStyle(color: Colors.red);
-    } else if (value.toString() == 'ADMITTED') {
-      return const TextStyle(color: Colors.purple);
-    } else {
+    }  else {
       return const TextStyle(color: Colors.orange);
     }
   }
@@ -147,11 +134,7 @@ class PaymentDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[0].value.toString()),
       ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[1].value.toString()),
-      ),
+      _buildStatus(row.getCells()[1].value.toString()),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
