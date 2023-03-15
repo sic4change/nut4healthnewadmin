@@ -109,6 +109,18 @@ class UserDataGridSource extends DataGridSource {
     }
   }
 
+  Widget _buildDate(dynamic value) {
+    String valueString = value.toString();
+    if (valueString == null || valueString.isEmpty || valueString == '1970-01-01 00:00:00.000') {
+      return const Text("");
+    } else {
+      return Padding(
+        padding: const EdgeInsets.only(left: 16.0),
+        child: _getWidget(const Icon(Icons.calendar_month, size: 20), value.toString()),
+      );
+    }
+  }
+
   Widget _buildPoint(dynamic value) {
     if (value.toString().isNotEmpty) {
       return Padding(
@@ -199,11 +211,12 @@ class UserDataGridSource extends DataGridSource {
         alignment: Alignment.center,
         child: Text(row.getCells()[10].value.toString()),
       ),
-      Container(
+      _buildDate(row.getCells()[11].value)
+      /*Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.center,
         child: Text(row.getCells()[11].value.toString()),
-      ),
+      ),*/
     ]);
   }
 

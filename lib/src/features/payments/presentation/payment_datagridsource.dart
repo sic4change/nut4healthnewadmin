@@ -73,14 +73,15 @@ class PaymentDataGridSource extends DataGridSource {
     }
   }
 
-  Widget _buildPoint(dynamic value) {
-    if (value.toString().isNotEmpty) {
+  Widget _buildDate(dynamic value) {
+    String valueString = value.toString();
+    if (valueString == null || valueString.isEmpty || valueString == '1970-01-01 00:00:00.000') {
+      return const Text("");
+    } else {
       return Padding(
         padding: const EdgeInsets.only(left: 16.0),
-        child: _getWidget(const Icon(Icons.place, size: 20), value),
+        child: _getWidget(const Icon(Icons.calendar_month, size: 20), value.toString()),
       );
-    } else {
-      return const Text("");
     }
   }
 
@@ -152,11 +153,7 @@ class PaymentDataGridSource extends DataGridSource {
       ),
       _buildEmail(row.getCells()[5].value.toString()),
       _buildPhone(row.getCells()[6].value.toString()),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[7].value.toString()),
-      ),
+      _buildDate(row.getCells()[7].value.toString()),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,

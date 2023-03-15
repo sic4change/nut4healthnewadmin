@@ -100,6 +100,31 @@ class ContractDataGridSource extends DataGridSource {
     }
   }
 
+  Widget _buildDouble(dynamic value) {
+    String valueString = value.toString();
+    if (valueString == null || valueString.isEmpty || valueString == 'null') {
+      return const Text("");
+    } else {
+      return Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(valueString),
+      );
+    }
+  }
+
+  Widget _buildDuration(dynamic value) {
+    String valueString = value.toString();
+    if (valueString == null || valueString.isEmpty || valueString == '0') {
+      return const Text("");
+    } else {
+      return Padding(
+        padding: const EdgeInsets.only(left: 16.0),
+        child: _getWidget(const Icon(Icons.timer, size: 20), value),
+      );
+    }
+  }
+
   Widget _buildPoint(dynamic value) {
     if (value.toString().isNotEmpty) {
       return Padding(
@@ -129,6 +154,18 @@ class ContractDataGridSource extends DataGridSource {
         overflow: TextOverflow.ellipsis,
       ),
     );
+  }
+
+  Widget _buildDate(dynamic value) {
+    String valueString = value.toString();
+    if (valueString == null || valueString.isEmpty || valueString == '1970-01-01 00:00:00.000') {
+      return const Text("");
+    } else {
+      return Padding(
+        padding: const EdgeInsets.only(left: 16.0),
+        child: _getWidget(const Icon(Icons.calendar_month, size: 20), value.toString()),
+      );
+    }
   }
 
   Widget _getWidget(Widget image, String text) {
@@ -210,28 +247,10 @@ class ContractDataGridSource extends DataGridSource {
       ),
       _buildStatus(row.getCells()[2].value.toString()),
       _buildDesnutritionStatus(row.getCells()[3].value.toString()),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[4].value.toString()),
-      ),
-
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[5].value.toString()),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[6].value.toString()),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[7].value.toString()),
-      ),
-
+      _buildDouble(row.getCells()[4].value),
+      _buildDouble(row.getCells()[5].value),
+      _buildDouble(row.getCells()[6].value),
+      _buildDouble(row.getCells()[7].value),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
@@ -259,11 +278,7 @@ class ContractDataGridSource extends DataGridSource {
       ),
       _buildPhone(row.getCells()[13].value.toString()),
       _buildPoint(row.getCells()[14].value.toString()),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[15].value.toString()),
-      ),
+      _buildDate(row.getCells()[15].value.toString()),
       _buildPoint(row.getCells()[16].value.toString()),
       Container(
         padding: const EdgeInsets.all(8.0),
@@ -275,18 +290,9 @@ class ContractDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[18].value.toString()),
       ),
-
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[19].value.toString()),
-      ),
+      _buildDate(row.getCells()[19].value.toString()),
       _buildSMSSent(row.getCells()[20].value),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[21].value.toString()),
-      ),
+      _buildDuration(row.getCells()[21].value.toString())
     ]);
   }
 
