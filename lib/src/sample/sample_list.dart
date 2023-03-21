@@ -10,6 +10,7 @@ import '../features/payments/presentation/datagrid_payments.dart';
 import '../features/points/presentation/point_map.dart';
 import '../features/points/presentation/datagrid_points.dart';
 import '../features/provinces/presentation/datagrid_provinces.dart';
+import '../features/reports/presentation/datagrid_reports.dart';
 import 'samples/barcodes/data_matrix.dart';
 import 'samples/barcodes/one_dimensional.dart';
 import 'samples/barcodes/qr_code.dart';
@@ -924,6 +925,7 @@ Map<String, Function> getSampleWidget() {
     'province_datagrid': (Key key) => ProvinceDataGrid(key: key),
     'city_datagrid': (Key key) => CityDataGrid(key: key),
     'point_datagrid': (Key key) => PointDataGrid(key: key),
+    'report_datagrid': (Key key) => ReportDataGrid(key: key),
 
     //mapas
     'country_map': (Key key) => MapCountryPage(key),
