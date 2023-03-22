@@ -2,7 +2,7 @@
 /// import 'package:flutter/foundation.dart';
 
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:adminnut4health/src/features/reports/domain/report_with_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -60,8 +60,8 @@ class _ReportDataGridState extends LocalizationSampleViewState {
 
   late Map<String, double> columnWidths = {
     'Fecha': 150,
-    //'Nombre': 150,
-    //'Apellidos': 150,
+    'Nombre': 150,
+    'Apellidos': 150,
     'Email': 150,
     'Mensaje': 300,
     'Enviado': 150,
@@ -90,7 +90,7 @@ class _ReportDataGridState extends LocalizationSampleViewState {
     );
   }
 
-  _saveReports(AsyncValue<List<Report>>? reports) {
+  _saveReports(AsyncValue<List<ReportWithUser>>? reports) {
     if (reports == null) {
       reportDataGridSource.setReports(List.empty());
     } else {
@@ -98,7 +98,7 @@ class _ReportDataGridState extends LocalizationSampleViewState {
     }
   }
 
-  Widget _buildView(AsyncValue<List<Report>> reports) {
+  Widget _buildView(AsyncValue<List<ReportWithUser>> reports) {
     if (reports.value != null && reports.value!.isNotEmpty) {
       reportDataGridSource.buildDataGridRows();
       reportDataGridSource.updateDataSource();
@@ -505,7 +505,7 @@ class _ReportDataGridState extends LocalizationSampleViewState {
   /// Updating the DataGridRows after changing the value and notify the DataGrid
   /// to refresh the view
   void _processCellUpdate(DataGridRow row, BuildContext buildContext) {
-    final String? id = reportDataGridSource.getReports()?.firstWhere((element) => element.reportId == row.getCells()[0].value).reportId;
+    final String? id = reportDataGridSource.getReports()?.firstWhere((element) => element.report.reportId == row.getCells()[0].value).report.reportId;
     if (_formKey.currentState!.validate()) {
       ref.read(reportsScreenControllerProvider.notifier).updateReport(
           Report(
@@ -543,9 +543,9 @@ class _ReportDataGridState extends LocalizationSampleViewState {
 
   /// Deleting the DataGridRow
   void _handleDeleteWidgetTap(DataGridRow row) {
-    final report = reportDataGridSource.getReports()?.firstWhere((element) => element.reportId == row.getCells()[0].value);
+    final report = reportDataGridSource.getReports()?.firstWhere((element) => element.report.reportId == row.getCells()[0].value);
     if (report != null) {
-      ref.read(reportsScreenControllerProvider.notifier).deleteReport(report);
+      ref.read(reportsScreenControllerProvider.notifier).deleteReport(report.report);
       _showDialogDeleteConfirmation();
     }
   }
@@ -711,7 +711,6 @@ class _ReportDataGridState extends LocalizationSampleViewState {
               ),
             )
         ),
-        /*
         GridColumn(
             columnName: 'Nombre',
             width: columnWidths['Nombre']!,
@@ -723,7 +722,7 @@ class _ReportDataGridState extends LocalizationSampleViewState {
                 overflow: TextOverflow.ellipsis,
               ),
             )
-        ),*//*
+        ),
         GridColumn(
             columnName: 'Apellidos',
             width: columnWidths['Apellidos']!,
@@ -736,7 +735,6 @@ class _ReportDataGridState extends LocalizationSampleViewState {
               ),
             )
         ),
-        */
         GridColumn(
             columnName: 'Email',
             width: columnWidths['Email']!,

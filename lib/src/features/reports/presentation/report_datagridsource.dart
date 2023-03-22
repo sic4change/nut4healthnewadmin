@@ -1,36 +1,34 @@
 
 /// Packages import
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:adminnut4health/src/features/reports/domain/report_with_user.dart';
 import 'package:flutter/material.dart';
 
 /// DataGrid import
 // ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../domain/report.dart';
-
 /// Set report's data collection to data grid source.
 class ReportDataGridSource extends DataGridSource {
   /// Creates the report data source class with required details.
-  ReportDataGridSource(List<Report> reportData) {
+  ReportDataGridSource(List<ReportWithUser> reportData) {
     _reports = reportData;
     buildDataGridRows();
   }
 
   List<DataGridRow> _dataGridRows = <DataGridRow>[];
-  List<Report>? _reports = <Report>[];
+  List<ReportWithUser>? _reports = <ReportWithUser>[];
 
   /// Building DataGridRows
   void buildDataGridRows() {
     if (_reports != null && _reports!.isNotEmpty) {
-      _dataGridRows = _reports!.map<DataGridRow>((Report report) {
+      _dataGridRows = _reports!.map<DataGridRow>((ReportWithUser reportWithUser) {
         return DataGridRow(cells: <DataGridCell>[
-          DataGridCell<DateTime>(columnName: 'Fecha', value: report.date),
-          //DataGridCell<String>(columnName: 'Nombre', value: report.text),
-          //DataGridCell<String>(columnName: 'Apellidos', value: report.text),
-          DataGridCell<String>(columnName: 'Email', value: report.email),
-          DataGridCell<String>(columnName: 'Mensaje', value: report.text),
-          DataGridCell<bool>(columnName: 'Enviado', value: report.sent),
+          DataGridCell<DateTime>(columnName: 'Fecha', value: reportWithUser.report.date),
+          DataGridCell<String>(columnName: 'Nombre', value: reportWithUser.user?.name??""),
+          DataGridCell<String>(columnName: 'Apellidos', value: reportWithUser.user?.surname??""),
+          DataGridCell<String>(columnName: 'Email', value: reportWithUser.report.email),
+          DataGridCell<String>(columnName: 'Mensaje', value: reportWithUser.report.text),
+          DataGridCell<bool>(columnName: 'Enviado', value: reportWithUser.report.sent),
         ]);
       }).toList();
     }
@@ -80,33 +78,31 @@ class ReportDataGridSource extends DataGridSource {
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(cells: <Widget>[
       _buildDate(row.getCells()[0].value),
-      /*
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[4].value.toString()),
-      ),*/
-      /*
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[4].value.toString()),
-      ),*/
-      _buildEmail(row.getCells()[1].value),
+        child: Text(row.getCells()[1].value.toString()),
+      ),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[2].value.toString()),
       ),
-      _buildSent(row.getCells()[3].value),
+      _buildEmail(row.getCells()[3].value),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[4].value.toString()),
+      ),
+      _buildSent(row.getCells()[5].value),
     ]);
   }
 
-  setReports(List<Report>? reportData) {
+  setReports(List<ReportWithUser>? reportData) {
     _reports = reportData;
   }
 
-  List<Report>? getReports() {
+  List<ReportWithUser>? getReports() {
     return _reports;
   }
 
