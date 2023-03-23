@@ -486,32 +486,16 @@ class _ReportDataGridState extends LocalizationSampleViewState {
     );
   }
 
-  void _processCellCreate(BuildContext buildContext) async {
-    if (_formKey.currentState!.validate()) {
-      ref.read(reportsScreenControllerProvider.notifier).addReport(
-          Report(
-              reportId: "",
-              date: DateTime.now(),// TODO: dateController!.text,
-              user: "", //TODO:
-              email: emailController!.text,
-              text: textController!.text,
-              sent: sentController!.text == '✔' ? true : false,
-          )
-      );
-      Navigator.pop(buildContext);
-    }
-  }
-
   /// Updating the DataGridRows after changing the value and notify the DataGrid
   /// to refresh the view
   void _processCellUpdate(DataGridRow row, BuildContext buildContext) {
-    final String? id = reportDataGridSource.getReports()?.firstWhere((element) => element.report.reportId == row.getCells()[0].value).report.reportId;
+    final Report? report = reportDataGridSource.getReports()?.firstWhere((element) => element.report.reportId == row.getCells()[0].value).report;
     if (_formKey.currentState!.validate()) {
       ref.read(reportsScreenControllerProvider.notifier).updateReport(
           Report(
-            reportId: "",
-            date: DateTime.now(),// TODO: dateController!.text,
-            user: "", //TODO:
+            reportId: report!.reportId,
+            date: report.date,
+            user: report.user,
             email: emailController!.text,
             text: textController!.text,
             sent: sentController!.text == '✔' ? true : false,
