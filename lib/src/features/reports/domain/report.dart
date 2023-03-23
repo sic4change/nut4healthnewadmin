@@ -13,6 +13,9 @@ class Report extends Equatable {
     required this.email,
     required this.sent,
     required this.date,
+    required this.response,
+    required this.updatedby,
+    required this.lastupdate,
   });
 
   final ReportID reportId;
@@ -21,6 +24,9 @@ class Report extends Equatable {
   final String email;
   final bool sent;
   final DateTime date;
+  final String? response;
+  final String? updatedby;
+  final DateTime? lastupdate;
 
   @override
   List<Object> get props => [reportId, text, user, email, sent, date];
@@ -38,6 +44,10 @@ class Report extends Equatable {
     final sent = data['sent'] as bool;
     final Timestamp dateFirebase = data['date'] ?? Timestamp(0, 0);
     final date = dateFirebase.toDate();
+    final response = data['response'] as String?;
+    final updatedby = data['updatedby'] as String?;
+    final Timestamp? lastupdateFirebase = data['lastupdate'];
+    final lastupdate = lastupdateFirebase?.toDate();
 
     return Report(
       reportId: documentId,
@@ -46,6 +56,9 @@ class Report extends Equatable {
       email: email,
       sent: sent,
       date: date,
+      response: response,
+      updatedby: updatedby,
+      lastupdate: lastupdate,
     );
   }
 
@@ -56,6 +69,9 @@ class Report extends Equatable {
       'email': email,
       'sent': sent,
       'date': date,
+      'response': response,
+      'updatedby': updatedby,
+      'lastupdate': lastupdate,
     };
   }
 }

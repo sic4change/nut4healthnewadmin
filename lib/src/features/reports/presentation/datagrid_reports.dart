@@ -3,6 +3,7 @@
 
 
 import 'package:adminnut4health/src/features/reports/domain/report_with_user.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -51,12 +52,12 @@ class _ReportDataGridState extends LocalizationSampleViewState {
   /// Selected locale
   late String selectedLocale;
 
-  late String currentUserRole;
+  late String currentUserRole, currentUserEmail;
 
   /// Translate names
-  late String _date, _name, _surnames, _email, _text, _sent,
-      _newReport, _importCSV, _exportXLS, _exportPDF, _total,
-      _editReport, _removeReport, _save, _cancel, _reports, _removedReport;
+  late String _date, _name, _surnames, _email, _text, _response, _updatedby,
+      _lastupdate,  _exportXLS, _exportPDF, _total, _editReport, _removeReport,
+      _save, _cancel, _reports, _removedReport;
 
   late Map<String, double> columnWidths = {
     'Fecha': 150,
@@ -64,17 +65,13 @@ class _ReportDataGridState extends LocalizationSampleViewState {
     'Apellidos': 150,
     'Email': 150,
     'Mensaje': 300,
-    'Enviado': 150,
+    'Respuesta': 150,
+    'Respondido por': 150,
+    'Fecha respuesta': 150,
   };
 
   /// Editing controller for forms to perform update the values.
-  TextEditingController?
-      dateController,
-      nameController,
-      surnamesController,
-      emailController,
-      textController,
-      sentController;
+  TextEditingController? responseController;
 
   /// Used to validate the forms
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -297,44 +294,6 @@ class _ReportDataGridState extends LocalizationSampleViewState {
     }
   }
 
-  Widget _buildRowComboSelection({required TextEditingController controller,
-    required String columnName, required List<String> dropDownMenuItems,
-    required String text}) {
-    String value = controller.text;
-    if (value.isEmpty) {
-      value = dropDownMenuItems[0];
-    }
-    return Row(
-      children: <Widget>[
-        Container(
-            width: 150,
-            padding: const EdgeInsets.symmetric(vertical: 15),
-            child: Text(text)),
-        SizedBox(
-          width: 150,
-          child: DropdownButtonFormField<String>(
-              value: value,
-              autofocus: true,
-              focusColor: Colors.transparent,
-              icon: const Icon(Icons.arrow_drop_down_sharp),
-              isExpanded: false,
-              onChanged: (newValue) {
-                setState(() {
-                  value = newValue!;
-                  controller.text = newValue!;
-                });
-              },
-              items: dropDownMenuItems.map((option) {
-                return DropdownMenuItem<String>(
-                  value: option,
-                  child: Text(option.length > 12 ? option.substring(0, 12) + '...' : option),
-                );
-              }).toList()),
-        ),
-      ],
-    );
-  }
-
   /// Building the each field with label and TextFormField
   Widget _buildRow(
       {required TextEditingController controller, required String columnName, required String text}) {
@@ -379,87 +338,23 @@ class _ReportDataGridState extends LocalizationSampleViewState {
 
   /// Building the forms to edit the data
   Widget _buildAlertDialogContent() {
-    final activeOptions = ["✔", "✘"];
     return Column(
       children: <Widget>[
-        _buildRow(controller: textController!, columnName: 'Mensaje', text: _text),
-       // _buildRow(controller: codeController!, columnName: 'Código', text: _code),
-        _buildRowComboSelection(controller: sentController!, columnName: 'Enviado',
-            dropDownMenuItems: activeOptions, text: _sent),
-      ],
-    );
-  }
-
-  /// Building the forms to create the data
-  Widget _buildAlertDialogCreateContent() {
-    final activeOptions = ["✔", "✘"];
-    return Column(
-      children: <Widget>[
-        _buildRow(controller: nameController!, columnName: 'Nombre', text: _name),
-        //_buildRow(controller: codeController!, columnName: 'Código', text: _code),
-        _buildRowComboSelection(controller: sentController!, columnName: 'Enviado',
-            dropDownMenuItems: activeOptions, text: _sent),
+        _buildRow(controller: responseController!, columnName: 'Respuesta', text: _response),
       ],
     );
   }
 
   // Updating the data to the TextEditingController
   void _updateTextFieldContext(DataGridRow row) {
-
-    final String? date = row
+    final String? response = row
         .getCells()
         .firstWhere(
-            (DataGridCell element) => element.columnName == 'Fecha')
+            (DataGridCell element) => element.columnName == 'Respuesta')
         ?.value
         .toString();
 
-    dateController!.text = date ?? '';
-
-    final String? name = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Nombre')
-        ?.value
-        .toString();
-
-    nameController!.text = name ?? '';
-
-    final String? surnames = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Apellidos')
-        ?.value
-        .toString();
-
-    surnamesController!.text = surnames ?? '';
-
-    final String? email = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Email')
-        ?.value
-        .toString();
-
-    emailController!.text = email ?? '';
-
-    final String? text = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Mensaje')
-        ?.value
-        .toString();
-
-    textController!.text = text ?? '';
-
-    final String? sent = row
-        .getCells()
-        .firstWhere(
-          (DataGridCell element) => element.columnName == 'Enviado',
-    )
-        ?.value
-        .toString();
-
-    sentController!.text = sent != "false" ? '✔' : '✘';
+    responseController!.text = response ?? '';
   }
 
   /// Editing the DataGridRow
@@ -496,9 +391,12 @@ class _ReportDataGridState extends LocalizationSampleViewState {
             reportId: report!.reportId,
             date: report.date,
             user: report.user,
-            email: emailController!.text,
-            text: textController!.text,
-            sent: sentController!.text == '✔' ? true : false,
+            email: report.email,
+            text: report.text,
+            sent: report.sent,
+            response: responseController!.text,
+            updatedby: currentUserEmail,
+            lastupdate: DateTime.now(),
           )
       );
       Navigator.pop(buildContext);
@@ -607,10 +505,10 @@ class _ReportDataGridState extends LocalizationSampleViewState {
         _surnames = 'Surnames';
         _email = 'Email';
         _text = 'Text';
-        _sent = 'Sent';
+        _response = 'Response';
+        _updatedby = 'Answered by';
+        _lastupdate = 'Answer date';
 
-        _newReport = 'New Report';
-        _importCSV = 'Import CSV';
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
         _total = 'Total Reports';
@@ -627,10 +525,10 @@ class _ReportDataGridState extends LocalizationSampleViewState {
         _surnames = 'Apellidos';
         _email = 'Email';
         _text = 'Mensaje';
-        _sent = 'Enviado';
+        _response = 'Respuesta';
+        _updatedby = 'Respondido por';
+        _lastupdate = 'Fecha respuesta';
 
-        _newReport = 'Crear Informe';
-        _importCSV = 'Importar CSV';
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
         _total = 'Informes totales';
@@ -647,10 +545,9 @@ class _ReportDataGridState extends LocalizationSampleViewState {
         _surnames = 'Noms de famille';
         _email = 'Email';
         _text = 'Message';
-        _sent = 'Envoyé';
+        _response = 'Répondu par';
+        _lastupdate = 'Date de réponse';
 
-        _newReport = 'Creer un rapport';
-        _importCSV = 'Importer CSV';
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
         _total = 'Total des rapports';
@@ -744,15 +641,40 @@ class _ReportDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
-          columnName: 'Enviado',
-          width: columnWidths['Enviado']!,
-          label: Container(
+            columnName: 'Respuesta',
+            width: columnWidths['Respuesta']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
-              alignment: Alignment.center,
               child: Text(
-                _sent,
+                _response,
                 overflow: TextOverflow.ellipsis,
-              )),
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Respondido por',
+            width: columnWidths['Respondido por']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _updatedby,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Fecha respuesta',
+            width: columnWidths['Fecha respuesta']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _lastupdate,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
         ),
       ],
     );
@@ -762,12 +684,7 @@ class _ReportDataGridState extends LocalizationSampleViewState {
   void initState() {
     super.initState();
     reportDataGridSource = ReportDataGridSource(List.empty());
-    dateController = TextEditingController();
-    nameController = TextEditingController();
-    surnamesController = TextEditingController();
-    emailController = TextEditingController();
-    textController = TextEditingController();
-    sentController = TextEditingController();
+    responseController = TextEditingController();
     selectedLocale = model.locale.toString();
 
     _date = 'Fecha';
@@ -775,9 +692,9 @@ class _ReportDataGridState extends LocalizationSampleViewState {
     _surnames = 'Apellidos';
     _email = 'Email';
     _text = 'Mensaje';
-    _sent = 'Enviado';
-    _newReport = 'Crear Informe';
-    _importCSV = 'Importar CSV';
+    _response = 'Respuesta';
+    _updatedby = 'Respondido por';
+    _lastupdate = 'Fecha respuesta';
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';
     _total = 'Usuarios totales';
@@ -809,6 +726,8 @@ class _ReportDataGridState extends LocalizationSampleViewState {
                 currentUserRole = 'super-admin',
               }
             });
+
+            currentUserEmail = user.email??"";
           }
           final reportsAsyncValue = ref.watch(reportsStreamProvider);
           if (reportsAsyncValue.value != null) {
