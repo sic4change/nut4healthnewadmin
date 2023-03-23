@@ -59,7 +59,7 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
   /// Selected locale
   late String selectedLocale;
 
-  late String currentUserRole;
+  var currentUserRole = "";
 
   /// Translate names
   late String _id, _name, _country, _active,  _newProvince, _importCSV, _exportXLS,

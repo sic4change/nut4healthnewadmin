@@ -57,7 +57,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
   /// DataGridSource required for SfDataGrid to obtain the row data.
   late UserDataGridSource userDataGridSource;
 
-  late String currentUserRole;
+  var currentUserRole = "";
 
   static const double dataPagerHeight = 60;
   int _rowsPerPage = 15;

@@ -58,7 +58,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
   /// Selected locale
   late String selectedLocale;
 
-  late String currentUserRole;
+  var currentUserRole = "";
 
   /// Translate names
   late String _id, _name, _code, _active, _cases, _casesNormopeso, _casesModerada,

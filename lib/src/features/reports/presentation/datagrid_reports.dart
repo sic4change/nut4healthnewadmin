@@ -52,7 +52,8 @@ class _ReportDataGridState extends LocalizationSampleViewState {
   /// Selected locale
   late String selectedLocale;
 
-  late String currentUserRole, currentUserEmail;
+  late String currentUserEmail;
+  var currentUserRole = "";
 
   /// Translate names
   late String _date, _name, _surnames, _email, _text, _response, _updatedby,
