@@ -57,6 +57,17 @@
           },
           {
             "type": "child",
+            "title": "Reportes",
+            "subItems": [
+              {
+                "type": "sample",
+                "title": "Reportes",
+                "key": "report_datagrid"
+              }
+            ]
+          },
+          {
+            "type": "child",
             "title": "Ubicaciones",
             "subItems": [
               {

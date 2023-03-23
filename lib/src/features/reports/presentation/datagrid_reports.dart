@@ -2,16 +2,13 @@
 /// import 'package:flutter/foundation.dart';
 
 
-import 'package:csv/csv.dart';
+import 'package:adminnut4health/src/features/reports/domain/report_with_user.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'dart:typed_data';
-import 'dart:html' show Blob, AnchorElement, Url;
-
 /// Barcode import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import 'package:syncfusion_flutter_core/theme.dart';
@@ -21,12 +18,9 @@ import '../../../sample/model/sample_view.dart';
 import '../../authentication/data/firebase_auth_repository.dart';
 import '../data/firestore_repository.dart';
 /// Local import
-import '../domain/country.dart';
-import 'countries_screen_controller.dart';
-import 'country_datagridsource.dart';
-
-import 'package:file_picker/file_picker.dart';
-import 'dart:html' show FileReader;
+import '../domain/report.dart';
+import 'reports_screen_controller.dart';
+import 'report_datagridsource.dart';
 
 import '../../../common_widgets/export/save_file_mobile.dart'
 if (dart.library.html) '../../../common_widgets/export/save_file_web.dart' as helper;
@@ -36,21 +30,21 @@ import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column, Row, Border;
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-/// Render country data grid
-class CountryDataGrid extends LocalizationSampleView {
+/// Render report data grid
+class ReportDataGrid extends LocalizationSampleView {
   /// Creates getting started data grid
-  const CountryDataGrid({Key? key}) : super(key: key);
+  const ReportDataGrid({Key? key}) : super(key: key);
 
   @override
-  _CountryDataGridState createState() => _CountryDataGridState();
+  _ReportDataGridState createState() => _ReportDataGridState();
 }
 
-class _CountryDataGridState extends LocalizationSampleViewState {
+class _ReportDataGridState extends LocalizationSampleViewState {
 
   final GlobalKey<SfDataGridState> _key = GlobalKey<SfDataGridState>();
 
   /// DataGridSource required for SfDataGrid to obtain the row data.
-  late CountryDataGridSource countryDataGridSource;
+  late ReportDataGridSource reportDataGridSource;
 
   static const double dataPagerHeight = 60;
   int _rowsPerPage = 15;
@@ -58,34 +52,27 @@ class _CountryDataGridState extends LocalizationSampleViewState {
   /// Selected locale
   late String selectedLocale;
 
+  late String currentUserEmail;
   var currentUserRole = "";
 
   /// Translate names
-  late String _id, _name, _code, _active, _cases, _casesNormopeso, _casesModerada,
-      _casesSevera, _newCountry, _importCSV, _exportXLS, _exportPDF, _total,
-      _editCountry, _removeCountry, _save, _cancel, _countries, _removedCountry;
+  late String _date, _name, _surnames, _email, _text, _response, _updatedby,
+      _lastupdate,  _exportXLS, _exportPDF, _total, _editReport, _removeReport,
+      _save, _cancel, _reports, _removedReport;
 
   late Map<String, double> columnWidths = {
-    'Id': 150,
+    'Fecha': 150,
     'Nombre': 150,
-    'Código': 150,
-    'Activo': 150,
-    'Casos': 150,
-    'Casos Normopeso': 150,
-    'Casos Moderada': 150,
-    'Casos Severa': 150,
+    'Apellidos': 150,
+    'Email': 150,
+    'Mensaje': 300,
+    'Respuesta': 150,
+    'Respondido por': 150,
+    'Fecha respuesta': 150,
   };
 
   /// Editing controller for forms to perform update the values.
-  TextEditingController?
-      idController,
-      nameController,
-      codeController,
-      activeController,
-      casesController,
-      casesNormopesoController,
-      casesModeradaController,
-      casesSeveraController;
+  TextEditingController? responseController;
 
   /// Used to validate the forms
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -101,18 +88,18 @@ class _CountryDataGridState extends LocalizationSampleViewState {
     );
   }
 
-  _saveCountries(AsyncValue<List<Country>>? countries) {
-    if (countries == null) {
-      countryDataGridSource.setCountries(List.empty());
+  _saveReports(AsyncValue<List<ReportWithUser>>? reports) {
+    if (reports == null) {
+      reportDataGridSource.setReports(List.empty());
     } else {
-      countryDataGridSource.setCountries(countries.value);
+      reportDataGridSource.setReports(reports.value);
     }
   }
 
-  Widget _buildView(AsyncValue<List<Country>> countries) {
-    if (countries.value != null && countries.value!.isNotEmpty) {
-      countryDataGridSource.buildDataGridRows();
-      countryDataGridSource.updateDataSource();
+  Widget _buildView(AsyncValue<List<ReportWithUser>> reports) {
+    if (reports.value != null && reports.value!.isNotEmpty) {
+      reportDataGridSource.buildDataGridRows();
+      reportDataGridSource.updateDataSource();
       selectedLocale = model.locale.toString();
       return _buildLayoutBuilder();
     } else {
@@ -166,66 +153,6 @@ class _CountryDataGridState extends LocalizationSampleViewState {
         });
   }
 
-  void _importCountries() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-    if (result != null) {
-      final myUint8List = Uint8List.fromList(result.files.single.bytes!);
-      final blob = Blob([myUint8List], 'text/plain');
-      readBlob(blob).then((it) {
-        List<List<dynamic>> rowsAsListOfValues =
-        const CsvToListConverter().convert(it);
-        for (final row in rowsAsListOfValues) {
-          if (row.isNotEmpty) {
-            ref.read(countriesScreenControllerProvider.notifier).addCountry(
-                Country(
-                  countryId: "",
-                  name: row[0].toString(),
-                  code: row[1].toString(),
-                  active: row[2].toString() == 'true' ? true : false,
-                  cases: int.parse(row[3].toString()),
-                  casesnormopeso: int.parse(row[4].toString()),
-                  casesmoderada: int.parse(row[5].toString()),
-                  casessevera: int.parse(row[6].toString())
-                )
-            );
-          }
-        }
-      });
-    } else {
-      // User canceled the picker
-    }
-  }
-
-  Future<String> readBlob(Blob blob) async {
-    final reader = FileReader();
-    reader.readAsText(blob);
-    await reader.onLoad.first;
-    return reader.result as String;
-  }
-
-  void _createCountry() {
-    _createTextFieldContext();
-    showDialog<String>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        scrollable: true,
-        titleTextStyle: TextStyle(
-            color: model.textColor, fontWeight: FontWeight.bold, fontSize: 16),
-        title: Text(_newCountry),
-        actions: _buildActionCreateButtons(context),
-        content: Scrollbar(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Form(
-              key: _formKey,
-              child: _buildAlertDialogCreateContent(),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildHeaderButtons() {
     Future<void> exportDataGridToExcel() async {
       final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
@@ -234,7 +161,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
           });
       final List<int> bytes = workbook.saveAsStream();
       workbook.dispose();
-      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_countries..xlsx');
+      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_reports..xlsx');
     }
 
     Future<void> exportDataGridToPdf() async {
@@ -255,7 +182,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
                 Rect.fromLTWH(width - 148, 0, 148, 60));
 
             header.graphics.drawString(
-              _countries,
+              _reports,
               PdfStandardFont(PdfFontFamily.helvetica, 13,
                   style: PdfFontStyle.bold),
               bounds: const Rect.fromLTWH(0, 25, 200, 60),
@@ -264,7 +191,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
             details.pdfDocumentTemplate.top = header;
           });
       final List<int> bytes = document.saveSync();
-      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_countries.pdf');
+      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_reports.pdf');
       document.dispose();
     }
 
@@ -273,8 +200,6 @@ class _CountryDataGridState extends LocalizationSampleViewState {
         children: <Widget>[
           _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
           _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
-          _buildImportButton(_importCSV),
-          _buildCreatingButton(_newCountry),
         ],
       );
     } else {
@@ -285,32 +210,6 @@ class _CountryDataGridState extends LocalizationSampleViewState {
         ],
       );
     }
-  }
-
-  Widget _buildImportButton(String buttonName) {
-    return Container(
-        height: 60.0,
-        padding: const EdgeInsets.only(left: 10.0, top: 10.0, bottom: 10.0),
-        child: IconButton(
-          icon: const Icon(
-            FontAwesomeIcons.fileCsv,
-            color: Colors.blueAccent,
-          ),
-          onPressed: _importCountries,)
-    );
-  }
-
-  Widget _buildCreatingButton(String buttonName) {
-    return Container(
-        height: 60.0,
-        padding: const EdgeInsets.only(left: 10.0, top: 10.0, bottom: 10.0),
-        child: IconButton(
-          icon: const Icon(
-            FontAwesomeIcons.plus,
-            color: Colors.blueAccent,
-          ),
-          onPressed: _createCountry,)
-    );
   }
 
   Widget _buildExcelExportingButton(String buttonName,
@@ -342,16 +241,16 @@ class _CountryDataGridState extends LocalizationSampleViewState {
 
   Widget _buildDataPager() {
     var addMorePage = 0;
-    if ((countryDataGridSource.rows.length / _rowsPerPage).remainder(1) != 0) {
+    if ((reportDataGridSource.rows.length / _rowsPerPage).remainder(1) != 0) {
       addMorePage  = 1;
     }
 
     return Directionality(
       textDirection: TextDirection.ltr,
       child: SfDataPager(
-        delegate: countryDataGridSource,
+        delegate: reportDataGridSource,
         availableRowsPerPage: const <int>[15, 20, 25],
-        pageCount: (countryDataGridSource.rows.length / _rowsPerPage) + addMorePage,
+        pageCount: (reportDataGridSource.rows.length / _rowsPerPage) + addMorePage,
         onRowsPerPageChanged: (int? rowsPerPage) {
           setState(() {
             _rowsPerPage = rowsPerPage!;
@@ -394,44 +293,6 @@ class _CountryDataGridState extends LocalizationSampleViewState {
     } else {
       return RegExp('.');
     }
-  }
-
-  Widget _buildRowComboSelection({required TextEditingController controller,
-    required String columnName, required List<String> dropDownMenuItems,
-    required String text}) {
-    String value = controller.text;
-    if (value.isEmpty) {
-      value = dropDownMenuItems[0];
-    }
-    return Row(
-      children: <Widget>[
-        Container(
-            width: 150,
-            padding: const EdgeInsets.symmetric(vertical: 15),
-            child: Text(text)),
-        SizedBox(
-          width: 150,
-          child: DropdownButtonFormField<String>(
-              value: value,
-              autofocus: true,
-              focusColor: Colors.transparent,
-              icon: const Icon(Icons.arrow_drop_down_sharp),
-              isExpanded: false,
-              onChanged: (newValue) {
-                setState(() {
-                  value = newValue!;
-                  controller.text = newValue!;
-                });
-              },
-              items: dropDownMenuItems.map((option) {
-                return DropdownMenuItem<String>(
-                  value: option,
-                  child: Text(option.length > 12 ? option.substring(0, 12) + '...' : option),
-                );
-              }).toList()),
-        ),
-      ],
-    );
   }
 
   /// Building the each field with label and TextFormField
@@ -478,114 +339,23 @@ class _CountryDataGridState extends LocalizationSampleViewState {
 
   /// Building the forms to edit the data
   Widget _buildAlertDialogContent() {
-    final activeOptions = ["✔", "✘"];
     return Column(
       children: <Widget>[
-        _buildRow(controller: nameController!, columnName: 'Nombre', text: _name),
-        _buildRow(controller: codeController!, columnName: 'Código', text: _code),
-        _buildRowComboSelection(controller: activeController!, columnName: 'Activo',
-            dropDownMenuItems: activeOptions, text: _active),
+        _buildRow(controller: responseController!, columnName: 'Respuesta', text: _response),
       ],
     );
-  }
-
-  /// Building the forms to create the data
-  Widget _buildAlertDialogCreateContent() {
-    final activeOptions = ["✔", "✘"];
-    return Column(
-      children: <Widget>[
-        _buildRow(controller: nameController!, columnName: 'Nombre', text: _name),
-        _buildRow(controller: codeController!, columnName: 'Código', text: _code),
-        _buildRowComboSelection(controller: activeController!, columnName: 'Activo',
-            dropDownMenuItems: activeOptions, text: _active),
-      ],
-    );
-  }
-
-  void _createTextFieldContext() {
-    idController!.text = '';
-    nameController!.text = '';
-    codeController!.text = '';
-    activeController!.text = '';
   }
 
   // Updating the data to the TextEditingController
   void _updateTextFieldContext(DataGridRow row) {
-
-    final String? id = row
+    final String? response = row
         .getCells()
         .firstWhere(
-            (DataGridCell element) => element.columnName == 'Id')
+            (DataGridCell element) => element.columnName == 'Respuesta')
         ?.value
         .toString();
 
-    idController!.text = id ?? '';
-
-    final String? name = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Nombre')
-        ?.value
-        .toString();
-
-    nameController!.text = name ?? '';
-
-    final String? code = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Código')
-        ?.value
-        .toString();
-
-    codeController!.text = code ?? '';
-
-
-    final String? active = row
-        .getCells()
-        .firstWhere(
-          (DataGridCell element) => element.columnName == 'Activo',
-    )
-        ?.value
-        .toString();
-
-    activeController!.text = active != "false" ? '✔' : '✘';
-
-    final String? cases = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Casos')
-        ?.value
-        .toString();
-
-    casesController!.text = cases ?? '';
-
-    final String? casesNormopeso = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Casos Normopeso')
-        ?.value
-        .toString();
-
-    casesNormopesoController!.text = casesNormopeso ?? '';
-
-    final String? casesModerada = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Casos Moderada')
-        ?.value
-        .toString();
-
-    casesModeradaController!.text = casesModerada ?? '';
-
-    final String? casesSevera = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Casos Severa')
-        ?.value
-        .toString();
-
-    casesSeveraController!.text = casesSevera ?? '';
-
+    responseController!.text = response ?? '';
   }
 
   /// Editing the DataGridRow
@@ -597,7 +367,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
         scrollable: true,
         titleTextStyle: TextStyle(
             color: model.textColor, fontWeight: FontWeight.bold, fontSize: 16),
-        title: Text(_editCountry),
+        title: Text(_editReport),
         actions: _buildActionButtons(row, context),
         content: Scrollbar(
           child: SingleChildScrollView(
@@ -612,61 +382,26 @@ class _CountryDataGridState extends LocalizationSampleViewState {
     );
   }
 
-  void _processCellCreate(BuildContext buildContext) async {
-    if (_formKey.currentState!.validate()) {
-      ref.read(countriesScreenControllerProvider.notifier).addCountry(
-          Country(
-              countryId: "",
-              name: nameController!.text,
-              code: codeController!.text,
-              active: activeController!.text == '✔' ? true : false,
-              cases: 0,
-              casesnormopeso: 0,
-              casesmoderada: 0,
-              casessevera: 0
-          )
-      );
-      Navigator.pop(buildContext);
-    }
-  }
-
   /// Updating the DataGridRows after changing the value and notify the DataGrid
   /// to refresh the view
   void _processCellUpdate(DataGridRow row, BuildContext buildContext) {
-    final String? id = countryDataGridSource.getCountries()?.firstWhere((element) => element.countryId == row.getCells()[0].value).countryId;
+    final Report? report = reportDataGridSource.getReports()?.firstWhere((element) => element.report.reportId == row.getCells()[0].value).report;
     if (_formKey.currentState!.validate()) {
-      ref.read(countriesScreenControllerProvider.notifier).updateCountry(
-          Country(countryId: id!,
-              name: nameController!.text,
-              code: codeController!.text,
-              active: activeController!.text == '✔' ? true : false,
-              cases: int.parse(casesController!.text),
-              casesnormopeso: int.parse(casesNormopesoController!.text),
-              casesmoderada: int.parse(casesModeradaController!.text),
-              casessevera: int.parse(casesSeveraController!.text)
+      ref.read(reportsScreenControllerProvider.notifier).updateReport(
+          Report(
+            reportId: report!.reportId,
+            date: report.date,
+            user: report.user,
+            email: report.email,
+            text: report.text,
+            sent: report.sent,
+            response: responseController!.text,
+            updatedby: currentUserEmail,
+            lastupdate: DateTime.now(),
           )
       );
       Navigator.pop(buildContext);
     }
-  }
-
-  List<Widget> _buildActionCreateButtons(BuildContext buildContext) {
-    return <Widget>[
-      TextButton(
-        onPressed: () => _processCellCreate(buildContext),
-        child: Text(
-          _save,
-          style: TextStyle(color: model.backgroundColor),
-        ),
-      ),
-      TextButton(
-        onPressed: () => Navigator.pop(buildContext),
-        child: Text(
-          _cancel,
-          style: TextStyle(color: model.backgroundColor),
-        ),
-      ),
-    ];
   }
 
   /// Building the option button on the bottom of the alert popup
@@ -691,9 +426,9 @@ class _CountryDataGridState extends LocalizationSampleViewState {
 
   /// Deleting the DataGridRow
   void _handleDeleteWidgetTap(DataGridRow row) {
-    final country = countryDataGridSource.getCountries()?.firstWhere((element) => element.countryId == row.getCells()[0].value);
-    if (country != null) {
-      ref.read(countriesScreenControllerProvider.notifier).deleteCountry(country);
+    final report = reportDataGridSource.getReports()?.firstWhere((element) => element.report.reportId == row.getCells()[0].value);
+    if (report != null) {
+      ref.read(reportsScreenControllerProvider.notifier).deleteReport(report.report);
       _showDialogDeleteConfirmation();
     }
   }
@@ -711,7 +446,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
             ),
           ),
         ],
-        content: Text(_removedCountry),
+        content: Text(_removedReport),
       ),
     );
   }
@@ -730,7 +465,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
             Icon(Icons.edit, color: Colors.white, size: 16),
             SizedBox(width: 8.0),
             Text(
-              _editCountry,
+              _editReport,
               style: TextStyle(color: Colors.white, fontSize: 12),
             )
           ],
@@ -753,7 +488,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
             const Icon(Icons.delete, color: Colors.white, size: 16),
             const SizedBox(width: 8.0),
             Text(
-              _removeCountry,
+              _removeReport,
               style: TextStyle(color: Colors.white, fontSize: 12),
             ),
           ],
@@ -766,71 +501,69 @@ class _CountryDataGridState extends LocalizationSampleViewState {
     final selectedLocale = model.locale.toString();
     switch (selectedLocale) {
       case 'en_US':
-        _id = 'Id';
+        _date = 'Date';
         _name = 'Name';
-        _code = 'Code';
-        _active = 'Active';
-        _cases = 'Cases';
-        _casesNormopeso = 'Normal weight cases';
-        _casesModerada = 'Moderate cases';
-        _casesSevera = 'Severe cases';
-        _importCSV = 'Import CSV';
+        _surnames = 'Surnames';
+        _email = 'Email';
+        _text = 'Text';
+        _response = 'Response';
+        _updatedby = 'Answered by';
+        _lastupdate = 'Answer date';
+
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
-        _total = 'Total Countries';
-        _editCountry = 'Edit';
-        _removeCountry = 'Remove';
+        _total = 'Total Reports';
+        _editReport = 'Edit';
+        _removeReport = 'Remove';
         _cancel = 'Cancel';
         _save = 'Save';
-        _countries = 'Countries';
-        _removedCountry = 'Country deleted successfully.';
+        _reports = 'Reports';
+        _removedReport = 'Report deleted successfully.';
         break;
       case 'es_ES':
-        _id = 'Id';
+        _date = 'Fecha';
         _name = 'Nombre';
-        _code = 'Código';
-        _active = 'Activo';
-        _cases = 'Casos';
-        _casesNormopeso = 'Casos Normopeso';
-        _casesModerada = 'Casos Moderada';
-        _casesSevera = 'Casos Severa';
-        _newCountry = 'Crear País';
-        _importCSV = 'Importar CSV';
+        _surnames = 'Apellidos';
+        _email = 'Email';
+        _text = 'Mensaje';
+        _response = 'Respuesta';
+        _updatedby = 'Respondido por';
+        _lastupdate = 'Fecha respuesta';
+
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
-        _total = 'Países totales';
-        _editCountry = 'Editar';
-        _removeCountry = 'Eliminar';
+        _total = 'Reportes totales';
+        _editReport = 'Editar';
+        _removeReport = 'Eliminar';
         _cancel = 'Cancelar';
         _save = 'Guardar';
-        _countries = 'Países';
-        _removedCountry = 'País eliminado correctamente';
+        _reports = 'Reportes';
+        _removedReport = 'Reporte eliminado correctamente.';
         break;
       case 'fr_FR':
-        _id = 'Id';
+        _date = 'Date';
         _name = 'Nom';
-        _code = 'Code';
-        _active = 'Actif';
-        _cases = 'Cas';
-        _casesNormopeso = 'Cas poids normal';
-        _casesModerada = 'Cas modérés';
-        _casesSevera = 'Cas sévères';
-        _newCountry = 'Créer un pays';
-        _importCSV = 'Importer CSV';
+        _surnames = 'Noms de famille';
+        _email = 'Email';
+        _text = 'Message';
+        _response = 'Répondu par';
+        _lastupdate = 'Date de réponse';
+
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
-        _total = 'Total des pays';
-        _editCountry = 'Modifier';
-        _removeCountry = 'Supprimer';
+        _total = 'Total des rapports';
+        _editReport = 'Modifier';
+        _removeReport = 'Supprimer';
         _cancel = 'Annuler';
         _save = 'Enregistrer';
-        _countries = 'Les pays';
-        _removedCountry = 'Pays supprimé avec succès.';
+        _reports = 'Rapports';
+        _removedReport = 'Rapport supprimé avec succès.';
         break;
     }
+
     return SfDataGrid(
       key: _key,
-      source: countryDataGridSource,
+      source: reportDataGridSource,
       rowsPerPage: _rowsPerPage,
       tableSummaryRows: _getTableSummaryRows(),
       allowSwiping: currentUserRole == 'super-admin' ? true : false,
@@ -849,14 +582,13 @@ class _CountryDataGridState extends LocalizationSampleViewState {
       allowMultiColumnSorting: true,
       columns: <GridColumn>[
         GridColumn(
-            columnName: 'Id',
-            visible: false,
-            width: columnWidths['Id']!,
+            columnName: 'Fecha',
+            width: columnWidths['Fecha']!,
             label: Container(
-              alignment: Alignment.centerLeft,
+              alignment: Alignment.center,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _id,
+                _date,
                 overflow: TextOverflow.ellipsis,
               ),
             )
@@ -874,71 +606,76 @@ class _CountryDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
-          columnName: 'Código',
-          width: columnWidths['Código']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _code,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
+            columnName: 'Apellidos',
+            width: columnWidths['Apellidos']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _surnames,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
         ),
         GridColumn(
-          columnName: 'Activo',
-          width: columnWidths['Activo']!,
-          label: Container(
+            columnName: 'Email',
+            width: columnWidths['Email']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
-              alignment: Alignment.center,
               child: Text(
-                _active,
+                _email,
                 overflow: TextOverflow.ellipsis,
-              )),
+              ),
+            )
         ),
         GridColumn(
-          columnName: 'Casos',
-          width: columnWidths['Casos']!,
-          label: Container(
+            columnName: 'Mensaje',
+            width: columnWidths['Mensaje']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
-              alignment: Alignment.center,
               child: Text(
-                _cases,
+                _text,
                 overflow: TextOverflow.ellipsis,
-              )),
+              ),
+            )
         ),
         GridColumn(
-          columnName: 'Casos Normopeso',
-          width: columnWidths['Casos Normopeso']!,
-          label: Container(
+            columnName: 'Respuesta',
+            width: columnWidths['Respuesta']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
-              alignment: Alignment.center,
               child: Text(
-                _casesNormopeso,
+                _response,
                 overflow: TextOverflow.ellipsis,
-              )),
+              ),
+            )
         ),
         GridColumn(
-          columnName: 'Casos Moderada',
-          width: columnWidths['Casos Moderada']!,
-          label: Container(
+            columnName: 'Respondido por',
+            width: columnWidths['Respondido por']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
-              alignment: Alignment.center,
               child: Text(
-                _casesModerada,
+                _updatedby,
                 overflow: TextOverflow.ellipsis,
-              )),
+              ),
+            )
         ),
         GridColumn(
-          columnName: 'Casos Severa',
-          width: columnWidths['Casos Severa']!,
-          label: Container(
-              padding: const EdgeInsets.all(8.0),
+            columnName: 'Fecha respuesta',
+            width: columnWidths['Fecha respuesta']!,
+            label: Container(
               alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
               child: Text(
-                _casesSevera,
+                _lastupdate,
                 overflow: TextOverflow.ellipsis,
-              )),
+              ),
+            )
         ),
       ],
     );
@@ -947,36 +684,27 @@ class _CountryDataGridState extends LocalizationSampleViewState {
   @override
   void initState() {
     super.initState();
-    countryDataGridSource = CountryDataGridSource(List.empty());
-    idController = TextEditingController();
-    nameController = TextEditingController();
-    codeController = TextEditingController();
-    activeController = TextEditingController();
-    casesController = TextEditingController();
-    casesNormopesoController = TextEditingController();
-    casesModeradaController = TextEditingController();
-    casesSeveraController = TextEditingController();
+    reportDataGridSource = ReportDataGridSource(List.empty());
+    responseController = TextEditingController();
     selectedLocale = model.locale.toString();
 
-    _id = 'Id';
+    _date = 'Fecha';
     _name = 'Nombre';
-    _code = 'Código';
-    _active = 'Activo';
-    _cases = 'Casos';
-    _casesNormopeso = 'Casos Normopeso';
-    _casesModerada = 'Casos Moderada';
-    _casesSevera = 'Casos Severa';
-    _newCountry = 'Crear País';
-    _importCSV = 'Importar CSV';
+    _surnames = 'Apellidos';
+    _email = 'Email';
+    _text = 'Mensaje';
+    _response = 'Respuesta';
+    _updatedby = 'Respondido por';
+    _lastupdate = 'Fecha respuesta';
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';
     _total = 'Usuarios totales';
-    _editCountry = 'Editar';
-    _removeCountry = 'Eliminar';
+    _editReport = 'Editar';
+    _removeReport = 'Eliminar';
     _cancel = 'Cancelar';
     _save = 'Guardar';
-    _countries = 'Países';
-    _removedCountry = '';
+    _reports = 'Reportes';
+    _removedReport = '';
   }
 
 
@@ -985,7 +713,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
     return Consumer(
         builder: (context, ref, child) {
           ref.listen<AsyncValue>(
-            countriesScreenControllerProvider,
+            reportsScreenControllerProvider,
                 (_, state) => {
             },
           );
@@ -999,12 +727,14 @@ class _CountryDataGridState extends LocalizationSampleViewState {
                 currentUserRole = 'super-admin',
               }
             });
+
+            currentUserEmail = user.email??"";
           }
-          final countriesAsyncValue = ref.watch(countriesStreamProvider);
-          if (countriesAsyncValue.value != null) {
-            _saveCountries(countriesAsyncValue);
+          final reportsAsyncValue = ref.watch(reportsStreamProvider);
+          if (reportsAsyncValue.value != null) {
+            _saveReports(reportsAsyncValue);
           }
-          return _buildView(countriesAsyncValue);
+          return _buildView(reportsAsyncValue);
         });
   }
 

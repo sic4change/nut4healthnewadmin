@@ -60,7 +60,7 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
   /// Selected locale
   late String selectedLocale;
 
-  late String currentUserRole;
+  var currentUserRole = "";
 
   /// Translate names
   late String _id, _date, _screenerName, _screenerDPI, _screenerEmail, _screenerPhone,

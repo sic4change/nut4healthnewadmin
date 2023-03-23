@@ -62,7 +62,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
   /// Selected locale
   late String selectedLocale;
 
-  late String currentUserRole;
+  var currentUserRole = "";
 
   /// Translate names
   late String _id,
