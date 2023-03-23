@@ -57,11 +57,11 @@
           },
           {
             "type": "child",
-            "title": "Informes",
+            "title": "Reportes",
             "subItems": [
               {
                 "type": "sample",
-                "title": "Informes",
+                "title": "Reportes",
                 "key": "report_datagrid"
               }
             ]

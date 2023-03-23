@@ -532,13 +532,13 @@ class _ReportDataGridState extends LocalizationSampleViewState {
 
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
-        _total = 'Informes totales';
+        _total = 'Reportes totales';
         _editReport = 'Editar';
         _removeReport = 'Eliminar';
         _cancel = 'Cancelar';
         _save = 'Guardar';
-        _reports = 'Informes';
-        _removedReport = 'Informe eliminado correctamente.';
+        _reports = 'Reportes';
+        _removedReport = 'Reporte eliminado correctamente.';
         break;
       case 'fr_FR':
         _date = 'Date';
@@ -556,7 +556,7 @@ class _ReportDataGridState extends LocalizationSampleViewState {
         _removeReport = 'Supprimer';
         _cancel = 'Annuler';
         _save = 'Enregistrer';
-        _reports = 'Informes';
+        _reports = 'Rapports';
         _removedReport = 'Rapport supprimé avec succès.';
         break;
     }
@@ -703,7 +703,7 @@ class _ReportDataGridState extends LocalizationSampleViewState {
     _removeReport = 'Eliminar';
     _cancel = 'Cancelar';
     _save = 'Guardar';
-    _reports = 'Informes';
+    _reports = 'Reportes';
     _removedReport = '';
   }
 
