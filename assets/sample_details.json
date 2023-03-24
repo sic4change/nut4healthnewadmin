@@ -91,6 +91,17 @@
                 "key": "point_datagrid"
               }
             ]
+          },
+          {
+            "type": "child",
+            "title": "Síntomas",
+            "subItems": [
+              {
+                "type": "sample",
+                "title": "Síntomas",
+                "key": "symptom_datagrid"
+              }
+            ]
           }
         ]
       }
