@@ -2,9 +2,9 @@
 /// import 'package:flutter/foundation.dart';
 
 
-import 'package:adminnut4health/src/features/symptoms/domain/symptom.dart';
-import 'package:adminnut4health/src/features/symptoms/presentation/symptom_datagridsource.dart';
-import 'package:adminnut4health/src/features/symptoms/presentation/symptoms_screen_controller.dart';
+import 'package:adminnut4health/src/features/treatments/domain/treatment.dart';
+import 'package:adminnut4health/src/features/treatments/presentation/treatment_datagridsource.dart';
+import 'package:adminnut4health/src/features/treatments/presentation/treatments_screen_controller.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -37,21 +37,21 @@ import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column, Row, Border;
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-/// Render symptoms data grid
-class SymptomDataGrid extends LocalizationSampleView {
+/// Render treatments data grid
+class TreatmentDataGrid extends LocalizationSampleView {
   /// Creates getting started data grid
-  const SymptomDataGrid({Key? key}) : super(key: key);
+  const TreatmentDataGrid({Key? key}) : super(key: key);
 
   @override
-  _SymptomDataGridState createState() => _SymptomDataGridState();
+  _TreatmentDataGridState createState() => _TreatmentDataGridState();
 }
 
-class _SymptomDataGridState extends LocalizationSampleViewState {
+class _TreatmentDataGridState extends LocalizationSampleViewState {
 
   final GlobalKey<SfDataGridState> _key = GlobalKey<SfDataGridState>();
 
   /// DataGridSource required for SfDataGrid to obtain the row data.
-  late SymptomDataGridSource symptomDataGridSource;
+  late TreatmentDataGridSource treatmentDataGridSource;
 
   var currentUserRole = "";
 
@@ -62,18 +62,19 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
   late String selectedLocale;
 
   /// Translate names
-  late String _name, _nameEn, _nameFr,_newSymptom, _importCSV, _exportXLS,
-      _exportPDF, _total, _editSymptom, _removeSymptom, _save, _cancel,
-      _symptoms, _removedSymptom;
+  late String _name, _nameEn, _nameFr, _price, _newTreatment, _importCSV,
+      _exportXLS, _exportPDF, _total, _editTreatment, _removeTreatment, _save,
+      _cancel, _treatments, _removedTreatment;
 
   late Map<String, double> columnWidths = {
-    'Síntoma (ES)': 150,
-    'Síntoma (EN)': 150,
-    'Síntoma (FR)': 150,
+    'Tratamiento (ES)': 150,
+    'Tratamiento (EN)': 150,
+    'Tratamiento (FR)': 150,
+    'Precio': 150,
   };
 
   /// Editing controller for forms to perform update the values.
-  TextEditingController? nameController, nameEnController, nameFrController;
+  TextEditingController? nameController, nameEnController, nameFrController, priceController;
 
   /// Used to validate the forms
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -89,18 +90,18 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
     );
   }
 
-  _saveSymptoms(AsyncValue<List<Symptom>>? symptoms) {
-    if (symptoms == null) {
-      symptomDataGridSource.setSymptoms(List.empty());
+  _saveTreatments(AsyncValue<List<Treatment>>? treatments) {
+    if (treatments == null) {
+      treatmentDataGridSource.setTreatments(List.empty());
     } else {
-      symptomDataGridSource.setSymptoms(symptoms.value);
+      treatmentDataGridSource.setTreatments(treatments.value);
     }
   }
 
-  Widget _buildView(AsyncValue<List<Symptom>> symptoms) {
-    if (symptoms.value != null && symptoms.value!.isNotEmpty) {
-      symptomDataGridSource.buildDataGridRows();
-      symptomDataGridSource.updateDataSource();
+  Widget _buildView(AsyncValue<List<Treatment>> treatments) {
+    if (treatments.value != null && treatments.value!.isNotEmpty) {
+      treatmentDataGridSource.buildDataGridRows();
+      treatmentDataGridSource.updateDataSource();
       selectedLocale = model.locale.toString();
       return _buildLayoutBuilder();
     } else {
@@ -154,7 +155,7 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
         });
   }
 
-  void _importSymptoms() async {
+  void _importTreatments() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
       final myUint8List = new Uint8List.fromList(result.files.single.bytes!);
@@ -164,23 +165,27 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
             const CsvToListConverter().convert(it);
         for (final row in rowsAsListOfValues) {
           if (row.isNotEmpty) {
-            final symptomId = row[0].toString();
+            final treatmentId = row[0].toString();
             try {
-              final symptomToUpdate = symptomDataGridSource
-                  .getSymptoms()!
-                  .firstWhere((element) => element.symptomId == symptomId);
-              ref.read(symptomsScreenControllerProvider.notifier).updateSymptom(Symptom(
-                  symptomId: symptomToUpdate.symptomId,
+              final treatmentToUpdate = treatmentDataGridSource
+                  .getTreatments()!
+                  .firstWhere((element) => element.treatmentId == treatmentId);
+              ref.read(treatmentsScreenControllerProvider.notifier).updateTreatment(Treatment(
+                  treatmentId: treatmentToUpdate.treatmentId,
                   name: row[1].toString(),
                   nameEn: row[2].toString(),
-                  nameFr: row[3].toString(),));
+                  nameFr: row[3].toString(),
+                  price: row[4] as double,
+              ));
             } catch (e) {
               if (e is Error && e.toString().contains('No element')) {
-                ref.read(symptomsScreenControllerProvider.notifier).addSymptom(Symptom(
-                    symptomId: "",
+                ref.read(treatmentsScreenControllerProvider.notifier).addTreatment(Treatment(
+                    treatmentId: "",
                     name: row[1].toString(),
                     nameEn: row[2].toString(),
-                    nameFr: row[3].toString(),));
+                    nameFr: row[3].toString(),
+                    price: row[4] as double,
+                ));
               } else {
                 print("another error import");
               }
@@ -189,7 +194,7 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
         }
       });
     } else {
-      // Symptom canceled the picker
+      // Treatment canceled the picker
     }
   }
 
@@ -200,7 +205,7 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
     return reader.result as String;
   }
 
-  void _createSymptom() {
+  void _createTreatment() {
     _createTextFieldContext();
     showDialog<String>(
       context: context,
@@ -208,7 +213,7 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
         scrollable: true,
         titleTextStyle: TextStyle(
             color: model.textColor, fontWeight: FontWeight.bold, fontSize: 16),
-        title: Text(_newSymptom),
+        title: Text(_newTreatment),
         actions: _buildActionCreateButtons(context),
         content: Scrollbar(
           child: SingleChildScrollView(
@@ -232,7 +237,7 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
           });
       final List<int> bytes = workbook.saveAsStream();
       workbook.dispose();
-      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_symptoms.xlsx');
+      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_treatments.xlsx');
     }
 
     Future<void> exportDataGridToPdf() async {
@@ -254,7 +259,7 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
                 Rect.fromLTWH(width - 148, 0, 148, 60));
 
             header.graphics.drawString(
-              _symptoms,
+              _treatments,
               PdfStandardFont(PdfFontFamily.helvetica, 13,
                   style: PdfFontStyle.bold),
               bounds: const Rect.fromLTWH(0, 25, 200, 60),
@@ -263,7 +268,7 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
             details.pdfDocumentTemplate.top = header;
           });
       final List<int> bytes = document.saveSync();
-      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_symptoms.pdf');
+      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_treatments.pdf');
       document.dispose();
     }
 
@@ -273,7 +278,7 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
           _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
           _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
           _buildImportButton(_importCSV),
-          _buildCreatingButton(_newSymptom),
+          _buildCreatingButton(_newTreatment),
         ],
       );
     } else {
@@ -295,7 +300,7 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
             FontAwesomeIcons.fileCsv,
             color: Colors.blueAccent,
           ),
-          onPressed: _importSymptoms,)
+          onPressed: _importTreatments,)
     );
   }
 
@@ -308,7 +313,7 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
           FontAwesomeIcons.userPlus,
           color: Colors.blueAccent,
         ),
-        onPressed: _createSymptom,)
+        onPressed: _createTreatment,)
     );
   }
 
@@ -341,16 +346,16 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
 
   Widget _buildDataPager() {
     var addMorePage = 0;
-    if ((symptomDataGridSource.rows.length / _rowsPerPage).remainder(1) != 0) {
+    if ((treatmentDataGridSource.rows.length / _rowsPerPage).remainder(1) != 0) {
       addMorePage  = 1;
     }
 
     return Directionality(
       textDirection: TextDirection.ltr,
       child: SfDataPager(
-          delegate: symptomDataGridSource,
+          delegate: treatmentDataGridSource,
           availableRowsPerPage: const <int>[15, 20, 25],
-          pageCount: (symptomDataGridSource.rows.length / _rowsPerPage) + addMorePage,
+          pageCount: (treatmentDataGridSource.rows.length / _rowsPerPage) + addMorePage,
           onRowsPerPageChanged: (int? rowsPerPage) {
             setState(() {
               _rowsPerPage = rowsPerPage!;
@@ -382,7 +387,8 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
 
   RegExp _getRegExp(TextInputType keyboardType, String columnName) {
     if (keyboardType == TextInputType.number) {
-      return RegExp('[0-9]');
+      return RegExp(r'(^\d*\.?\d*$)');
+      // return RegExp('[0-9]');
     } else if (keyboardType == TextInputType.text) {
       return RegExp('.');
     } else if (keyboardType == TextInputType.phone) {
@@ -398,12 +404,8 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
   Widget _buildRow(
       {required TextEditingController controller, required String columnName, required String text}) {
     TextInputType keyboardType = TextInputType.text;
-    if (<String>['Puntos'].contains(columnName)) {
+    if (<String>['Precio'].contains(columnName)) {
       keyboardType =  TextInputType.number;
-    } else if (<String>['Email'].contains(columnName)) {
-      keyboardType =  TextInputType.emailAddress;
-    } else if (<String>['Teléfono'].contains(columnName)) {
-      keyboardType =  TextInputType.phone;
     } else {
       keyboardType =  TextInputType.text;
     }
@@ -440,9 +442,10 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
   Widget _buildAlertDialogContent() {
     return Column(
       children: <Widget>[
-        _buildRow(controller: nameController!, columnName: 'Síntoma (ES)', text: _name),
-        _buildRow(controller: nameEnController!, columnName: 'Síntoma (EN)', text: _nameEn),
-        _buildRow(controller: nameFrController!, columnName: 'Síntoma (FR)', text: _nameFr),
+        _buildRow(controller: nameController!, columnName: 'Tratamiento (ES)', text: _name),
+        _buildRow(controller: nameEnController!, columnName: 'Tratamiento (EN)', text: _nameEn),
+        _buildRow(controller: nameFrController!, columnName: 'Tratamiento (FR)', text: _nameFr),
+        _buildRow(controller: priceController!, columnName: 'Precio', text: _price),
       ],
     );
   }
@@ -451,9 +454,10 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
   Widget _buildAlertDialogCreateContent() {
     return Column(
       children: <Widget>[
-        _buildRow(controller: nameController!, columnName: 'Síntoma (ES)', text: _name),
-        _buildRow(controller: nameEnController!, columnName: 'Síntoma (EN)', text: _nameEn),
-        _buildRow(controller: nameFrController!, columnName: 'Síntoma (FR)', text: _nameFr),
+        _buildRow(controller: nameController!, columnName: 'Tratamiento (ES)', text: _name),
+        _buildRow(controller: nameEnController!, columnName: 'Tratamiento (EN)', text: _nameEn),
+        _buildRow(controller: nameFrController!, columnName: 'Tratamiento (FR)', text: _nameFr),
+        _buildRow(controller: priceController!, columnName: 'Precio', text: _price),
       ],
     );
   }
@@ -462,30 +466,38 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
     nameController!.text = '';
     nameEnController!.text = '';
     nameFrController!.text = '';
+    priceController!.text = '';
   }
 
   // Updating the data to the TextEditingController
   void _updateTextFieldContext(DataGridRow row) {
     final String? name = row
         .getCells()
-        .firstWhere((DataGridCell element) => element.columnName == 'Síntoma (ES)')
+        .firstWhere((DataGridCell element) => element.columnName == 'Tratamiento (ES)')
         ?.value
         .toString();
     nameController!.text = name ?? '';
 
     final String? nameEn = row
         .getCells()
-        .firstWhere((DataGridCell element) => element.columnName == 'Síntoma (EN)')
+        .firstWhere((DataGridCell element) => element.columnName == 'Tratamiento (EN)')
         ?.value
         .toString();
     nameEnController!.text = nameEn ?? '';
 
     final String? nameFr = row
         .getCells()
-        .firstWhere((DataGridCell element) => element.columnName == 'Síntoma (FR)')
+        .firstWhere((DataGridCell element) => element.columnName == 'Tratamiento (FR)')
         ?.value
         .toString();
     nameFrController!.text = nameFr ?? '';
+
+    final String? price = row
+        .getCells()
+        .firstWhere((DataGridCell element) => element.columnName == 'Precio')
+        ?.value
+        .toString();
+    priceController!.text = price ?? '';
 
   }
 
@@ -498,7 +510,7 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
         scrollable: true,
         titleTextStyle: TextStyle(
             color: model.textColor, fontWeight: FontWeight.bold, fontSize: 16),
-        title: Text(_editSymptom),
+        title: Text(_editTreatment),
         actions: _buildActionButtons(row, context),
         content: Scrollbar(
           child: SingleChildScrollView(
@@ -515,12 +527,13 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
 
   void _processCellCreate(BuildContext buildContext) async {
     if (_formKey.currentState!.validate()) {
-      ref.read(symptomsScreenControllerProvider.notifier).addSymptom(
-          Symptom(
-            symptomId: "",
+      ref.read(treatmentsScreenControllerProvider.notifier).addTreatment(
+          Treatment(
+            treatmentId: "",
             name: nameController!.text,
             nameEn: nameEnController!.text,
             nameFr: nameFrController!.text,
+            price: double.tryParse(priceController!.text)!, // TODO: Check
           )
       );
       Navigator.pop(buildContext);
@@ -530,14 +543,15 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
   /// Updating the DataGridRows after changing the value and notify the DataGrid
   /// to refresh the view
   void _processCellUpdate(DataGridRow row, BuildContext buildContext) {
-    final String? id = symptomDataGridSource.getSymptoms()?.firstWhere((element) => element.symptomId == row.getCells()[0].value).symptomId;
+    final String? id = treatmentDataGridSource.getTreatments()?.firstWhere((element) => element.treatmentId == row.getCells()[0].value).treatmentId;
     if (_formKey.currentState!.validate()) {
-      ref.read(symptomsScreenControllerProvider.notifier).updateSymptom(
-          Symptom(
-            symptomId: id!,
+      ref.read(treatmentsScreenControllerProvider.notifier).updateTreatment(
+          Treatment(
+            treatmentId: id!,
             name: nameController!.text,
             nameEn: nameEnController!.text,
             nameFr: nameFrController!.text,
+            price: double.tryParse(priceController!.text)!, // TODO: Check
           )
       );
       Navigator.pop(buildContext);
@@ -585,9 +599,9 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
 
   /// Deleting the DataGridRow
   void _handleDeleteWidgetTap(DataGridRow row) {
-    final symptom = symptomDataGridSource.getSymptoms()?.firstWhere((element) => element.symptomId == row.getCells()[0].value);
-    if (symptom != null) {
-      ref.read(symptomsScreenControllerProvider.notifier).deleteSymptom(symptom);
+    final treatment = treatmentDataGridSource.getTreatments()?.firstWhere((element) => element.treatmentId == row.getCells()[0].value);
+    if (treatment != null) {
+      ref.read(treatmentsScreenControllerProvider.notifier).deleteTreatment(treatment);
       _showDialogDeleteConfirmation();
     }
   }
@@ -605,7 +619,7 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
             ),
           ),
         ],
-        content: Text(_removedSymptom),
+        content: Text(_removedTreatment),
       ),
     );
   }
@@ -624,7 +638,7 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
             Icon(Icons.edit, color: Colors.white, size: 16),
             SizedBox(width: 8.0),
             Text(
-              _editSymptom,
+              _editTreatment,
               style: TextStyle(color: Colors.white, fontSize: 12),
             )
           ],
@@ -647,7 +661,7 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
             const Icon(Icons.delete, color: Colors.white, size: 16),
             const SizedBox(width: 8.0),
             Text(
-              _removeSymptom,
+              _removeTreatment,
               style: TextStyle(color: Colors.white, fontSize: 12),
             ),
           ],
@@ -660,57 +674,60 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
     final selectedLocale = model.locale.toString();
     switch (selectedLocale) {
       case 'en_US':
-        _name = 'Symptom (SP)';
-        _nameEn = 'Symptom (EN)';
-        _nameFr = 'Symptom (FR)';
-        _newSymptom = 'Create Symptom';
+        _name = 'Treatment (SP)';
+        _nameEn = 'Treatment (EN)';
+        _nameFr = 'Treatment (FR)';
+        _price = 'Price';
+        _newTreatment = 'Create treatment';
         _importCSV = 'Import CSV';
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
-        _total = 'Total Symptoms';
-        _editSymptom = 'Edit';
-        _removeSymptom = 'Remove';
+        _total = 'Total Treatments';
+        _editTreatment = 'Edit';
+        _removeTreatment = 'Remove';
         _cancel = 'Cancel';
         _save = 'Save';
-        _symptoms = 'Symptoms';
-        _removedSymptom = 'Symptom deleted successfully.';
+        _treatments = 'Treatments';
+        _removedTreatment = 'Treatment deleted successfully.';
         break;
       case 'es_ES':
-        _name = 'Síntoma (ES)';
-        _nameEn = 'Síntoma (EN)';
-        _nameFr = 'Síntoma (FR)';
-        _newSymptom = 'Crear Síntoma';
+        _name = 'Tratamiento (ES)';
+        _nameEn = 'Tratamiento (EN)';
+        _nameFr = 'Tratamiento (FR)';
+        _price = 'Precio';
+        _newTreatment = 'Crear tratamiento';
         _importCSV = 'Importar CSV';
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
-        _total = 'Síntomas totales';
-        _editSymptom = 'Editar';
-        _removeSymptom = 'Eliminar';
+        _total = 'Tratamientos totales';
+        _editTreatment = 'Editar';
+        _removeTreatment = 'Eliminar';
         _cancel = 'Cancelar';
         _save = 'Guardar';
-        _symptoms = 'Síntomas';
-        _removedSymptom = 'Síntoma eliminado correctamente';
+        _treatments = 'Tratamientos';
+        _removedTreatment = 'Tratamiento eliminado correctamente';
         break;
       case 'fr_FR':
-        _name = 'Symptôme (ES)';
-        _nameEn = 'Symptôme (EN)';
-        _nameFr = 'Symptôme (FR)';
-        _newSymptom = 'Créer symptôme';
+        _name = 'Traitement (ES)';
+        _nameEn = 'Traitement (EN)';
+        _nameFr = 'Traitement (FR)';
+        _price = 'Prix';
+        _newTreatment = 'Créer traitement';
         _importCSV = 'Importer CSV';
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
-        _total = 'Total des symptômes';
-        _editSymptom = 'Modifier';
-        _removeSymptom = 'Supprimer';
+        _total = 'Total des traitements';
+        _editTreatment = 'Modifier';
+        _removeTreatment = 'Supprimer';
         _cancel = 'Annuler';
         _save = 'Enregistrer';
-        _symptoms = 'Symptômes';
-        _removedSymptom = 'Symptôme supprimé avec succès.';
+        _treatments = 'Traitements';
+        _removedTreatment = 'Traitement supprimé avec succès.';
         break;
     }
     return SfDataGrid(
       key: _key,
-      source: symptomDataGridSource,
+      source: treatmentDataGridSource,
       rowsPerPage: _rowsPerPage,
       tableSummaryRows: _getTableSummaryRows(),
       allowSwiping: currentUserRole == 'super-admin' ? true : false,
@@ -729,8 +746,8 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
       allowMultiColumnSorting: true,
       columns: <GridColumn>[
         GridColumn(
-          columnName: 'Síntoma (ES)',
-            width: columnWidths['Síntoma (ES)']!,
+          columnName: 'Tratamiento (ES)',
+            width: columnWidths['Tratamiento (ES)']!,
           label: Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.all(8.0),
@@ -741,8 +758,8 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
           )
         ),
         GridColumn(
-            columnName: 'Síntoma (EN)',
-            width: columnWidths['Síntoma (EN)']!,
+            columnName: 'Tratamiento (EN)',
+            width: columnWidths['Tratamiento (EN)']!,
             label: Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
@@ -753,13 +770,25 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
-            columnName: 'Síntoma (FR)',
-            width: columnWidths['Síntoma (FR)']!,
+            columnName: 'Tratamiento (FR)',
+            width: columnWidths['Tratamiento (FR)']!,
             label: Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 _nameFr,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Precio',
+            width: columnWidths['Precio']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _price,
                 overflow: TextOverflow.ellipsis,
               ),
             )
@@ -771,26 +800,28 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
   @override
   void initState() {
     super.initState();
-    symptomDataGridSource = SymptomDataGridSource(List.empty());
+    treatmentDataGridSource = TreatmentDataGridSource(List.empty());
     nameController = TextEditingController();
     nameEnController = TextEditingController();
     nameFrController = TextEditingController();
+    priceController = TextEditingController();
     selectedLocale = model.locale.toString();
 
-    _name = 'Síntoma (ES)';
-    _nameEn = 'Síntoma (EN)';
-    _nameFr = 'Síntoma (FR)';
-    _newSymptom = 'Crear Síntoma';
+    _name = 'Tratamiento (ES)';
+    _nameEn = 'Tratamiento (EN)';
+    _nameFr = 'Tratamiento (FR)';
+    _price = 'Precio';
+    _newTreatment = 'Crear Tratamiento';
     _importCSV = 'Importar CSV';
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';
-    _total = 'Síntomas totales';
-    _editSymptom = 'Editar';
-    _removeSymptom = 'Eliminar';
+    _total = 'Tratamientos totales';
+    _editTreatment = 'Editar';
+    _removeTreatment = 'Eliminar';
     _cancel = 'Cancelar';
     _save = 'Guardar';
-    _symptoms = 'Síntomas';
-    _removedSymptom = '';
+    _treatments = 'Tratamientos';
+    _removedTreatment = '';
   }
 
 
@@ -799,7 +830,7 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
     return Consumer(
         builder: (context, ref, child) {
           ref.listen<AsyncValue>(
-            symptomsScreenControllerProvider,
+            treatmentsScreenControllerProvider,
                 (_, state) => {
             },
           );
@@ -814,11 +845,11 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
               }
             });
           }
-          final symptomsAsyncValue = ref.watch(symptomsStreamProvider);
-          if (symptomsAsyncValue.value != null) {
-            _saveSymptoms(symptomsAsyncValue);
+          final treatmentsAsyncValue = ref.watch(treatmentsStreamProvider);
+          if (treatmentsAsyncValue.value != null) {
+            _saveTreatments(treatmentsAsyncValue);
           }
-          return _buildView(symptomsAsyncValue);
+          return _buildView(treatmentsAsyncValue);
         });
   }
 

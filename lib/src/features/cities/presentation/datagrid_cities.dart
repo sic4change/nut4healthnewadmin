@@ -255,7 +255,7 @@ class _CityDataGridState extends LocalizationSampleViewState {
           cellExport: (DataGridCellExcelExportDetails details) {});
       final List<int> bytes = workbook.saveAsStream();
       workbook.dispose();
-      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_cities..xlsx');
+      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_cities.xlsx');
     }
 
     Future<void> exportDataGridToPdf() async {

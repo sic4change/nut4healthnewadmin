@@ -161,7 +161,7 @@ class _ReportDataGridState extends LocalizationSampleViewState {
           });
       final List<int> bytes = workbook.saveAsStream();
       workbook.dispose();
-      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_reports..xlsx');
+      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_reports.xlsx');
     }
 
     Future<void> exportDataGridToPdf() async {

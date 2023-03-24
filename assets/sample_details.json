@@ -102,6 +102,17 @@
                 "key": "symptom_datagrid"
               }
             ]
+          },
+          {
+            "type": "child",
+            "title": "Tratamientos",
+            "subItems": [
+              {
+                "type": "sample",
+                "title": "Tratamientos",
+                "key": "treatment_datagrid"
+              }
+            ]
           }
         ]
       }
