@@ -1,5 +1,6 @@
 import 'package:adminnut4health/src/features/symptoms/presentation/datagrid_symptoms.dart';
 import 'package:adminnut4health/src/features/treatments/presentation/datagrid_treatments.dart';
+import 'package:adminnut4health/src/features/tutors/presentation/datagrid_tutors.dart';
 import 'package:adminnut4health/src/features/users/presentation/datagrid_users.dart';
 import 'package:flutter/foundation.dart';
 
@@ -928,6 +929,7 @@ Map<String, Function> getSampleWidget() {
     'city_datagrid': (Key key) => CityDataGrid(key: key),
     'point_datagrid': (Key key) => PointDataGrid(key: key),
     'report_datagrid': (Key key) => ReportDataGrid(key: key),
+    'tutor_datagrid': (Key key) => TutorDataGrid(key: key),
     'symptom_datagrid': (Key key) => SymptomDataGrid(key: key),
     'treatment_datagrid': (Key key) => TreatmentDataGrid(key: key),
 

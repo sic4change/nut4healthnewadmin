@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:adminnut4health/src/features/reports/domain/report_with_user.dart';
+import 'package:adminnut4health/src/features/reports/domain/reportWithUser.dart';
 import 'package:adminnut4health/src/features/users/domain/user.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rxdart/rxdart.dart';

@@ -1,9 +1,7 @@
 /// Package imports
 /// import 'package:flutter/foundation.dart';
 
-
-import 'package:adminnut4health/src/features/reports/domain/reportWithUser.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:adminnut4health/src/features/tutors/domain/tutorWithPoint.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,9 +16,9 @@ import '../../../sample/model/sample_view.dart';
 import '../../authentication/data/firebase_auth_repository.dart';
 import '../data/firestore_repository.dart';
 /// Local import
-import '../domain/report.dart';
-import 'reports_screen_controller.dart';
-import 'report_datagridsource.dart';
+import '../domain/tutor.dart';
+import 'tutors_screen_controller.dart';
+import 'tutor_datagridsource.dart';
 
 import '../../../common_widgets/export/save_file_mobile.dart'
 if (dart.library.html) '../../../common_widgets/export/save_file_web.dart' as helper;
@@ -30,21 +28,21 @@ import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column, Row, Border;
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-/// Render report data grid
-class ReportDataGrid extends LocalizationSampleView {
+/// Render tutor data grid
+class TutorDataGrid extends LocalizationSampleView {
   /// Creates getting started data grid
-  const ReportDataGrid({Key? key}) : super(key: key);
+  const TutorDataGrid({Key? key}) : super(key: key);
 
   @override
-  _ReportDataGridState createState() => _ReportDataGridState();
+  _TutorDataGridState createState() => _TutorDataGridState();
 }
 
-class _ReportDataGridState extends LocalizationSampleViewState {
+class _TutorDataGridState extends LocalizationSampleViewState {
 
   final GlobalKey<SfDataGridState> _key = GlobalKey<SfDataGridState>();
 
   /// DataGridSource required for SfDataGrid to obtain the row data.
-  late ReportDataGridSource reportDataGridSource;
+  late TutorDataGridSource tutorDataGridSource;
 
   static const double dataPagerHeight = 60;
   int _rowsPerPage = 15;
@@ -56,23 +54,37 @@ class _ReportDataGridState extends LocalizationSampleViewState {
   var currentUserRole = "";
 
   /// Translate names
-  late String _date, _name, _surnames, _email, _text, _response, _updatedby,
-      _lastupdate,  _exportXLS, _exportPDF, _total, _editReport, _removeReport,
-      _save, _cancel, _reports, _removedReport;
+  late String _point, _name, _surnames, _address, _phone, _birthdate, _lastDate,
+      _ethnicity, _sex, _weight, _height, _status, _pregnant, _weeks,
+      _childMinor, _observations, _active, _exportXLS, _exportPDF, _total,
+      _editTutor, _removeTutor, _save, _cancel, _tutors, _removedTutor;
 
   late Map<String, double> columnWidths = {
-    'Fecha': 150,
+    'Punto': 150,
     'Nombre': 150,
     'Apellidos': 150,
-    'Email': 150,
-    'Mensaje': 300,
-    'Respuesta': 150,
-    'Respondido por': 150,
-    'Fecha respuesta': 150,
+    'Vecindario': 150,
+    'Teléfono': 150,
+    'Fecha de nacimiento': 150,
+    'Fecha de alta': 150,
+    'Etnia': 150,
+    'Sexo': 150,
+    'Peso (kg)': 150,
+    'Altura (cm)': 150,
+    'Estado': 150,
+    'Embarazada': 150,
+    'Semanas': 150,
+    'Hijos/as menores a 6 meses': 150,
+    'Observaciones': 150,
+    'Activo': 150,
   };
 
   /// Editing controller for forms to perform update the values.
-  TextEditingController? responseController;
+  TextEditingController? nameController, surnamesController, addressController,
+      phoneController, birthdateController, lastDateController, ethnicityController,
+      sexController, weightController, heightController, statusController,
+      pregnantController, weeksController, childMinorController, observationsController,
+      activeController;
 
   /// Used to validate the forms
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -88,18 +100,18 @@ class _ReportDataGridState extends LocalizationSampleViewState {
     );
   }
 
-  _saveReports(AsyncValue<List<ReportWithUser>>? reports) {
-    if (reports == null) {
-      reportDataGridSource.setReports(List.empty());
+  _saveTutors(AsyncValue<List<TutorWithPoint>>? tutors) {
+    if (tutors == null) {
+      tutorDataGridSource.setTutors(List.empty());
     } else {
-      reportDataGridSource.setReports(reports.value);
+      tutorDataGridSource.setTutors(tutors.value);
     }
   }
 
-  Widget _buildView(AsyncValue<List<ReportWithUser>> reports) {
-    if (reports.value != null && reports.value!.isNotEmpty) {
-      reportDataGridSource.buildDataGridRows();
-      reportDataGridSource.updateDataSource();
+  Widget _buildView(AsyncValue<List<TutorWithPoint>> tutors) {
+    if (tutors.value != null && tutors.value!.isNotEmpty) {
+      tutorDataGridSource.buildDataGridRows();
+      tutorDataGridSource.updateDataSource();
       selectedLocale = model.locale.toString();
       return _buildLayoutBuilder();
     } else {
@@ -161,7 +173,7 @@ class _ReportDataGridState extends LocalizationSampleViewState {
           });
       final List<int> bytes = workbook.saveAsStream();
       workbook.dispose();
-      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_reports.xlsx');
+      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_tutors.xlsx');
     }
 
     Future<void> exportDataGridToPdf() async {
@@ -182,7 +194,7 @@ class _ReportDataGridState extends LocalizationSampleViewState {
                 Rect.fromLTWH(width - 148, 0, 148, 60));
 
             header.graphics.drawString(
-              _reports,
+              _tutors,
               PdfStandardFont(PdfFontFamily.helvetica, 13,
                   style: PdfFontStyle.bold),
               bounds: const Rect.fromLTWH(0, 25, 200, 60),
@@ -191,7 +203,7 @@ class _ReportDataGridState extends LocalizationSampleViewState {
             details.pdfDocumentTemplate.top = header;
           });
       final List<int> bytes = document.saveSync();
-      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_reports.pdf');
+      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_tutors.pdf');
       document.dispose();
     }
 
@@ -241,16 +253,16 @@ class _ReportDataGridState extends LocalizationSampleViewState {
 
   Widget _buildDataPager() {
     var addMorePage = 0;
-    if ((reportDataGridSource.rows.length / _rowsPerPage).remainder(1) != 0) {
+    if ((tutorDataGridSource.rows.length / _rowsPerPage).remainder(1) != 0) {
       addMorePage  = 1;
     }
 
     return Directionality(
       textDirection: TextDirection.ltr,
       child: SfDataPager(
-        delegate: reportDataGridSource,
+        delegate: tutorDataGridSource,
         availableRowsPerPage: const <int>[15, 20, 25],
-        pageCount: (reportDataGridSource.rows.length / _rowsPerPage) + addMorePage,
+        pageCount: (tutorDataGridSource.rows.length / _rowsPerPage) + addMorePage,
         onRowsPerPageChanged: (int? rowsPerPage) {
           setState(() {
             _rowsPerPage = rowsPerPage!;
@@ -341,21 +353,155 @@ class _ReportDataGridState extends LocalizationSampleViewState {
   Widget _buildAlertDialogContent() {
     return Column(
       children: <Widget>[
-        _buildRow(controller: responseController!, columnName: 'Respuesta', text: _response),
+        _buildRow(controller: nameController!, columnName: 'Nombre', text: _name),
+        _buildRow(controller: surnamesController!, columnName: 'Apellidos', text: _surnames),
+        _buildRow(controller: addressController!, columnName: 'Vecindario', text: _address),
+        _buildRow(controller: phoneController!, columnName: 'Teléfono', text: _phone),
+        _buildRow(controller: birthdateController!, columnName: 'Fecha de nacimiento', text: _birthdate),
+        _buildRow(controller: lastDateController!, columnName: 'Fecha de alta', text: _lastDate),
+        _buildRow(controller: ethnicityController!, columnName: 'Etnia', text: _ethnicity),
+        _buildRow(controller: sexController!, columnName: 'Sexo', text: _sex),
+        _buildRow(controller: weightController!, columnName: 'Peso (kg)', text: _weight),
+        _buildRow(controller: heightController!, columnName: 'Altura (cm)', text: _height),
+        _buildRow(controller: statusController!, columnName: 'Estado', text: _status),
+        _buildRow(controller: pregnantController!, columnName: 'Embarazada', text: _pregnant),
+        _buildRow(controller: weeksController!, columnName: 'Semanas', text: _weeks),
+        _buildRow(controller: childMinorController!, columnName: 'Hijos/as menores a 6 meses', text: _childMinor),
+        _buildRow(controller: observationsController!, columnName: 'Observaciones', text: _observations),
+        _buildRow(controller: activeController!, columnName: 'Activo', text: _active),
       ],
     );
   }
 
   // Updating the data to the TextEditingController
   void _updateTextFieldContext(DataGridRow row) {
-    final String? response = row
+    final String? name = row
         .getCells()
         .firstWhere(
-            (DataGridCell element) => element.columnName == 'Respuesta')
+            (DataGridCell element) => element.columnName == 'Nombre')
         ?.value
         .toString();
+    nameController!.text = name ?? '';
 
-    responseController!.text = response ?? '';
+    final String? surnames = row
+        .getCells()
+        .firstWhere(
+            (DataGridCell element) => element.columnName == 'Apellidos')
+        ?.value
+        .toString();
+    surnamesController!.text = surnames ?? '';
+
+    final String? address = row
+        .getCells()
+        .firstWhere(
+            (DataGridCell element) => element.columnName == 'Vecindario')
+        ?.value
+        .toString();
+    addressController!.text = address ?? '';
+
+    final String? phone = row
+        .getCells()
+        .firstWhere(
+            (DataGridCell element) => element.columnName == 'Teléfono')
+        ?.value
+        .toString();
+    phoneController!.text = phone ?? '';
+
+    final String? birthdate = row
+        .getCells()
+        .firstWhere(
+            (DataGridCell element) => element.columnName == 'Fecha de nacimiento')
+        ?.value
+        .toString();
+    birthdateController!.text = birthdate ?? '';
+
+    final String? lastDate = row
+        .getCells()
+        .firstWhere(
+            (DataGridCell element) => element.columnName == 'Fecha de alta')
+        ?.value
+        .toString();
+    lastDateController!.text = lastDate ?? '';
+
+    final String? ethnicity = row
+        .getCells()
+        .firstWhere(
+            (DataGridCell element) => element.columnName == 'Etnia')
+        ?.value
+        .toString();
+    ethnicityController!.text = ethnicity ?? '';
+
+    final String? sex = row
+        .getCells()
+        .firstWhere(
+            (DataGridCell element) => element.columnName == 'Sexo')
+        ?.value
+        .toString();
+    sexController!.text = sex ?? '';
+
+    final String? weight = row
+        .getCells()
+        .firstWhere(
+            (DataGridCell element) => element.columnName == 'Peso (kg)')
+        ?.value
+        .toString();
+    weightController!.text = weight ?? '';
+
+    final String? height = row
+        .getCells()
+        .firstWhere(
+            (DataGridCell element) => element.columnName == 'Altura (cm)')
+        ?.value
+        .toString();
+    heightController!.text = height ?? '';
+
+    final String? status = row
+        .getCells()
+        .firstWhere(
+            (DataGridCell element) => element.columnName == 'Estado')
+        ?.value
+        .toString();
+    statusController!.text = status ?? '';
+
+    final String? pregnant = row
+        .getCells()
+        .firstWhere(
+            (DataGridCell element) => element.columnName == 'Embarazada')
+        ?.value
+        .toString();
+    pregnantController!.text = pregnant ?? '';
+
+    final String? weeks = row
+        .getCells()
+        .firstWhere(
+            (DataGridCell element) => element.columnName == 'Semanas')
+        ?.value
+        .toString();
+    weeksController!.text = weeks ?? '';
+
+    final String? childMinor = row
+        .getCells()
+        .firstWhere(
+            (DataGridCell element) => element.columnName == 'Hijos/as menores a 6 meses')
+        ?.value
+        .toString();
+    childMinorController!.text = childMinor ?? '';
+
+    final String? observations = row
+        .getCells()
+        .firstWhere(
+            (DataGridCell element) => element.columnName == 'Observaciones')
+        ?.value
+        .toString();
+    observationsController!.text = observations ?? '';
+
+    final String? active = row
+        .getCells()
+        .firstWhere(
+            (DataGridCell element) => element.columnName == 'Activo')
+        ?.value
+        .toString();
+    activeController!.text = active ?? '';
   }
 
   /// Editing the DataGridRow
@@ -367,7 +513,7 @@ class _ReportDataGridState extends LocalizationSampleViewState {
         scrollable: true,
         titleTextStyle: TextStyle(
             color: model.textColor, fontWeight: FontWeight.bold, fontSize: 16),
-        title: Text(_editReport),
+        title: Text(_editTutor),
         actions: _buildActionButtons(row, context),
         content: Scrollbar(
           child: SingleChildScrollView(
@@ -385,19 +531,28 @@ class _ReportDataGridState extends LocalizationSampleViewState {
   /// Updating the DataGridRows after changing the value and notify the DataGrid
   /// to refresh the view
   void _processCellUpdate(DataGridRow row, BuildContext buildContext) {
-    final Report? report = reportDataGridSource.getReports()?.firstWhere((element) => element.report.reportId == row.getCells()[0].value).report;
+    final Tutor? tutor = tutorDataGridSource.getTutors()?.firstWhere((element) => element.tutor.tutorId == row.getCells()[0].value).tutor;
     if (_formKey.currentState!.validate()) {
-      ref.read(reportsScreenControllerProvider.notifier).updateReport(
-          Report(
-            reportId: report!.reportId,
-            date: report.date,
-            user: report.user,
-            email: report.email,
-            text: report.text,
-            sent: report.sent,
-            response: responseController!.text,
-            updatedby: currentUserEmail,
-            lastupdate: DateTime.now(),
+      ref.read(tutorsScreenControllerProvider.notifier).updateTutor(
+          Tutor(
+            tutorId: tutor!.tutorId,
+            pointId: tutor.pointId,
+            name: nameController!.text,
+            surnames: surnamesController!.text,
+            address: addressController!.text,
+            phone: phoneController!.text,
+            birthdate: DateTime.now(), // TODO: birthdateController!.text,
+            lastDate: DateTime.now(), // TODO: lastDateController!.text,
+            ethnicity: ethnicityController!.text,
+            sex: sexController!.text,
+            weight: double.parse(weightController!.text),
+            height: double.parse(heightController!.text),
+            status: statusController!.text,
+            pregnant: pregnantController!.text,
+            weeks: int.parse(weeksController!.text),
+            childMinor: childMinorController!.text,
+            observations: observationsController!.text,
+            active: activeController!.text == '✔' ? true : false
           )
       );
       Navigator.pop(buildContext);
@@ -426,9 +581,9 @@ class _ReportDataGridState extends LocalizationSampleViewState {
 
   /// Deleting the DataGridRow
   void _handleDeleteWidgetTap(DataGridRow row) {
-    final report = reportDataGridSource.getReports()?.firstWhere((element) => element.report.reportId == row.getCells()[0].value);
-    if (report != null) {
-      ref.read(reportsScreenControllerProvider.notifier).deleteReport(report.report);
+    final tutor = tutorDataGridSource.getTutors()?.firstWhere((element) => element.tutor.tutorId == row.getCells()[0].value);
+    if (tutor != null) {
+      ref.read(tutorsScreenControllerProvider.notifier).deleteTutor(tutor.tutor);
       _showDialogDeleteConfirmation();
     }
   }
@@ -446,7 +601,7 @@ class _ReportDataGridState extends LocalizationSampleViewState {
             ),
           ),
         ],
-        content: Text(_removedReport),
+        content: Text(_removedTutor),
       ),
     );
   }
@@ -465,7 +620,7 @@ class _ReportDataGridState extends LocalizationSampleViewState {
             Icon(Icons.edit, color: Colors.white, size: 16),
             SizedBox(width: 8.0),
             Text(
-              _editReport,
+              _editTutor,
               style: TextStyle(color: Colors.white, fontSize: 12),
             )
           ],
@@ -488,7 +643,7 @@ class _ReportDataGridState extends LocalizationSampleViewState {
             const Icon(Icons.delete, color: Colors.white, size: 16),
             const SizedBox(width: 8.0),
             Text(
-              _removeReport,
+              _removeTutor,
               style: TextStyle(color: Colors.white, fontSize: 12),
             ),
           ],
@@ -501,69 +656,97 @@ class _ReportDataGridState extends LocalizationSampleViewState {
     final selectedLocale = model.locale.toString();
     switch (selectedLocale) {
       case 'en_US':
-        _date = 'Date';
+        _point = 'Point';
         _name = 'Name';
         _surnames = 'Surnames';
-        _email = 'Email';
-        _text = 'Text';
-        _response = 'Response';
-        _updatedby = 'Answered by';
-        _lastupdate = 'Answer date';
+        _address = 'Address';
+        _phone = 'Phone';
+        _birthdate = 'Birthdate';
+        _lastDate = 'Register date';
+        _ethnicity = 'Ethnicity';
+        _sex = 'Sex';
+        _weight = 'Weight (kg)';
+        _height = 'Height (cm)';
+        _status = 'Status';
+        _pregnant = 'Pregnant';
+        _weeks = 'Weeks';
+        _childMinor = 'Children under 6 months';
+        _observations = 'Observations';
+        _active = 'Active';
 
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
-        _total = 'Total Reports';
-        _editReport = 'Edit';
-        _removeReport = 'Remove';
+        _total = 'Total Tutors';
+        _editTutor = 'Edit';
+        _removeTutor = 'Remove';
         _cancel = 'Cancel';
         _save = 'Save';
-        _reports = 'Reports';
-        _removedReport = 'Report deleted successfully.';
+        _tutors = 'Tutors';
+        _removedTutor = 'Tutor deleted successfully.';
         break;
       case 'es_ES':
-        _date = 'Fecha';
+        _point = 'Punto';
         _name = 'Nombre';
         _surnames = 'Apellidos';
-        _email = 'Email';
-        _text = 'Mensaje';
-        _response = 'Respuesta';
-        _updatedby = 'Respondido por';
-        _lastupdate = 'Fecha respuesta';
+        _address = 'Vecindario';
+        _phone = 'Teléfono';
+        _birthdate = 'Fecha de nacimiento';
+        _lastDate = 'Fecha de alta';
+        _ethnicity = 'Etnia';
+        _sex = 'Sexo';
+        _weight = 'Peso (kg)';
+        _height = 'Altura (cm)';
+        _status = 'Estado';
+        _pregnant = 'Embarazada';
+        _weeks = 'Semanas';
+        _childMinor = 'Hijos/as menores a 6 meses';
+        _observations = 'Observaciones';
+        _active = 'Activo';
 
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
-        _total = 'Reportes totales';
-        _editReport = 'Editar';
-        _removeReport = 'Eliminar';
+        _total = 'Tutores totales';
+        _editTutor = 'Editar';
+        _removeTutor = 'Eliminar';
         _cancel = 'Cancelar';
         _save = 'Guardar';
-        _reports = 'Reportes';
-        _removedReport = 'Reporte eliminado correctamente.';
+        _tutors = 'Tutores';
+        _removedTutor = 'Tutore eliminado correctamente.';
         break;
       case 'fr_FR':
-        _date = 'Date';
+        _point = 'Place';
         _name = 'Nom';
         _surnames = 'Noms de famille';
-        _email = 'Email';
-        _text = 'Message';
-        _response = 'Répondu par';
-        _lastupdate = 'Date de réponse';
+        _address = 'Quartier';
+        _phone = 'Téléphone';
+        _birthdate = 'Date de naissance';
+        _lastDate = 'Date d\'enregistrement';
+        _ethnicity = 'Appartenance ethnique';
+        _sex = 'Sexe';
+        _weight = 'Poids (kg)';
+        _height = 'Hauteur (cm)';
+        _status = 'État';
+        _pregnant = 'Enceinte';
+        _weeks = 'Semaines';
+        _childMinor = 'Enfants de moins de 6 mois';
+        _observations = 'Observations';
+        _active = 'Actif';
 
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
-        _total = 'Total des rapports';
-        _editReport = 'Modifier';
-        _removeReport = 'Supprimer';
+        _total = 'Total des tuteurs';
+        _editTutor = 'Modifier';
+        _removeTutor = 'Supprimer';
         _cancel = 'Annuler';
         _save = 'Enregistrer';
-        _reports = 'Rapports';
-        _removedReport = 'Rapport supprimé avec succès.';
+        _tutors = 'Tuteurs';
+        _removedTutor = 'Tuteur supprimé avec succès.';
         break;
     }
 
     return SfDataGrid(
       key: _key,
-      source: reportDataGridSource,
+      source: tutorDataGridSource,
       rowsPerPage: _rowsPerPage,
       tableSummaryRows: _getTableSummaryRows(),
       allowSwiping: currentUserRole == 'super-admin' ? true : false,
@@ -582,13 +765,13 @@ class _ReportDataGridState extends LocalizationSampleViewState {
       allowMultiColumnSorting: true,
       columns: <GridColumn>[
         GridColumn(
-            columnName: 'Fecha',
-            width: columnWidths['Fecha']!,
+            columnName: 'Punto',
+            width: columnWidths['Punto']!,
             label: Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _date,
+                _point,
                 overflow: TextOverflow.ellipsis,
               ),
             )
@@ -618,61 +801,169 @@ class _ReportDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
-            columnName: 'Email',
-            width: columnWidths['Email']!,
+            columnName: 'Vecindario',
+            width: columnWidths['Vecindario']!,
             label: Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _email,
+                _address,
                 overflow: TextOverflow.ellipsis,
               ),
             )
         ),
         GridColumn(
-            columnName: 'Mensaje',
-            width: columnWidths['Mensaje']!,
+            columnName: 'Teléfono',
+            width: columnWidths['Teléfono']!,
             label: Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _text,
+                _phone,
                 overflow: TextOverflow.ellipsis,
               ),
             )
         ),
         GridColumn(
-            columnName: 'Respuesta',
-            width: columnWidths['Respuesta']!,
+            columnName: 'Fecha de nacimiento',
+            width: columnWidths['Fecha de nacimiento']!,
             label: Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _response,
+                _birthdate,
                 overflow: TextOverflow.ellipsis,
               ),
             )
         ),
         GridColumn(
-            columnName: 'Respondido por',
-            width: columnWidths['Respondido por']!,
+            columnName: 'Fecha de alta',
+            width: columnWidths['Fecha de alta']!,
             label: Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _updatedby,
+                _lastDate,
                 overflow: TextOverflow.ellipsis,
               ),
             )
         ),
         GridColumn(
-            columnName: 'Fecha respuesta',
-            width: columnWidths['Fecha respuesta']!,
+            columnName: 'Etnia',
+            width: columnWidths['Etnia']!,
             label: Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _lastupdate,
+                _ethnicity,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Sexo',
+            width: columnWidths['Sexo']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _sex,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Peso (kg)',
+            width: columnWidths['Peso (kg)']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _weight,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Altura (cm)',
+            width: columnWidths['Altura (cm)']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _height,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Estado',
+            width: columnWidths['Estado']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _status,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Embarazada',
+            width: columnWidths['Embarazada']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _pregnant,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Semanas',
+            width: columnWidths['Semanas']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _weeks,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Hijos/as menores a 6 meses',
+            width: columnWidths['Hijos/as menores a 6 meses']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _childMinor,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Observaciones',
+            width: columnWidths['Observaciones']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _observations,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Activo',
+            width: columnWidths['Activo']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _active,
                 overflow: TextOverflow.ellipsis,
               ),
             )
@@ -684,27 +975,52 @@ class _ReportDataGridState extends LocalizationSampleViewState {
   @override
   void initState() {
     super.initState();
-    reportDataGridSource = ReportDataGridSource(List.empty());
-    responseController = TextEditingController();
+    tutorDataGridSource = TutorDataGridSource(List.empty());
+
+    nameController = TextEditingController();
+    surnamesController = TextEditingController();
+    addressController = TextEditingController();
+    phoneController = TextEditingController();
+    birthdateController = TextEditingController();
+    lastDateController = TextEditingController();
+    ethnicityController = TextEditingController();
+    sexController = TextEditingController();
+    weightController = TextEditingController();
+    heightController = TextEditingController();
+    statusController = TextEditingController();
+    pregnantController = TextEditingController();
+    weeksController = TextEditingController();
+    childMinorController = TextEditingController();
+    observationsController = TextEditingController();
+    activeController = TextEditingController();
     selectedLocale = model.locale.toString();
 
-    _date = 'Fecha';
+    _point = 'Punto';
     _name = 'Nombre';
     _surnames = 'Apellidos';
-    _email = 'Email';
-    _text = 'Mensaje';
-    _response = 'Respuesta';
-    _updatedby = 'Respondido por';
-    _lastupdate = 'Fecha respuesta';
+    _address = 'Vecindario';
+    _phone = 'Teléfono';
+    _birthdate = 'Fecha de nacimiento';
+    _lastDate = 'Fecha de alta';
+    _ethnicity = 'Etnia';
+    _sex = 'Sexo';
+    _weight = 'Peso (kg)';
+    _height = 'Altura (cm)';
+    _status = 'Estado';
+    _pregnant = 'Embarazada';
+    _weeks = 'Semanas';
+    _childMinor = 'Hijos/as menores a 6 meses';
+    _observations = 'Observaciones';
+    _active = 'Activo';
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';
     _total = 'Usuarios totales';
-    _editReport = 'Editar';
-    _removeReport = 'Eliminar';
+    _editTutor = 'Editar';
+    _removeTutor = 'Eliminar';
     _cancel = 'Cancelar';
     _save = 'Guardar';
-    _reports = 'Reportes';
-    _removedReport = '';
+    _tutors = 'Tutores';
+    _removedTutor = '';
   }
 
 
@@ -713,7 +1029,7 @@ class _ReportDataGridState extends LocalizationSampleViewState {
     return Consumer(
         builder: (context, ref, child) {
           ref.listen<AsyncValue>(
-            reportsScreenControllerProvider,
+            tutorsScreenControllerProvider,
                 (_, state) => {
             },
           );
@@ -730,11 +1046,11 @@ class _ReportDataGridState extends LocalizationSampleViewState {
 
             currentUserEmail = user.email??"";
           }
-          final reportsAsyncValue = ref.watch(reportsStreamProvider);
-          if (reportsAsyncValue.value != null) {
-            _saveReports(reportsAsyncValue);
+          final tutorsAsyncValue = ref.watch(tutorsStreamProvider);
+          if (tutorsAsyncValue.value != null) {
+            _saveTutors(tutorsAsyncValue);
           }
-          return _buildView(reportsAsyncValue);
+          return _buildView(tutorsAsyncValue);
         });
   }
 

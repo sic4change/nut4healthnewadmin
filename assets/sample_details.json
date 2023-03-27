@@ -94,6 +94,17 @@
           },
           {
             "type": "child",
+            "title": "Madres, padres o tutores",
+            "subItems": [
+              {
+                "type": "sample",
+                "title": "Madres, padres o tutores",
+                "key": "tutor_datagrid"
+              }
+            ]
+          },
+          {
+            "type": "child",
             "title": "Síntomas",
             "subItems": [
               {
