@@ -15,8 +15,7 @@ import 'package:syncfusion_flutter_pdf/pdf.dart';
 import '../../../sample/model/sample_view.dart';
 import '../../authentication/data/firebase_auth_repository.dart';
 import '../data/firestore_repository.dart';
-/// Local import
-import '../domain/tutor.dart';
+
 import 'tutors_screen_controller.dart';
 import 'tutor_datagridsource.dart';
 
@@ -56,8 +55,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
   /// Translate names
   late String _point, _name, _surnames, _address, _phone, _birthdate, _lastDate,
       _ethnicity, _sex, _weight, _height, _status, _pregnant, _weeks,
-      _childMinor, _observations, _active, _exportXLS, _exportPDF, _total,
-      _editTutor, _removeTutor, _save, _cancel, _tutors, _removedTutor;
+      _childMinor, _observations, _active, _exportXLS, _exportPDF, _total, _tutors;
 
   late Map<String, double> columnWidths = {
     'Punto': 150,
@@ -78,16 +76,6 @@ class _TutorDataGridState extends LocalizationSampleViewState {
     'Observaciones': 150,
     'Activo': 150,
   };
-
-  /// Editing controller for forms to perform update the values.
-  TextEditingController? nameController, surnamesController, addressController,
-      phoneController, birthdateController, lastDateController, ethnicityController,
-      sexController, weightController, heightController, statusController,
-      pregnantController, weeksController, childMinorController, observationsController,
-      activeController;
-
-  /// Used to validate the forms
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Widget getLocationWidget(String location) {
     return Row(
@@ -292,366 +280,6 @@ class _TutorDataGridState extends LocalizationSampleViewState {
     ];
   }
 
-
-  RegExp _getRegExp(TextInputType keyboardType, String columnName) {
-    if (keyboardType == TextInputType.number) {
-      return RegExp('[0-9]');
-    } else if (keyboardType == TextInputType.text) {
-      return RegExp('.');
-    } else if (keyboardType == TextInputType.phone) {
-      return RegExp(r"^[\d+]+$");
-    } else if (keyboardType == TextInputType.emailAddress) {
-      return RegExp(r"[a-zA-Z0-9@.]+");
-    } else {
-      return RegExp('.');
-    }
-  }
-
-  /// Building the each field with label and TextFormField
-  Widget _buildRow(
-      {required TextEditingController controller, required String columnName, required String text}) {
-    TextInputType keyboardType = TextInputType.text;
-    if (<String>['Puntos'].contains(columnName)) {
-      keyboardType =  TextInputType.number;
-    } else if (<String>['Email'].contains(columnName)) {
-      keyboardType =  TextInputType.emailAddress;
-    } else if (<String>['Teléfono'].contains(columnName)) {
-      keyboardType =  TextInputType.phone;
-    } else {
-      keyboardType =  TextInputType.text;
-    }
-    // Holds the regular expression pattern based on the column type.
-    final RegExp regExp = _getRegExp(keyboardType, columnName);
-
-    return Row(
-      children: <Widget>[
-        Container(
-            width: 150,
-            padding: const EdgeInsets.symmetric(vertical: 15),
-            child: Text(text)),
-        SizedBox(
-          width: 150,
-          child: TextFormField(
-            validator: (String? value) {
-              if (value!.isEmpty) {
-                return 'El campo no puede estar vacío';
-              }
-              return null;
-            },
-            controller: controller,
-            keyboardType: keyboardType,
-            inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.allow(regExp)
-            ],
-          ),
-        )
-      ],
-    );
-  }
-
-  /// Building the forms to edit the data
-  Widget _buildAlertDialogContent() {
-    return Column(
-      children: <Widget>[
-        _buildRow(controller: nameController!, columnName: 'Nombre', text: _name),
-        _buildRow(controller: surnamesController!, columnName: 'Apellidos', text: _surnames),
-        _buildRow(controller: addressController!, columnName: 'Vecindario', text: _address),
-        _buildRow(controller: phoneController!, columnName: 'Teléfono', text: _phone),
-        _buildRow(controller: birthdateController!, columnName: 'Fecha de nacimiento', text: _birthdate),
-        _buildRow(controller: lastDateController!, columnName: 'Fecha de alta', text: _lastDate),
-        _buildRow(controller: ethnicityController!, columnName: 'Etnia', text: _ethnicity),
-        _buildRow(controller: sexController!, columnName: 'Sexo', text: _sex),
-        _buildRow(controller: weightController!, columnName: 'Peso (kg)', text: _weight),
-        _buildRow(controller: heightController!, columnName: 'Altura (cm)', text: _height),
-        _buildRow(controller: statusController!, columnName: 'Estado', text: _status),
-        _buildRow(controller: pregnantController!, columnName: 'Embarazada', text: _pregnant),
-        _buildRow(controller: weeksController!, columnName: 'Semanas', text: _weeks),
-        _buildRow(controller: childMinorController!, columnName: 'Hijos/as menores a 6 meses', text: _childMinor),
-        _buildRow(controller: observationsController!, columnName: 'Observaciones', text: _observations),
-        _buildRow(controller: activeController!, columnName: 'Activo', text: _active),
-      ],
-    );
-  }
-
-  // Updating the data to the TextEditingController
-  void _updateTextFieldContext(DataGridRow row) {
-    final String? name = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Nombre')
-        ?.value
-        .toString();
-    nameController!.text = name ?? '';
-
-    final String? surnames = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Apellidos')
-        ?.value
-        .toString();
-    surnamesController!.text = surnames ?? '';
-
-    final String? address = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Vecindario')
-        ?.value
-        .toString();
-    addressController!.text = address ?? '';
-
-    final String? phone = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Teléfono')
-        ?.value
-        .toString();
-    phoneController!.text = phone ?? '';
-
-    final String? birthdate = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Fecha de nacimiento')
-        ?.value
-        .toString();
-    birthdateController!.text = birthdate ?? '';
-
-    final String? lastDate = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Fecha de alta')
-        ?.value
-        .toString();
-    lastDateController!.text = lastDate ?? '';
-
-    final String? ethnicity = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Etnia')
-        ?.value
-        .toString();
-    ethnicityController!.text = ethnicity ?? '';
-
-    final String? sex = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Sexo')
-        ?.value
-        .toString();
-    sexController!.text = sex ?? '';
-
-    final String? weight = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Peso (kg)')
-        ?.value
-        .toString();
-    weightController!.text = weight ?? '';
-
-    final String? height = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Altura (cm)')
-        ?.value
-        .toString();
-    heightController!.text = height ?? '';
-
-    final String? status = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Estado')
-        ?.value
-        .toString();
-    statusController!.text = status ?? '';
-
-    final String? pregnant = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Embarazada')
-        ?.value
-        .toString();
-    pregnantController!.text = pregnant ?? '';
-
-    final String? weeks = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Semanas')
-        ?.value
-        .toString();
-    weeksController!.text = weeks ?? '';
-
-    final String? childMinor = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Hijos/as menores a 6 meses')
-        ?.value
-        .toString();
-    childMinorController!.text = childMinor ?? '';
-
-    final String? observations = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Observaciones')
-        ?.value
-        .toString();
-    observationsController!.text = observations ?? '';
-
-    final String? active = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Activo')
-        ?.value
-        .toString();
-    activeController!.text = active ?? '';
-  }
-
-  /// Editing the DataGridRow
-  void _handleEditWidgetTap(DataGridRow row) {
-    _updateTextFieldContext(row);
-    showDialog<String>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        scrollable: true,
-        titleTextStyle: TextStyle(
-            color: model.textColor, fontWeight: FontWeight.bold, fontSize: 16),
-        title: Text(_editTutor),
-        actions: _buildActionButtons(row, context),
-        content: Scrollbar(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Form(
-              key: _formKey,
-              child: _buildAlertDialogContent(),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// Updating the DataGridRows after changing the value and notify the DataGrid
-  /// to refresh the view
-  void _processCellUpdate(DataGridRow row, BuildContext buildContext) {
-    final Tutor? tutor = tutorDataGridSource.getTutors()?.firstWhere((element) => element.tutor.tutorId == row.getCells()[0].value).tutor;
-    if (_formKey.currentState!.validate()) {
-      ref.read(tutorsScreenControllerProvider.notifier).updateTutor(
-          Tutor(
-            tutorId: tutor!.tutorId,
-            pointId: tutor.pointId,
-            name: nameController!.text,
-            surnames: surnamesController!.text,
-            address: addressController!.text,
-            phone: phoneController!.text,
-            birthdate: DateTime.now(), // TODO: birthdateController!.text,
-            lastDate: DateTime.now(), // TODO: lastDateController!.text,
-            ethnicity: ethnicityController!.text,
-            sex: sexController!.text,
-            weight: double.parse(weightController!.text),
-            height: double.parse(heightController!.text),
-            status: statusController!.text,
-            pregnant: pregnantController!.text,
-            weeks: int.parse(weeksController!.text),
-            childMinor: childMinorController!.text,
-            observations: observationsController!.text,
-            active: activeController!.text == '✔' ? true : false
-          )
-      );
-      Navigator.pop(buildContext);
-    }
-  }
-
-  /// Building the option button on the bottom of the alert popup
-  List<Widget> _buildActionButtons(DataGridRow row, BuildContext buildContext) {
-    return <Widget>[
-      TextButton(
-        onPressed: () => _processCellUpdate(row, buildContext),
-        child: Text(
-          _save,
-          style: TextStyle(color: model.backgroundColor),
-        ),
-      ),
-      TextButton(
-        onPressed: () => Navigator.pop(buildContext),
-        child: Text(
-          _cancel,
-          style: TextStyle(color: model.backgroundColor),
-        ),
-      ),
-    ];
-  }
-
-  /// Deleting the DataGridRow
-  void _handleDeleteWidgetTap(DataGridRow row) {
-    final tutor = tutorDataGridSource.getTutors()?.firstWhere((element) => element.tutor.tutorId == row.getCells()[0].value);
-    if (tutor != null) {
-      ref.read(tutorsScreenControllerProvider.notifier).deleteTutor(tutor.tutor);
-      _showDialogDeleteConfirmation();
-    }
-  }
-
-  _showDialogDeleteConfirmation() {
-    showDialog<String>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'OK',
-              style: TextStyle(color: model.backgroundColor),
-            ),
-          ),
-        ],
-        content: Text(_removedTutor),
-      ),
-    );
-  }
-
-  /// Callback for left swiping
-  Widget _buildStartSwipeWidget(
-      BuildContext context, DataGridRow row, int rowIndex) {
-    return GestureDetector(
-      onTap: () => _handleEditWidgetTap(row),
-      child: Container(
-        color: Colors.blueAccent,
-        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Icon(Icons.edit, color: Colors.white, size: 16),
-            SizedBox(width: 8.0),
-            Text(
-              _editTutor,
-              style: TextStyle(color: Colors.white, fontSize: 12),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  /// Callback for right swiping
-  Widget _buildEndSwipeWidget(
-      BuildContext context, DataGridRow row, int rowIndex) {
-    return GestureDetector(
-      onTap: () => _handleDeleteWidgetTap(row),
-      child: Container(
-        color: Colors.redAccent,
-        padding: EdgeInsets.only(left: 8.0, right: 8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Icon(Icons.delete, color: Colors.white, size: 16),
-            const SizedBox(width: 8.0),
-            Text(
-              _removeTutor,
-              style: TextStyle(color: Colors.white, fontSize: 12),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   SfDataGrid _buildDataGrid() {
     final selectedLocale = model.locale.toString();
     switch (selectedLocale) {
@@ -677,12 +305,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
         _total = 'Total Tutors';
-        _editTutor = 'Edit';
-        _removeTutor = 'Remove';
-        _cancel = 'Cancel';
-        _save = 'Save';
         _tutors = 'Tutors';
-        _removedTutor = 'Tutor deleted successfully.';
         break;
       case 'es_ES':
         _point = 'Punto';
@@ -706,12 +329,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
         _total = 'Tutores totales';
-        _editTutor = 'Editar';
-        _removeTutor = 'Eliminar';
-        _cancel = 'Cancelar';
-        _save = 'Guardar';
         _tutors = 'Tutores';
-        _removedTutor = 'Tutore eliminado correctamente.';
         break;
       case 'fr_FR':
         _point = 'Place';
@@ -735,12 +353,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
         _total = 'Total des tuteurs';
-        _editTutor = 'Modifier';
-        _removeTutor = 'Supprimer';
-        _cancel = 'Annuler';
-        _save = 'Enregistrer';
         _tutors = 'Tuteurs';
-        _removedTutor = 'Tuteur supprimé avec succès.';
         break;
     }
 
@@ -757,9 +370,6 @@ class _TutorDataGridState extends LocalizationSampleViewState {
         });
         return true;
       },
-      swipeMaxOffset: 100.0,
-      endSwipeActionsBuilder: _buildEndSwipeWidget,
-      startSwipeActionsBuilder: _buildStartSwipeWidget,
       allowFiltering: true,
       allowSorting: true,
       allowMultiColumnSorting: true,
@@ -976,23 +586,6 @@ class _TutorDataGridState extends LocalizationSampleViewState {
   void initState() {
     super.initState();
     tutorDataGridSource = TutorDataGridSource(List.empty());
-
-    nameController = TextEditingController();
-    surnamesController = TextEditingController();
-    addressController = TextEditingController();
-    phoneController = TextEditingController();
-    birthdateController = TextEditingController();
-    lastDateController = TextEditingController();
-    ethnicityController = TextEditingController();
-    sexController = TextEditingController();
-    weightController = TextEditingController();
-    heightController = TextEditingController();
-    statusController = TextEditingController();
-    pregnantController = TextEditingController();
-    weeksController = TextEditingController();
-    childMinorController = TextEditingController();
-    observationsController = TextEditingController();
-    activeController = TextEditingController();
     selectedLocale = model.locale.toString();
 
     _point = 'Punto';
@@ -1015,12 +608,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';
     _total = 'Usuarios totales';
-    _editTutor = 'Editar';
-    _removeTutor = 'Eliminar';
-    _cancel = 'Cancelar';
-    _save = 'Guardar';
     _tutors = 'Tutores';
-    _removedTutor = '';
   }
 
 
