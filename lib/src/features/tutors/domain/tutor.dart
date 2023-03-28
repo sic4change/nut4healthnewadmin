@@ -58,25 +58,25 @@ class Tutor extends Equatable {
     if (data == null) {
       throw StateError('missing data for tutorId: $documentId');
     }
-    final pointId = data['point'] as String;
-    final name = data['name'] as String;
-    final surnames = data['surnames'] as String;
-    final address = data['address'] as String;
-    final phone = data['phone'] as String;
+    final pointId = data['point']?? "";
+    final name = data['name']?? "";
+    final surnames = data['surnames']?? "";
+    final address = data['address']?? "";
+    final phone = data['phone']?? "";
     final Timestamp birthdateFirebase = data['birthdate'] ?? Timestamp(0, 0);
     final birthdate = birthdateFirebase.toDate();
     final Timestamp lastDateFirebase = data['lastDate'] ?? Timestamp(0, 0);
     final lastDate = lastDateFirebase.toDate();
-    final ethnicity = data['ethnicity'] as String;
-    final sex = data['sex'] as String;
+    final ethnicity = data['ethnicity']?? "";
+    final sex = data['sex']?? "";
     final weight = data['weight']?? 0.0;
     final height = data['height']?? 0.0;
     final status = data['status']?? "";
-    final pregnant = data['pregnant'] as String;
-    final weeks = data['weeks'] as int;
+    final pregnant = data['pregnant']?? "";
+    final weeks = data['weeks']?? 0;
     final childMinor = data['childMinor']?? "";
-    final observations = data['observations'] as String;
-    final active = data['active'] as bool;
+    final observations = data['observations']?? "";
+    final active = data['active']?? false;
 
     return Tutor(
       tutorId: documentId,
