@@ -50,7 +50,7 @@ class Child extends Equatable {
     final Timestamp birthdateFirebase = data['birthdate'] ?? Timestamp(0, 0);
     final birthdate = birthdateFirebase.toDate();
     final Timestamp createtDateFirebase = data['createDate'] ?? Timestamp(0, 0);
-    final createtDate = createtDateFirebase.toDate();
+    final createDate = createtDateFirebase.toDate();
     final Timestamp lastDateFirebase = data['lastDate'] ?? Timestamp(0, 0);
     final lastDate = lastDateFirebase.toDate();
     final ethnicity = data['ethnicity']?? "";
@@ -64,7 +64,7 @@ class Child extends Equatable {
       name: name,
       surnames: surnames,
       birthdate: birthdate,
-      createDate: createtDate,
+      createDate: createDate,
       lastDate: lastDate,
       ethnicity: ethnicity,
       sex: sex,

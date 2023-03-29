@@ -334,7 +334,6 @@ class _ChildDataGridState extends LocalizationSampleViewState {
       source: childDataGridSource,
       rowsPerPage: _rowsPerPage,
       tableSummaryRows: _getTableSummaryRows(),
-      allowSwiping: currentUserRole == 'super-admin' ? true : false,
       allowColumnsResizing: true,
       onColumnResizeUpdate: (ColumnResizeUpdateDetails details) {
         setState(() {

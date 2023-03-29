@@ -116,6 +116,17 @@
           },
           {
             "type": "child",
+            "title": "Casos",
+            "subItems": [
+              {
+                "type": "sample",
+                "title": "Casos",
+                "key": "case_datagrid"
+              }
+            ]
+          },
+          {
+            "type": "child",
             "title": "Síntomas",
             "subItems": [
               {
