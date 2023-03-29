@@ -1,7 +1,7 @@
 /// Package imports
 /// import 'package:flutter/foundation.dart';
 
-import 'package:adminnut4health/src/features/tutors/domain/tutorWithPoint.dart';
+import 'package:adminnut4health/src/features/childs/domain/childWithPointAndTutor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,8 +16,8 @@ import '../../../sample/model/sample_view.dart';
 import '../../authentication/data/firebase_auth_repository.dart';
 import '../data/firestore_repository.dart';
 
-import 'tutors_screen_controller.dart';
-import 'tutor_datagridsource.dart';
+import 'childs_screen_controller.dart';
+import 'child_datagridsource.dart';
 
 import '../../../common_widgets/export/save_file_mobile.dart'
 if (dart.library.html) '../../../common_widgets/export/save_file_web.dart' as helper;
@@ -27,21 +27,21 @@ import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column, Row, Border;
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-/// Render tutor data grid
-class TutorDataGrid extends LocalizationSampleView {
+/// Render child data grid
+class ChildDataGrid extends LocalizationSampleView {
   /// Creates getting started data grid
-  const TutorDataGrid({Key? key}) : super(key: key);
+  const ChildDataGrid({Key? key}) : super(key: key);
 
   @override
-  _TutorDataGridState createState() => _TutorDataGridState();
+  _ChildDataGridState createState() => _ChildDataGridState();
 }
 
-class _TutorDataGridState extends LocalizationSampleViewState {
+class _ChildDataGridState extends LocalizationSampleViewState {
 
   final GlobalKey<SfDataGridState> _key = GlobalKey<SfDataGridState>();
 
   /// DataGridSource required for SfDataGrid to obtain the row data.
-  late TutorDataGridSource tutorDataGridSource;
+  late ChildDataGridSource childDataGridSource;
 
   static const double dataPagerHeight = 60;
   int _rowsPerPage = 15;
@@ -53,28 +53,21 @@ class _TutorDataGridState extends LocalizationSampleViewState {
   var currentUserRole = "";
 
   /// Translate names
-  late String _point, _name, _surnames, _address, _phone, _birthdate, _createDate,
-      _ethnicity, _sex, _weight, _height, _status, _pregnant, _weeks,
-      _childMinor, _observations, _active, _exportXLS, _exportPDF, _total, _tutors;
+  late String _point, _name, _surnames, _birthdate, _createDate, _lastDate,
+      _ethnicity, _sex, _tutor, _observations, _exportXLS, _exportPDF, _total,
+      _childs;
 
   late Map<String, double> columnWidths = {
     'Punto': 150,
     'Nombre': 150,
     'Apellidos': 150,
-    'Vecindario': 150,
-    'Teléfono': 150,
     'Fecha de nacimiento': 150,
     'Fecha de alta': 150,
+    'Última visita': 150,
     'Etnia': 150,
     'Sexo': 150,
-    'Peso (kg)': 150,
-    'Altura (cm)': 150,
-    'Estado': 150,
-    'Embarazada': 150,
-    'Semanas': 150,
-    'Hijos/as menores a 6 meses': 150,
+    'Madre, padre o tutor': 150,
     'Observaciones': 150,
-    'Activo': 150,
   };
 
   Widget getLocationWidget(String location) {
@@ -88,18 +81,18 @@ class _TutorDataGridState extends LocalizationSampleViewState {
     );
   }
 
-  _saveTutors(AsyncValue<List<TutorWithPoint>>? tutors) {
-    if (tutors == null) {
-      tutorDataGridSource.setTutors(List.empty());
+  _saveChilds(AsyncValue<List<ChildWithPointAndTutor>>? childs) {
+    if (childs == null) {
+      childDataGridSource.setChilds(List.empty());
     } else {
-      tutorDataGridSource.setTutors(tutors.value);
+      childDataGridSource.setChilds(childs.value);
     }
   }
 
-  Widget _buildView(AsyncValue<List<TutorWithPoint>> tutors) {
-    if (tutors.value != null && tutors.value!.isNotEmpty) {
-      tutorDataGridSource.buildDataGridRows();
-      tutorDataGridSource.updateDataSource();
+  Widget _buildView(AsyncValue<List<ChildWithPointAndTutor>> childs) {
+    if (childs.value != null && childs.value!.isNotEmpty) {
+      childDataGridSource.buildDataGridRows();
+      childDataGridSource.updateDataSource();
       selectedLocale = model.locale.toString();
       return _buildLayoutBuilder();
     } else {
@@ -161,7 +154,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
           });
       final List<int> bytes = workbook.saveAsStream();
       workbook.dispose();
-      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_tutors.xlsx');
+      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_childs.xlsx');
     }
 
     Future<void> exportDataGridToPdf() async {
@@ -182,7 +175,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
                 Rect.fromLTWH(width - 148, 0, 148, 60));
 
             header.graphics.drawString(
-              _tutors,
+              _childs,
               PdfStandardFont(PdfFontFamily.helvetica, 13,
                   style: PdfFontStyle.bold),
               bounds: const Rect.fromLTWH(0, 25, 200, 60),
@@ -191,7 +184,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
             details.pdfDocumentTemplate.top = header;
           });
       final List<int> bytes = document.saveSync();
-      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_tutors.pdf');
+      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_childs.pdf');
       document.dispose();
     }
 
@@ -241,16 +234,16 @@ class _TutorDataGridState extends LocalizationSampleViewState {
 
   Widget _buildDataPager() {
     var addMorePage = 0;
-    if ((tutorDataGridSource.rows.length / _rowsPerPage).remainder(1) != 0) {
+    if ((childDataGridSource.rows.length / _rowsPerPage).remainder(1) != 0) {
       addMorePage  = 1;
     }
 
     return Directionality(
       textDirection: TextDirection.ltr,
       child: SfDataPager(
-        delegate: tutorDataGridSource,
+        delegate: childDataGridSource,
         availableRowsPerPage: const <int>[15, 20, 25],
-        pageCount: (tutorDataGridSource.rows.length / _rowsPerPage) + addMorePage,
+        pageCount: (childDataGridSource.rows.length / _rowsPerPage) + addMorePage,
         onRowsPerPageChanged: (int? rowsPerPage) {
           setState(() {
             _rowsPerPage = rowsPerPage!;
@@ -287,79 +280,58 @@ class _TutorDataGridState extends LocalizationSampleViewState {
         _point = 'Point';
         _name = 'Name';
         _surnames = 'Surnames';
-        _address = 'Address';
-        _phone = 'Phone';
         _birthdate = 'Birthdate';
         _createDate = 'Register date';
+        _lastDate = 'Last date';
         _ethnicity = 'Ethnicity';
         _sex = 'Sex';
-        _weight = 'Weight (kg)';
-        _height = 'Height (cm)';
-        _status = 'Status';
-        _pregnant = 'Pregnant';
-        _weeks = 'Weeks';
-        _childMinor = 'Children under 6 months';
+        _tutor = 'Mother, father or tutor';
         _observations = 'Observations';
-        _active = 'Active';
 
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
-        _total = 'Total Tutors';
-        _tutors = 'Tutors';
+        _total = 'Total Children';
+        _childs = 'Children';
         break;
       case 'es_ES':
         _point = 'Punto';
         _name = 'Nombre';
         _surnames = 'Apellidos';
-        _address = 'Vecindario';
-        _phone = 'Teléfono';
         _birthdate = 'Fecha de nacimiento';
         _createDate = 'Fecha de alta';
+        _lastDate = 'Última visita';
         _ethnicity = 'Etnia';
         _sex = 'Sexo';
-        _weight = 'Peso (kg)';
-        _height = 'Altura (cm)';
-        _status = 'Estado';
-        _pregnant = 'Embarazada';
-        _weeks = 'Semanas';
-        _childMinor = 'Hijos/as menores a 6 meses';
+        _tutor = 'Madre, padre o tutor';
         _observations = 'Observaciones';
-        _active = 'Activo';
 
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
-        _total = 'Tutores totales';
-        _tutors = 'Tutores';
+        _total = 'Niños/as totales';
+        _childs = 'Niños/as';
         break;
       case 'fr_FR':
         _point = 'Place';
         _name = 'Nom';
         _surnames = 'Noms de famille';
-        _address = 'Quartier';
-        _phone = 'Téléphone';
         _birthdate = 'Date de naissance';
         _createDate = 'Date d\'enregistrement';
+        _lastDate = 'Derniere visite';
         _ethnicity = 'Appartenance ethnique';
         _sex = 'Sexe';
-        _weight = 'Poids (kg)';
-        _height = 'Hauteur (cm)';
-        _status = 'État';
-        _pregnant = 'Enceinte';
-        _weeks = 'Semaines';
-        _childMinor = 'Enfants de moins de 6 mois';
+        _tutor = 'Mère, père ou tuteur';
         _observations = 'Observations';
-        _active = 'Actif';
 
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
-        _total = 'Total des tuteurs';
-        _tutors = 'Tuteurs';
+        _total = 'Total des enfants';
+        _childs = 'Enfants';
         break;
     }
 
     return SfDataGrid(
       key: _key,
-      source: tutorDataGridSource,
+      source: childDataGridSource,
       rowsPerPage: _rowsPerPage,
       tableSummaryRows: _getTableSummaryRows(),
       allowSwiping: currentUserRole == 'super-admin' ? true : false,
@@ -411,30 +383,6 @@ class _TutorDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
-            columnName: 'Vecindario',
-            width: columnWidths['Vecindario']!,
-            label: Container(
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _address,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-        ),
-        GridColumn(
-            columnName: 'Teléfono',
-            width: columnWidths['Teléfono']!,
-            label: Container(
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _phone,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-        ),
-        GridColumn(
             columnName: 'Fecha de nacimiento',
             width: columnWidths['Fecha de nacimiento']!,
             label: Container(
@@ -454,6 +402,18 @@ class _TutorDataGridState extends LocalizationSampleViewState {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 _createDate,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Última visita',
+            width: columnWidths['Última visita']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _lastDate,
                 overflow: TextOverflow.ellipsis,
               ),
             )
@@ -483,73 +443,13 @@ class _TutorDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
-            columnName: 'Peso (kg)',
-            width: columnWidths['Peso (kg)']!,
+            columnName: 'Madre, padre o tutor',
+            width: columnWidths['Madre, padre o tutor']!,
             label: Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _weight,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-        ),
-        GridColumn(
-            columnName: 'Altura (cm)',
-            width: columnWidths['Altura (cm)']!,
-            label: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _height,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-        ),
-        GridColumn(
-            columnName: 'Estado',
-            width: columnWidths['Estado']!,
-            label: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _status,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-        ),
-        GridColumn(
-            columnName: 'Embarazada',
-            width: columnWidths['Embarazada']!,
-            label: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _pregnant,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-        ),
-        GridColumn(
-            columnName: 'Semanas',
-            width: columnWidths['Semanas']!,
-            label: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _weeks,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-        ),
-        GridColumn(
-            columnName: 'Hijos/as menores a 6 meses',
-            width: columnWidths['Hijos/as menores a 6 meses']!,
-            label: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _childMinor,
+                _tutor,
                 overflow: TextOverflow.ellipsis,
               ),
             )
@@ -566,18 +466,6 @@ class _TutorDataGridState extends LocalizationSampleViewState {
               ),
             )
         ),
-        GridColumn(
-            columnName: 'Activo',
-            width: columnWidths['Activo']!,
-            label: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _active,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-        ),
       ],
     );
   }
@@ -585,30 +473,24 @@ class _TutorDataGridState extends LocalizationSampleViewState {
   @override
   void initState() {
     super.initState();
-    tutorDataGridSource = TutorDataGridSource(List.empty());
+    childDataGridSource = ChildDataGridSource(List.empty());
     selectedLocale = model.locale.toString();
 
     _point = 'Punto';
     _name = 'Nombre';
     _surnames = 'Apellidos';
-    _address = 'Vecindario';
-    _phone = 'Teléfono';
     _birthdate = 'Fecha de nacimiento';
     _createDate = 'Fecha de alta';
+    _lastDate = 'Última visita';
     _ethnicity = 'Etnia';
     _sex = 'Sexo';
-    _weight = 'Peso (kg)';
-    _height = 'Altura (cm)';
-    _status = 'Estado';
-    _pregnant = 'Embarazada';
-    _weeks = 'Semanas';
-    _childMinor = 'Hijos/as menores a 6 meses';
+    _tutor = 'Madre, padre o tutor';
     _observations = 'Observaciones';
-    _active = 'Activo';
+
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';
-    _total = 'Usuarios totales';
-    _tutors = 'Tutores';
+    _total = 'Niños/as totales';
+    _childs = 'Niños/as';
   }
 
 
@@ -617,7 +499,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
     return Consumer(
         builder: (context, ref, child) {
           ref.listen<AsyncValue>(
-            tutorsScreenControllerProvider,
+            childsScreenControllerProvider,
                 (_, state) => {
             },
           );
@@ -634,11 +516,11 @@ class _TutorDataGridState extends LocalizationSampleViewState {
 
             currentUserEmail = user.email??"";
           }
-          final tutorsAsyncValue = ref.watch(tutorsStreamProvider);
-          if (tutorsAsyncValue.value != null) {
-            _saveTutors(tutorsAsyncValue);
+          final childsAsyncValue = ref.watch(childsStreamProvider);
+          if (childsAsyncValue.value != null) {
+            _saveChilds(childsAsyncValue);
           }
-          return _buildView(tutorsAsyncValue);
+          return _buildView(childsAsyncValue);
         });
   }
 

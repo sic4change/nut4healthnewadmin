@@ -105,6 +105,17 @@
           },
           {
             "type": "child",
+            "title": "Niños/as",
+            "subItems": [
+              {
+                "type": "sample",
+                "title": "Niños/as",
+                "key": "child_datagrid"
+              }
+            ]
+          },
+          {
+            "type": "child",
             "title": "Síntomas",
             "subItems": [
               {

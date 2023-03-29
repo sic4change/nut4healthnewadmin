@@ -30,7 +30,7 @@ class TutorDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Vecindario', value: tutorWithUser.tutor.address),
           DataGridCell<String>(columnName: 'Teléfono', value: tutorWithUser.tutor.phone),
           DataGridCell<DateTime>(columnName: 'Fecha de nacimiento', value: tutorWithUser.tutor.birthdate),
-          DataGridCell<DateTime>(columnName: 'Fecha de alta', value: tutorWithUser.tutor.lastDate),
+          DataGridCell<DateTime>(columnName: 'Fecha de alta', value: tutorWithUser.tutor.createDate),
           DataGridCell<String>(columnName: 'Etnia', value: tutorWithUser.tutor.ethnicity),
           DataGridCell<String>(columnName: 'Sexo', value: tutorWithUser.tutor.sex),
           DataGridCell<double>(columnName: 'Peso (kg)', value: tutorWithUser.tutor.weight),
