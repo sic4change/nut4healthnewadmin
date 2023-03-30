@@ -533,7 +533,7 @@ class _TreatmentDataGridState extends LocalizationSampleViewState {
             name: nameController!.text,
             nameEn: nameEnController!.text,
             nameFr: nameFrController!.text,
-            price: double.tryParse(priceController!.text)!, // TODO: Check
+            price: double.tryParse(priceController!.text)!,
           )
       );
       Navigator.pop(buildContext);
@@ -551,7 +551,7 @@ class _TreatmentDataGridState extends LocalizationSampleViewState {
             name: nameController!.text,
             nameEn: nameEnController!.text,
             nameFr: nameFrController!.text,
-            price: double.tryParse(priceController!.text)!, // TODO: Check
+            price: double.tryParse(priceController!.text)!,
           )
       );
       Navigator.pop(buildContext);

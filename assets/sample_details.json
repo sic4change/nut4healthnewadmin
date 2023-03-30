@@ -127,6 +127,17 @@
           },
           {
             "type": "child",
+            "title": "Visitas",
+            "subItems": [
+              {
+                "type": "sample",
+                "title": "Visitas",
+                "key": "visit_datagrid"
+              }
+            ]
+          },
+          {
+            "type": "child",
             "title": "Síntomas",
             "subItems": [
               {
