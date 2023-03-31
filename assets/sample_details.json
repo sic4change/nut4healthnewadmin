@@ -91,6 +91,72 @@
                 "key": "point_datagrid"
               }
             ]
+          },
+          {
+            "type": "child",
+            "title": "Madres, padres o tutores",
+            "subItems": [
+              {
+                "type": "sample",
+                "title": "Madres, padres o tutores",
+                "key": "tutor_datagrid"
+              }
+            ]
+          },
+          {
+            "type": "child",
+            "title": "Niños/as",
+            "subItems": [
+              {
+                "type": "sample",
+                "title": "Niños/as",
+                "key": "child_datagrid"
+              }
+            ]
+          },
+          {
+            "type": "child",
+            "title": "Casos",
+            "subItems": [
+              {
+                "type": "sample",
+                "title": "Casos",
+                "key": "case_datagrid"
+              }
+            ]
+          },
+          {
+            "type": "child",
+            "title": "Visitas",
+            "subItems": [
+              {
+                "type": "sample",
+                "title": "Visitas",
+                "key": "visit_datagrid"
+              }
+            ]
+          },
+          {
+            "type": "child",
+            "title": "Síntomas",
+            "subItems": [
+              {
+                "type": "sample",
+                "title": "Síntomas",
+                "key": "symptom_datagrid"
+              }
+            ]
+          },
+          {
+            "type": "child",
+            "title": "Tratamientos",
+            "subItems": [
+              {
+                "type": "sample",
+                "title": "Tratamientos",
+                "key": "treatment_datagrid"
+              }
+            ]
           }
         ]
       }

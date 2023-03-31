@@ -63,7 +63,7 @@ class _TileLayerSampleState extends LocalizationSampleViewState {
       if (element.active) {
         _points.add(
             _PointDetails(
-                place: element.fullName,
+                place: element.name,//element.fullName,
                 latitude: element.latitude,
                 longitude: element.longitude,
                 cases: element.cases.toString(),

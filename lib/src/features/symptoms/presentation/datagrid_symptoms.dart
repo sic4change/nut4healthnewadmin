@@ -2,9 +2,13 @@
 /// import 'package:flutter/foundation.dart';
 
 
+import 'package:adminnut4health/src/features/symptoms/domain/symptom.dart';
+import 'package:adminnut4health/src/features/symptoms/presentation/symptom_datagridsource.dart';
+import 'package:adminnut4health/src/features/symptoms/presentation/symptoms_screen_controller.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'dart:typed_data';
@@ -19,38 +23,37 @@ import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 import '../../../sample/model/sample_view.dart';
 import '../../authentication/data/firebase_auth_repository.dart';
-import '../data/firestore_repository.dart';
 /// Local import
-import '../domain/country.dart';
-import 'countries_screen_controller.dart';
-import 'country_datagridsource.dart';
+import '../data/firestore_repository.dart';
 
 import 'package:file_picker/file_picker.dart';
 import 'dart:html' show FileReader;
 
 import '../../../common_widgets/export/save_file_mobile.dart'
-if (dart.library.html) '../../../common_widgets/export/save_file_web.dart' as helper;
+  if (dart.library.html) '../../../common_widgets/export/save_file_web.dart' as helper;
 
 import 'package:syncfusion_flutter_datagrid_export/export.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column, Row, Border;
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-/// Render country data grid
-class CountryDataGrid extends LocalizationSampleView {
+/// Render symptoms data grid
+class SymptomDataGrid extends LocalizationSampleView {
   /// Creates getting started data grid
-  const CountryDataGrid({Key? key}) : super(key: key);
+  const SymptomDataGrid({Key? key}) : super(key: key);
 
   @override
-  _CountryDataGridState createState() => _CountryDataGridState();
+  _SymptomDataGridState createState() => _SymptomDataGridState();
 }
 
-class _CountryDataGridState extends LocalizationSampleViewState {
+class _SymptomDataGridState extends LocalizationSampleViewState {
 
   final GlobalKey<SfDataGridState> _key = GlobalKey<SfDataGridState>();
 
   /// DataGridSource required for SfDataGrid to obtain the row data.
-  late CountryDataGridSource countryDataGridSource;
+  late SymptomDataGridSource symptomDataGridSource;
+
+  var currentUserRole = "";
 
   static const double dataPagerHeight = 60;
   int _rowsPerPage = 15;
@@ -58,34 +61,19 @@ class _CountryDataGridState extends LocalizationSampleViewState {
   /// Selected locale
   late String selectedLocale;
 
-  var currentUserRole = "";
-
   /// Translate names
-  late String _id, _name, _code, _active, _cases, _casesNormopeso, _casesModerada,
-      _casesSevera, _newCountry, _importCSV, _exportXLS, _exportPDF, _total,
-      _editCountry, _removeCountry, _save, _cancel, _countries, _removedCountry;
+  late String _name, _nameEn, _nameFr,_newSymptom, _importCSV, _exportXLS,
+      _exportPDF, _total, _editSymptom, _removeSymptom, _save, _cancel,
+      _symptoms, _removedSymptom;
 
   late Map<String, double> columnWidths = {
-    'Id': 150,
-    'Nombre': 150,
-    'Código': 150,
-    'Activo': 150,
-    'Casos': 150,
-    'Casos Normopeso': 150,
-    'Casos Moderada': 150,
-    'Casos Severa': 150,
+    'Síntoma (ES)': 150,
+    'Síntoma (EN)': 150,
+    'Síntoma (FR)': 150,
   };
 
   /// Editing controller for forms to perform update the values.
-  TextEditingController?
-      idController,
-      nameController,
-      codeController,
-      activeController,
-      casesController,
-      casesNormopesoController,
-      casesModeradaController,
-      casesSeveraController;
+  TextEditingController? nameController, nameEnController, nameFrController;
 
   /// Used to validate the forms
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -101,27 +89,27 @@ class _CountryDataGridState extends LocalizationSampleViewState {
     );
   }
 
-  _saveCountries(AsyncValue<List<Country>>? countries) {
-    if (countries == null) {
-      countryDataGridSource.setCountries(List.empty());
+  _saveSymptoms(AsyncValue<List<Symptom>>? symptoms) {
+    if (symptoms == null) {
+      symptomDataGridSource.setSymptoms(List.empty());
     } else {
-      countryDataGridSource.setCountries(countries.value);
+      symptomDataGridSource.setSymptoms(symptoms.value);
     }
   }
 
-  Widget _buildView(AsyncValue<List<Country>> countries) {
-    if (countries.value != null && countries.value!.isNotEmpty) {
-      countryDataGridSource.buildDataGridRows();
-      countryDataGridSource.updateDataSource();
+  Widget _buildView(AsyncValue<List<Symptom>> symptoms) {
+    if (symptoms.value != null && symptoms.value!.isNotEmpty) {
+      symptomDataGridSource.buildDataGridRows();
+      symptomDataGridSource.updateDataSource();
       selectedLocale = model.locale.toString();
       return _buildLayoutBuilder();
     } else {
       return const Center(
-          child: SizedBox(
-            width: 200,
-            height: 200,
-            child: CircularProgressIndicator(),
-          )
+         child: SizedBox(
+           width: 200,
+           height: 200,
+           child: CircularProgressIndicator(),
+         )
       );
     }
   }
@@ -130,69 +118,78 @@ class _CountryDataGridState extends LocalizationSampleViewState {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraint) {
           return Column(
-            children: <Widget>[
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  _buildHeaderButtons(),
-                  SizedBox(
-                    height: constraint.maxHeight - (dataPagerHeight * 2),
-                    width: constraint.maxWidth,
-                    child: SfDataGridTheme(
-                        data: SfDataGridThemeData(headerColor: Colors.blueAccent),
-                        child: Directionality(
-                            textDirection: TextDirection.ltr,
-                            child: _buildDataGrid()
-                        )
+              children: <Widget>[
+                Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        _buildHeaderButtons(),
+                        SizedBox(
+                          height: constraint.maxHeight - (dataPagerHeight * 2),
+                          width: constraint.maxWidth,
+                          child: SfDataGridTheme(
+                              data: SfDataGridThemeData(headerColor: Colors.blueAccent),
+                              child: Directionality(
+                                textDirection: TextDirection.ltr,
+                                  child: _buildDataGrid()
+                              )
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-              Container(
-                height: dataPagerHeight,
-                decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface.withOpacity(0.12),
-                    border: Border(
-                        top: BorderSide(
-                            width: .5,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSurface
-                                .withOpacity(0.12)))),
-                child: Align(child: _buildDataPager()),
-              )
-            ],
+                Container(
+                  height: dataPagerHeight,
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface.withOpacity(0.12),
+                      border: Border(
+                          top: BorderSide(
+                              width: .5,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withOpacity(0.12)))),
+                  child: Align(child: _buildDataPager()),
+                )
+              ],
           );
         });
   }
 
-  void _importCountries() async {
+  void _importSymptoms() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
-      final myUint8List = Uint8List.fromList(result.files.single.bytes!);
+      final myUint8List = new Uint8List.fromList(result.files.single.bytes!);
       final blob = Blob([myUint8List], 'text/plain');
       readBlob(blob).then((it) {
         List<List<dynamic>> rowsAsListOfValues =
-        const CsvToListConverter().convert(it);
+            const CsvToListConverter().convert(it);
         for (final row in rowsAsListOfValues) {
           if (row.isNotEmpty) {
-            ref.read(countriesScreenControllerProvider.notifier).addCountry(
-                Country(
-                  countryId: "",
-                  name: row[0].toString(),
-                  code: row[1].toString(),
-                  active: row[2].toString() == 'true' ? true : false,
-                  cases: int.parse(row[3].toString()),
-                  casesnormopeso: int.parse(row[4].toString()),
-                  casesmoderada: int.parse(row[5].toString()),
-                  casessevera: int.parse(row[6].toString())
-                )
-            );
+            final symptomId = row[0].toString();
+            try {
+              final symptomToUpdate = symptomDataGridSource
+                  .getSymptoms()!
+                  .firstWhere((element) => element.symptomId == symptomId);
+              ref.read(symptomsScreenControllerProvider.notifier).updateSymptom(Symptom(
+                  symptomId: symptomToUpdate.symptomId,
+                  name: row[1].toString(),
+                  nameEn: row[2].toString(),
+                  nameFr: row[3].toString(),));
+            } catch (e) {
+              if (e is Error && e.toString().contains('No element')) {
+                ref.read(symptomsScreenControllerProvider.notifier).addSymptom(Symptom(
+                    symptomId: "",
+                    name: row[1].toString(),
+                    nameEn: row[2].toString(),
+                    nameFr: row[3].toString(),));
+              } else {
+                print("another error import");
+              }
+            }
           }
         }
       });
     } else {
-      // User canceled the picker
+      // Symptom canceled the picker
     }
   }
 
@@ -203,7 +200,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
     return reader.result as String;
   }
 
-  void _createCountry() {
+  void _createSymptom() {
     _createTextFieldContext();
     showDialog<String>(
       context: context,
@@ -211,7 +208,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
         scrollable: true,
         titleTextStyle: TextStyle(
             color: model.textColor, fontWeight: FontWeight.bold, fontSize: 16),
-        title: Text(_newCountry),
+        title: Text(_newSymptom),
         actions: _buildActionCreateButtons(context),
         content: Scrollbar(
           child: SingleChildScrollView(
@@ -229,18 +226,20 @@ class _CountryDataGridState extends LocalizationSampleViewState {
   Widget _buildHeaderButtons() {
     Future<void> exportDataGridToExcel() async {
       final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
+          excludeColumns: ['Foto'],
           cellExport: (DataGridCellExcelExportDetails details) {
 
           });
       final List<int> bytes = workbook.saveAsStream();
       workbook.dispose();
-      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_countries.xlsx');
+      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_symptoms.xlsx');
     }
 
     Future<void> exportDataGridToPdf() async {
       final ByteData data = await rootBundle.load('images/nut_logo.jpg');
       final PdfDocument document = _key.currentState!.exportToPdfDocument(
           fitAllColumnsInOnePage: true,
+          excludeColumns: ['Foto'],
           cellExport: (DataGridCellPdfExportDetails details) {
 
           },
@@ -255,7 +254,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
                 Rect.fromLTWH(width - 148, 0, 148, 60));
 
             header.graphics.drawString(
-              _countries,
+              _symptoms,
               PdfStandardFont(PdfFontFamily.helvetica, 13,
                   style: PdfFontStyle.bold),
               bounds: const Rect.fromLTWH(0, 25, 200, 60),
@@ -264,7 +263,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
             details.pdfDocumentTemplate.top = header;
           });
       final List<int> bytes = document.saveSync();
-      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_countries.pdf');
+      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_symptoms.pdf');
       document.dispose();
     }
 
@@ -274,7 +273,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
           _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
           _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
           _buildImportButton(_importCSV),
-          _buildCreatingButton(_newCountry),
+          _buildCreatingButton(_newSymptom),
         ],
       );
     } else {
@@ -296,20 +295,20 @@ class _CountryDataGridState extends LocalizationSampleViewState {
             FontAwesomeIcons.fileCsv,
             color: Colors.blueAccent,
           ),
-          onPressed: _importCountries,)
+          onPressed: _importSymptoms,)
     );
   }
 
   Widget _buildCreatingButton(String buttonName) {
     return Container(
-        height: 60.0,
-        padding: const EdgeInsets.only(left: 10.0, top: 10.0, bottom: 10.0),
-        child: IconButton(
-          icon: const Icon(
-            FontAwesomeIcons.plus,
-            color: Colors.blueAccent,
-          ),
-          onPressed: _createCountry,)
+      height: 60.0,
+      padding: const EdgeInsets.only(left: 10.0, top: 10.0, bottom: 10.0),
+      child: IconButton(
+        icon: const Icon(
+          FontAwesomeIcons.userPlus,
+          color: Colors.blueAccent,
+        ),
+        onPressed: _createSymptom,)
     );
   }
 
@@ -342,21 +341,21 @@ class _CountryDataGridState extends LocalizationSampleViewState {
 
   Widget _buildDataPager() {
     var addMorePage = 0;
-    if ((countryDataGridSource.rows.length / _rowsPerPage).remainder(1) != 0) {
+    if ((symptomDataGridSource.rows.length / _rowsPerPage).remainder(1) != 0) {
       addMorePage  = 1;
     }
 
     return Directionality(
       textDirection: TextDirection.ltr,
       child: SfDataPager(
-        delegate: countryDataGridSource,
-        availableRowsPerPage: const <int>[15, 20, 25],
-        pageCount: (countryDataGridSource.rows.length / _rowsPerPage) + addMorePage,
-        onRowsPerPageChanged: (int? rowsPerPage) {
-          setState(() {
-            _rowsPerPage = rowsPerPage!;
-          });
-        },
+          delegate: symptomDataGridSource,
+          availableRowsPerPage: const <int>[15, 20, 25],
+          pageCount: (symptomDataGridSource.rows.length / _rowsPerPage) + addMorePage,
+          onRowsPerPageChanged: (int? rowsPerPage) {
+            setState(() {
+              _rowsPerPage = rowsPerPage!;
+            });
+          },
       ),
     );
   }
@@ -368,19 +367,18 @@ class _CountryDataGridState extends LocalizationSampleViewState {
         : const Color(0xFF3B3B3B);
     return <GridTableSummaryRow>[
       GridTableSummaryRow(
-          showSummaryInRow: true,
+        showSummaryInRow: true,
           color: color,
           title: '$_total: {Count}',
           columns: <GridSummaryColumn>[
             const GridSummaryColumn(
                 name: 'Count',
-                columnName: 'Nombre',
+                columnName: 'Username',
                 summaryType: GridSummaryType.count),
           ],
           position: GridTableSummaryRowPosition.bottom),
     ];
   }
-
 
   RegExp _getRegExp(TextInputType keyboardType, String columnName) {
     if (keyboardType == TextInputType.number) {
@@ -394,44 +392,6 @@ class _CountryDataGridState extends LocalizationSampleViewState {
     } else {
       return RegExp('.');
     }
-  }
-
-  Widget _buildRowComboSelection({required TextEditingController controller,
-    required String columnName, required List<String> dropDownMenuItems,
-    required String text}) {
-    String value = controller.text;
-    if (value.isEmpty) {
-      value = dropDownMenuItems[0];
-    }
-    return Row(
-      children: <Widget>[
-        Container(
-            width: 150,
-            padding: const EdgeInsets.symmetric(vertical: 15),
-            child: Text(text)),
-        SizedBox(
-          width: 150,
-          child: DropdownButtonFormField<String>(
-              value: value,
-              autofocus: true,
-              focusColor: Colors.transparent,
-              icon: const Icon(Icons.arrow_drop_down_sharp),
-              isExpanded: false,
-              onChanged: (newValue) {
-                setState(() {
-                  value = newValue!;
-                  controller.text = newValue!;
-                });
-              },
-              items: dropDownMenuItems.map((option) {
-                return DropdownMenuItem<String>(
-                  value: option,
-                  child: Text(option.length > 12 ? option.substring(0, 12) + '...' : option),
-                );
-              }).toList()),
-        ),
-      ],
-    );
   }
 
   /// Building the each field with label and TextFormField
@@ -478,113 +438,54 @@ class _CountryDataGridState extends LocalizationSampleViewState {
 
   /// Building the forms to edit the data
   Widget _buildAlertDialogContent() {
-    final activeOptions = ["✔", "✘"];
     return Column(
       children: <Widget>[
-        _buildRow(controller: nameController!, columnName: 'Nombre', text: _name),
-        _buildRow(controller: codeController!, columnName: 'Código', text: _code),
-        _buildRowComboSelection(controller: activeController!, columnName: 'Activo',
-            dropDownMenuItems: activeOptions, text: _active),
+        _buildRow(controller: nameController!, columnName: 'Síntoma (ES)', text: _name),
+        _buildRow(controller: nameEnController!, columnName: 'Síntoma (EN)', text: _nameEn),
+        _buildRow(controller: nameFrController!, columnName: 'Síntoma (FR)', text: _nameFr),
       ],
     );
   }
 
   /// Building the forms to create the data
   Widget _buildAlertDialogCreateContent() {
-    final activeOptions = ["✔", "✘"];
     return Column(
       children: <Widget>[
-        _buildRow(controller: nameController!, columnName: 'Nombre', text: _name),
-        _buildRow(controller: codeController!, columnName: 'Código', text: _code),
-        _buildRowComboSelection(controller: activeController!, columnName: 'Activo',
-            dropDownMenuItems: activeOptions, text: _active),
+        _buildRow(controller: nameController!, columnName: 'Síntoma (ES)', text: _name),
+        _buildRow(controller: nameEnController!, columnName: 'Síntoma (EN)', text: _nameEn),
+        _buildRow(controller: nameFrController!, columnName: 'Síntoma (FR)', text: _nameFr),
       ],
     );
   }
 
   void _createTextFieldContext() {
-    idController!.text = '';
     nameController!.text = '';
-    codeController!.text = '';
-    activeController!.text = '';
+    nameEnController!.text = '';
+    nameFrController!.text = '';
   }
 
   // Updating the data to the TextEditingController
   void _updateTextFieldContext(DataGridRow row) {
-
-    final String? id = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Id')
-        ?.value
-        .toString();
-
-    idController!.text = id ?? '';
-
     final String? name = row
         .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Nombre')
+        .firstWhere((DataGridCell element) => element.columnName == 'Síntoma (ES)')
         ?.value
         .toString();
-
     nameController!.text = name ?? '';
 
-    final String? code = row
+    final String? nameEn = row
         .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Código')
+        .firstWhere((DataGridCell element) => element.columnName == 'Síntoma (EN)')
         ?.value
         .toString();
+    nameEnController!.text = nameEn ?? '';
 
-    codeController!.text = code ?? '';
-
-
-    final String? active = row
+    final String? nameFr = row
         .getCells()
-        .firstWhere(
-          (DataGridCell element) => element.columnName == 'Activo',
-    )
+        .firstWhere((DataGridCell element) => element.columnName == 'Síntoma (FR)')
         ?.value
         .toString();
-
-    activeController!.text = active != "false" ? '✔' : '✘';
-
-    final String? cases = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Casos')
-        ?.value
-        .toString();
-
-    casesController!.text = cases ?? '';
-
-    final String? casesNormopeso = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Casos Normopeso')
-        ?.value
-        .toString();
-
-    casesNormopesoController!.text = casesNormopeso ?? '';
-
-    final String? casesModerada = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Casos Moderada')
-        ?.value
-        .toString();
-
-    casesModeradaController!.text = casesModerada ?? '';
-
-    final String? casesSevera = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Casos Severa')
-        ?.value
-        .toString();
-
-    casesSeveraController!.text = casesSevera ?? '';
+    nameFrController!.text = nameFr ?? '';
 
   }
 
@@ -597,7 +498,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
         scrollable: true,
         titleTextStyle: TextStyle(
             color: model.textColor, fontWeight: FontWeight.bold, fontSize: 16),
-        title: Text(_editCountry),
+        title: Text(_editSymptom),
         actions: _buildActionButtons(row, context),
         content: Scrollbar(
           child: SingleChildScrollView(
@@ -614,16 +515,12 @@ class _CountryDataGridState extends LocalizationSampleViewState {
 
   void _processCellCreate(BuildContext buildContext) async {
     if (_formKey.currentState!.validate()) {
-      ref.read(countriesScreenControllerProvider.notifier).addCountry(
-          Country(
-              countryId: "",
-              name: nameController!.text,
-              code: codeController!.text,
-              active: activeController!.text == '✔' ? true : false,
-              cases: 0,
-              casesnormopeso: 0,
-              casesmoderada: 0,
-              casessevera: 0
+      ref.read(symptomsScreenControllerProvider.notifier).addSymptom(
+          Symptom(
+            symptomId: "",
+            name: nameController!.text,
+            nameEn: nameEnController!.text,
+            nameFr: nameFrController!.text,
           )
       );
       Navigator.pop(buildContext);
@@ -633,17 +530,14 @@ class _CountryDataGridState extends LocalizationSampleViewState {
   /// Updating the DataGridRows after changing the value and notify the DataGrid
   /// to refresh the view
   void _processCellUpdate(DataGridRow row, BuildContext buildContext) {
-    final String? id = countryDataGridSource.getCountries()?.firstWhere((element) => element.countryId == row.getCells()[0].value).countryId;
+    final String? id = symptomDataGridSource.getSymptoms()?.firstWhere((element) => element.symptomId == row.getCells()[0].value).symptomId;
     if (_formKey.currentState!.validate()) {
-      ref.read(countriesScreenControllerProvider.notifier).updateCountry(
-          Country(countryId: id!,
-              name: nameController!.text,
-              code: codeController!.text,
-              active: activeController!.text == '✔' ? true : false,
-              cases: int.parse(casesController!.text),
-              casesnormopeso: int.parse(casesNormopesoController!.text),
-              casesmoderada: int.parse(casesModeradaController!.text),
-              casessevera: int.parse(casesSeveraController!.text)
+      ref.read(symptomsScreenControllerProvider.notifier).updateSymptom(
+          Symptom(
+            symptomId: id!,
+            name: nameController!.text,
+            nameEn: nameEnController!.text,
+            nameFr: nameFrController!.text,
           )
       );
       Navigator.pop(buildContext);
@@ -691,9 +585,9 @@ class _CountryDataGridState extends LocalizationSampleViewState {
 
   /// Deleting the DataGridRow
   void _handleDeleteWidgetTap(DataGridRow row) {
-    final country = countryDataGridSource.getCountries()?.firstWhere((element) => element.countryId == row.getCells()[0].value);
-    if (country != null) {
-      ref.read(countriesScreenControllerProvider.notifier).deleteCountry(country);
+    final symptom = symptomDataGridSource.getSymptoms()?.firstWhere((element) => element.symptomId == row.getCells()[0].value);
+    if (symptom != null) {
+      ref.read(symptomsScreenControllerProvider.notifier).deleteSymptom(symptom);
       _showDialogDeleteConfirmation();
     }
   }
@@ -711,7 +605,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
             ),
           ),
         ],
-        content: Text(_removedCountry),
+        content: Text(_removedSymptom),
       ),
     );
   }
@@ -730,7 +624,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
             Icon(Icons.edit, color: Colors.white, size: 16),
             SizedBox(width: 8.0),
             Text(
-              _editCountry,
+              _editSymptom,
               style: TextStyle(color: Colors.white, fontSize: 12),
             )
           ],
@@ -753,7 +647,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
             const Icon(Icons.delete, color: Colors.white, size: 16),
             const SizedBox(width: 8.0),
             Text(
-              _removeCountry,
+              _removeSymptom,
               style: TextStyle(color: Colors.white, fontSize: 12),
             ),
           ],
@@ -766,71 +660,57 @@ class _CountryDataGridState extends LocalizationSampleViewState {
     final selectedLocale = model.locale.toString();
     switch (selectedLocale) {
       case 'en_US':
-        _id = 'Id';
-        _name = 'Name';
-        _code = 'Code';
-        _active = 'Active';
-        _cases = 'Cases';
-        _casesNormopeso = 'Normal weight cases';
-        _casesModerada = 'Moderate cases';
-        _casesSevera = 'Severe cases';
+        _name = 'Symptom (SP)';
+        _nameEn = 'Symptom (EN)';
+        _nameFr = 'Symptom (FR)';
+        _newSymptom = 'Create Symptom';
         _importCSV = 'Import CSV';
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
-        _total = 'Total Countries';
-        _editCountry = 'Edit';
-        _removeCountry = 'Remove';
+        _total = 'Total Symptoms';
+        _editSymptom = 'Edit';
+        _removeSymptom = 'Remove';
         _cancel = 'Cancel';
         _save = 'Save';
-        _countries = 'Countries';
-        _removedCountry = 'Country deleted successfully.';
+        _symptoms = 'Symptoms';
+        _removedSymptom = 'Symptom deleted successfully.';
         break;
       case 'es_ES':
-        _id = 'Id';
-        _name = 'Nombre';
-        _code = 'Código';
-        _active = 'Activo';
-        _cases = 'Casos';
-        _casesNormopeso = 'Casos Normopeso';
-        _casesModerada = 'Casos Moderada';
-        _casesSevera = 'Casos Severa';
-        _newCountry = 'Crear País';
+        _name = 'Síntoma (ES)';
+        _nameEn = 'Síntoma (EN)';
+        _nameFr = 'Síntoma (FR)';
+        _newSymptom = 'Crear Síntoma';
         _importCSV = 'Importar CSV';
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
-        _total = 'Países totales';
-        _editCountry = 'Editar';
-        _removeCountry = 'Eliminar';
+        _total = 'Síntomas totales';
+        _editSymptom = 'Editar';
+        _removeSymptom = 'Eliminar';
         _cancel = 'Cancelar';
         _save = 'Guardar';
-        _countries = 'Países';
-        _removedCountry = 'País eliminado correctamente';
+        _symptoms = 'Síntomas';
+        _removedSymptom = 'Síntoma eliminado correctamente';
         break;
       case 'fr_FR':
-        _id = 'Id';
-        _name = 'Nom';
-        _code = 'Code';
-        _active = 'Actif';
-        _cases = 'Cas';
-        _casesNormopeso = 'Cas poids normal';
-        _casesModerada = 'Cas modérés';
-        _casesSevera = 'Cas sévères';
-        _newCountry = 'Créer un pays';
+        _name = 'Symptôme (ES)';
+        _nameEn = 'Symptôme (EN)';
+        _nameFr = 'Symptôme (FR)';
+        _newSymptom = 'Créer symptôme';
         _importCSV = 'Importer CSV';
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
-        _total = 'Total des pays';
-        _editCountry = 'Modifier';
-        _removeCountry = 'Supprimer';
+        _total = 'Total des symptômes';
+        _editSymptom = 'Modifier';
+        _removeSymptom = 'Supprimer';
         _cancel = 'Annuler';
         _save = 'Enregistrer';
-        _countries = 'Les pays';
-        _removedCountry = 'Pays supprimé avec succès.';
+        _symptoms = 'Symptômes';
+        _removedSymptom = 'Symptôme supprimé avec succès.';
         break;
     }
     return SfDataGrid(
       key: _key,
-      source: countryDataGridSource,
+      source: symptomDataGridSource,
       rowsPerPage: _rowsPerPage,
       tableSummaryRows: _getTableSummaryRows(),
       allowSwiping: currentUserRole == 'super-admin' ? true : false,
@@ -849,96 +729,40 @@ class _CountryDataGridState extends LocalizationSampleViewState {
       allowMultiColumnSorting: true,
       columns: <GridColumn>[
         GridColumn(
-            columnName: 'Id',
-            visible: false,
-            width: columnWidths['Id']!,
-            label: Container(
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _id,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-        ),
-        GridColumn(
-            columnName: 'Nombre',
-            width: columnWidths['Nombre']!,
-            label: Container(
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _name,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-        ),
-        GridColumn(
-          columnName: 'Código',
-          width: columnWidths['Código']!,
+          columnName: 'Síntoma (ES)',
+            width: columnWidths['Síntoma (ES)']!,
           label: Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              _code,
+              _name,
               overflow: TextOverflow.ellipsis,
             ),
-          ),
+          )
         ),
         GridColumn(
-          columnName: 'Activo',
-          width: columnWidths['Activo']!,
-          label: Container(
+            columnName: 'Síntoma (EN)',
+            width: columnWidths['Síntoma (EN)']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
-              alignment: Alignment.center,
               child: Text(
-                _active,
+                _nameEn,
                 overflow: TextOverflow.ellipsis,
-              )),
+              ),
+            )
         ),
         GridColumn(
-          columnName: 'Casos',
-          width: columnWidths['Casos']!,
-          label: Container(
+            columnName: 'Síntoma (FR)',
+            width: columnWidths['Síntoma (FR)']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
-              alignment: Alignment.center,
               child: Text(
-                _cases,
+                _nameFr,
                 overflow: TextOverflow.ellipsis,
-              )),
-        ),
-        GridColumn(
-          columnName: 'Casos Normopeso',
-          width: columnWidths['Casos Normopeso']!,
-          label: Container(
-              padding: const EdgeInsets.all(8.0),
-              alignment: Alignment.center,
-              child: Text(
-                _casesNormopeso,
-                overflow: TextOverflow.ellipsis,
-              )),
-        ),
-        GridColumn(
-          columnName: 'Casos Moderada',
-          width: columnWidths['Casos Moderada']!,
-          label: Container(
-              padding: const EdgeInsets.all(8.0),
-              alignment: Alignment.center,
-              child: Text(
-                _casesModerada,
-                overflow: TextOverflow.ellipsis,
-              )),
-        ),
-        GridColumn(
-          columnName: 'Casos Severa',
-          width: columnWidths['Casos Severa']!,
-          label: Container(
-              padding: const EdgeInsets.all(8.0),
-              alignment: Alignment.center,
-              child: Text(
-                _casesSevera,
-                overflow: TextOverflow.ellipsis,
-              )),
+              ),
+            )
         ),
       ],
     );
@@ -947,36 +771,26 @@ class _CountryDataGridState extends LocalizationSampleViewState {
   @override
   void initState() {
     super.initState();
-    countryDataGridSource = CountryDataGridSource(List.empty());
-    idController = TextEditingController();
+    symptomDataGridSource = SymptomDataGridSource(List.empty());
     nameController = TextEditingController();
-    codeController = TextEditingController();
-    activeController = TextEditingController();
-    casesController = TextEditingController();
-    casesNormopesoController = TextEditingController();
-    casesModeradaController = TextEditingController();
-    casesSeveraController = TextEditingController();
+    nameEnController = TextEditingController();
+    nameFrController = TextEditingController();
     selectedLocale = model.locale.toString();
 
-    _id = 'Id';
-    _name = 'Nombre';
-    _code = 'Código';
-    _active = 'Activo';
-    _cases = 'Casos';
-    _casesNormopeso = 'Casos Normopeso';
-    _casesModerada = 'Casos Moderada';
-    _casesSevera = 'Casos Severa';
-    _newCountry = 'Crear País';
+    _name = 'Síntoma (ES)';
+    _nameEn = 'Síntoma (EN)';
+    _nameFr = 'Síntoma (FR)';
+    _newSymptom = 'Crear Síntoma';
     _importCSV = 'Importar CSV';
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';
-    _total = 'Usuarios totales';
-    _editCountry = 'Editar';
-    _removeCountry = 'Eliminar';
+    _total = 'Síntomas totales';
+    _editSymptom = 'Editar';
+    _removeSymptom = 'Eliminar';
     _cancel = 'Cancelar';
     _save = 'Guardar';
-    _countries = 'Países';
-    _removedCountry = '';
+    _symptoms = 'Síntomas';
+    _removedSymptom = '';
   }
 
 
@@ -985,7 +799,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
     return Consumer(
         builder: (context, ref, child) {
           ref.listen<AsyncValue>(
-            countriesScreenControllerProvider,
+            symptomsScreenControllerProvider,
                 (_, state) => {
             },
           );
@@ -1004,11 +818,11 @@ class _CountryDataGridState extends LocalizationSampleViewState {
               }
             });
           }
-          final countriesAsyncValue = ref.watch(countriesStreamProvider);
-          if (countriesAsyncValue.value != null) {
-            _saveCountries(countriesAsyncValue);
+          final symptomsAsyncValue = ref.watch(symptomsStreamProvider);
+          if (symptomsAsyncValue.value != null) {
+            _saveSymptoms(symptomsAsyncValue);
           }
-          return _buildView(countriesAsyncValue);
+          return _buildView(symptomsAsyncValue);
         });
   }
 

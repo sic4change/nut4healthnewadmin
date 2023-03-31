@@ -1,6 +1,6 @@
 
 /// Packages import
-import 'package:adminnut4health/src/features/reports/domain/report_with_user.dart';
+import 'package:adminnut4health/src/features/reports/domain/reportWithUser.dart';
 import 'package:flutter/material.dart';
 
 /// DataGrid import

@@ -1,9 +1,7 @@
 /// Package imports
 /// import 'package:flutter/foundation.dart';
 
-
-import 'package:adminnut4health/src/features/reports/domain/reportWithUser.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:adminnut4health/src/features/tutors/domain/tutorWithPoint.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,10 +15,9 @@ import 'package:syncfusion_flutter_pdf/pdf.dart';
 import '../../../sample/model/sample_view.dart';
 import '../../authentication/data/firebase_auth_repository.dart';
 import '../data/firestore_repository.dart';
-/// Local import
-import '../domain/report.dart';
-import 'reports_screen_controller.dart';
-import 'report_datagridsource.dart';
+
+import 'tutors_screen_controller.dart';
+import 'tutor_datagridsource.dart';
 
 import '../../../common_widgets/export/save_file_mobile.dart'
 if (dart.library.html) '../../../common_widgets/export/save_file_web.dart' as helper;
@@ -30,21 +27,21 @@ import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column, Row, Border;
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-/// Render report data grid
-class ReportDataGrid extends LocalizationSampleView {
+/// Render tutor data grid
+class TutorDataGrid extends LocalizationSampleView {
   /// Creates getting started data grid
-  const ReportDataGrid({Key? key}) : super(key: key);
+  const TutorDataGrid({Key? key}) : super(key: key);
 
   @override
-  _ReportDataGridState createState() => _ReportDataGridState();
+  _TutorDataGridState createState() => _TutorDataGridState();
 }
 
-class _ReportDataGridState extends LocalizationSampleViewState {
+class _TutorDataGridState extends LocalizationSampleViewState {
 
   final GlobalKey<SfDataGridState> _key = GlobalKey<SfDataGridState>();
 
   /// DataGridSource required for SfDataGrid to obtain the row data.
-  late ReportDataGridSource reportDataGridSource;
+  late TutorDataGridSource tutorDataGridSource;
 
   static const double dataPagerHeight = 60;
   int _rowsPerPage = 15;
@@ -53,29 +50,32 @@ class _ReportDataGridState extends LocalizationSampleViewState {
   late String selectedLocale;
 
   late String currentUserEmail;
-  String currentUserRole = "";
+  var currentUserRole = "";
 
   /// Translate names
-  late String _date, _name, _surnames, _email, _text, _response, _updatedby,
-      _lastupdate,  _exportXLS, _exportPDF, _total, _editReport, _removeReport,
-      _save, _cancel, _reports, _removedReport;
+  late String _point, _name, _surnames, _address, _phone, _birthdate, _createDate,
+      _ethnicity, _sex, _weight, _height, _status, _pregnant, _weeks,
+      _childMinor, _observations, _active, _exportXLS, _exportPDF, _total, _tutors;
 
   late Map<String, double> columnWidths = {
-    'Fecha': 150,
+    'Punto': 150,
     'Nombre': 150,
     'Apellidos': 150,
-    'Email': 150,
-    'Mensaje': 300,
-    'Respuesta': 150,
-    'Respondido por': 150,
-    'Fecha respuesta': 150,
+    'Vecindario': 150,
+    'Teléfono': 150,
+    'Fecha de nacimiento': 150,
+    'Fecha de alta': 150,
+    'Etnia': 150,
+    'Sexo': 150,
+    'Peso (kg)': 150,
+    'Altura (cm)': 150,
+    'Estado': 150,
+    'Embarazada': 150,
+    'Semanas': 150,
+    'Hijos/as menores a 6 meses': 150,
+    'Observaciones': 150,
+    'Activo': 150,
   };
-
-  /// Editing controller for forms to perform update the values.
-  TextEditingController? responseController;
-
-  /// Used to validate the forms
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Widget getLocationWidget(String location) {
     return Row(
@@ -88,18 +88,18 @@ class _ReportDataGridState extends LocalizationSampleViewState {
     );
   }
 
-  _saveReports(AsyncValue<List<ReportWithUser>>? reports) {
-    if (reports == null) {
-      reportDataGridSource.setReports(List.empty());
+  _saveTutors(AsyncValue<List<TutorWithPoint>>? tutors) {
+    if (tutors == null) {
+      tutorDataGridSource.setTutors(List.empty());
     } else {
-      reportDataGridSource.setReports(reports.value);
+      tutorDataGridSource.setTutors(tutors.value);
     }
   }
 
-  Widget _buildView(AsyncValue<List<ReportWithUser>> reports) {
-    if (reports.value != null && reports.value!.isNotEmpty) {
-      reportDataGridSource.buildDataGridRows();
-      reportDataGridSource.updateDataSource();
+  Widget _buildView(AsyncValue<List<TutorWithPoint>> tutors) {
+    if (tutors.value != null && tutors.value!.isNotEmpty) {
+      tutorDataGridSource.buildDataGridRows();
+      tutorDataGridSource.updateDataSource();
       selectedLocale = model.locale.toString();
       return _buildLayoutBuilder();
     } else {
@@ -161,7 +161,7 @@ class _ReportDataGridState extends LocalizationSampleViewState {
           });
       final List<int> bytes = workbook.saveAsStream();
       workbook.dispose();
-      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_reports.xlsx');
+      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_tutors.xlsx');
     }
 
     Future<void> exportDataGridToPdf() async {
@@ -182,7 +182,7 @@ class _ReportDataGridState extends LocalizationSampleViewState {
                 Rect.fromLTWH(width - 148, 0, 148, 60));
 
             header.graphics.drawString(
-              _reports,
+              _tutors,
               PdfStandardFont(PdfFontFamily.helvetica, 13,
                   style: PdfFontStyle.bold),
               bounds: const Rect.fromLTWH(0, 25, 200, 60),
@@ -191,7 +191,7 @@ class _ReportDataGridState extends LocalizationSampleViewState {
             details.pdfDocumentTemplate.top = header;
           });
       final List<int> bytes = document.saveSync();
-      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_reports.pdf');
+      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_tutors.pdf');
       document.dispose();
     }
 
@@ -241,16 +241,16 @@ class _ReportDataGridState extends LocalizationSampleViewState {
 
   Widget _buildDataPager() {
     var addMorePage = 0;
-    if ((reportDataGridSource.rows.length / _rowsPerPage).remainder(1) != 0) {
+    if ((tutorDataGridSource.rows.length / _rowsPerPage).remainder(1) != 0) {
       addMorePage  = 1;
     }
 
     return Directionality(
       textDirection: TextDirection.ltr,
       child: SfDataPager(
-        delegate: reportDataGridSource,
+        delegate: tutorDataGridSource,
         availableRowsPerPage: const <int>[15, 20, 25],
-        pageCount: (reportDataGridSource.rows.length / _rowsPerPage) + addMorePage,
+        pageCount: (tutorDataGridSource.rows.length / _rowsPerPage) + addMorePage,
         onRowsPerPageChanged: (int? rowsPerPage) {
           setState(() {
             _rowsPerPage = rowsPerPage!;
@@ -280,293 +280,88 @@ class _ReportDataGridState extends LocalizationSampleViewState {
     ];
   }
 
-
-  RegExp _getRegExp(TextInputType keyboardType, String columnName) {
-    if (keyboardType == TextInputType.number) {
-      return RegExp('[0-9]');
-    } else if (keyboardType == TextInputType.text) {
-      return RegExp('.');
-    } else if (keyboardType == TextInputType.phone) {
-      return RegExp(r"^[\d+]+$");
-    } else if (keyboardType == TextInputType.emailAddress) {
-      return RegExp(r"[a-zA-Z0-9@.]+");
-    } else {
-      return RegExp('.');
-    }
-  }
-
-  /// Building the each field with label and TextFormField
-  Widget _buildRow(
-      {required TextEditingController controller, required String columnName, required String text}) {
-    TextInputType keyboardType = TextInputType.text;
-    if (<String>['Puntos'].contains(columnName)) {
-      keyboardType =  TextInputType.number;
-    } else if (<String>['Email'].contains(columnName)) {
-      keyboardType =  TextInputType.emailAddress;
-    } else if (<String>['Teléfono'].contains(columnName)) {
-      keyboardType =  TextInputType.phone;
-    } else {
-      keyboardType =  TextInputType.text;
-    }
-    // Holds the regular expression pattern based on the column type.
-    final RegExp regExp = _getRegExp(keyboardType, columnName);
-
-    return Row(
-      children: <Widget>[
-        Container(
-            width: 150,
-            padding: const EdgeInsets.symmetric(vertical: 15),
-            child: Text(text)),
-        SizedBox(
-          width: 150,
-          child: TextFormField(
-            validator: (String? value) {
-              if (value!.isEmpty) {
-                return 'El campo no puede estar vacío';
-              }
-              return null;
-            },
-            controller: controller,
-            keyboardType: keyboardType,
-            inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.allow(regExp)
-            ],
-          ),
-        )
-      ],
-    );
-  }
-
-  /// Building the forms to edit the data
-  Widget _buildAlertDialogContent() {
-    return Column(
-      children: <Widget>[
-        _buildRow(controller: responseController!, columnName: 'Respuesta', text: _response),
-      ],
-    );
-  }
-
-  // Updating the data to the TextEditingController
-  void _updateTextFieldContext(DataGridRow row) {
-    final String? response = row
-        .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'Respuesta')
-        ?.value
-        .toString();
-
-    responseController!.text = response ?? '';
-  }
-
-  /// Editing the DataGridRow
-  void _handleEditWidgetTap(DataGridRow row) {
-    _updateTextFieldContext(row);
-    showDialog<String>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        scrollable: true,
-        titleTextStyle: TextStyle(
-            color: model.textColor, fontWeight: FontWeight.bold, fontSize: 16),
-        title: Text(_editReport),
-        actions: _buildActionButtons(row, context),
-        content: Scrollbar(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Form(
-              key: _formKey,
-              child: _buildAlertDialogContent(),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// Updating the DataGridRows after changing the value and notify the DataGrid
-  /// to refresh the view
-  void _processCellUpdate(DataGridRow row, BuildContext buildContext) {
-    final Report? report = reportDataGridSource.getReports()?.firstWhere((element) => element.report.reportId == row.getCells()[0].value).report;
-    if (_formKey.currentState!.validate()) {
-      ref.read(reportsScreenControllerProvider.notifier).updateReport(
-          Report(
-            reportId: report!.reportId,
-            date: report.date,
-            user: report.user,
-            email: report.email,
-            text: report.text,
-            sent: report.sent,
-            response: responseController!.text,
-            updatedby: currentUserEmail,
-            lastupdate: DateTime.now(),
-          )
-      );
-      Navigator.pop(buildContext);
-    }
-  }
-
-  /// Building the option button on the bottom of the alert popup
-  List<Widget> _buildActionButtons(DataGridRow row, BuildContext buildContext) {
-    return <Widget>[
-      TextButton(
-        onPressed: () => _processCellUpdate(row, buildContext),
-        child: Text(
-          _save,
-          style: TextStyle(color: model.backgroundColor),
-        ),
-      ),
-      TextButton(
-        onPressed: () => Navigator.pop(buildContext),
-        child: Text(
-          _cancel,
-          style: TextStyle(color: model.backgroundColor),
-        ),
-      ),
-    ];
-  }
-
-  /// Deleting the DataGridRow
-  void _handleDeleteWidgetTap(DataGridRow row) {
-    final report = reportDataGridSource.getReports()?.firstWhere((element) => element.report.reportId == row.getCells()[0].value);
-    if (report != null) {
-      ref.read(reportsScreenControllerProvider.notifier).deleteReport(report.report);
-      _showDialogDeleteConfirmation();
-    }
-  }
-
-  _showDialogDeleteConfirmation() {
-    showDialog<String>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'OK',
-              style: TextStyle(color: model.backgroundColor),
-            ),
-          ),
-        ],
-        content: Text(_removedReport),
-      ),
-    );
-  }
-
-  /// Callback for left swiping
-  Widget _buildStartSwipeWidget(
-      BuildContext context, DataGridRow row, int rowIndex) {
-    return GestureDetector(
-      onTap: () => _handleEditWidgetTap(row),
-      child: Container(
-        color: Colors.blueAccent,
-        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Icon(Icons.edit, color: Colors.white, size: 16),
-            SizedBox(width: 8.0),
-            Text(
-              _editReport,
-              style: TextStyle(color: Colors.white, fontSize: 12),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  /// Callback for right swiping
-  Widget _buildEndSwipeWidget(
-      BuildContext context, DataGridRow row, int rowIndex) {
-    return GestureDetector(
-      onTap: () => _handleDeleteWidgetTap(row),
-      child: Container(
-        color: Colors.redAccent,
-        padding: EdgeInsets.only(left: 8.0, right: 8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Icon(Icons.delete, color: Colors.white, size: 16),
-            const SizedBox(width: 8.0),
-            Text(
-              _removeReport,
-              style: TextStyle(color: Colors.white, fontSize: 12),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   SfDataGrid _buildDataGrid() {
     final selectedLocale = model.locale.toString();
     switch (selectedLocale) {
       case 'en_US':
-        _date = 'Date';
+        _point = 'Point';
         _name = 'Name';
         _surnames = 'Surnames';
-        _email = 'Email';
-        _text = 'Text';
-        _response = 'Response';
-        _updatedby = 'Answered by';
-        _lastupdate = 'Answer date';
+        _address = 'Address';
+        _phone = 'Phone';
+        _birthdate = 'Birthdate';
+        _createDate = 'Register date';
+        _ethnicity = 'Ethnicity';
+        _sex = 'Sex';
+        _weight = 'Weight (kg)';
+        _height = 'Height (cm)';
+        _status = 'Status';
+        _pregnant = 'Pregnant';
+        _weeks = 'Weeks';
+        _childMinor = 'Children under 6 months';
+        _observations = 'Observations';
+        _active = 'Active';
 
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
-        _total = 'Total Reports';
-        _editReport = 'Edit';
-        _removeReport = 'Remove';
-        _cancel = 'Cancel';
-        _save = 'Save';
-        _reports = 'Reports';
-        _removedReport = 'Report deleted successfully.';
+        _total = 'Total Tutors';
+        _tutors = 'Tutors';
         break;
       case 'es_ES':
-        _date = 'Fecha';
+        _point = 'Punto';
         _name = 'Nombre';
         _surnames = 'Apellidos';
-        _email = 'Email';
-        _text = 'Mensaje';
-        _response = 'Respuesta';
-        _updatedby = 'Respondido por';
-        _lastupdate = 'Fecha respuesta';
+        _address = 'Vecindario';
+        _phone = 'Teléfono';
+        _birthdate = 'Fecha de nacimiento';
+        _createDate = 'Fecha de alta';
+        _ethnicity = 'Etnia';
+        _sex = 'Sexo';
+        _weight = 'Peso (kg)';
+        _height = 'Altura (cm)';
+        _status = 'Estado';
+        _pregnant = 'Embarazada';
+        _weeks = 'Semanas';
+        _childMinor = 'Hijos/as menores a 6 meses';
+        _observations = 'Observaciones';
+        _active = 'Activo';
 
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
-        _total = 'Reportes totales';
-        _editReport = 'Editar';
-        _removeReport = 'Eliminar';
-        _cancel = 'Cancelar';
-        _save = 'Guardar';
-        _reports = 'Reportes';
-        _removedReport = 'Reporte eliminado correctamente.';
+        _total = 'Tutores totales';
+        _tutors = 'Tutores';
         break;
       case 'fr_FR':
-        _date = 'Date';
+        _point = 'Place';
         _name = 'Nom';
         _surnames = 'Noms de famille';
-        _email = 'Email';
-        _text = 'Message';
-        _response = 'Répondu par';
-        _lastupdate = 'Date de réponse';
+        _address = 'Quartier';
+        _phone = 'Téléphone';
+        _birthdate = 'Date de naissance';
+        _createDate = 'Date d\'enregistrement';
+        _ethnicity = 'Appartenance ethnique';
+        _sex = 'Sexe';
+        _weight = 'Poids (kg)';
+        _height = 'Hauteur (cm)';
+        _status = 'État';
+        _pregnant = 'Enceinte';
+        _weeks = 'Semaines';
+        _childMinor = 'Enfants de moins de 6 mois';
+        _observations = 'Observations';
+        _active = 'Actif';
 
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
-        _total = 'Total des rapports';
-        _editReport = 'Modifier';
-        _removeReport = 'Supprimer';
-        _cancel = 'Annuler';
-        _save = 'Enregistrer';
-        _reports = 'Rapports';
-        _removedReport = 'Rapport supprimé avec succès.';
+        _total = 'Total des tuteurs';
+        _tutors = 'Tuteurs';
         break;
     }
 
     return SfDataGrid(
       key: _key,
-      source: reportDataGridSource,
+      source: tutorDataGridSource,
       rowsPerPage: _rowsPerPage,
       tableSummaryRows: _getTableSummaryRows(),
-      allowSwiping: currentUserRole == 'super-admin' ? true : false,
       allowColumnsResizing: true,
       onColumnResizeUpdate: (ColumnResizeUpdateDetails details) {
         setState(() {
@@ -574,21 +369,18 @@ class _ReportDataGridState extends LocalizationSampleViewState {
         });
         return true;
       },
-      swipeMaxOffset: 100.0,
-      endSwipeActionsBuilder: _buildEndSwipeWidget,
-      startSwipeActionsBuilder: _buildStartSwipeWidget,
       allowFiltering: true,
       allowSorting: true,
       allowMultiColumnSorting: true,
       columns: <GridColumn>[
         GridColumn(
-            columnName: 'Fecha',
-            width: columnWidths['Fecha']!,
+            columnName: 'Punto',
+            width: columnWidths['Punto']!,
             label: Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _date,
+                _point,
                 overflow: TextOverflow.ellipsis,
               ),
             )
@@ -618,61 +410,169 @@ class _ReportDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
-            columnName: 'Email',
-            width: columnWidths['Email']!,
+            columnName: 'Vecindario',
+            width: columnWidths['Vecindario']!,
             label: Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _email,
+                _address,
                 overflow: TextOverflow.ellipsis,
               ),
             )
         ),
         GridColumn(
-            columnName: 'Mensaje',
-            width: columnWidths['Mensaje']!,
+            columnName: 'Teléfono',
+            width: columnWidths['Teléfono']!,
             label: Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _text,
+                _phone,
                 overflow: TextOverflow.ellipsis,
               ),
             )
         ),
         GridColumn(
-            columnName: 'Respuesta',
-            width: columnWidths['Respuesta']!,
+            columnName: 'Fecha de nacimiento',
+            width: columnWidths['Fecha de nacimiento']!,
             label: Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _response,
+                _birthdate,
                 overflow: TextOverflow.ellipsis,
               ),
             )
         ),
         GridColumn(
-            columnName: 'Respondido por',
-            width: columnWidths['Respondido por']!,
+            columnName: 'Fecha de alta',
+            width: columnWidths['Fecha de alta']!,
             label: Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _updatedby,
+                _createDate,
                 overflow: TextOverflow.ellipsis,
               ),
             )
         ),
         GridColumn(
-            columnName: 'Fecha respuesta',
-            width: columnWidths['Fecha respuesta']!,
+            columnName: 'Etnia',
+            width: columnWidths['Etnia']!,
             label: Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _lastupdate,
+                _ethnicity,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Sexo',
+            width: columnWidths['Sexo']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _sex,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Peso (kg)',
+            width: columnWidths['Peso (kg)']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _weight,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Altura (cm)',
+            width: columnWidths['Altura (cm)']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _height,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Estado',
+            width: columnWidths['Estado']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _status,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Embarazada',
+            width: columnWidths['Embarazada']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _pregnant,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Semanas',
+            width: columnWidths['Semanas']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _weeks,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Hijos/as menores a 6 meses',
+            width: columnWidths['Hijos/as menores a 6 meses']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _childMinor,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Observaciones',
+            width: columnWidths['Observaciones']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _observations,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Activo',
+            width: columnWidths['Activo']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _active,
                 overflow: TextOverflow.ellipsis,
               ),
             )
@@ -684,27 +584,30 @@ class _ReportDataGridState extends LocalizationSampleViewState {
   @override
   void initState() {
     super.initState();
-    reportDataGridSource = ReportDataGridSource(List.empty());
-    responseController = TextEditingController();
+    tutorDataGridSource = TutorDataGridSource(List.empty());
     selectedLocale = model.locale.toString();
 
-    _date = 'Fecha';
+    _point = 'Punto';
     _name = 'Nombre';
     _surnames = 'Apellidos';
-    _email = 'Email';
-    _text = 'Mensaje';
-    _response = 'Respuesta';
-    _updatedby = 'Respondido por';
-    _lastupdate = 'Fecha respuesta';
+    _address = 'Vecindario';
+    _phone = 'Teléfono';
+    _birthdate = 'Fecha de nacimiento';
+    _createDate = 'Fecha de alta';
+    _ethnicity = 'Etnia';
+    _sex = 'Sexo';
+    _weight = 'Peso (kg)';
+    _height = 'Altura (cm)';
+    _status = 'Estado';
+    _pregnant = 'Embarazada';
+    _weeks = 'Semanas';
+    _childMinor = 'Hijos/as menores a 6 meses';
+    _observations = 'Observaciones';
+    _active = 'Activo';
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';
     _total = 'Usuarios totales';
-    _editReport = 'Editar';
-    _removeReport = 'Eliminar';
-    _cancel = 'Cancelar';
-    _save = 'Guardar';
-    _reports = 'Reportes';
-    _removedReport = '';
+    _tutors = 'Tutores';
   }
 
 
@@ -713,12 +616,12 @@ class _ReportDataGridState extends LocalizationSampleViewState {
     return Consumer(
         builder: (context, ref, child) {
           ref.listen<AsyncValue>(
-            reportsScreenControllerProvider,
+            tutorsScreenControllerProvider,
                 (_, state) => {
             },
           );
           final user = ref.watch(authRepositoryProvider).currentUser;
-          if (user != null && user.metadata.lastSignInTime != null) {
+          if (user != null && user.metadata != null && user.metadata!.lastSignInTime != null) {
             final claims = user.getIdTokenResult();
             claims.then((value) => {
               if (value.claims != null && value.claims!['donante'] == true && currentUserRole != "donante") {
@@ -734,11 +637,11 @@ class _ReportDataGridState extends LocalizationSampleViewState {
 
             currentUserEmail = user.email??"";
           }
-          final reportsAsyncValue = ref.watch(reportsStreamProvider);
-          if (reportsAsyncValue.value != null) {
-            _saveReports(reportsAsyncValue);
+          final tutorsAsyncValue = ref.watch(tutorsStreamProvider);
+          if (tutorsAsyncValue.value != null) {
+            _saveTutors(tutorsAsyncValue);
           }
-          return _buildView(reportsAsyncValue);
+          return _buildView(tutorsAsyncValue);
         });
   }
 

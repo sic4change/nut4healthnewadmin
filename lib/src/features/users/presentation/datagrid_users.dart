@@ -304,7 +304,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
           });
       final List<int> bytes = workbook.saveAsStream();
       workbook.dispose();
-      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_users..xlsx');
+      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_users.xlsx');
     }
 
     Future<void> exportDataGridToPdf() async {
@@ -1176,10 +1176,14 @@ class _UserDataGridState extends LocalizationSampleViewState {
           if (user != null && user.metadata != null && user.metadata!.lastSignInTime != null) {
             final claims = user.getIdTokenResult();
             claims.then((value) => {
-              if (value.claims != null && value.claims!['donante'] == true) {
-                currentUserRole = 'donante',
-              } else if (value.claims != null && value.claims!['super-admin'] == true) {
-                currentUserRole = 'super-admin',
+              if (value.claims != null && value.claims!['donante'] == true && currentUserRole != "donante") {
+                setState(() {
+                  currentUserRole = 'donante';
+                }),
+              } else if (value.claims != null && value.claims!['super-admin'] == true && currentUserRole != "super-admin") {
+                setState(() {
+                  currentUserRole = 'super-admin';
+                }),
               }
             });
           }
