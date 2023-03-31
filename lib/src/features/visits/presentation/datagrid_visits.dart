@@ -55,7 +55,8 @@ class _VisitDataGridState extends LocalizationSampleViewState {
   /// Translate names
   late String _point, _tutor, _child, _case,  _createDate, _height, _weight, _imc,
       _armCirunference, _status, _measlesVaccinated, _vitamineAVaccinated,
-      _symptoms, _treatments, _observations, _exportXLS, _exportPDF, _total, _visits;
+      _symptomsES, _symptomsEN, _symptomsFR, _treatmentsES, _treatmentsEN,
+      _treatmentsFR, _observations, _exportXLS, _exportPDF, _total, _visits;
 
   late Map<String, double> columnWidths = {
     'Punto': 150,
@@ -70,8 +71,12 @@ class _VisitDataGridState extends LocalizationSampleViewState {
     'Estado': 150,
     'Vacunado del sarampión': 150,
     'Programa de vacunación Vitamina A': 150,
-    'Síntomas': 150,
-    'Tratamientos': 150,
+    'Síntomas (ES)': 200,
+    'Síntomas (EN)': 200,
+    'Síntomas (FR)': 200,
+    'Tratamientos (ES)': 200,
+    'Tratamientos (EN)': 200,
+    'Tratamientos (FR)': 200,
     'Observaciones': 150,
   };
 
@@ -294,8 +299,12 @@ class _VisitDataGridState extends LocalizationSampleViewState {
         _status = 'Status';
         _measlesVaccinated = 'Measles vaccinated';
         _vitamineAVaccinated = 'Vitamine A Vaccinated';
-        _symptoms = 'Symptoms';
-        _treatments = 'Treatments';
+        _symptomsES = 'Symptoms (ES)';
+        _symptomsEN = 'Symptoms (EN)';
+        _symptomsFR = 'Symptoms (FR)';
+        _treatmentsES = 'Treatments (ES)';
+        _treatmentsEN = 'Treatments (EN)';
+        _treatmentsFR = 'Treatments (FR)';
         _observations = 'Observations';
 
         _exportXLS = 'Export XLS';
@@ -316,8 +325,12 @@ class _VisitDataGridState extends LocalizationSampleViewState {
         _status = 'Estado';
         _measlesVaccinated = 'Vacunado del sarampión';
         _vitamineAVaccinated = 'Programa de vacunación Vitamina A';
-        _symptoms = 'Síntomas';
-        _treatments = 'Tratamientos';
+        _symptomsES = 'Síntomas (ES)';
+        _symptomsEN = 'Síntomas (EN)';
+        _symptomsFR = 'Síntomas (FR)';
+        _treatmentsES = 'Tratamientos (ES)';
+        _treatmentsEN = 'Tratamientos (EN)';
+        _treatmentsFR = 'Tratamientos (FR)';
         _observations = 'Observaciones';
 
         _exportXLS = 'Exportar XLS';
@@ -338,8 +351,12 @@ class _VisitDataGridState extends LocalizationSampleViewState {
         _status = 'État';
         _measlesVaccinated = 'Vacciné contre la rougeole';
         _vitamineAVaccinated = 'Programme de vaccination à la vitamine A';
-        _symptoms = 'Symptômes';
-        _treatments = 'Traitements';
+        _symptomsES = 'Symptômes (ES)';
+        _symptomsEN = 'Symptômes (EN)';
+        _symptomsFR = 'Symptômes (FR)';
+        _treatmentsES = 'Traitements (ES)';
+        _treatmentsEN = 'Traitements (EN)';
+        _treatmentsFR = 'Traitements (FR)';
         _observations = 'Observations';
 
         _exportXLS = 'Exporter XLS';
@@ -510,25 +527,73 @@ class _VisitDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
-            columnName: 'Síntomas',
-            width: columnWidths['Síntomas']!,
+            columnName: 'Síntomas (ES)',
+            width: columnWidths['Síntomas (ES)']!,
             label: Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _symptoms,
+                _symptomsES,
                 overflow: TextOverflow.ellipsis,
               ),
             )
         ),
         GridColumn(
-            columnName: 'Tratamientos',
-            width: columnWidths['Tratamientos']!,
+            columnName: 'Síntomas (EN)',
+            width: columnWidths['Síntomas (EN)']!,
             label: Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _treatments,
+                _symptomsEN,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Síntomas (FR)',
+            width: columnWidths['Síntomas (FR)']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _symptomsFR,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Tratamientos (ES)',
+            width: columnWidths['Tratamientos (ES)']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _treatmentsES,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Tratamientos (EN)',
+            width: columnWidths['Tratamientos (EN)']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _treatmentsEN,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Tratamientos (FR)',
+            width: columnWidths['Tratamientos (FR)']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _treatmentsFR,
                 overflow: TextOverflow.ellipsis,
               ),
             )
@@ -567,8 +632,12 @@ class _VisitDataGridState extends LocalizationSampleViewState {
     _status = 'Estado';
     _measlesVaccinated = 'Vacunado del sarampión';
     _vitamineAVaccinated = 'Programa de vacunación Vitamina A';
-    _symptoms = 'Síntomas';
-    _treatments = 'Tratamientos';
+    _symptomsES = 'Síntomas (ES)';
+    _symptomsEN = 'Síntomas (EN)';
+    _symptomsFR = 'Síntomas (FR)';
+    _treatmentsES = 'Tratamientos (ES)';
+    _treatmentsEN = 'Tratamientos (EN)';
+    _treatmentsFR = 'Tratamientos (FR)';
     _observations = 'Observaciones';
 
     _exportXLS = 'Exportar XLS';

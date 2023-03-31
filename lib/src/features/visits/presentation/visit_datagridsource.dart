@@ -1,5 +1,7 @@
 
 /// Packages import
+import 'package:adminnut4health/src/features/symptoms/domain/symptom.dart';
+import 'package:adminnut4health/src/features/treatments/domain/treatment.dart';
 import 'package:adminnut4health/src/features/visits/domain/visitCombined.dart';
 import 'package:flutter/material.dart';
 
@@ -36,8 +38,12 @@ class VisitDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Estado', value: visitCombined.visit.status),
           DataGridCell<bool>(columnName: 'Vacunado del sarampión', value: visitCombined.visit.measlesVaccinated),
           DataGridCell<bool>(columnName: 'Programa de vacunación Vitamina A', value: visitCombined.visit.vitamineAVaccinated),
-          DataGridCell<String>(columnName: 'Síntomas', value: visitCombined.visit.symptoms.toString()),
-          DataGridCell<String>(columnName: 'Tratamientos', value: visitCombined.visit.treatments.toString()),
+          DataGridCell<List<Symptom>>(columnName: 'Síntomas (ES)', value: visitCombined.visit.symptoms),
+          DataGridCell<List<Symptom>>(columnName: 'Síntomas (EN)', value: visitCombined.visit.symptoms),
+          DataGridCell<List<Symptom>>(columnName: 'Síntomas (FR)', value: visitCombined.visit.symptoms),
+          DataGridCell<List<Treatment>>(columnName: 'Tratamientos (ES)', value: visitCombined.visit.treatments),
+          DataGridCell<List<Treatment>>(columnName: 'Tratamientos (EN)', value: visitCombined.visit.treatments),
+          DataGridCell<List<Treatment>>(columnName: 'Tratamientos (FR)', value: visitCombined.visit.treatments),
           DataGridCell<String>(columnName: 'Observaciones', value: visitCombined.visit.observations),
         ]);
       }).toList();
@@ -94,9 +100,13 @@ class VisitDataGridSource extends DataGridSource {
       _buildStandardContainer(row.getCells()[10].value.toString()),
       _buildBoolean(row.getCells()[11].value),
       _buildBoolean(row.getCells()[12].value),
-      _buildStandardContainer(row.getCells()[13].value.toString()), // TODO: symptoms list
-      _buildStandardContainer(row.getCells()[14].value.toString()), // TODO: treatments list
-      _buildStandardContainer(row.getCells()[15].value.toString()),
+      _buildSymptomsES(row.getCells()[13].value as List<Symptom>),
+      _buildSymptomsEN(row.getCells()[14].value as List<Symptom>),
+      _buildSymptomsFR(row.getCells()[15].value as List<Symptom>),
+      _buildTreatmentsES(row.getCells()[16].value as List<Treatment>),
+      _buildTreatmentsEN(row.getCells()[17].value as List<Treatment>),
+      _buildTreatmentsFR(row.getCells()[18].value as List<Treatment>),
+      _buildStandardContainer(row.getCells()[19].value.toString()),
     ]);
   }
 
@@ -142,6 +152,108 @@ class VisitDataGridSource extends DataGridSource {
         child: _getWidget(const Icon(Icons.calendar_month, size: 20), value.toString()),
       );
     }
+  }
+
+  Widget _buildSymptomsES(List<Symptom> value){
+    var symptoms = "";
+
+    for (var symptom in value) {
+      symptoms = "$symptoms${symptom.name}, ";
+    }
+
+    if (symptoms.contains(", ")) {
+      symptoms = symptoms.substring(0, symptoms.lastIndexOf(", "));
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text(symptoms),
+    );
+  }
+
+  Widget _buildSymptomsEN(List<Symptom> value){
+    var symptoms = "";
+
+    for (var symptom in value) {
+      symptoms = "$symptoms${symptom.nameEn}, ";
+    }
+
+    if (symptoms.contains(", ")) {
+      symptoms = symptoms.substring(0, symptoms.lastIndexOf(", "));
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text(symptoms),
+    );
+  }
+
+  Widget _buildSymptomsFR(List<Symptom> value){
+    var symptoms = "";
+
+    for (var symptom in value) {
+      symptoms = "$symptoms${symptom.nameFr}, ";
+    }
+
+    if (symptoms.contains(", ")) {
+      symptoms = symptoms.substring(0, symptoms.lastIndexOf(", "));
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text(symptoms),
+    );
+  }
+
+  Widget _buildTreatmentsES(List<Treatment> value){
+    var treatments = "";
+
+    for (var treatment in value) {
+      treatments = "$treatments${treatment.name}, ";
+    }
+
+    if (treatments.contains(", ")) {
+      treatments = treatments.substring(0, treatments.lastIndexOf(", "));
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text(treatments),
+    );
+  }
+
+  Widget _buildTreatmentsEN(List<Treatment> value){
+    var treatments = "";
+
+    for (var treatment in value) {
+      treatments = "$treatments${treatment.nameEn}, ";
+    }
+
+    if (treatments.contains(", ")) {
+      treatments = treatments.substring(0, treatments.lastIndexOf(", "));
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text(treatments),
+    );
+  }
+
+  Widget _buildTreatmentsFR(List<Treatment> value){
+    var treatments = "";
+
+    for (var treatment in value) {
+      treatments = "$treatments${treatment.nameFr}, ";
+    }
+
+    if (treatments.contains(", ")) {
+      treatments = treatments.substring(0, treatments.lastIndexOf(", "));
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text(treatments),
+    );
   }
 
   Widget _buildStandardContainer(String value) {
