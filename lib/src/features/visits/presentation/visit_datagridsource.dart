@@ -38,12 +38,12 @@ class VisitDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Estado', value: visitCombined.visit.status),
           DataGridCell<bool>(columnName: 'Vacunado del sarampión', value: visitCombined.visit.measlesVaccinated),
           DataGridCell<bool>(columnName: 'Programa de vacunación Vitamina A', value: visitCombined.visit.vitamineAVaccinated),
-          DataGridCell<List<Symptom>>(columnName: 'Síntomas (ES)', value: visitCombined.visit.symptoms),
-          DataGridCell<List<Symptom>>(columnName: 'Síntomas (EN)', value: visitCombined.visit.symptoms),
-          DataGridCell<List<Symptom>>(columnName: 'Síntomas (FR)', value: visitCombined.visit.symptoms),
-          DataGridCell<List<Treatment>>(columnName: 'Tratamientos (ES)', value: visitCombined.visit.treatments),
-          DataGridCell<List<Treatment>>(columnName: 'Tratamientos (EN)', value: visitCombined.visit.treatments),
-          DataGridCell<List<Treatment>>(columnName: 'Tratamientos (FR)', value: visitCombined.visit.treatments),
+          DataGridCell<String>(columnName: 'Síntomas (ES)', value: _symptomsESString(visitCombined.visit.symptoms)),
+          DataGridCell<String>(columnName: 'Síntomas (EN)', value: _symptomsENString(visitCombined.visit.symptoms)),
+          DataGridCell<String>(columnName: 'Síntomas (FR)', value: _symptomsFRString(visitCombined.visit.symptoms)),
+          DataGridCell<String>(columnName: 'Tratamientos (ES)', value: _treatmentsES(visitCombined.visit.treatments)),
+          DataGridCell<String>(columnName: 'Tratamientos (EN)', value: _treatmentsEN(visitCombined.visit.treatments)),
+          DataGridCell<String>(columnName: 'Tratamientos (FR)', value: _treatmentsFR(visitCombined.visit.treatments)),
           DataGridCell<String>(columnName: 'Observaciones', value: visitCombined.visit.observations),
         ]);
       }).toList();
@@ -100,12 +100,12 @@ class VisitDataGridSource extends DataGridSource {
       _buildStandardContainer(row.getCells()[10].value.toString()),
       _buildBoolean(row.getCells()[11].value),
       _buildBoolean(row.getCells()[12].value),
-      _buildSymptomsES(row.getCells()[13].value as List<Symptom>),
-      _buildSymptomsEN(row.getCells()[14].value as List<Symptom>),
-      _buildSymptomsFR(row.getCells()[15].value as List<Symptom>),
-      _buildTreatmentsES(row.getCells()[16].value as List<Treatment>),
-      _buildTreatmentsEN(row.getCells()[17].value as List<Treatment>),
-      _buildTreatmentsFR(row.getCells()[18].value as List<Treatment>),
+      _buildStandardContainer(row.getCells()[13].value.toString()),
+      _buildStandardContainer(row.getCells()[14].value.toString()),
+      _buildStandardContainer(row.getCells()[15].value.toString()),
+      _buildStandardContainer(row.getCells()[16].value.toString()),
+      _buildStandardContainer(row.getCells()[17].value.toString()),
+      _buildStandardContainer(row.getCells()[18].value.toString()),
       _buildStandardContainer(row.getCells()[19].value.toString()),
     ]);
   }
@@ -154,7 +154,7 @@ class VisitDataGridSource extends DataGridSource {
     }
   }
 
-  Widget _buildSymptomsES(List<Symptom> value){
+  String _symptomsESString(List<Symptom> value){
     var symptoms = "";
 
     for (var symptom in value) {
@@ -165,13 +165,10 @@ class VisitDataGridSource extends DataGridSource {
       symptoms = symptoms.substring(0, symptoms.lastIndexOf(", "));
     }
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Text(symptoms),
-    );
+    return symptoms;
   }
 
-  Widget _buildSymptomsEN(List<Symptom> value){
+  String _symptomsENString(List<Symptom> value){
     var symptoms = "";
 
     for (var symptom in value) {
@@ -182,13 +179,10 @@ class VisitDataGridSource extends DataGridSource {
       symptoms = symptoms.substring(0, symptoms.lastIndexOf(", "));
     }
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Text(symptoms),
-    );
+    return symptoms;
   }
 
-  Widget _buildSymptomsFR(List<Symptom> value){
+  String _symptomsFRString(List<Symptom> value){
     var symptoms = "";
 
     for (var symptom in value) {
@@ -199,13 +193,10 @@ class VisitDataGridSource extends DataGridSource {
       symptoms = symptoms.substring(0, symptoms.lastIndexOf(", "));
     }
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Text(symptoms),
-    );
+    return symptoms;
   }
 
-  Widget _buildTreatmentsES(List<Treatment> value){
+  String _treatmentsES(List<Treatment> value){
     var treatments = "";
 
     for (var treatment in value) {
@@ -216,13 +207,10 @@ class VisitDataGridSource extends DataGridSource {
       treatments = treatments.substring(0, treatments.lastIndexOf(", "));
     }
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Text(treatments),
-    );
+    return treatments;
   }
 
-  Widget _buildTreatmentsEN(List<Treatment> value){
+  String _treatmentsEN(List<Treatment> value){
     var treatments = "";
 
     for (var treatment in value) {
@@ -233,13 +221,10 @@ class VisitDataGridSource extends DataGridSource {
       treatments = treatments.substring(0, treatments.lastIndexOf(", "));
     }
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Text(treatments),
-    );
+    return treatments;
   }
 
-  Widget _buildTreatmentsFR(List<Treatment> value){
+  String _treatmentsFR(List<Treatment> value){
     var treatments = "";
 
     for (var treatment in value) {
@@ -250,10 +235,7 @@ class VisitDataGridSource extends DataGridSource {
       treatments = treatments.substring(0, treatments.lastIndexOf(", "));
     }
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Text(treatments),
-    );
+    return treatments;
   }
 
   Widget _buildStandardContainer(String value) {
