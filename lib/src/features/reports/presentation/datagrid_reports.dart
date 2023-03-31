@@ -53,7 +53,7 @@ class _ReportDataGridState extends LocalizationSampleViewState {
   late String selectedLocale;
 
   late String currentUserEmail;
-  var currentUserRole = "";
+  String currentUserRole = "";
 
   /// Translate names
   late String _date, _name, _surnames, _email, _text, _response, _updatedby,
@@ -718,13 +718,17 @@ class _ReportDataGridState extends LocalizationSampleViewState {
             },
           );
           final user = ref.watch(authRepositoryProvider).currentUser;
-          if (user != null && user.metadata != null && user.metadata!.lastSignInTime != null) {
+          if (user != null && user.metadata.lastSignInTime != null) {
             final claims = user.getIdTokenResult();
             claims.then((value) => {
-              if (value.claims != null && value.claims!['donante'] == true) {
-                currentUserRole = 'donante',
-              } else if (value.claims != null && value.claims!['super-admin'] == true) {
-                currentUserRole = 'super-admin',
+              if (value.claims != null && value.claims!['donante'] == true && currentUserRole != "donante") {
+                setState(() {
+                  currentUserRole = 'donante';
+                }),
+              } else if (value.claims != null && value.claims!['super-admin'] == true && currentUserRole != "super-admin") {
+                setState(() {
+                  currentUserRole = 'super-admin';
+                }),
               }
             });
 
