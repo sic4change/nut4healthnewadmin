@@ -55,6 +55,7 @@ class UserDataGridSource extends DataGridSource {
   @override
   List<DataGridRow> get rows => _dataGridRows;
 
+
   @override
   Widget? buildTableSummaryCellWidget(
       GridTableSummaryRow summaryRow,
