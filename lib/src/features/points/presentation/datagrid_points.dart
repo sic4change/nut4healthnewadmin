@@ -387,8 +387,12 @@ class _PointDataGridState extends LocalizationSampleViewState {
   }
 
   Widget _buildDataPager() {
+    var rows = pointDataGridSource.rows;
+    if (pointDataGridSource.effectiveRows.isNotEmpty ) {
+      rows = pointDataGridSource.effectiveRows;
+    }
     var addMorePage = 0;
-    if ((pointDataGridSource.rows.length / _rowsPerPage).remainder(1) != 0) {
+    if ((rows.length / _rowsPerPage).remainder(1) != 0) {
       addMorePage = 1;
     }
 
@@ -398,7 +402,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
         delegate: pointDataGridSource,
         availableRowsPerPage: const <int>[15, 20, 25],
         pageCount:
-            (pointDataGridSource.rows.length / _rowsPerPage) + addMorePage,
+            (rows.length / _rowsPerPage) + addMorePage,
         onRowsPerPageChanged: (int? rowsPerPage) {
           setState(() {
             _rowsPerPage = rowsPerPage!;
@@ -1031,6 +1035,11 @@ class _PointDataGridState extends LocalizationSampleViewState {
       endSwipeActionsBuilder: _buildEndSwipeWidget,
       startSwipeActionsBuilder: _buildStartSwipeWidget,
       allowFiltering: true,
+      onFilterChanged: (DataGridFilterChangeDetails details) {
+        setState(() {
+          _buildLayoutBuilder();
+        });
+      },
       allowSorting: true,
       allowMultiColumnSorting: true,
       columns: <GridColumn>[

@@ -240,8 +240,12 @@ class _ReportDataGridState extends LocalizationSampleViewState {
 
 
   Widget _buildDataPager() {
+    var rows = reportDataGridSource.rows;
+    if (reportDataGridSource.effectiveRows.isNotEmpty ) {
+      rows = reportDataGridSource.effectiveRows;
+    }
     var addMorePage = 0;
-    if ((reportDataGridSource.rows.length / _rowsPerPage).remainder(1) != 0) {
+    if ((rows.length / _rowsPerPage).remainder(1) != 0) {
       addMorePage  = 1;
     }
 
@@ -250,7 +254,7 @@ class _ReportDataGridState extends LocalizationSampleViewState {
       child: SfDataPager(
         delegate: reportDataGridSource,
         availableRowsPerPage: const <int>[15, 20, 25],
-        pageCount: (reportDataGridSource.rows.length / _rowsPerPage) + addMorePage,
+        pageCount: (rows.length / _rowsPerPage) + addMorePage,
         onRowsPerPageChanged: (int? rowsPerPage) {
           setState(() {
             _rowsPerPage = rowsPerPage!;
@@ -578,6 +582,11 @@ class _ReportDataGridState extends LocalizationSampleViewState {
       endSwipeActionsBuilder: _buildEndSwipeWidget,
       startSwipeActionsBuilder: _buildStartSwipeWidget,
       allowFiltering: true,
+      onFilterChanged: (DataGridFilterChangeDetails details) {
+        setState(() {
+          _buildLayoutBuilder();
+        });
+      },
       allowSorting: true,
       allowMultiColumnSorting: true,
       columns: <GridColumn>[

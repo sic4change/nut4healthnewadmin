@@ -356,8 +356,12 @@ class _CityDataGridState extends LocalizationSampleViewState {
   }
 
   Widget _buildDataPager() {
+    var rows = cityDataGridSource.rows;
+    if (cityDataGridSource.effectiveRows.isNotEmpty ) {
+      rows = cityDataGridSource.effectiveRows;
+    }
     var addMorePage = 0;
-    if ((cityDataGridSource.rows.length / _rowsPerPage).remainder(1) != 0) {
+    if ((rows.length / _rowsPerPage).remainder(1) != 0) {
       addMorePage = 1;
     }
 
@@ -367,7 +371,7 @@ class _CityDataGridState extends LocalizationSampleViewState {
         delegate: cityDataGridSource,
         availableRowsPerPage: const <int>[15, 20, 25],
         pageCount:
-            (cityDataGridSource.rows.length / _rowsPerPage) + addMorePage,
+            (rows.length / _rowsPerPage) + addMorePage,
         onRowsPerPageChanged: (int? rowsPerPage) {
           setState(() {
             _rowsPerPage = rowsPerPage!;
@@ -879,6 +883,11 @@ class _CityDataGridState extends LocalizationSampleViewState {
       endSwipeActionsBuilder: _buildEndSwipeWidget,
       startSwipeActionsBuilder: _buildStartSwipeWidget,
       allowFiltering: true,
+      onFilterChanged: (DataGridFilterChangeDetails details) {
+        setState(() {
+          _buildLayoutBuilder();
+        });
+      },
       allowSorting: true,
       allowMultiColumnSorting: true,
       columns: <GridColumn>[

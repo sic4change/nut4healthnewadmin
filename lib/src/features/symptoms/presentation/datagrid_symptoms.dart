@@ -340,8 +340,12 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
 
 
   Widget _buildDataPager() {
+    var rows = symptomDataGridSource.rows;
+    if (symptomDataGridSource.effectiveRows.isNotEmpty ) {
+      rows = symptomDataGridSource.effectiveRows;
+    }
     var addMorePage = 0;
-    if ((symptomDataGridSource.rows.length / _rowsPerPage).remainder(1) != 0) {
+    if ((rows.length / _rowsPerPage).remainder(1) != 0) {
       addMorePage  = 1;
     }
 
@@ -350,7 +354,7 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
       child: SfDataPager(
           delegate: symptomDataGridSource,
           availableRowsPerPage: const <int>[15, 20, 25],
-          pageCount: (symptomDataGridSource.rows.length / _rowsPerPage) + addMorePage,
+          pageCount: (rows.length / _rowsPerPage) + addMorePage,
           onRowsPerPageChanged: (int? rowsPerPage) {
             setState(() {
               _rowsPerPage = rowsPerPage!;
@@ -725,6 +729,11 @@ class _SymptomDataGridState extends LocalizationSampleViewState {
       endSwipeActionsBuilder: _buildEndSwipeWidget,
       startSwipeActionsBuilder: _buildStartSwipeWidget,
       allowFiltering: true,
+      onFilterChanged: (DataGridFilterChangeDetails details) {
+        setState(() {
+          _buildLayoutBuilder();
+        });
+      },
       allowSorting: true,
       allowMultiColumnSorting: true,
       columns: <GridColumn>[

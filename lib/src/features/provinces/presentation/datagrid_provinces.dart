@@ -342,8 +342,12 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
 
 
   Widget _buildDataPager() {
+    var rows = provinceDataGridSource.rows;
+    if (provinceDataGridSource.effectiveRows.isNotEmpty ) {
+      rows = provinceDataGridSource.effectiveRows;
+    }
     var addMorePage = 0;
-    if ((provinceDataGridSource.rows.length / _rowsPerPage).remainder(1) != 0) {
+    if ((rows.length / _rowsPerPage).remainder(1) != 0) {
       addMorePage  = 1;
     }
 
@@ -352,7 +356,7 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
       child: SfDataPager(
         delegate: provinceDataGridSource,
         availableRowsPerPage: const <int>[15, 20, 25],
-        pageCount: (provinceDataGridSource.rows.length / _rowsPerPage) + addMorePage,
+        pageCount: (rows.length / _rowsPerPage) + addMorePage,
         onRowsPerPageChanged: (int? rowsPerPage) {
           setState(() {
             _rowsPerPage = rowsPerPage!;
@@ -784,6 +788,11 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
       endSwipeActionsBuilder: _buildEndSwipeWidget,
       startSwipeActionsBuilder: _buildStartSwipeWidget,
       allowFiltering: true,
+      onFilterChanged: (DataGridFilterChangeDetails details) {
+        setState(() {
+          _buildLayoutBuilder();
+        });
+      },
       allowSorting: true,
       allowMultiColumnSorting: true,
       columns: <GridColumn>[

@@ -233,8 +233,12 @@ class _ChildDataGridState extends LocalizationSampleViewState {
 
 
   Widget _buildDataPager() {
+    var rows = childDataGridSource.rows;
+    if (childDataGridSource.effectiveRows.isNotEmpty ) {
+      rows = childDataGridSource.effectiveRows;
+    }
     var addMorePage = 0;
-    if ((childDataGridSource.rows.length / _rowsPerPage).remainder(1) != 0) {
+    if ((rows.length / _rowsPerPage).remainder(1) != 0) {
       addMorePage  = 1;
     }
 
@@ -243,7 +247,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
       child: SfDataPager(
         delegate: childDataGridSource,
         availableRowsPerPage: const <int>[15, 20, 25],
-        pageCount: (childDataGridSource.rows.length / _rowsPerPage) + addMorePage,
+        pageCount: (rows.length / _rowsPerPage) + addMorePage,
         onRowsPerPageChanged: (int? rowsPerPage) {
           setState(() {
             _rowsPerPage = rowsPerPage!;
@@ -342,6 +346,11 @@ class _ChildDataGridState extends LocalizationSampleViewState {
         return true;
       },
       allowFiltering: true,
+      onFilterChanged: (DataGridFilterChangeDetails details) {
+        setState(() {
+          _buildLayoutBuilder();
+        });
+      },
       allowSorting: true,
       allowMultiColumnSorting: true,
       columns: <GridColumn>[

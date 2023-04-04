@@ -251,8 +251,12 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
 
 
   Widget _buildDataPager() {
+    var rows = paymentDataGridSource.rows;
+    if (paymentDataGridSource.effectiveRows.isNotEmpty ) {
+      rows = paymentDataGridSource.effectiveRows;
+    }
     var addMorePage = 0;
-    if ((paymentDataGridSource.rows.length / _rowsPerPage).remainder(1) != 0) {
+    if ((rows.length / _rowsPerPage).remainder(1) != 0) {
       addMorePage  = 1;
     }
 
@@ -261,7 +265,7 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
       child: SfDataPager(
           delegate: paymentDataGridSource,
           availableRowsPerPage: const <int>[15, 20, 25],
-          pageCount: (paymentDataGridSource.rows.length / _rowsPerPage) + addMorePage,
+          pageCount: (rows.length / _rowsPerPage) + addMorePage,
           onRowsPerPageChanged: (int? rowsPerPage) {
             setState(() {
               _rowsPerPage = rowsPerPage!;
@@ -309,7 +313,7 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
         _payments = 'Payments';
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
-        _total = 'Total Diagnosis';
+        _total = 'Total payments';
         _cancel = 'Cancel';
         _save = 'Save';
         _editPayment = 'Edit';
@@ -329,7 +333,7 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
         _payments = 'Pagos';
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
-        _total = 'Diagnósticos totale';
+        _total = 'Pagos totales';
         _cancel = 'Cancelar';
         _save = 'Guardar';
         _editPayment = 'Editar';
@@ -349,7 +353,7 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
         _payments = 'Paiements';
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
-        _total = 'Total des diagnostics';
+        _total = 'Total des paiements';
         _cancel = 'Annuler';
         _save = 'Enregistrer';
         _editPayment = 'Modifier';
@@ -370,6 +374,11 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
         return true;
       },
       allowFiltering: true,
+      onFilterChanged: (DataGridFilterChangeDetails details) {
+        setState(() {
+          _buildLayoutBuilder();
+        });
+      },
       allowSorting: true,
       allowMultiColumnSorting: true,
       columns: <GridColumn>[
@@ -654,10 +663,9 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
     _payments = 'Pagos';
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';
-    _total = 'Diagnósticos totale';
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';
-    _total = 'Diagnósticos totales';
+    _total = 'Pagos totales';
     _date = 'Fecha';
     _cancel = 'Cancelar';
     _save = 'Guardar';
