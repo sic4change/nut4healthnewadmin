@@ -157,6 +157,17 @@
                 "key": "treatment_datagrid"
               }
             ]
+          },
+          {
+            "type": "child",
+            "title": "Notificaciones",
+            "subItems": [
+              {
+                "type": "sample",
+                "title": "Notificaciones",
+                "key": "notification_datagrid"
+              }
+            ]
           }
         ]
       }

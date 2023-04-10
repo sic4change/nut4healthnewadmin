@@ -1,5 +1,6 @@
 import 'package:adminnut4health/src/features/cases/presentation/datagrid_cases.dart';
 import 'package:adminnut4health/src/features/childs/presentation/datagrid_childs.dart';
+import 'package:adminnut4health/src/features/notifications/presentation/datagrid_notifications.dart';
 import 'package:adminnut4health/src/features/symptoms/presentation/datagrid_symptoms.dart';
 import 'package:adminnut4health/src/features/treatments/presentation/datagrid_treatments.dart';
 import 'package:adminnut4health/src/features/tutors/presentation/datagrid_tutors.dart';
@@ -938,6 +939,7 @@ Map<String, Function> getSampleWidget() {
     'visit_datagrid': (Key key) => VisitDataGrid(key: key),
     'symptom_datagrid': (Key key) => SymptomDataGrid(key: key),
     'treatment_datagrid': (Key key) => TreatmentDataGrid(key: key),
+    'notification_datagrid': (Key key) => NotificationDataGrid(key: key),
 
     //mapas
     'country_map': (Key key) => MapCountryPage(key),
