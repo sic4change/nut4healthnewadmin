@@ -257,8 +257,10 @@ class _PointDataGridState extends LocalizationSampleViewState {
     return reader.result as String;
   }
 
-  void _createPoint() {
-    _createTextFieldContext();
+  void _createPoint({bool resetFields = true}) {
+    if (resetFields) {
+      _createTextFieldContext();
+    }
     showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
@@ -487,7 +489,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
                       setProvinceSelected(const Province(provinceId: '', country: "", name: "", active: false));
                     }
                     Navigator.pop(context);
-                    _createPoint();
+                    _createPoint(resetFields: false);
                   } else if (columnName == 'Municipio') {
                     Province provinceSelected = pointDataGridSource.getProvinces()!.firstWhere((element) => element.name == newValue);
                     ref.watch(pointsScreenControllerProvider.notifier).setProvinceSelected(provinceSelected);

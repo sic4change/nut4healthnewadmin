@@ -226,8 +226,11 @@ class _CityDataGridState extends LocalizationSampleViewState {
     return reader.result as String;
   }
 
-  void _createCity() {
-    _createTextFieldContext();
+
+    void _createCity({bool resetFields = true}) {
+    if (resetFields) {
+      _createTextFieldContext();
+    }
     showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
@@ -460,7 +463,7 @@ class _CityDataGridState extends LocalizationSampleViewState {
                       setProvinceSelected(const Province(provinceId: '', country: "", name: "", active: false));
                     }
                     Navigator.pop(context);
-                    _createCity();
+                    _createCity(resetFields: false);
                   } else if (columnName == 'Municipio') {
                     Province provinceSelected = cityDataGridSource.getProvinces()!.firstWhere((element) => element.name == newValue);
                     ref.watch(citiesScreenControllerProvider.notifier).setProvinceSelected(provinceSelected);
