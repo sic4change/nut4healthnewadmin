@@ -227,10 +227,8 @@ class _CityDataGridState extends LocalizationSampleViewState {
   }
 
 
-    void _createCity({bool resetFields = true}) {
-    if (resetFields) {
-      _createTextFieldContext();
-    }
+    void _createCity() {
+    _createTextFieldContext();
     showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
@@ -239,14 +237,18 @@ class _CityDataGridState extends LocalizationSampleViewState {
             color: model.textColor, fontWeight: FontWeight.bold, fontSize: 16),
         title: Text(_newCity),
         actions: _buildActionCreateButtons(context),
-        content: Scrollbar(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Form(
-              key: _formKey,
-              child: _buildAlertDialogCreateContent(context),
-            ),
-          ),
+        content: StatefulBuilder(
+          builder: (context, setState) {
+            return Scrollbar(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Form(
+                  key: _formKey,
+                  child: _buildAlertDialogCreateContent(context, setState),
+                ),
+              ),
+            );
+          }
         ),
       ),
     );
@@ -423,7 +425,8 @@ class _CityDataGridState extends LocalizationSampleViewState {
         required String optionSelected,
       required String columnName,
       required List<String> dropDownMenuItems,
-      required String text}) {
+      required String text,
+      required void Function(void Function()) setState}) {
     String value = optionSelected;
     if (optionSelected.isEmpty) {
       if (dropDownMenuItems.isNotEmpty) {
@@ -462,8 +465,6 @@ class _CityDataGridState extends LocalizationSampleViewState {
                       ref.watch(citiesScreenControllerProvider.notifier).
                       setProvinceSelected(const Province(provinceId: '', country: "", name: "", active: false));
                     }
-                    Navigator.pop(context);
-                    _createCity(resetFields: false);
                   } else if (columnName == 'Municipio') {
                     Province provinceSelected = cityDataGridSource.getProvinces()!.firstWhere((element) => element.name == newValue);
                     ref.watch(citiesScreenControllerProvider.notifier).setProvinceSelected(provinceSelected);
@@ -523,7 +524,7 @@ class _CityDataGridState extends LocalizationSampleViewState {
 
 
   /// Building the forms to edit the data
-  Widget _buildAlertDialogContent(BuildContext context) {
+  Widget _buildAlertDialogContent(BuildContext context, void Function(void Function()) setState) {
     final activeOptions = ["✔", "✘"];
     return Column(
       children: <Widget>[
@@ -534,7 +535,9 @@ class _CityDataGridState extends LocalizationSampleViewState {
             optionSelected: ref.watch(citiesScreenControllerProvider.notifier).getCountrySelected().name,
             columnName: 'País',
             dropDownMenuItems: cityDataGridSource.getCountries()!.map((e) => e.name).toList(),
-            text: _country),
+            text: _country,
+            setState: setState,
+        ),
         const SizedBox(height: 20),
         _buildRowComboSelection(
             context: context,
@@ -542,19 +545,23 @@ class _CityDataGridState extends LocalizationSampleViewState {
             columnName: 'Municipio',
             dropDownMenuItems: ref.watch(citiesScreenControllerProvider.notifier)
                 .getProvinceOptions().map((e) => e.name).toList(),
-            text: _province),
+            text: _province,
+            setState: setState,
+        ),
         _buildRowComboSelection(
             context: context,
             optionSelected: activeController!.text,
             columnName: 'Activo',
             dropDownMenuItems: activeOptions,
-            text: _active),
+            text: _active,
+            setState: setState,
+        ),
       ],
     );
   }
 
   /// Building the forms to create the data
-  Widget _buildAlertDialogCreateContent(BuildContext context) {
+  Widget _buildAlertDialogCreateContent(BuildContext context, void Function(void Function()) setState) {
     final activeOptions = ["✔", "✘"];
 
     return Column(
@@ -565,7 +572,9 @@ class _CityDataGridState extends LocalizationSampleViewState {
             optionSelected: ref.watch(citiesScreenControllerProvider.notifier).getCountrySelected().name,
             columnName: 'País',
             dropDownMenuItems: cityDataGridSource.getCountries()!.map((e) => e.name).toList(),
-            text: _country),
+            text: _country,
+            setState: setState,
+        ),
         const SizedBox(height: 20),
         _buildRowComboSelection(
             context: context,
@@ -573,14 +582,18 @@ class _CityDataGridState extends LocalizationSampleViewState {
             columnName: 'Municipio',
             dropDownMenuItems: ref.watch(citiesScreenControllerProvider.notifier)
                 .getProvinceOptions().map((e) => e.name).toList(),
-            text: _province),
+            text: _province,
+            setState: setState,
+        ),
         const SizedBox(height: 20),
         _buildRowComboSelection(
             context: context,
             optionSelected: activeController!.text,
             columnName: 'Activo',
             dropDownMenuItems: activeOptions,
-            text: _active)
+            text: _active,
+            setState: setState,
+        )
       ],
     );
   }
@@ -650,14 +663,18 @@ class _CityDataGridState extends LocalizationSampleViewState {
             color: model.textColor, fontWeight: FontWeight.bold, fontSize: 16),
         title: Text(_editCity),
         actions: _buildActionButtons(row, context),
-        content: Scrollbar(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Form(
-              key: _formKey,
-              child: _buildAlertDialogContent(context),
-            ),
-          ),
+        content: StatefulBuilder(
+          builder: (context, setState) {
+            return Scrollbar(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Form(
+                  key: _formKey,
+                  child: _buildAlertDialogContent(context, setState),
+                ),
+              ),
+            );
+          }
         ),
       ),
     );
