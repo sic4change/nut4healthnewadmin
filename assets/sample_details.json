@@ -183,7 +183,7 @@
         "description": "Mapas",
         "image": "images/map.png",
         "displayType": "tab",
-        "controlId": 2,
+        "controlId": 1,
         "subItems": [
           {
             "type": "child",
@@ -214,5 +214,35 @@
         ]
       }
     ]
+  },
+  {
+    "categoryName": "Estadísticas",
+    "mobileCategoryId": 3,
+    "webCategoryId": 3,
+    "controlList": [
+      {
+        "title": "Estadísticas",
+        "description": "Gráficas",
+        "image": "images/range_selector.png",
+        "displayType": "tab",
+        "controlId": 1,
+        "subItems": [
+          {
+            "type": "child",
+            "title": "Diagnósticos por puestos de salud y fechas",
+            "displayType": "tab",
+            "subItems": [
+              {
+                "type": "sample",
+                "title": "Diagnósticos por puestos de salud y fechas",
+                "key": "cases_points_dates",
+                "codeLink": ""
+              }
+            ]
+          }
+        ]
+      }
+    ]
   }
+
 ]
