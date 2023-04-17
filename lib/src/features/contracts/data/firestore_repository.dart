@@ -121,8 +121,7 @@ class FirestoreRepository {
           Map<String, List<ContractWithPoint>> groupedCases = contractsWithPoint.fold({},
                   (Map<String, List<ContractWithPoint>> map, ContractWithPoint item) {
             //String key = '${item.contract.creationDate}_${item.point?.pointId}';
-            String key =
-                '${item.contract.creationDate}_${item.point?.pointId}_${item.contract.creationDate?.year}_${item.contract.creationDate?.month}_'
+            String key = '${item.contract.creationDate?.year}_${item.contract.creationDate?.month}_'
                 '${item.contract.creationDate?.day}';
             if (!map.containsKey(key)) {
               map[key] = [item];
@@ -134,8 +133,8 @@ class FirestoreRepository {
 
           List<ContractStadistic> contractStaticsList = groupedCases.entries.map((entry) {
             List<String> keys = entry.key.split('_');
-            DateTime creationDate = DateTime.parse(keys[0]);
-            String point = keys[1];
+            DateTime creationDate = DateTime.parse(entry.value[0].contract.creationDate!.toString());
+            String? point = entry.value[0].contract.point;
             int value = entry.value.length;
             return ContractStadistic(creationDate: creationDate, point: point, value: value);
           }).toList();

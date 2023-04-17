@@ -41,7 +41,7 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
     with SingleTickerProviderStateMixin {
   _StatisticContractsByPointAndDatePageState();
 
-  final DateTime min = DateTime(2017), max = DateTime(2018);
+  final DateTime min = DateTime(2021, 8, 1), max = DateTime.now();
   final List<ChartSampleData> chartData = <ChartSampleData>[];
   late RangeController rangeController;
   late SfCartesianChart columnChart, splineChart;
@@ -63,8 +63,7 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
     } else {
       contracts.value?.forEach((element) {
         splineSeriesData.add(ChartSampleData(
-            x: DateTime.fromMillisecondsSinceEpoch(
-                element.creationDate!.millisecond),
+            x: element.creationDate,
             y: element.value)
         );
       });
@@ -122,14 +121,9 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
       start: splineSeriesData[0].x as DateTime,
       end: splineSeriesData[splineSeriesData.length - 1].x as DateTime,
     );
-    for (int i = 0; i < 366; i++) {
-      chartData.add(ChartSampleData(
-          x: DateTime(2000).add(Duration(days: i)),
-          y: Random().nextInt(190) + 50));
-    }
     columnChart = SfCartesianChart(
       margin: EdgeInsets.zero,
-      primaryXAxis: DateTimeAxis(isVisible: false, maximum: DateTime(2018)),
+      primaryXAxis: DateTimeAxis(isVisible: false, maximum: splineSeriesData[splineSeriesData.length - 1].x),
       primaryYAxis: NumericAxis(isVisible: false),
       plotAreaBorderWidth: 0,
       series: <SplineAreaSeries<ChartSampleData, DateTime>>[
@@ -166,11 +160,12 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
       ),
       series: <SplineSeries<ChartSampleData, DateTime>>[
         SplineSeries<ChartSampleData, DateTime>(
-          name: 'EUR',
+          name: '$_title',
           dataSource: splineSeriesData,
           color: const Color.fromRGBO(0, 193, 187, 1),
           animationDuration: 0,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as DateTime,
+          xValueMapper: (ChartSampleData sales, _) =>
+            (sales.x as DateTime),
           yValueMapper: (ChartSampleData sales, _) => sales.y,
         )
       ],
