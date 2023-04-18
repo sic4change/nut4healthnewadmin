@@ -28,6 +28,7 @@ class FirestorePath {
   static String points() => 'points';
 }
 
+
 class FirestoreRepository {
   const FirestoreRepository(this._dataSource);
   final FirestoreDataSource _dataSource;
@@ -60,6 +61,15 @@ class FirestoreRepository {
     Stream<List<Contract>> contracts = _dataSource.watchCollection(
       path: FirestorePath.contracts(),
       builder: (data, documentId) => Contract.fromMap(data, documentId),
+    );
+    return contracts;
+  }
+
+  Stream<List<Contract>> watchContractsByPoint(String pointId) {
+    Stream<List<Contract>> contracts = _dataSource.watchCollection(
+      path: FirestorePath.contracts(),
+      builder: (data, documentId) => Contract.fromMap(data, documentId),
+      queryBuilder: (query) => query.where('point', isEqualTo: pointId),
     );
     return contracts;
   }
@@ -103,12 +113,12 @@ class FirestoreRepository {
           });
   }
 
-  Stream<List<ContractStadistic>> watchContractPoints() {
+  Stream<List<ContractStadistic>> watchContractPoints(String pointId) {
     const emptyPoint = Point(pointId: '', name: '', fullName: '', country: '',
         province: '', phoneCode: '', active: false, latitude: 0.0, longitude: 0.0,
         cases: 0, casesnormopeso: 0, casesmoderada: 0, casessevera: 0);
     return CombineLatestStream.combine2(
-        watchContracts(), watchPoints(),
+        watchContractsByPoint(pointId), watchPoints(),
             (List<Contract> contracts, List<Point> points) {
           List<ContractWithPoint> contractsWithPoint = contracts.map((contract) {
             final Map<String, Point> pointMap = Map.fromEntries(
@@ -120,8 +130,8 @@ class FirestoreRepository {
 
           Map<String, List<ContractWithPoint>> groupedCases = contractsWithPoint.fold({},
                   (Map<String, List<ContractWithPoint>> map, ContractWithPoint item) {
-            //String key = '${item.contract.creationDate}_${item.point?.pointId}';
-            String key = '${item.contract.creationDate?.year}_${item.contract.creationDate?.month}_'
+            String key = '${item.contract.creationDate?.year}_'
+                '${item.contract.creationDate?.month}_'
                 '${item.contract.creationDate?.day}';
             if (!map.containsKey(key)) {
               map[key] = [item];
@@ -132,7 +142,6 @@ class FirestoreRepository {
           });
 
           List<ContractStadistic> contractStaticsList = groupedCases.entries.map((entry) {
-            List<String> keys = entry.key.split('_');
             DateTime creationDate = DateTime.parse(entry.value[0].contract.creationDate!.toString());
             String? point = entry.value[0].contract.point;
             int value = entry.value.length;
@@ -172,13 +181,22 @@ final contractsStreamProvider = StreamProvider.autoDispose<List<ContractWithScre
   return database.watchContractWithConfigurationAndPoints();
 });
 
-final contractsStadisticsStreamProvider = StreamProvider.autoDispose<List<ContractStadistic>>((ref) {
+final contractsStadisticsStreamProvider = StreamProvider.autoDispose.family<List<ContractStadistic>, String>((ref, pointId) {
   final user = ref.watch(authStateChangesProvider).value;
   if (user == null) {
     throw AssertionError('User can\'t be null');
   }
   final database = ref.watch(databaseProvider);
-  return database.watchContractPoints();
+  return database.watchContractPoints(pointId);
+});
+
+final pointsStreamProvider = StreamProvider.autoDispose<List<Point>>((ref) {
+  final user = ref.watch(authStateChangesProvider).value;
+  if (user == null) {
+    throw AssertionError('User can\'t be null');
+  }
+  final database = ref.watch(databaseProvider);
+  return database.watchPoints();
 });
 
 

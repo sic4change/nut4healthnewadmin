@@ -22,7 +22,7 @@ import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 import '../../../sample/model/sample_view.dart';
 import '../data/firestore_repository.dart';
-import '../domain/ContractWithPoint.dart';
+import '../../points/domain/point.dart';
 import '../domain/contract_stadistic.dart';
 import 'contracts_screen_controller.dart';
 
@@ -46,6 +46,10 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
   late RangeController rangeController;
   late SfCartesianChart columnChart, splineChart;
   late List<ChartSampleData>  splineSeriesData;
+  List<Point> points = <Point>[];
+  Point pointSelected = const Point(pointId: '', name: '', fullName: '', country: '',
+      province: '', phoneCode: '', active: false, latitude: 0.0, longitude: 0.0,
+      cases: 0, casesnormopeso: 0, casesmoderada: 0, casessevera: 0);
   bool enableDeferredUpdate = true;
 
   var currentUserRole = "";
@@ -55,8 +59,18 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
 
   /// Translate names
   late String _title;
-  late String _filter;
   late String _points;
+
+  _savePoints(AsyncValue<List<Point>>? points) {
+    if (points == null) {
+      return;
+    } else {
+      this.points = points.value!;
+      if (pointSelected.pointId.isEmpty) {
+        pointSelected = this.points[0];
+      }
+    }
+  }
 
   _saveContracts(AsyncValue<List<ContractStadistic>>? contracts) {
     splineSeriesData = <ChartSampleData>[];
@@ -77,7 +91,6 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
     super.initState();
     selectedLocale = model.locale.toString();
     _title = 'Diagnósticos';
-    _filter = 'Filtrar';
     _points = 'Puestos de Salud';
 
   }
@@ -113,17 +126,14 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
     switch (selectedLocale) {
       case 'en_US':
         _title = 'Diagnosis';
-        _filter = 'Filter';
         _points = 'Health Points';
         break;
       case 'es_ES':
         _title = 'Diagnósticos';
-        _filter = 'Filtrar';
         _points = 'Puestos de Salud';
         break;
       case 'fr_FR':
         _title = 'Diagnostics';
-        _filter = 'Filtrer';
         _points = 'Points de santé';
         break;
     }
@@ -195,7 +205,7 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  //_buildPoints(),
+                  _buildPoints(),
                   Container(
                       width: mediaQueryData.orientation == Orientation.landscape
                           ? model.isWebFullView
@@ -295,122 +305,35 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
             child: SizedBox(
-              height: 327,
+              height: 50,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 5, left: 8),
-                    child: Text(
-                      '$_points:',
-                      style: const TextStyle(fontSize: 20),
-                      textAlign: TextAlign.start,
-                    ),
-                  ),
-                 CheckboxListTile(
-                    contentPadding: const EdgeInsets.only(left: 8),
-                    title: const Text(
-                      'Basic',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    value: true,
-                    activeColor: Colors.grey,
-                    onChanged: (bool? value) {},
-                  ),
-                  /*
-                  CheckboxListTile(
-                      contentPadding: const EdgeInsets.only(left: 8),
-                      title: const Text(
-                        'Banquet hall',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      value: _needBanquetHall,
-                      onChanged: (bool? value) {
+                  DropdownButton<String>(
+                      focusColor: Colors.transparent,
+                      underline:
+                      Container(color: const Color(0xFFBDBDBD), height: 1),
+                      value: pointSelected.fullName,
+                      items: points.map((Point value) {
+                        return DropdownMenuItem<String>(
+                            value: value.fullName,
+                            child: Text(value.fullName,
+                                style: TextStyle(color: model.textColor)));
+                      }).toList(),
+                      onChanged: (dynamic value) {
                         setState(() {
-                          _needBanquetHall = value!;
+                          pointSelected = points.firstWhere(
+                                  (element) => element.fullName == value);
                         });
                       }),
-                  CheckboxListTile(
-                      contentPadding: const EdgeInsets.only(left: 8),
-                      title: const Text(
-                        'Health spa',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      value: _needHealthSpa,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          _needHealthSpa = value!;
-                        });
-                      }),
-                  CheckboxListTile(
-                      contentPadding: const EdgeInsets.only(left: 8),
-                      title: const Text(
-                        'Pets allowed',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      value: _needPets,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          _needPets = value!;
-                        });
-                      }),
-                  CheckboxListTile(
-                      contentPadding: const EdgeInsets.only(left: 8),
-                      title: const Text(
-                        'Indoor entertainment',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      value: _needIndoorEntertainment,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          _needIndoorEntertainment = value!;
-                        });
-                      }),*/
                 ],
               ),
             ),
           ),
         ),
       ),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 0.0),
-        child: _buildFilterButton(),
-      )
     ]);
-  }
-
-  Widget _buildFilterButton() {
-    return SizedBox(
-      width: 350,
-      height: 50,
-      child: ElevatedButton(
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(
-              const Color.fromRGBO(255, 102, 102, 1.0)),
-        ),
-
-        /// On clicking the button, chart inside the range selector will be
-        /// updated with the filtered data.
-        onPressed: () {
-          setState(() {
-            /*_updateChartData(
-              _values,
-              hasBanquetHall: _needBanquetHall,
-              hasHealthSpa: _needHealthSpa,
-              arePetsAllowed: _needPets,
-              hasIndoorEntertainment: _needIndoorEntertainment,
-            );*/
-          });
-        },
-        child: Text(
-            _filter,
-          style: const TextStyle(
-            color: Colors.white,
-          ),
-        ),
-      ),
-    );
   }
 
   @override
@@ -422,7 +345,12 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
                 (_, state) => {
             },
           );
-          final contractsAsyncValue = ref.watch(contractsStadisticsStreamProvider);
+
+          final pointsAsyncValue = ref.watch(pointsStreamProvider);
+          if (pointsAsyncValue.value != null) {
+            _savePoints(pointsAsyncValue);
+          }
+          final contractsAsyncValue = ref.watch(contractsStadisticsStreamProvider(pointSelected.pointId));
           if (contractsAsyncValue.value != null) {
             _saveContracts(contractsAsyncValue);
           }
@@ -430,28 +358,5 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
         });
   }
 
-  @override
-  Widget buildSettings(BuildContext context) {
-    return StatefulBuilder(
-      builder: (BuildContext context, StateSetter stateSetter) {
-        return CheckboxListTile(
-          value: enableDeferredUpdate,
-          title: const Text(
-            'Enable deferred update',
-            softWrap: false,
-          ),
-          activeColor: model.backgroundColor,
-          contentPadding: EdgeInsets.zero,
-          onChanged: (bool? value) {
-            setState(
-              () {
-                enableDeferredUpdate = value!;
-                stateSetter(() {});
-              },
-            );
-          },
-        );
-      },
-    );
-  }
+
 }
