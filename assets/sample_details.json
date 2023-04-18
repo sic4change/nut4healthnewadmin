@@ -239,6 +239,19 @@
                 "codeLink": ""
               }
             ]
+          },
+          {
+            "type": "child",
+            "title": "Diagnósticos por agentes de salud y fechas",
+            "displayType": "tab",
+            "subItems": [
+              {
+                "type": "sample",
+                "title": "Diagnósticos por agentes de salud y fechas",
+                "key": "cases_screeners_dates",
+                "codeLink": ""
+              }
+            ]
           }
         ]
       }

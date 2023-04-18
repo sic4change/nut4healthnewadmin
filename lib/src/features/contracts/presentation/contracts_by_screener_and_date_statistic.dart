@@ -21,35 +21,35 @@ import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 import '../../../sample/model/sample_view.dart';
+import '../../users/domain/user.dart';
 import '../data/firestore_repository.dart';
 import '../../points/domain/point.dart';
-import '../domain/contract_stadistic.dart';
+import '../domain/contract_point_stadistic.dart';
+import '../domain/contract_screener_stadistic.dart';
 import 'contracts_screen_controller.dart';
 
 
 /// Renders the range selector with line chart zooming option
-class StatisticContractsByPointAndDatePage extends SampleView {
+class StatisticContractsByScreenerAndDatePage extends SampleView {
   /// Renders the range selector with line chart zooming option
-  const StatisticContractsByPointAndDatePage(Key key) : super(key: key);
+  const StatisticContractsByScreenerAndDatePage(Key key) : super(key: key);
 
   @override
-  _StatisticContractsByPointAndDatePageState createState() =>
-      _StatisticContractsByPointAndDatePageState();
+  _StatisticContractsByScreenerAndDatePageState createState() =>
+      _StatisticContractsByScreenerAndDatePageState();
 }
 
-class _StatisticContractsByPointAndDatePageState extends SampleViewState
+class _StatisticContractsByScreenerAndDatePageState extends SampleViewState
     with SingleTickerProviderStateMixin {
-  _StatisticContractsByPointAndDatePageState();
+  _StatisticContractsByScreenerAndDatePageState();
 
-  final DateTime min = DateTime(2021, 8, 1), max = DateTime.now();
+  DateTime min = DateTime(2021, 8, 1), max = DateTime.now();
   final List<ChartSampleData> chartData = <ChartSampleData>[];
   late RangeController rangeController;
   late SfCartesianChart columnChart, splineChart;
   late List<ChartSampleData>  splineSeriesData;
-  List<Point> points = <Point>[];
-  Point pointSelected = const Point(pointId: '', name: '', fullName: '', country: '',
-      province: '', phoneCode: '', active: false, latitude: 0.0, longitude: 0.0,
-      cases: 0, casesnormopeso: 0, casesmoderada: 0, casessevera: 0);
+  List<User> users = <User>[];
+  User userSelected = const User(userId: '', email: '', role: 'Agente Salud');
   bool enableDeferredUpdate = true;
 
   var currentUserRole = "";
@@ -59,20 +59,20 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
 
   /// Translate names
   late String _title;
-  late String _points;
 
-  _savePoints(AsyncValue<List<Point>>? points) {
-    if (points == null) {
+  _saveUsers(AsyncValue<List<User>>? users) {
+    if (users == null) {
       return;
     } else {
-      this.points = points.value!;
-      if (pointSelected.pointId.isEmpty) {
-        pointSelected = this.points[0];
+      this.users = users.value!;
+      this.users.removeWhere((element) => element.emptyUser == true);
+      if (userSelected.userId.isEmpty) {
+        userSelected = this.users[0];
       }
     }
   }
 
-  _saveContracts(AsyncValue<List<ContractStadistic>>? contracts) {
+  _saveContracts(AsyncValue<List<ContractScreenerStadistic>>? contracts) {
     splineSeriesData = <ChartSampleData>[];
     if (contracts == null) {
       splineSeriesData = List.empty();
@@ -83,6 +83,10 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
             y: element.value)
         );
       });
+      if (splineSeriesData[0].x != splineSeriesData[splineSeriesData.length - 1].x) {
+        min = splineSeriesData[0].x as DateTime;
+        max = splineSeriesData[splineSeriesData.length - 1].x as DateTime;
+      }
     }
   }
 
@@ -91,7 +95,6 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
     super.initState();
     selectedLocale = model.locale.toString();
     _title = 'Diagnósticos';
-    _points = 'Puestos de Salud';
 
   }
 
@@ -103,7 +106,7 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
     super.dispose();
   }
 
-  Widget _buildView(AsyncValue<List<ContractStadistic>> contracts) {
+  Widget _buildView(AsyncValue<List<ContractScreenerStadistic>> contracts) {
     if (contracts.value != null && contracts.value!.isNotEmpty) {
       selectedLocale = model.locale.toString();
       return _buildLayoutBuilder();
@@ -126,15 +129,12 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
     switch (selectedLocale) {
       case 'en_US':
         _title = 'Diagnosis';
-        _points = 'Health Points';
         break;
       case 'es_ES':
         _title = 'Diagnósticos';
-        _points = 'Puestos de Salud';
         break;
       case 'fr_FR':
         _title = 'Diagnostics';
-        _points = 'Points de santé';
         break;
     }
     rangeController = RangeController(
@@ -159,7 +159,10 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
       ],
     );
     splineChart = SfCartesianChart(
-      title: ChartTitle(text: _title),
+      title: ChartTitle(text: '${_title} '
+          '( ${(splineSeriesData[0].x as DateTime).day}/${(splineSeriesData[0].x as DateTime).month}/${(splineSeriesData[0].x as DateTime).year} - '
+          '${(splineSeriesData[splineSeriesData.length - 1].x as DateTime).day}/${(splineSeriesData[splineSeriesData.length - 1].x as DateTime).month}/${(splineSeriesData[splineSeriesData.length - 1].x as DateTime).year} )'
+      ),
       plotAreaBorderWidth: 0,
       tooltipBehavior: TooltipBehavior(
           animationDuration: 0, shadowColor: Colors.transparent, enable: true),
@@ -314,17 +317,17 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
                       focusColor: Colors.transparent,
                       underline:
                       Container(color: const Color(0xFFBDBDBD), height: 1),
-                      value: pointSelected.fullName,
-                      items: points.map((Point value) {
+                      value: '${userSelected.name} ${userSelected.surname}',
+                      items: users.map((User value) {
                         return DropdownMenuItem<String>(
-                            value: value.fullName,
-                            child: Text(value.fullName,
+                            value: '${value.name} ${value.surname}',
+                            child: Text('${value.name} ${value.surname}',
                                 style: TextStyle(color: model.textColor)));
                       }).toList(),
                       onChanged: (dynamic value) {
                         setState(() {
-                          pointSelected = points.firstWhere(
-                                  (element) => element.fullName == value);
+                          userSelected = users.firstWhere(
+                                  (element) => '${element.name} ${element.surname}' == value);
                         });
                       }),
                 ],
@@ -346,11 +349,11 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
             },
           );
 
-          final pointsAsyncValue = ref.watch(pointsStreamProvider);
-          if (pointsAsyncValue.value != null) {
-            _savePoints(pointsAsyncValue);
+          final screenersAsyncValue = ref.watch(screenersStreamProvider);
+          if (screenersAsyncValue.value != null) {
+            _saveUsers(screenersAsyncValue);
           }
-          final contractsAsyncValue = ref.watch(contractsStadisticsStreamProvider(pointSelected.pointId));
+          final contractsAsyncValue = ref.watch(contractsScreenerStadisticsStreamProvider(userSelected.userId));
           if (contractsAsyncValue.value != null) {
             _saveContracts(contractsAsyncValue);
           }

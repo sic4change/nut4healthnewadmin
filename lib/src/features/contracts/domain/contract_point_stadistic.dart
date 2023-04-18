@@ -4,9 +4,9 @@ import 'package:flutter/foundation.dart';
 
 
 @immutable
-class ContractStadistic extends Equatable {
+class ContractPointStadistic extends Equatable {
 
-  const ContractStadistic({this.point, this.creationDate, this.value});
+  const ContractPointStadistic({this.point, this.creationDate, this.value});
 
   final String? point;
   final DateTime? creationDate;
@@ -19,7 +19,7 @@ class ContractStadistic extends Equatable {
   bool get stringify => true;
 
 
-  factory ContractStadistic.fromMap(Map<String, dynamic>? data, String documentId) {
+  factory ContractPointStadistic.fromMap(Map<String, dynamic>? data, String documentId) {
     if (data == null) {
       throw StateError('missing data for contractId: $documentId');
     }
@@ -28,7 +28,7 @@ class ContractStadistic extends Equatable {
     final creationDate = DateTime.fromMillisecondsSinceEpoch( data['creationDateMiliseconds']);
     final value = data['value'] ?? 0;
 
-    return ContractStadistic(
+    return ContractPointStadistic(
         point: point,
         creationDate: creationDate,
         value: value
