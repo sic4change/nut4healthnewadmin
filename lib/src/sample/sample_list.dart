@@ -11,6 +11,8 @@ import 'package:flutter/foundation.dart';
 import '../features/cities/presentation/datagrid_cities.dart';
 import '../features/configurations/presentation/datagrid_configurations.dart';
 import '../features/contracts/presentation/contracts_by_point_and_date_statistic.dart';
+import '../features/contracts/presentation/contracts_by_point_and_sex_statistic.dart';
+import '../features/contracts/presentation/contracts_by_point_and_status_statistic.dart';
 import '../features/contracts/presentation/contracts_by_screener_and_date_statistic.dart';
 import '../features/contracts/presentation/datagrid_contracts.dart';
 import '../features/countries/presentation/datagrid_countries.dart';
@@ -949,6 +951,8 @@ Map<String, Function> getSampleWidget() {
 
     //grafics
     'cases_points_dates': (Key key) => StatisticContractsByPointAndDatePage(key),
+    'cases_points_diagnosis_type': (Key key) => StatisticContractsByPointAndStatusPage(key),
+    'cases_points_diagnosis_sex': (Key key) => StatisticContractsByPointAndSexPage(key),
     'cases_screeners_dates': (Key key) => StatisticContractsByScreenerAndDatePage(key),
 
     'getting_started_datagrid': (Key key) => GettingStartedDataGrid(key: key),

@@ -175,6 +175,7 @@ class FirestoreRepository {
 
   }
 
+
   Stream<List<ContractScreenerStadistic>> watchContractsScreener(String screenerId) {
     const emptyUser = User(userId: '', email: '', role: 'Agente Salud');
     return CombineLatestStream.combine2(
@@ -276,6 +277,16 @@ final contractsScreenerStadisticsStreamProvider =
   }
   final database = ref.watch(databaseProvider);
   return database.watchContractsScreener(screenerId);
+});
+
+final contractsPointStadisticsStreamProvider =
+StreamProvider.autoDispose.family<List<Contract>, String>((ref, pointId) {
+  final user = ref.watch(authStateChangesProvider).value;
+  if (user == null) {
+    throw AssertionError('User can\'t be null');
+  }
+  final database = ref.watch(databaseProvider);
+  return database.watchContractsByPoint(pointId);
 });
 
 

@@ -242,6 +242,32 @@
           },
           {
             "type": "child",
+            "title": "Diagnósticos por puestos de salud y tipo de desnutrición",
+            "displayType": "tab",
+            "subItems": [
+              {
+                "type": "sample",
+                "title": "Diagnósticos por puestos de salud y tipo de desnutrición",
+                "key": "cases_points_diagnosis_type",
+                "codeLink": ""
+              }
+            ]
+          },
+          {
+            "type": "child",
+            "title": "Diagnósticos por puestos de salud y sexo",
+            "displayType": "tab",
+            "subItems": [
+              {
+                "type": "sample",
+                "title": "Diagnósticos por puestos de salud y sexo",
+                "key": "cases_points_diagnosis_sex",
+                "codeLink": ""
+              }
+            ]
+          },
+          {
+            "type": "child",
             "title": "Diagnósticos por agentes de salud y fechas",
             "displayType": "tab",
             "subItems": [
