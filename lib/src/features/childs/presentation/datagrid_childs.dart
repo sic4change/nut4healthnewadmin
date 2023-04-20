@@ -53,7 +53,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
   var currentUserRole = "";
 
   /// Translate names
-  late String _point, _name, _surnames, _birthdate, _createDate, _lastDate,
+  late String _point, _name, _surnames, _birthdate, _code, _createDate, _lastDate,
       _ethnicity, _sex, _tutor, _observations, _exportXLS, _exportPDF, _total,
       _childs;
 
@@ -62,6 +62,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
     'Nombre': 150,
     'Apellidos': 150,
     'Fecha de nacimiento': 150,
+    'Código': 150,
     'Fecha de alta': 150,
     'Última visita': 150,
     'Etnia': 150,
@@ -285,6 +286,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
         _name = 'Name';
         _surnames = 'Surnames';
         _birthdate = 'Birthdate';
+        _code = 'Code';
         _createDate = 'Register date';
         _lastDate = 'Last date';
         _ethnicity = 'Ethnicity';
@@ -302,6 +304,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
         _name = 'Nombre';
         _surnames = 'Apellidos';
         _birthdate = 'Fecha de nacimiento';
+        _code = 'Código';
         _createDate = 'Fecha de alta';
         _lastDate = 'Última visita';
         _ethnicity = 'Etnia';
@@ -319,6 +322,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
         _name = 'Nom';
         _surnames = 'Noms de famille';
         _birthdate = 'Date de naissance';
+        _code = 'Code';
         _createDate = 'Date d\'enregistrement';
         _lastDate = 'Derniere visite';
         _ethnicity = 'Appartenance ethnique';
@@ -398,6 +402,18 @@ class _ChildDataGridState extends LocalizationSampleViewState {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 _birthdate,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Código',
+            width: columnWidths['Código']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _code,
                 overflow: TextOverflow.ellipsis,
               ),
             )
@@ -488,6 +504,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
     _name = 'Nombre';
     _surnames = 'Apellidos';
     _birthdate = 'Fecha de nacimiento';
+    _code = 'Código';
     _createDate = 'Fecha de alta';
     _lastDate = 'Última visita';
     _ethnicity = 'Etnia';

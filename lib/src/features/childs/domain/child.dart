@@ -13,6 +13,7 @@ class Child extends Equatable {
     required this.name,
     required this.surnames,
     required this.birthdate,
+    required this.code,
     required this.createDate,
     required this.lastDate,
     required this.ethnicity,
@@ -26,6 +27,7 @@ class Child extends Equatable {
   final String name;
   final String surnames;
   final DateTime birthdate;
+  final String code;
   final DateTime createDate;
   final DateTime lastDate;
   final String ethnicity;
@@ -34,7 +36,7 @@ class Child extends Equatable {
 
   @override
   List<Object> get props => [childId, tutorId, pointId, name, surnames,
-    birthdate, createDate, lastDate, ethnicity, sex, observations,];
+    birthdate, code, createDate, lastDate, ethnicity, sex, observations,];
 
   @override
   bool get stringify => true;
@@ -49,6 +51,7 @@ class Child extends Equatable {
     final surnames = data['surnames']?? "";
     final Timestamp birthdateFirebase = data['birthdate'] ?? Timestamp(0, 0);
     final birthdate = birthdateFirebase.toDate();
+    final code = data['code']?? "";
     final Timestamp createtDateFirebase = data['createDate'] ?? Timestamp(0, 0);
     final createDate = createtDateFirebase.toDate();
     final Timestamp lastDateFirebase = data['lastDate'] ?? Timestamp(0, 0);
@@ -64,6 +67,7 @@ class Child extends Equatable {
       name: name,
       surnames: surnames,
       birthdate: birthdate,
+      code: code,
       createDate: createDate,
       lastDate: lastDate,
       ethnicity: ethnicity,
@@ -79,6 +83,7 @@ class Child extends Equatable {
       'name': name,
       'surnames': surnames,
       'birthdate': birthdate,
+      'code': code,
       'createDate': createDate,
       'lastDate': lastDate,
       'ethnicity': ethnicity,

@@ -141,6 +141,7 @@ class FirestoreRepository {
                   name: "",
                   surnames: "",
                   birthdate: DateTime.now(),
+                  code: "",
                   createDate: DateTime.now(),
                   lastDate: DateTime.now(),
                   ethnicity: "",

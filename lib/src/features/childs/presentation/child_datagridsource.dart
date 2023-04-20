@@ -28,6 +28,7 @@ class ChildDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Nombre', value: childWithPointAndTutor.child.name),
           DataGridCell<String>(columnName: 'Apellidos', value: childWithPointAndTutor.child.surnames),
           DataGridCell<DateTime>(columnName: 'Fecha de nacimiento', value: childWithPointAndTutor.child.birthdate),
+          DataGridCell<String>(columnName: 'Código', value: childWithPointAndTutor.child.code),
           DataGridCell<DateTime>(columnName: 'Fecha de alta', value: childWithPointAndTutor.child.createDate),
           DataGridCell<DateTime>(columnName: 'Última visita', value: childWithPointAndTutor.child.lastDate),
           DataGridCell<String>(columnName: 'Etnia', value: childWithPointAndTutor.child.ethnicity),
@@ -81,12 +82,13 @@ class ChildDataGridSource extends DataGridSource {
       _buildStandardContainer(row.getCells()[2].value.toString()),
       _buildStandardContainer(row.getCells()[3].value.toString()),
       _buildDate(row.getCells()[4].value),
-      _buildDate(row.getCells()[5].value),
+      _buildStandardContainer(row.getCells()[5].value.toString()),
       _buildDate(row.getCells()[6].value),
-      _buildStandardContainer(row.getCells()[7].value.toString()),
+      _buildDate(row.getCells()[7].value),
       _buildStandardContainer(row.getCells()[8].value.toString()),
       _buildStandardContainer(row.getCells()[9].value.toString()),
       _buildStandardContainer(row.getCells()[10].value.toString()),
+      _buildStandardContainer(row.getCells()[11].value.toString()),
     ]);
   }
 
