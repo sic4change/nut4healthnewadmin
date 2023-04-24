@@ -143,7 +143,7 @@ class _StatisticContractsByPointAndMuacPageState extends SampleViewState
           majorGridLines: const MajorGridLines(width: 0)),
       primaryYAxis: NumericAxis(
         minimum: 0,
-        maximum: getMaxValue(contracts).toDouble() + 10, //Aqui va el valor maximo que se repite
+        maximum: getMaxValue(contracts),
         interval: 1,
         axisLine: const AxisLine(width: 0),
         majorTickLines: const MajorTickLines(width: 0),
@@ -162,15 +162,14 @@ class _StatisticContractsByPointAndMuacPageState extends SampleViewState
     );
   }
 
-  int getMaxValue(AsyncValue<List<Contract?>> contracts) {
+  double getMaxValue(AsyncValue<List<Contract?>> contracts) {
     List<int> data = <int>[];
     for (double x = 0.0; x <= 28.0; x += 0.1) {
       data.add(contracts.value!.where((element) =>
           element!.armCircunference!.toDouble().toString() == x.toStringAsFixed(1)).length);
     }
     int? maxValue = data.reduce((value, element) => value> element ? value : element);
-    return maxValue;
-
+    return maxValue!.toDouble() + 10;
   }
 
   List<XyDataSeries<ChartSampleData, String>> _getPlotBandSeries(AsyncValue<List<Contract?>> contracts) {
