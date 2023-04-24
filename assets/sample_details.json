@@ -229,12 +229,12 @@
         "subItems": [
           {
             "type": "child",
-            "title": "Diagnósticos por puestos de salud y fechas",
+            "title": "Diagnósticos fechas",
             "displayType": "tab",
             "subItems": [
               {
                 "type": "sample",
-                "title": "Diagnósticos por puestos de salud y fechas",
+                "title": "Diagnósticos por fechas",
                 "key": "cases_points_dates",
                 "codeLink": ""
               }
@@ -242,12 +242,12 @@
           },
           {
             "type": "child",
-            "title": "Diagnósticos por puestos de salud y tipo de desnutrición",
+            "title": "Diagnósticos tipo de desnutrición",
             "displayType": "tab",
             "subItems": [
               {
                 "type": "sample",
-                "title": "Diagnósticos por puestos de salud y tipo de desnutrición",
+                "title": "Diagnósticos tipo de desnutrición",
                 "key": "cases_points_diagnosis_type",
                 "codeLink": ""
               }
@@ -255,12 +255,25 @@
           },
           {
             "type": "child",
-            "title": "Diagnósticos por puestos de salud y sexo",
+            "title": "Diagnósticos por perímetro braquial",
             "displayType": "tab",
             "subItems": [
               {
                 "type": "sample",
-                "title": "Diagnósticos por puestos de salud y sexo",
+                "title": "Diagnósticos por perímetro braquial",
+                "key": "cases_points_diagnosis_perimetro",
+                "codeLink": ""
+              }
+            ]
+          },
+          {
+            "type": "child",
+            "title": "Diagnósticos por sexos",
+            "displayType": "tab",
+            "subItems": [
+              {
+                "type": "sample",
+                "title": "Diagnósticos por sexos",
                 "key": "cases_points_diagnosis_sex",
                 "codeLink": ""
               }
@@ -268,12 +281,12 @@
           },
           {
             "type": "child",
-            "title": "Diagnósticos por agentes de salud y fechas",
+            "title": "Diagnósticos por agente y fechas",
             "displayType": "tab",
             "subItems": [
               {
                 "type": "sample",
-                "title": "Diagnósticos por agentes de salud y fechas",
+                "title": "Diagnósticos por agente y fechas",
                 "key": "cases_screeners_dates",
                 "codeLink": ""
               }

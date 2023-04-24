@@ -1,5 +1,6 @@
 import 'package:adminnut4health/src/features/cases/presentation/datagrid_cases.dart';
 import 'package:adminnut4health/src/features/childs/presentation/datagrid_childs.dart';
+import 'package:adminnut4health/src/features/contracts/presentation/contracts_by_point_and_muac_statistic.dart';
 import 'package:adminnut4health/src/features/notifications/presentation/datagrid_notifications.dart';
 import 'package:adminnut4health/src/features/symptoms/presentation/datagrid_symptoms.dart';
 import 'package:adminnut4health/src/features/treatments/presentation/datagrid_treatments.dart';
@@ -951,6 +952,7 @@ Map<String, Function> getSampleWidget() {
 
     //grafics
     'cases_points_dates': (Key key) => StatisticContractsByPointAndDatePage(key),
+    'cases_points_diagnosis_perimetro': (Key key) => StatisticContractsByPointAndMuacPage(key),
     'cases_points_diagnosis_type': (Key key) => StatisticContractsByPointAndStatusPage(key),
     'cases_points_diagnosis_sex': (Key key) => StatisticContractsByPointAndSexPage(key),
     'cases_screeners_dates': (Key key) => StatisticContractsByScreenerAndDatePage(key),
