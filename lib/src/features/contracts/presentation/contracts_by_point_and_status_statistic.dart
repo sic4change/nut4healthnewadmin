@@ -78,13 +78,23 @@ class _StatisticContractsByPointAndStatusPageState extends SampleViewState
   }
 
   _saveContracts(AsyncValue<List<Contract?>> contracts) {
-    normopesoValues = contracts!.value!.where((element) => element!.percentage! < 50).length;
-    moderadaValues = contracts!.value!.where((element) => element!.percentage! == 50).length;
-    severaValues = contracts!.value!.where((element) => element!.percentage! > 50).length;
+    if (contracts.value!.isNotEmpty){
+      normopesoValues = contracts.value!.where((element) => element!.percentage! < 50).length;
+      moderadaValues = contracts.value!.where((element) => element!.percentage! == 50).length;
+      severaValues = contracts.value!.where((element) => element!.percentage! > 50).length;
 
-    normopesoPercentage = (normopesoValues * 100) ~/ contracts!.value!.length;
-    moderadaPercentage = (moderadaValues * 100) ~/ contracts!.value!.length;
-    severaPercentage = (severaValues * 100) ~/ contracts!.value!.length;
+      normopesoPercentage = (normopesoValues * 100) ~/ contracts.value!.length;
+      moderadaPercentage = (moderadaValues * 100) ~/ contracts.value!.length;
+      severaPercentage = (severaValues * 100) ~/ contracts.value!.length;
+    } else {
+      normopesoValues = 0;
+      moderadaValues = 0;
+      severaValues = 0;
+
+      normopesoPercentage = 0;
+      moderadaPercentage = 0;
+      severaPercentage = 0;
+    }
   }
 
 
@@ -139,7 +149,7 @@ class _StatisticContractsByPointAndStatusPageState extends SampleViewState
   }
 
   Widget _buildView(AsyncValue<List<Contract>> contracts) {
-    if (contracts.value != null && contracts.value!.isNotEmpty) {
+    if (contracts.value != null) {
       selectedLocale = model.locale.toString();
       return _buildLayoutBuilder();
     } else {
@@ -228,17 +238,17 @@ class _StatisticContractsByPointAndStatusPageState extends SampleViewState
                       focusColor: Colors.transparent,
                       underline:
                       Container(color: const Color(0xFFBDBDBD), height: 1),
-                      value: pointSelected.fullName,
+                      value: pointSelected.name,
                       items: points.map((Point value) {
                         return DropdownMenuItem<String>(
-                            value: value.fullName,
-                            child: Text(value.fullName,
+                            value: value.name,
+                            child: Text(value.name,
                                 style: TextStyle(color: model.textColor)));
                       }).toList(),
                       onChanged: (dynamic value) {
                         setState(() {
                           pointSelected = points.firstWhere(
-                                  (element) => element.fullName == value);
+                                  (element) => element.name == value);
                         });
                       }),
                 ],

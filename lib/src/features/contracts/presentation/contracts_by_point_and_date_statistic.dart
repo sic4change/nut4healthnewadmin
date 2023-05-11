@@ -83,11 +83,13 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
             y: element.value)
         );
       });
-      if (splineSeriesData[0].x != splineSeriesData[splineSeriesData.length - 1].x) {
+      if (splineSeriesData.isNotEmpty && splineSeriesData[0].x != splineSeriesData[splineSeriesData.length - 1].x) {
         min = splineSeriesData[0].x as DateTime;
         max = splineSeriesData[splineSeriesData.length - 1].x as DateTime;
+      } else {
+        min = DateTime.now().subtract(const Duration(days: 365));
+        max = DateTime.now();
       }
-
     }
   }
 
@@ -109,7 +111,7 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
   }
 
   Widget _buildView(AsyncValue<List<ContractPointStadistic>> contracts) {
-    if (contracts.value != null && contracts.value!.isNotEmpty) {
+    if (contracts.value != null) {
       selectedLocale = model.locale.toString();
       return _buildLayoutBuilder();
     } else {
@@ -143,12 +145,12 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
         break;
     }
     rangeController = RangeController(
-      start: splineSeriesData[0].x as DateTime,
-      end: splineSeriesData[splineSeriesData.length - 1].x as DateTime,
+      start: min,
+      end: max,
     );
     columnChart = SfCartesianChart(
       margin: EdgeInsets.zero,
-      primaryXAxis: DateTimeAxis(isVisible: false, maximum: splineSeriesData[splineSeriesData.length - 1].x),
+      primaryXAxis: DateTimeAxis(isVisible: false, maximum: max),
       primaryYAxis: NumericAxis(isVisible: false),
       plotAreaBorderWidth: 0,
       series: <SplineAreaSeries<ChartSampleData, DateTime>>[
@@ -165,8 +167,8 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
     );
     splineChart = SfCartesianChart(
       title: ChartTitle(text: '${_title} '
-          '( ${(splineSeriesData[0].x as DateTime).day}/${(splineSeriesData[0].x as DateTime).month}/${(splineSeriesData[0].x as DateTime).year} - '
-          '${(splineSeriesData[splineSeriesData.length - 1].x as DateTime).day}/${(splineSeriesData[splineSeriesData.length - 1].x as DateTime).month}/${(splineSeriesData[splineSeriesData.length - 1].x as DateTime).year} )'
+          '( ${min.day}/${min.month}/${min.year} - '
+          '${max.day}/${max.month}/${max.year} )'
       ),
       plotAreaBorderWidth: 0,
       tooltipBehavior: TooltipBehavior(
@@ -174,8 +176,8 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
       primaryXAxis: DateTimeAxis(
           labelStyle: const TextStyle(),
           isVisible: false,
-          minimum: splineSeriesData[0].x as DateTime,
-          maximum: splineSeriesData[splineSeriesData.length - 1].x as DateTime,
+          minimum: min,
+          maximum: max,
           visibleMinimum: rangeController.start,
           visibleMaximum: rangeController.end,
           rangeController: rangeController),
@@ -322,17 +324,17 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
                       focusColor: Colors.transparent,
                       underline:
                       Container(color: const Color(0xFFBDBDBD), height: 1),
-                      value: pointSelected.fullName,
+                      value: pointSelected.name,
                       items: points.map((Point value) {
                         return DropdownMenuItem<String>(
-                            value: value.fullName,
-                            child: Text(value.fullName,
+                            value: value.name,
+                            child: Text(value.name,
                                 style: TextStyle(color: model.textColor)));
                       }).toList(),
                       onChanged: (dynamic value) {
                         setState(() {
                           pointSelected = points.firstWhere(
-                                  (element) => element.fullName == value);
+                                  (element) => element.name == value);
                         });
                       }),
                 ],

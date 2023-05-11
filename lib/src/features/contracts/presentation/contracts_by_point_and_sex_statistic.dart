@@ -73,11 +73,19 @@ class _StatisticContractsByPointAndSexPageState extends SampleViewState
   }
 
   _saveContracts(AsyncValue<List<Contract?>> contracts) {
-    masculineValues = contracts!.value!.where((element) => element!.sex! == 'M').length;
-    femenineValues = contracts!.value!.where((element) => element!.sex! == 'F').length;
+    if (contracts.value!.isNotEmpty){
+      masculineValues = contracts.value!.where((element) => element!.sex! == 'M').length;
+      femenineValues = contracts.value!.where((element) => element!.sex! == 'F').length;
 
-    masculinePercentage = (masculineValues * 100) ~/ contracts!.value!.length;
-    femeninePercentage = (femenineValues * 100) ~/ contracts!.value!.length;
+      masculinePercentage = (masculineValues * 100) ~/ contracts.value!.length;
+      femeninePercentage = (femenineValues * 100) ~/ contracts.value!.length;
+    } else {
+      masculineValues = 0;
+      femenineValues = 0;
+
+      masculinePercentage = 0;
+      femeninePercentage = 0;
+    }
   }
 
 
@@ -129,7 +137,7 @@ class _StatisticContractsByPointAndSexPageState extends SampleViewState
   }
 
   Widget _buildView(AsyncValue<List<Contract>> contracts) {
-    if (contracts.value != null && contracts.value!.isNotEmpty) {
+    if (contracts.value != null) {
       selectedLocale = model.locale.toString();
       return _buildLayoutBuilder();
     } else {
@@ -212,17 +220,17 @@ class _StatisticContractsByPointAndSexPageState extends SampleViewState
                       focusColor: Colors.transparent,
                       underline:
                       Container(color: const Color(0xFFBDBDBD), height: 1),
-                      value: pointSelected.fullName,
+                      value: pointSelected.name,
                       items: points.map((Point value) {
                         return DropdownMenuItem<String>(
-                            value: value.fullName,
-                            child: Text(value.fullName,
+                            value: value.name,
+                            child: Text(value.name,
                                 style: TextStyle(color: model.textColor)));
                       }).toList(),
                       onChanged: (dynamic value) {
                         setState(() {
                           pointSelected = points.firstWhere(
-                                  (element) => element.fullName == value);
+                                  (element) => element.name == value);
                         });
                       }),
                 ],
