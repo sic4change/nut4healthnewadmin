@@ -48,7 +48,7 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
   late List<ChartSampleData>  splineSeriesData;
   List<Point> points = <Point>[];
   Point pointSelected = const Point(pointId: '', name: '', fullName: '', country: '',
-      province: '', phoneCode: '', active: false, latitude: 0.0, longitude: 0.0,
+      province: '', phoneCode: '', phoneLength: 0, active: false, latitude: 0.0, longitude: 0.0,
       cases: 0, casesnormopeso: 0, casesmoderada: 0, casessevera: 0);
   bool enableDeferredUpdate = true;
 

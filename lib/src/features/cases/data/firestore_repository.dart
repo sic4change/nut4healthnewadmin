@@ -108,6 +108,7 @@ class FirestoreRepository {
                     country: "",
                     province: "",
                     phoneCode: "",
+                    phoneLength: 0,
                     latitude: 0.0,
                     longitude: 0.0,
                     cases: 0,

@@ -68,6 +68,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
   late String _id,
       _name,
       _code,
+      _phoneLength,
       _country,
       _province,
       _active,
@@ -93,6 +94,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
     'Id': 150,
     'Nombre': 150,
     'Código': 150,
+    'Nº dígitos teléfono': 150,
     'País': 150,
     'Municipio': 150,
     'Activo': 150,
@@ -108,6 +110,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
   TextEditingController? idController,
       nameController,
       codeController,
+      phoneLengthController,
       activeController,
       latitudeController,
       longitudeController,
@@ -224,23 +227,24 @@ class _PointDataGridState extends LocalizationSampleViewState {
                   name: row[0].toString(),
                   fullName: "",
                   phoneCode: row[1].toString(),
+                  phoneLength: row[2] as int,
                   province: pointDataGridSource
                       .getProvinces()!
                       .firstWhere(
-                          (element) => element.name == row[2].toString())
+                          (element) => element.name == row[3].toString())
                       .provinceId,
                   country: pointDataGridSource
                       .getCountries()!
                       .firstWhere(
-                          (element) => element.name == row[3].toString())
+                          (element) => element.name == row[4].toString())
                       .countryId,
-                  active: row[4].toString() == 'true' ? true : false,
-                  latitude: row[5] as double,
-                  longitude: row[6] as double,
-                  cases: row[7] as int,
-                  casesnormopeso: row[8] as int,
-                  casesmoderada: row[9] as int,
-                  casessevera: row[10] as int,
+                  active: row[5].toString() == 'true' ? true : false,
+                  latitude: row[6] as double,
+                  longitude: row[7] as double,
+                  cases: row[8] as int,
+                  casesnormopeso: row[9] as int,
+                  casesmoderada: row[10] as int,
+                  casessevera: row[11] as int,
                 ));
           }
         }
@@ -525,6 +529,8 @@ class _PointDataGridState extends LocalizationSampleViewState {
       keyboardType =  const TextInputType.numberWithOptions(decimal: true, signed: true);
     } else if (<String>['Código'].contains(columnName)) {
       keyboardType =  TextInputType.number;
+    } else if (<String>['Nº dígitos teléfono'].contains(columnName)) {
+      keyboardType =  TextInputType.number;
     } else {
       keyboardType =  TextInputType.text;
     }
@@ -564,6 +570,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
       children: <Widget>[
         _buildRow(controller: nameController!, columnName: 'Nombre', text: _name),
         _buildRow(controller: codeController!, columnName: 'Código', text: _code),
+        _buildRow(controller: phoneLengthController!, columnName: 'Nº dígitos teléfono', text: _phoneLength),
         _buildRowComboSelection(
             context: context,
             optionSelected: ref.watch(pointsScreenControllerProvider.notifier).getCountrySelected().name,
@@ -604,6 +611,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
       children: <Widget>[
         _buildRow(controller: nameController!, columnName: 'Nombre', text: _name),
         _buildRow(controller: codeController!, columnName: 'Código', text: _code),
+        _buildRow(controller: phoneLengthController!, columnName: 'Nº dígitos teléfono', text: _phoneLength),
         _buildRowComboSelection(
             context: context,
             optionSelected: ref.watch(pointsScreenControllerProvider.notifier).getCountrySelected().name,
@@ -641,6 +649,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
     idController!.text = '';
     nameController!.text = '';
     codeController!.text = '';
+    phoneLengthController!.text = '';
     activeController!.text = '✔';
     latitudeController!.text = '';
     longitudeController!.text = '';
@@ -671,6 +680,14 @@ class _PointDataGridState extends LocalizationSampleViewState {
         .toString();
 
     codeController!.text = code ?? '';
+
+    final String? phoneLength = row
+        .getCells()
+        .firstWhere((DataGridCell element) => element.columnName == 'Nº dígitos teléfono')
+        ?.value
+        .toString();
+
+    phoneLengthController!.text = phoneLength ?? '';
 
     final String? countryString = row
         .getCells()
@@ -786,6 +803,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
                 pointId: "",
                 fullName: "",
                 phoneCode: codeController!.text,
+                phoneLength: int.parse(phoneLengthController!.text),
                 name: nameController!.text,
                 province: ref
                     .watch(pointsScreenControllerProvider.notifier)
@@ -819,25 +837,26 @@ class _PointDataGridState extends LocalizationSampleViewState {
     if (_formKey.currentState!.validate()) {
       ref.read(pointsScreenControllerProvider.notifier).updatePoint(
           Point(
-          pointId: id!,
-          name: nameController!.text,
-          fullName: "",
-          phoneCode: codeController!.text,
-          country: ref
-              .watch(pointsScreenControllerProvider.notifier)
-              .getCountrySelected()
-              .countryId,
-          province: ref
-              .watch(pointsScreenControllerProvider.notifier)
-              .getProvinceSelected()
-              .provinceId,
-          active: activeController!.text == '✔' ? true : false,
-          latitude: double.parse(latitudeController!.text),
-          longitude: double.parse(longitudeController!.text),
-          cases: int.parse(casesController!.text),
-          casesnormopeso: int.parse(casesnormopesoController!.text),
-          casesmoderada: int.parse(casesmoderadaController!.text),
-          casessevera: int.parse(casesseveraController!.text)));
+              pointId: id!,
+              name: nameController!.text,
+              fullName: "",
+              phoneCode: codeController!.text,
+              phoneLength: int.parse(phoneLengthController!.text),
+              country: ref
+                  .watch(pointsScreenControllerProvider.notifier)
+                  .getCountrySelected()
+                  .countryId,
+              province: ref
+                  .watch(pointsScreenControllerProvider.notifier)
+                  .getProvinceSelected()
+                  .provinceId,
+              active: activeController!.text == '✔' ? true : false,
+              latitude: double.parse(latitudeController!.text),
+              longitude: double.parse(longitudeController!.text),
+              cases: int.parse(casesController!.text),
+              casesnormopeso: int.parse(casesnormopesoController!.text),
+              casesmoderada: int.parse(casesmoderadaController!.text),
+              casessevera: int.parse(casesseveraController!.text)));
       Navigator.pop(buildContext);
     }
   }
@@ -965,6 +984,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
         _id = 'Id';
         _name = 'Name';
         _code = 'Code';
+        _phoneLength = 'Number of phone digits';
         _country = 'Country';
         _province = 'Municipality';
         _active = 'Active';
@@ -990,6 +1010,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
         _id = 'Id';
         _name = 'Nombre';
         _code = 'Código';
+        _phoneLength = 'Nº dígitos teléfono';
         _country = 'País';
         _province = 'Municipio';
         _active = 'Activo';
@@ -1015,6 +1036,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
         _id = 'Id';
         _name = 'Nom';
         _code = 'Code';
+        _phoneLength = 'Nombre de chiffres du téléphone';
         _province = 'Municipalité';
         _country = 'Pays';
         _active = 'Actif';
@@ -1093,6 +1115,17 @@ class _PointDataGridState extends LocalizationSampleViewState {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 _code,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )),
+        GridColumn(
+            columnName: 'Nº dígitos teléfono',
+            width: columnWidths['Nº dígitos teléfono']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _phoneLength,
                 overflow: TextOverflow.ellipsis,
               ),
             )),
@@ -1208,6 +1241,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
     idController = TextEditingController();
     nameController = TextEditingController();
     codeController = TextEditingController();
+    phoneLengthController = TextEditingController();
     activeController = TextEditingController();
     latitudeController = TextEditingController();
     longitudeController = TextEditingController();
@@ -1220,6 +1254,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
     _id = 'Id';
     _name = 'Nombre';
     _code = 'Código';
+    _phoneLength = 'Nº dígitos teléfono';
     _country = 'País';
     _province = 'Municipio';
     _active = 'Activo';
