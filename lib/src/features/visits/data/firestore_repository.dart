@@ -161,6 +161,7 @@ class FirestoreRepository {
                   createDate: DateTime.now(),
                   ethnicity: "",
                   sex: "",
+                  maleRelation: "",
                   weight: 0.0,
                   height: 0.0,
                   status: "",

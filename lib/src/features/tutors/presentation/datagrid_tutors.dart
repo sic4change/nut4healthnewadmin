@@ -54,7 +54,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
 
   /// Translate names
   late String _point, _name, _surnames, _address, _phone, _birthdate, _createDate,
-      _ethnicity, _sex, _weight, _height, _status, _pregnant, _weeks,
+      _ethnicity, _sex, _maleRelation, _weight, _height, _status, _pregnant, _weeks,
       _childMinor, _observations, _active, _exportXLS, _exportPDF, _total, _tutors;
 
   late Map<String, double> columnWidths = {
@@ -67,6 +67,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
     'Fecha de alta': 150,
     'Etnia': 150,
     'Sexo': 150,
+    'Vínculo': 150,
     'Peso (kg)': 150,
     'Altura (cm)': 150,
     'Estado': 150,
@@ -297,6 +298,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
         _createDate = 'Register date';
         _ethnicity = 'Ethnicity';
         _sex = 'Sex';
+        _maleRelation = 'Bond';
         _weight = 'Weight (kg)';
         _height = 'Height (cm)';
         _status = 'Status';
@@ -321,6 +323,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
         _createDate = 'Fecha de alta';
         _ethnicity = 'Etnia';
         _sex = 'Sexo';
+        _maleRelation = 'Vínculo';
         _weight = 'Peso (kg)';
         _height = 'Altura (cm)';
         _status = 'Estado';
@@ -345,6 +348,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
         _createDate = 'Date d\'enregistrement';
         _ethnicity = 'Appartenance ethnique';
         _sex = 'Sexe';
+        _maleRelation = 'Lier';
         _weight = 'Poids (kg)';
         _height = 'Hauteur (cm)';
         _status = 'État';
@@ -491,6 +495,18 @@ class _TutorDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
+            columnName: 'Vínculo',
+            width: columnWidths['Vínculo']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _maleRelation,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
             columnName: 'Peso (kg)',
             width: columnWidths['Peso (kg)']!,
             label: Container(
@@ -605,6 +621,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
     _createDate = 'Fecha de alta';
     _ethnicity = 'Etnia';
     _sex = 'Sexo';
+    _maleRelation = 'Vínculo';
     _weight = 'Peso (kg)';
     _height = 'Altura (cm)';
     _status = 'Estado';

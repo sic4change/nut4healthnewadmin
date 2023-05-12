@@ -17,6 +17,7 @@ class Tutor extends Equatable {
     required this.createDate,
     required this.ethnicity,
     required this.sex,
+    required this.maleRelation,
     required this.weight,
     required this.height,
     required this.status,
@@ -37,6 +38,7 @@ class Tutor extends Equatable {
   final DateTime createDate;
   final String ethnicity;
   final String sex;
+  final String maleRelation;
   final double weight;
   final double height;
   final String status;
@@ -48,7 +50,7 @@ class Tutor extends Equatable {
 
   @override
   List<Object> get props => [tutorId, pointId, name, surnames, address, phone,
-    birthdate,createDate, ethnicity, sex, weight, height, status, weeks,
+    birthdate,createDate, ethnicity, sex, maleRelation, weight, height, status, weeks,
     observations, active, ];
 
   @override
@@ -69,6 +71,7 @@ class Tutor extends Equatable {
     final createDate = createDateFirebase.toDate();
     final ethnicity = data['ethnicity']?? "";
     final sex = data['sex']?? "";
+    final maleRelation = data['maleRelation']?? "";
     final weight = data['weight']?? 0.0;
     final height = data['height']?? 0.0;
     final status = data['status']?? "";
@@ -89,6 +92,7 @@ class Tutor extends Equatable {
       createDate: createDate,
       ethnicity: ethnicity,
       sex: sex,
+      maleRelation: maleRelation,
       weight: weight,
       height: height,
       status: status,
@@ -111,6 +115,7 @@ class Tutor extends Equatable {
       'createDate': createDate,
       'ethnicity': ethnicity,
       'sex': sex,
+      'maleRelation': maleRelation,
       'weight': weight,
       'height': height,
       'status': status,
