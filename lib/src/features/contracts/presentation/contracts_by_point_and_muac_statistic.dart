@@ -101,7 +101,6 @@ class _StatisticContractsByPointAndMuacPageState extends SampleViewState
     super.dispose();
   }
 
-
   /// Return the types of plotbands.
   SfCartesianChart _buildPlotBandChart(AsyncValue<List<Contract?>> contracts) {
 
@@ -200,7 +199,7 @@ class _StatisticContractsByPointAndMuacPageState extends SampleViewState
 
 
   Widget _buildView(AsyncValue<List<Contract>> contracts) {
-    if (contracts.value != null && contracts.value!.isNotEmpty) {
+    if (contracts.value != null) {
       selectedLocale = model.locale.toString();
       return _buildLayoutBuilder(contracts);
     } else {
@@ -283,17 +282,17 @@ class _StatisticContractsByPointAndMuacPageState extends SampleViewState
                       focusColor: Colors.transparent,
                       underline:
                       Container(color: const Color(0xFFBDBDBD), height: 1),
-                      value: pointSelected.fullName,
+                      value: pointSelected.name,
                       items: points.map((Point value) {
                         return DropdownMenuItem<String>(
-                            value: value.fullName,
-                            child: Text(value.fullName,
+                            value: value.name,
+                            child: Text(value.name,
                                 style: TextStyle(color: model.textColor)));
                       }).toList(),
                       onChanged: (dynamic value) {
                         setState(() {
                           pointSelected = points.firstWhere(
-                                  (element) => element.fullName == value);
+                                  (element) => element.name == value);
                         });
                       }),
                 ],
