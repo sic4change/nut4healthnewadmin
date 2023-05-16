@@ -54,7 +54,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
 
   /// Translate names
   late String _point, _name, _surnames, _address, _phone, _birthdate, _createDate,
-      _ethnicity, _sex, _maleRelation, _weight, _height, _status, _pregnant, _weeks,
+      _ethnicity, _sex, _maleRelation, _womanStatus, _babyAge, _armCircunference, _status, _weeks,
       _childMinor, _observations, _active, _exportXLS, _exportPDF, _total, _tutors;
 
   late Map<String, double> columnWidths = {
@@ -68,10 +68,10 @@ class _TutorDataGridState extends LocalizationSampleViewState {
     'Etnia': 150,
     'Sexo': 150,
     'Vínculo': 150,
-    'Peso (kg)': 150,
-    'Altura (cm)': 150,
+    'Estado de la mujer': 150,
+    'Edad del bebé': 150,
+    'Perímetro braquial': 150,
     'Estado': 150,
-    'Embarazada': 150,
     'Semanas': 150,
     'Hijos/as menores a 6 meses': 150,
     'Observaciones': 150,
@@ -299,10 +299,10 @@ class _TutorDataGridState extends LocalizationSampleViewState {
         _ethnicity = 'Ethnicity';
         _sex = 'Sex';
         _maleRelation = 'Bond';
-        _weight = 'Weight (kg)';
-        _height = 'Height (cm)';
+        _womanStatus = 'Womamn status';
+        _babyAge = 'Baby age';
+        _armCircunference = 'Arm circumference';
         _status = 'Status';
-        _pregnant = 'Pregnant';
         _weeks = 'Weeks';
         _childMinor = 'Children under 6 months';
         _observations = 'Observations';
@@ -324,10 +324,10 @@ class _TutorDataGridState extends LocalizationSampleViewState {
         _ethnicity = 'Etnia';
         _sex = 'Sexo';
         _maleRelation = 'Vínculo';
-        _weight = 'Peso (kg)';
-        _height = 'Altura (cm)';
+        _womanStatus = 'Estado de la mujer';
+        _babyAge = 'Edad del bebé';
+        _armCircunference = 'Perímetro braquial';
         _status = 'Estado';
-        _pregnant = 'Embarazada';
         _weeks = 'Semanas';
         _childMinor = 'Hijos/as menores a 6 meses';
         _observations = 'Observaciones';
@@ -349,10 +349,10 @@ class _TutorDataGridState extends LocalizationSampleViewState {
         _ethnicity = 'Appartenance ethnique';
         _sex = 'Sexe';
         _maleRelation = 'Lier';
-        _weight = 'Poids (kg)';
-        _height = 'Hauteur (cm)';
+        _womanStatus = 'État de femme';
+        _babyAge = 'Âge du bébé';
+        _armCircunference = 'Circonférence brachiale (cm)';
         _status = 'État';
-        _pregnant = 'Enceinte';
         _weeks = 'Semaines';
         _childMinor = 'Enfants de moins de 6 mois';
         _observations = 'Observations';
@@ -507,25 +507,37 @@ class _TutorDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
-            columnName: 'Peso (kg)',
-            width: columnWidths['Peso (kg)']!,
+            columnName: 'Estado de la mujer',
+            width: columnWidths['Estado de la mujer']!,
             label: Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _weight,
+                _womanStatus,
                 overflow: TextOverflow.ellipsis,
               ),
             )
         ),
         GridColumn(
-            columnName: 'Altura (cm)',
-            width: columnWidths['Altura (cm)']!,
+            columnName: 'Edad del bebé',
+            width: columnWidths['Edad del bebé']!,
             label: Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _height,
+                _babyAge,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Perímetro braquial',
+            width: columnWidths['Perímetro braquial']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _armCircunference,
                 overflow: TextOverflow.ellipsis,
               ),
             )
@@ -538,18 +550,6 @@ class _TutorDataGridState extends LocalizationSampleViewState {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 _status,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-        ),
-        GridColumn(
-            columnName: 'Embarazada',
-            width: columnWidths['Embarazada']!,
-            label: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _pregnant,
                 overflow: TextOverflow.ellipsis,
               ),
             )
@@ -622,10 +622,10 @@ class _TutorDataGridState extends LocalizationSampleViewState {
     _ethnicity = 'Etnia';
     _sex = 'Sexo';
     _maleRelation = 'Vínculo';
-    _weight = 'Peso (kg)';
-    _height = 'Altura (cm)';
+    _womanStatus = 'Estado de la mujer';
+    _babyAge = 'Edad del bebé';
+    _armCircunference = 'Perímetro braquial';
     _status = 'Estado';
-    _pregnant = 'Embarazada';
     _weeks = 'Semanas';
     _childMinor = 'Hijos/as menores a 6 meses';
     _observations = 'Observaciones';

@@ -18,10 +18,10 @@ class Tutor extends Equatable {
     required this.ethnicity,
     required this.sex,
     required this.maleRelation,
-    required this.weight,
-    required this.height,
+    required this.womanStatus,
+    required this.armCircunference,
     required this.status,
-    required this.pregnant,
+    required this.babyAge,
     required this.weeks,
     required this.childMinor,
     required this.observations,
@@ -39,10 +39,10 @@ class Tutor extends Equatable {
   final String ethnicity;
   final String sex;
   final String maleRelation;
-  final double weight;
-  final double height;
+  final String womanStatus;
+  final double armCircunference;
   final String status;
-  final String pregnant;
+  final int babyAge;
   final int weeks;
   final String childMinor;
   final String observations;
@@ -50,8 +50,8 @@ class Tutor extends Equatable {
 
   @override
   List<Object> get props => [tutorId, pointId, name, surnames, address, phone,
-    birthdate,createDate, ethnicity, sex, maleRelation, weight, height, status, weeks,
-    observations, active, ];
+    birthdate,createDate, ethnicity, sex, maleRelation, womanStatus, babyAge,
+    armCircunference, status, weeks, observations, active, ];
 
   @override
   bool get stringify => true;
@@ -72,10 +72,10 @@ class Tutor extends Equatable {
     final ethnicity = data['ethnicity']?? "";
     final sex = data['sex']?? "";
     final maleRelation = data['maleRelation']?? "";
-    final weight = data['weight']?? 0.0;
-    final height = data['height']?? 0.0;
+    final womanStatus = data['womanStatus']?? "";
+    final armCircunference = data ['armCircunference']?? 0.0;
     final status = data['status']?? "";
-    final pregnant = data['pregnant']?? "";
+    final babyAge = data['babyAge']?? 0;
     final weeks = data['weeks']?? 0;
     final childMinor = data['childMinor']?? "";
     final observations = data['observations']?? "";
@@ -93,10 +93,10 @@ class Tutor extends Equatable {
       ethnicity: ethnicity,
       sex: sex,
       maleRelation: maleRelation,
-      weight: weight,
-      height: height,
+      womanStatus: womanStatus,
+      armCircunference: armCircunference,
       status: status,
-      pregnant: pregnant,
+      babyAge: babyAge,
       weeks: weeks,
       childMinor: childMinor,
       observations: observations,
@@ -116,10 +116,10 @@ class Tutor extends Equatable {
       'ethnicity': ethnicity,
       'sex': sex,
       'maleRelation': maleRelation,
-      'weight': weight,
-      'height': height,
+      'womanStatus': womanStatus,
+      'armCircunference': armCircunference,
       'status': status,
-      'pregnant': pregnant,
+      'babyAge': babyAge,
       'weeks': weeks,
       'childMinor': childMinor,
       'observations': observations,
