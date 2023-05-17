@@ -109,7 +109,9 @@ class FirestoreRepository {
                           cases: 0,
                           casesnormopeso: 0,
                           casesmoderada: 0,
-                          casessevera: 0),
+                          casessevera: 0,
+                          transactionHash: "",
+                      ),
                       tutor);
                 } catch (e) {
                   try {
@@ -155,7 +157,9 @@ class FirestoreRepository {
                             cases: 0,
                             casesnormopeso: 0,
                             casesmoderada: 0,
-                            casessevera: 0),
+                            casessevera: 0,
+                            transactionHash: "",
+                        ),
                         Tutor(
                           tutorId: "",
                           pointId: "",

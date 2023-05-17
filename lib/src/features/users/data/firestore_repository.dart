@@ -126,7 +126,9 @@ class FirestoreRepository {
                       cases: 0,
                       casesnormopeso: 0,
                       casesmoderada: 0,
-                      casessevera: 0));
+                      casessevera: 0,
+                      transactionHash: "",
+                  ));
             } catch (e) {
                     return UserWithConfigurationAndPoint(
                   user,
@@ -154,6 +156,7 @@ class FirestoreRepository {
                     casesnormopeso: 0,
                     casesmoderada: 0,
                     casessevera: 0,
+                    transactionHash: "",
                   ));
             }
                 }

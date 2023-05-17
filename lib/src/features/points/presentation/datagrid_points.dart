@@ -78,6 +78,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
       _casesnormopeso,
       _casesmoderada,
       _casessevera,
+      _transactionHash,
       _newPoint,
       _importCSV,
       _exportXLS,
@@ -104,6 +105,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
     'Casos Normopeso': 150,
     'Casos Moderada': 150,
     'Casos Severa': 150,
+    'Hash de transacción': 300,
   };
 
   /// Editing controller for forms to perform update the values.
@@ -245,6 +247,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
                   casesnormopeso: row[9] as int,
                   casesmoderada: row[10] as int,
                   casessevera: row[11] as int,
+                  transactionHash: "",
                 ));
           }
         }
@@ -819,7 +822,9 @@ class _PointDataGridState extends LocalizationSampleViewState {
                 cases: 0,
                 casesnormopeso: 0,
                 casesmoderada: 0,
-                casessevera: 0),
+                casessevera: 0,
+                transactionHash: "",
+        ),
       );
       Navigator.pop(buildContext);
     }
@@ -828,16 +833,15 @@ class _PointDataGridState extends LocalizationSampleViewState {
   /// Updating the DataGridRows after changing the value and notify the DataGrid
   /// to refresh the view
   void _processCellUpdate(DataGridRow row, BuildContext buildContext) {
-    final String? id = pointDataGridSource
+    final Point point = pointDataGridSource
         .getPoints()
-        ?.firstWhere(
+        !.firstWhere(
             (element) => element.point.pointId == row.getCells()[0].value)
-        .point
-        .pointId;
+        .point;
     if (_formKey.currentState!.validate()) {
       ref.read(pointsScreenControllerProvider.notifier).updatePoint(
           Point(
-              pointId: id!,
+              pointId: point.pointId,
               name: nameController!.text,
               fullName: "",
               phoneCode: codeController!.text,
@@ -856,7 +860,9 @@ class _PointDataGridState extends LocalizationSampleViewState {
               cases: int.parse(casesController!.text),
               casesnormopeso: int.parse(casesnormopesoController!.text),
               casesmoderada: int.parse(casesmoderadaController!.text),
-              casessevera: int.parse(casesseveraController!.text)));
+              casessevera: int.parse(casesseveraController!.text),
+              transactionHash: point.transactionHash,
+          ));
       Navigator.pop(buildContext);
     }
   }
@@ -1005,6 +1011,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
         _casesnormopeso = 'Normal weight cases';
         _casesmoderada = 'Moderate cases';
         _casessevera = 'Severe cases';
+        _transactionHash = 'Transaction hash';
         break;
       case 'es_ES':
         _id = 'Id';
@@ -1031,6 +1038,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
         _casesnormopeso = 'Casos Normopeso';
         _casesmoderada = 'Casos Moderada';
         _casessevera = 'Casos Severa';
+        _transactionHash = 'Hash de transacción';
         break;
       case 'fr_FR':
         _id = 'Id';
@@ -1057,6 +1065,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
         _casesnormopeso = 'Cas poids normal';
         _casesmoderada = 'Cas modérés';
         _casessevera = 'Cas sévères';
+        _transactionHash = 'Hachage de transaction';
         break;
     }
     return SfDataGrid(
@@ -1230,6 +1239,17 @@ class _PointDataGridState extends LocalizationSampleViewState {
                 overflow: TextOverflow.ellipsis,
               ),
             )),
+        GridColumn(
+            columnName: 'Hash de transacción',
+            width: columnWidths['Hash de transacción']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _transactionHash,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )),
       ],
     );
   }
@@ -1264,6 +1284,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
     _casesnormopeso = 'Casos Normopeso';
     _casesmoderada = 'Casos Moderada';
     _casessevera = 'Casos Severa';
+    _transactionHash = 'Hash de transacción';
     _newPoint = 'Crear Punto';
     _importCSV = 'Importar CSV';
     _exportXLS = 'Exportar XLS';

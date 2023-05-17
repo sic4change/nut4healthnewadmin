@@ -114,7 +114,9 @@ class FirestoreRepository {
                     cases: 0,
                     casesnormopeso: 0,
                     casesmoderada: 0,
-                    casessevera: 0);
+                    casessevera: 0,
+                    transactionHash: "",
+                );
 
                 final child = childMap[myCase.childId] ?? Child(
                   childId: "",

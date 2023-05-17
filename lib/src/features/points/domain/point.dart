@@ -11,7 +11,7 @@ class Point extends Equatable {
     required this.country, required this.province, required this.phoneCode,
     required this.phoneLength, required this.active, required this.latitude,
     required this.longitude, required this.cases, required this.casesnormopeso,
-    required this.casesmoderada, required this.casessevera});
+    required this.casesmoderada, required this.casessevera, required this.transactionHash});
 
   final PointID pointId;
   final String name;
@@ -27,10 +27,12 @@ class Point extends Equatable {
   final int casesnormopeso;
   final int casesmoderada;
   final int casessevera;
+  final String transactionHash;
 
   @override
   List<Object> get props => [pointId, name, fullName, country, province, phoneCode,
-    phoneLength, active, latitude, longitude, cases, casesnormopeso, casesmoderada, casessevera];
+    phoneLength, active, latitude, longitude, cases, casesnormopeso, casesmoderada, casessevera,
+    transactionHash];
 
   @override
   bool get stringify => true;
@@ -53,6 +55,7 @@ class Point extends Equatable {
     final casesnormopeso = data['casesnormopeso'] as int;
     final casesmoderada = data['casesmoderada'] as int;
     final casessevera = data['casessevera'] as int;
+    final transactionHash = data['transactionHash']??"";
 
     return Point(
         pointId: documentId,
@@ -68,7 +71,9 @@ class Point extends Equatable {
         cases: cases,
         casesnormopeso: casesnormopeso,
         casesmoderada: casesmoderada,
-        casessevera: casessevera);
+        casessevera: casessevera,
+        transactionHash: transactionHash,
+    );
   }
 
   Map<String, dynamic> toMap() {
@@ -86,6 +91,7 @@ class Point extends Equatable {
       'casesnormopeso': casesnormopeso,
       'casesmoderada': casesmoderada,
       'casessevera': casessevera,
+      'transactionHash': transactionHash,
     };
   }
 }

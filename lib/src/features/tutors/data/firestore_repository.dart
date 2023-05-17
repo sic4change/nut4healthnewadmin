@@ -91,6 +91,7 @@ class FirestoreRepository {
                       casesnormopeso: 0,
                       casesmoderada: 0,
                       casessevera: 0,
+                      transactionHash: "",
                     ));
           }}).toList();
         });

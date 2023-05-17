@@ -46,6 +46,7 @@ class PointDataGridSource extends DataGridSource {
           DataGridCell<int>(columnName: 'Casos Normopeso', value: pointWithProvinceAndCountry.point.casesnormopeso),
           DataGridCell<int>(columnName: 'Casos Moderada', value: pointWithProvinceAndCountry.point.casesmoderada),
           DataGridCell<int>(columnName: 'Casos Severa', value: pointWithProvinceAndCountry.point.casessevera),
+          DataGridCell<String>(columnName: 'Hash de transacción', value: pointWithProvinceAndCountry.point.transactionHash),
         ]);
       }).toList();
     }
@@ -171,7 +172,11 @@ class PointDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[12].value.toString()),
       ),
-
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[13].value.toString()),
+      ),
     ]);
   }
 
