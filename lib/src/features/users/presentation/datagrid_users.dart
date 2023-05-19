@@ -68,8 +68,9 @@ class _UserDataGridState extends LocalizationSampleViewState {
   /// Translate names
   late String _photo, _username, _name, _surnames, _dni, _email, _phone, _role,
       _configuration, _point, _points, _createDate, _address,_pointTransactionHash,
-      _roleTransactionHash, _newUser, _importCSV, _exportXLS, _exportPDF, _total,
-      _editUser, _removeUser, _save, _cancel, _users, _removedUser;
+      _roleTransactionHash, _configurationTransactionHash, _newUser, _importCSV,
+      _exportXLS, _exportPDF, _total, _editUser, _removeUser, _save, _cancel,
+      _users, _removedUser;
 
   late Map<String, double> columnWidths = {
     'Foto': 150,
@@ -87,6 +88,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
     'Dirección': 300,
     'Hash transacción punto': 300,
     'Hash transacción rol': 300,
+    'Hash transacción configuración': 300,
   };
 
   /// Editing controller for forms to perform update the values.
@@ -768,6 +770,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
               address: user.address, role: roleController!.text,
               pointTransactionHash: user.pointTransactionHash,
               roleTransactionHash: user.roleTransactionHash,
+              configurationTransactionHash: user.configurationTransactionHash,
           )
       );
       Navigator.pop(buildContext);
@@ -905,6 +908,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
         _address = 'Address';
         _pointTransactionHash = 'Point transaction hash';
         _roleTransactionHash = 'Role transaction hash';
+        _configurationTransactionHash = 'Configuration transaction hash';
         _newUser = 'Create User';
         _importCSV = 'Import CSV';
         _exportXLS = 'Export XLS';
@@ -933,6 +937,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
         _address = 'Dirección';
         _pointTransactionHash = 'Hash transacción punto';
         _roleTransactionHash = 'Hash transacción rol';
+        _configurationTransactionHash = 'Hash transacción configuración';
         _newUser = 'Crear Usuario';
         _importCSV = 'Importar CSV';
         _exportXLS = 'Exportar XLS';
@@ -961,6 +966,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
         _address = 'Adresse';
         _pointTransactionHash = 'Hachage transaction point';
         _roleTransactionHash = 'Hachage transaction rôle';
+        _configurationTransactionHash = 'Hachage transaction configuration';
         _newUser = 'Créer utilisateur';
         _importCSV = 'Importer CSV';
         _exportXLS = 'Exporter XLS';
@@ -1175,6 +1181,18 @@ class _UserDataGridState extends LocalizationSampleViewState {
                 overflow: TextOverflow.ellipsis,
               )),
         ),
+        GridColumn(
+          columnName: 'Hash transacción configuración',
+          width: columnWidths['Hash transacción configuración']!,
+          columnWidthMode: ColumnWidthMode.lastColumnFill,
+          label: Container(
+              padding: const EdgeInsets.all(8.0),
+              alignment: Alignment.center,
+              child: Text(
+                _configurationTransactionHash,
+                overflow: TextOverflow.ellipsis,
+              )),
+        ),
       ],
     );
   }
@@ -1211,6 +1229,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
     _address = 'Dirección';
     _pointTransactionHash = 'Hash transacción punto';
     _roleTransactionHash = 'Hash transacción rol';
+    _configurationTransactionHash = 'Hash transacción configuración';
     _newUser = 'Crear Usuario';
     _importCSV = 'Importar CSV';
     _exportXLS = 'Exportar XLS';

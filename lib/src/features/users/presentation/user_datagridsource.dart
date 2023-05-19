@@ -49,6 +49,7 @@ class UserDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Dirección', value: userWithConfiguration.user.address),
           DataGridCell<String>(columnName: 'Hash transacción punto', value: userWithConfiguration.user.pointTransactionHash),
           DataGridCell<String>(columnName: 'Hash transacción rol', value: userWithConfiguration.user.roleTransactionHash),
+          DataGridCell<String>(columnName: 'Hash transacción configuración', value: userWithConfiguration.user.configurationTransactionHash),
         ]);
       }).toList();
     }
@@ -230,6 +231,11 @@ class UserDataGridSource extends DataGridSource {
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[14].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[15].value.toString()),
       ),
     ]);
   }

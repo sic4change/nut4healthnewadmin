@@ -14,7 +14,7 @@ class User extends Equatable {
     this.surname, required this.email, this.phone, required this. role, this.dni,
     this.photo, this.point, this.configuration, this.points, this.createdate,
     this.active, this.emptyUser, this.address, this.pointTransactionHash,
-    this.roleTransactionHash});
+    this.roleTransactionHash, this.configurationTransactionHash});
 
   final UserID userId;
   final String? username;
@@ -34,13 +34,14 @@ class User extends Equatable {
   final String? address;
   final String? pointTransactionHash;
   final String? roleTransactionHash;
+  final String? configurationTransactionHash;
 
   @override
   List<Object> get props => [userId, username ?? "", name ?? "", surname ?? "",
     role, dni ?? "", email, phone ?? "", photo ?? "", point ?? "",
     configuration ?? "", points ?? 0, createdate ?? DateTime(0, 0, 0),
     active ?? false, emptyUser ?? false,address?? "",  pointTransactionHash ?? "",
-    roleTransactionHash ?? ""];
+    roleTransactionHash ?? "", configurationTransactionHash?? ""];
 
   @override
   bool get stringify => true;
@@ -72,6 +73,7 @@ class User extends Equatable {
     final address = data ['address'] ?? "";
     final pointTransactionHash = data['pointTransactionHash'] ?? "";
     final roleTransactionHash = data['roleTransactionHash'] ?? "";
+    final configurationTransactionHash = data['configurationTransactionHash']?? "";
 
     return User(
         userId: documentId,
@@ -92,6 +94,7 @@ class User extends Equatable {
         address: address,
         pointTransactionHash: pointTransactionHash,
         roleTransactionHash: roleTransactionHash,
+        configurationTransactionHash: configurationTransactionHash,
     );
   }
 
@@ -114,6 +117,7 @@ class User extends Equatable {
       'address': address,
       'pointTransactionHash': pointTransactionHash,
       'roleTransactionHash': roleTransactionHash,
+      'configurationTransactionHash': configurationTransactionHash,
     };
   }
 }
