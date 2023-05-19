@@ -9,10 +9,12 @@ typedef UserID = String;
 @immutable
 class User extends Equatable {
 
-  const User({required this.userId, this.username, this.name,
-  this.surname, required this.email, this.phone, required this. role, this.dni,
-  this.photo, this.point, this.configuration, this.points, this.createdate,
-  this.active, this.emptyUser});
+  const User({
+    required this.userId, this.username, this.name,
+    this.surname, required this.email, this.phone, required this. role, this.dni,
+    this.photo, this.point, this.configuration, this.points, this.createdate,
+    this.active, this.emptyUser, this.address, this.pointTransactionHash,
+    this.roleTransactionHash});
 
   final UserID userId;
   final String? username;
@@ -29,12 +31,16 @@ class User extends Equatable {
   final DateTime? createdate;
   final bool? active;
   final bool? emptyUser;
+  final String? address;
+  final String? pointTransactionHash;
+  final String? roleTransactionHash;
 
   @override
   List<Object> get props => [userId, username ?? "", name ?? "", surname ?? "",
     role, dni ?? "", email, phone ?? "", photo ?? "", point ?? "",
     configuration ?? "", points ?? 0, createdate ?? DateTime(0, 0, 0),
-    active ?? false, emptyUser ?? false];
+    active ?? false, emptyUser ?? false,address?? "",  pointTransactionHash ?? "",
+    roleTransactionHash ?? ""];
 
   @override
   bool get stringify => true;
@@ -63,6 +69,10 @@ class User extends Equatable {
     final createdate = createdateFirebase.toDate();
     final active = data['active'] ?? false;
     final emptyUser = data['emptyUser'] ?? false;
+    final address = data ['address'] ?? "";
+    final pointTransactionHash = data['pointTransactionHash'] ?? "";
+    final roleTransactionHash = data['roleTransactionHash'] ?? "";
+
     return User(
         userId: documentId,
         username: username,
@@ -78,7 +88,11 @@ class User extends Equatable {
         points: points,
         createdate: createdate,
         active: active,
-        emptyUser: emptyUser);
+        emptyUser: emptyUser,
+        address: address,
+        pointTransactionHash: pointTransactionHash,
+        roleTransactionHash: roleTransactionHash,
+    );
   }
 
   Map<String, dynamic> toMap() {
@@ -97,6 +111,9 @@ class User extends Equatable {
       'createdate': createdate,
       'active': active,
       'emptyUser': emptyUser,
+      'address': address,
+      'pointTransactionHash': pointTransactionHash,
+      'roleTransactionHash': roleTransactionHash,
     };
   }
 }

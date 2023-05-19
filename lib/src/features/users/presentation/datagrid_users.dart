@@ -67,9 +67,9 @@ class _UserDataGridState extends LocalizationSampleViewState {
 
   /// Translate names
   late String _photo, _username, _name, _surnames, _dni, _email, _phone, _role,
-      _configuration, _point, _points, _createDate,  _newUser, _importCSV,
-  _exportXLS, _exportPDF, _total, _editUser, _removeUser, _save, _cancel, _users,
-  _removedUser;
+      _configuration, _point, _points, _createDate, _address,_pointTransactionHash,
+      _roleTransactionHash, _newUser, _importCSV, _exportXLS, _exportPDF, _total,
+      _editUser, _removeUser, _save, _cancel, _users, _removedUser;
 
   late Map<String, double> columnWidths = {
     'Foto': 150,
@@ -83,7 +83,10 @@ class _UserDataGridState extends LocalizationSampleViewState {
     'Configuración': 150,
     'Punto': 200,
     'Puntos': 150,
-    'CreateDate': 150
+    'CreateDate': 150,
+    'Dirección': 300,
+    'Hash transacción punto': 300,
+    'Hash transacción rol': 300,
   };
 
   /// Editing controller for forms to perform update the values.
@@ -752,17 +755,19 @@ class _UserDataGridState extends LocalizationSampleViewState {
   /// Updating the DataGridRows after changing the value and notify the DataGrid
   /// to refresh the view
   void _processCellUpdate(DataGridRow row, BuildContext buildContext) {
-    final String? id = userDataGridSource.getUsers()?.firstWhere((element) => element.user.email == row.getCells()[5].value).user.userId;
+    final User user = userDataGridSource.getUsers()!.firstWhere((element) => element.user.email == row.getCells()[5].value).user;
     if (_formKey.currentState!.validate()) {
       ref.read(usersScreenControllerProvider.notifier).updateUser(
-          User(userId: id!,
+          User(userId: user.userId,
               username: usernameController!.text, name: nameController!.text,
               surname: surnamesController!.text, dni: dniController!.text,
               email: emailController!.text, phone: phoneController!.text,
-              role: roleController!.text,
               point: userDataGridSource.getPoints().firstWhere((element) => element.name == pointController!.text).pointId,
               configuration: userDataGridSource.getConfigurations().firstWhere((element) => element.name == configurationController!.text).id,
-              points: int.tryParse(pointsController!.text)
+              points: int.tryParse(pointsController!.text),
+              address: user.address, role: roleController!.text,
+              pointTransactionHash: user.pointTransactionHash,
+              roleTransactionHash: user.roleTransactionHash,
           )
       );
       Navigator.pop(buildContext);
@@ -897,6 +902,9 @@ class _UserDataGridState extends LocalizationSampleViewState {
         _point = 'Point';
         _points = 'Points';
         _createDate = 'Creation Date';
+        _address = 'Address';
+        _pointTransactionHash = 'Point transaction hash';
+        _roleTransactionHash = 'Role transaction hash';
         _newUser = 'Create User';
         _importCSV = 'Import CSV';
         _exportXLS = 'Export XLS';
@@ -922,6 +930,9 @@ class _UserDataGridState extends LocalizationSampleViewState {
         _point = 'Punto';
         _points = 'Puntos';
         _createDate = 'Fecha alta';
+        _address = 'Dirección';
+        _pointTransactionHash = 'Hash transacción punto';
+        _roleTransactionHash = 'Hash transacción rol';
         _newUser = 'Crear Usuario';
         _importCSV = 'Importar CSV';
         _exportXLS = 'Exportar XLS';
@@ -947,6 +958,9 @@ class _UserDataGridState extends LocalizationSampleViewState {
         _point = 'Point';
         _points = 'Points';
         _createDate = 'Date de création';
+        _address = 'Adresse';
+        _pointTransactionHash = 'Hachage transaction point';
+        _roleTransactionHash = 'Hachage transaction rôle';
         _newUser = 'Créer utilisateur';
         _importCSV = 'Importer CSV';
         _exportXLS = 'Exporter XLS';
@@ -1125,6 +1139,42 @@ class _UserDataGridState extends LocalizationSampleViewState {
                 overflow: TextOverflow.ellipsis,
               ),
             )),
+        GridColumn(
+          columnName: 'Dirección',
+          width: columnWidths['Dirección']!,
+          label: Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _address,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+        GridColumn(
+          columnName: 'Hash transacción punto',
+          width: columnWidths['Hash transacción punto']!,
+          columnWidthMode: ColumnWidthMode.lastColumnFill,
+          label: Container(
+              padding: const EdgeInsets.all(8.0),
+              alignment: Alignment.center,
+              child: Text(
+                _pointTransactionHash,
+                overflow: TextOverflow.ellipsis,
+              )),
+        ),
+        GridColumn(
+          columnName: 'Hash transacción rol',
+          width: columnWidths['Hash transacción rol']!,
+          columnWidthMode: ColumnWidthMode.lastColumnFill,
+          label: Container(
+              padding: const EdgeInsets.all(8.0),
+              alignment: Alignment.center,
+              child: Text(
+                _roleTransactionHash,
+                overflow: TextOverflow.ellipsis,
+              )),
+        ),
       ],
     );
   }
@@ -1158,6 +1208,9 @@ class _UserDataGridState extends LocalizationSampleViewState {
     _point = 'Punto';
     _points = 'Puntos';
     _createDate = 'Fecha alta';
+    _address = 'Dirección';
+    _pointTransactionHash = 'Hash transacción punto';
+    _roleTransactionHash = 'Hash transacción rol';
     _newUser = 'Crear Usuario';
     _importCSV = 'Importar CSV';
     _exportXLS = 'Exportar XLS';

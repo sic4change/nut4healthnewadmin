@@ -46,6 +46,9 @@ class UserDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Configuración', value: userWithConfiguration.configuration?.name),
           DataGridCell<int>(columnName: 'Puntos', value: userWithConfiguration.user.points),
           DataGridCell<DateTime>(columnName: 'CreateDate', value: userWithConfiguration.user.createdate),
+          DataGridCell<String>(columnName: 'Dirección', value: userWithConfiguration.user.address),
+          DataGridCell<String>(columnName: 'Hash transacción punto', value: userWithConfiguration.user.pointTransactionHash),
+          DataGridCell<String>(columnName: 'Hash transacción rol', value: userWithConfiguration.user.roleTransactionHash),
         ]);
       }).toList();
     }
@@ -212,12 +215,22 @@ class UserDataGridSource extends DataGridSource {
         alignment: Alignment.center,
         child: Text(row.getCells()[10].value.toString()),
       ),
-      _buildDate(row.getCells()[11].value)
-      /*Container(
+      _buildDate(row.getCells()[11].value),
+      Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.center,
-        child: Text(row.getCells()[11].value.toString()),
-      ),*/
+        child: Text(row.getCells()[12].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[13].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[14].value.toString()),
+      ),
     ]);
   }
 
