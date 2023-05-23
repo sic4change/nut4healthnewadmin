@@ -11,7 +11,9 @@ class Configuration extends Equatable {
   const Configuration({required this.id, required this.name , required this.money,
     required this.payByConfirmation, required this.payByDiagnosis,
     required this.pointByConfirmation, required this.pointsByDiagnosis,
-    required this.monthlyPayment});
+    required this.monthlyPayment, required this.blockChainConfiguration,
+    required this.hash,
+  });
 
   final ConfigurationID id;
   final String name;
@@ -21,10 +23,13 @@ class Configuration extends Equatable {
   final int pointByConfirmation;
   final int pointsByDiagnosis;
   final int monthlyPayment;
+  final int blockChainConfiguration;
+  final String hash;
 
   @override
   List<Object> get props => [id, name, money, payByConfirmation,
-    pointByConfirmation, pointsByDiagnosis, monthlyPayment];
+    pointByConfirmation, pointsByDiagnosis, monthlyPayment,
+    blockChainConfiguration, hash];
 
   @override
   bool get stringify => true;
@@ -41,6 +46,8 @@ class Configuration extends Equatable {
     final pointByConfirmation = data['pointByConfirmation'];
     final pointsByDiagnosis = data['pointsByDiagnosis'];
     final monthlyPayment = data['monthlyPayment'];
+    final blockChainConfiguration = data['blockChainConfiguration'] ??0;
+    final hash = data['hash']?? "";
 
     return Configuration(
         id: documentId,
@@ -50,7 +57,10 @@ class Configuration extends Equatable {
         payByDiagnosis: payByDiagnosis,
         pointByConfirmation: pointByConfirmation,
         pointsByDiagnosis: pointsByDiagnosis,
-        monthlyPayment: monthlyPayment);
+        monthlyPayment: monthlyPayment,
+        blockChainConfiguration: blockChainConfiguration,
+        hash: hash,
+    );
   }
 
   Map<String, dynamic> toMap() {
@@ -61,7 +71,9 @@ class Configuration extends Equatable {
       'payByDiagnosis': payByDiagnosis,
       'pointByConfirmation': pointByConfirmation,
       'pointsByDiagnosis': pointsByDiagnosis,
-      'monthlyPayment' : monthlyPayment
+      'monthlyPayment' : monthlyPayment,
+      'blockChainConfiguration': blockChainConfiguration,
+      'hash': hash,
     };
   }
 }

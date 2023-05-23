@@ -103,7 +103,10 @@ class FirestoreRepository {
                           payByDiagnosis: 0,
                           pointByConfirmation: 0,
                           pointsByDiagnosis: 0,
-                          monthlyPayment: 0),
+                          monthlyPayment: 0,
+                          blockChainConfiguration: 0,
+                          hash: "",
+                      ),
                       point);
                 } catch (e) {
                   try {
@@ -140,7 +143,10 @@ class FirestoreRepository {
                       payByDiagnosis: 0,
                       pointByConfirmation: 0,
                       pointsByDiagnosis: 0,
-                      monthlyPayment: 0),
+                      monthlyPayment: 0,
+                      blockChainConfiguration: 0,
+                      hash: "",
+                  ),
                   const Point(
                     pointId: "",
                     name: "",

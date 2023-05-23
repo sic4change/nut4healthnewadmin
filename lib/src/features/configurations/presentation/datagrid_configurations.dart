@@ -62,9 +62,9 @@ class _ConfigurationDataGridState extends LocalizationSampleViewState {
 
   /// Translate names
   late String _id, _name, _money, _newConfiguration, _payByConfirmation, _payByDiagnosis,
-      _pointByConfirmation, _pointsByDiagnosis, _monthlyPayment, _importCSV, _exportXLS,
-      _exportPDF, _total, _editConfiguration, _removeConfiguration, _save, _cancel,
-      _configurations, _removedConfiguration;
+      _pointByConfirmation, _pointsByDiagnosis, _monthlyPayment, _blockChainConfiguration,
+      _hash, _importCSV, _exportXLS, _exportPDF, _total, _editConfiguration,
+      _removeConfiguration, _save, _cancel, _configurations, _removedConfiguration;
 
   late Map<String, double> columnWidths = {
     'Id': 150,
@@ -75,6 +75,8 @@ class _ConfigurationDataGridState extends LocalizationSampleViewState {
     'Punto Confirmación': 200,
     'Punto Diagnóstico': 200,
     'Pago Mensual': 200,
+    'Configuración Blockchain': 200,
+    'Hash': 200,
   };
 
   /// Editing controller for forms to perform update the values.
@@ -186,7 +188,9 @@ class _ConfigurationDataGridState extends LocalizationSampleViewState {
                   payByDiagnosis: row[3].toInt(),
                   pointByConfirmation: row[4].toInt(),
                   pointsByDiagnosis: row[5].toInt(),
-                  monthlyPayment: row[6].toInt()
+                  monthlyPayment: row[6].toInt(),
+                  blockChainConfiguration: 0,
+                  hash: "",
                 )
             );
           }
@@ -597,7 +601,9 @@ class _ConfigurationDataGridState extends LocalizationSampleViewState {
               payByDiagnosis: int.parse(payDiagnosisController!.text),
               pointByConfirmation: int.parse(pointConfirmationController!.text),
               pointsByDiagnosis: int.parse(pointDiagnosisController!.text),
-              monthlyPayment: int.parse(payMonthlyController!.text)
+              monthlyPayment: int.parse(payMonthlyController!.text),
+              blockChainConfiguration: 0,
+              hash: "",
           )
       );
       Navigator.pop(buildContext);
@@ -607,18 +613,20 @@ class _ConfigurationDataGridState extends LocalizationSampleViewState {
   /// Updating the DataGridRows after changing the value and notify the DataGrid
   /// to refresh the view
   void _processCellUpdate(DataGridRow row, BuildContext buildContext) {
-    final String? id = configurationDataGridSource.getConfigurations()?.firstWhere((element) => element.id == row.getCells()[0].value).id;
+    final Configuration configuration = configurationDataGridSource.getConfigurations()!.firstWhere((element) => element.id == row.getCells()[0].value);
     if (_formKey.currentState!.validate()) {
       ref.read(configurationsScreenControllerProvider.notifier).updateConfiguration(
           Configuration(
-              id: id!,
+              id: configuration.id,
               name: nameController!.text,
               money: moneyController!.text,
               payByConfirmation: int.parse(payConfirmationController!.text),
               payByDiagnosis: int.parse(payDiagnosisController!.text),
               pointByConfirmation: int.parse(pointConfirmationController!.text),
               pointsByDiagnosis: int.parse(pointDiagnosisController!.text),
-              monthlyPayment: int.parse(payMonthlyController!.text)
+              monthlyPayment: int.parse(payMonthlyController!.text),
+              blockChainConfiguration: configuration.blockChainConfiguration,
+              hash: configuration.hash,
           )
       );
       Navigator.pop(buildContext);
@@ -749,6 +757,8 @@ class _ConfigurationDataGridState extends LocalizationSampleViewState {
         _pointByConfirmation = 'Confirmation Point';
         _pointsByDiagnosis = 'Diagnosis Point';
         _monthlyPayment = 'Montly Pay';
+        _blockChainConfiguration = 'Blockchain Configuration';
+        _hash = 'Hash';
         _newConfiguration = 'Create Configuration';
         _importCSV = 'Import CSV';
         _exportXLS = 'Export XLS';
@@ -770,6 +780,8 @@ class _ConfigurationDataGridState extends LocalizationSampleViewState {
         _pointByConfirmation = 'Punto Confirmación';
         _pointsByDiagnosis = 'Punto Diagnóstico';
         _monthlyPayment = 'Pago Mensual';
+        _blockChainConfiguration = 'Configuración Blockchain';
+        _hash = 'Hash';
         _newConfiguration = 'Crear Configuración';
         _importCSV = 'Importar CSV';
         _exportXLS = 'Exportar XLS';
@@ -791,6 +803,8 @@ class _ConfigurationDataGridState extends LocalizationSampleViewState {
         _pointByConfirmation = 'Point de confirmation';
         _pointsByDiagnosis = 'Point de diagnostic';
         _monthlyPayment = 'Paiement mensuel';
+        _blockChainConfiguration = 'Configuration de la Blockchain';
+        _hash = 'Hacher';
         _newConfiguration = 'Créer un configuration';
         _importCSV = 'Importer CSV';
         _exportXLS = 'Exporter XLS';
@@ -926,6 +940,30 @@ class _ConfigurationDataGridState extends LocalizationSampleViewState {
             ),
           ),
         ),
+        GridColumn(
+          columnName: 'Configuración Blockchain',
+          width: columnWidths['Configuración Blockchain']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _blockChainConfiguration,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+        GridColumn(
+          columnName: 'Hash',
+          width: columnWidths['Hash']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _hash,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -947,6 +985,8 @@ class _ConfigurationDataGridState extends LocalizationSampleViewState {
     _id = 'Id';
     _name = 'Nombre';
     _money = 'Moneda';
+    _blockChainConfiguration = 'Configuración Blockchain';
+    _hash = 'Hash';
     _newConfiguration = 'Crear Configuración';
     _importCSV = 'Importar CSV';
     _exportXLS = 'Exportar XLS';

@@ -32,6 +32,8 @@ class ConfigurationDataGridSource extends DataGridSource {
           DataGridCell<int>(columnName: 'Punto Confirmación', value: configuration.pointByConfirmation),
           DataGridCell<int>(columnName: 'Punto Diagnóstico', value: configuration.pointsByDiagnosis),
           DataGridCell<int>(columnName: 'Pago Mensual', value: configuration.monthlyPayment),
+          DataGridCell<int>(columnName: 'Configuración Blockchain', value: configuration.blockChainConfiguration),
+          DataGridCell<String>(columnName: 'Hash', value: configuration.hash),
         ]);
       }).toList();
     }
@@ -95,6 +97,16 @@ class ConfigurationDataGridSource extends DataGridSource {
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[7].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[8].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[9].value.toString()),
       ),
     ]);
   }
