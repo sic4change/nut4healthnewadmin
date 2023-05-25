@@ -49,7 +49,8 @@ class Visit extends Equatable {
   @override
   List<Object> get props => [visitId, pointId, childId, tutorId, caseId, createDate,
     height, weight, imc, armCircunference, status, measlesVaccinated,
-    vitamineAVaccinated, symptoms, treatments, observations];
+    vitamineAVaccinated, symptoms, treatments, observations,
+  ];
 
   @override
   bool get stringify => true;

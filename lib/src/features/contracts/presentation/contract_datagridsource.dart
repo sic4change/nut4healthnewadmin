@@ -61,6 +61,8 @@ class ContractDataGridSource extends DataGridSource {
           DataGridCell<DateTime>(columnName: 'Fecha Atención Médica', value: contractWithScreenerAndMedicalAndPoint.contract.medicalDate == DateTime(0, 0, 0) ? null : contractWithScreenerAndMedicalAndPoint.contract.medicalDate),
           DataGridCell<bool>(columnName: 'SMS Enviado', value: contractWithScreenerAndMedicalAndPoint.contract.smsSent ?? false),
           DataGridCell<String>(columnName: 'Duración', value: contractWithScreenerAndMedicalAndPoint.contract.duration ?? "0"),
+          DataGridCell<String>(columnName: 'Hash transacción', value: contractWithScreenerAndMedicalAndPoint.contract.transactionHash),
+          DataGridCell<String>(columnName: 'Hash transacción validada', value: contractWithScreenerAndMedicalAndPoint.contract.transactionValidateHash),
         ]);
       }).toList();
     }
@@ -292,7 +294,17 @@ class ContractDataGridSource extends DataGridSource {
       ),
       _buildDate(row.getCells()[19].value.toString()),
       _buildSMSSent(row.getCells()[20].value),
-      _buildDuration(row.getCells()[21].value.toString())
+      _buildDuration(row.getCells()[21].value.toString()),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[22].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[23].value.toString()),
+      ),
     ]);
   }
 

@@ -12,6 +12,7 @@ class Contract extends Equatable {
     this.weight, this.height, this.childName, this.childSurname, this.sex, this.childDNI,
     this.childTutor, this.childPhoneContract, this.childAddress, this.creationDate,
     this.medicalDate, this.smsSent, this.duration, this.percentage,
+    this.transactionHash, this.transactionValidateHash,
   });
 
   final ContractID contractId;
@@ -36,6 +37,8 @@ class Contract extends Equatable {
   final bool? smsSent;
   final String? duration;
   final int? percentage;
+  final String? transactionHash;
+  final String? transactionValidateHash;
 
   @override
   List<Object> get props => [contractId, status ?? "", code ?? "", point ?? "",
@@ -43,7 +46,7 @@ class Contract extends Equatable {
     weight ?? 0.0, height ?? 0.0, childName ?? "", childSurname ?? "", sex ?? "",
     childDNI ?? "", childTutor ?? "", childPhoneContract ?? "", childAddress ?? "",
     creationDate ?? DateTime(0, 0, 0,), medicalDate ?? DateTime(0, 0, 0), smsSent ?? false,
-    duration ?? "0", percentage ?? 0
+    duration ?? "0", percentage ?? 0, transactionHash?? "", transactionValidateHash?? "",
   ];
 
   @override
@@ -76,6 +79,8 @@ class Contract extends Equatable {
     final smsSent = data['smsSent'] ?? false;
     final duration = data['duration'] ?? "0";
     final percentage = data['percentage'] ?? 0;
+    final transactionHash = data['transactionHash']?? "";
+    final transactionValidateHash = data['transactionValidateHash']?? "";
 
     return Contract(
         contractId: documentId,
@@ -99,7 +104,9 @@ class Contract extends Equatable {
         medicalDate: medicalDate,
         smsSent: smsSent,
         duration: duration,
-        percentage: percentage
+        percentage: percentage,
+        transactionHash: transactionHash,
+        transactionValidateHash: transactionValidateHash,
     );
   }
 
@@ -125,7 +132,9 @@ class Contract extends Equatable {
       'medicalDate': medicalDate,
       'smsSent': smsSent,
       'duration': duration,
-      'percentage': percentage
+      'percentage': percentage,
+      'transactionHash': transactionHash,
+      'transactionValidateHash': transactionValidateHash,
     };
   }
 }

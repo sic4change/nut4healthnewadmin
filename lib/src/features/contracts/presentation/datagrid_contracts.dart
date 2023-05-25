@@ -61,8 +61,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
   late String _id, _code, _status, _exportXLS, _exportPDF, _total, _contracts,
       _armCircunference, _armCircunferenceConfirmed, _weight, _height, _name,
       _surnames, _sex, _dni, _tutor, _contact, _address, _date, _point, _agent,
-      _medical, _medicalDate, _smsSent, _duration, _desnutrition
-  ;
+      _medical, _medicalDate, _smsSent, _duration, _desnutrition, _transactionHash,
+      _transactionValidateHash;
 
   late Map<String, double> columnWidths = {
     'Id': 150,
@@ -87,6 +87,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     'Fecha Atención Médica': 150,
     'SMS Enviado': 150,
     'Duración': 150,
+    'Hash transacción': 150,
+    'Hash transacción validada': 150,
   };
 
   /// Used to validate the forms
@@ -329,6 +331,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _smsSent = 'SMS Sent';
         _duration = 'Duration';
         _desnutrition = 'Desnutrition';
+        _transactionHash = 'Transaction Hash';
+        _transactionValidateHash = 'Transaction validate Hash';
         break;
       case 'es_ES':
         _id = 'Id';
@@ -357,6 +361,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _smsSent = 'SMS Enviado';
         _duration = 'Duración';
         _desnutrition = 'Desnutrición';
+        _transactionHash = 'Hash transacción';
+        _transactionValidateHash = 'Hash transacción validada';
         break;
       case 'fr_FR':
         _id = 'Identifiant';
@@ -385,6 +391,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _smsSent = 'SMS envoyé';
         _duration = 'Durée';
         _desnutrition = 'Désnutrition';
+        _transactionHash = 'Hachage de transaction';
+        _transactionValidateHash = 'Hachage de transaction validé';
         break;
     }
     return SfDataGrid(
@@ -674,6 +682,30 @@ class _ContractDataGridState extends LocalizationSampleViewState {
                 overflow: TextOverflow.ellipsis,
               )),
         ),
+        GridColumn(
+            columnName: 'Hash transacción',
+            width: columnWidths['Hash transacción']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _transactionHash,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Hash transacción validada',
+            width: columnWidths['Hash transacción validada']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _transactionValidateHash,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
       ],
     );
   }
@@ -712,6 +744,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     _smsSent = 'SMS Enviado';
     _duration = 'Duración';
     _desnutrition = 'Desnutrición';
+    _transactionHash = 'Hash transacción';
+    _transactionValidateHash = 'Hash transacción validada';
   }
 
 
