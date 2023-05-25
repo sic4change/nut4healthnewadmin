@@ -160,6 +160,17 @@
           },
           {
             "type": "child",
+            "title": "Complicaciones",
+            "subItems": [
+              {
+                "type": "sample",
+                "title": "Complicaciones",
+                "key": "complication_datagrid"
+              }
+            ]
+          },
+          {
+            "type": "child",
             "title": "Notificaciones",
             "subItems": [
               {
