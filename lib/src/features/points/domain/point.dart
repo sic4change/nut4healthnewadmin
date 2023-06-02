@@ -8,7 +8,7 @@ typedef PointID = String;
 class Point extends Equatable {
 
   const Point({required this.pointId, required this.name , required this.fullName,
-    required this.country, required this.province, required this.phoneCode,
+    required this.type, required this.country, required this.province, required this.phoneCode,
     required this.phoneLength, required this.active, required this.latitude,
     required this.longitude, required this.cases, required this.casesnormopeso,
     required this.casesmoderada, required this.casessevera, required this.transactionHash});
@@ -16,6 +16,7 @@ class Point extends Equatable {
   final PointID pointId;
   final String name;
   final String fullName;
+  final String type;
   final String country;
   final String province;
   final String phoneCode;
@@ -30,7 +31,7 @@ class Point extends Equatable {
   final String transactionHash;
 
   @override
-  List<Object> get props => [pointId, name, fullName, country, province, phoneCode,
+  List<Object> get props => [pointId, name, fullName, type, country, province, phoneCode,
     phoneLength, active, latitude, longitude, cases, casesnormopeso, casesmoderada, casessevera,
     transactionHash];
 
@@ -44,6 +45,7 @@ class Point extends Equatable {
     }
     final name = data['name'];
     final fullName = data['fullName'];
+    final type = data['type']?? "";
     final country = data['country'];
     final province = data['province'];
     final phoneCode = data['phoneCode'];
@@ -61,6 +63,7 @@ class Point extends Equatable {
         pointId: documentId,
         name: name,
         fullName: fullName,
+        type: type,
         country: country,
         province: province,
         phoneCode: phoneCode,
@@ -80,6 +83,7 @@ class Point extends Equatable {
     return {
       'name': name,
       'fullName': fullName,
+      'type': type,
       'country': country,
       'province': province,
       'phoneCode': phoneCode,

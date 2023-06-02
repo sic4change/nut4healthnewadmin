@@ -90,6 +90,7 @@ class FirestoreRepository {
                     pointId: "",
                     name: "",
                     fullName: "",
+                    type: "",
                     active: false,
                     country: "",
                     province: "",
