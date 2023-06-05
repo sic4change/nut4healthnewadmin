@@ -22,6 +22,7 @@ class Visit extends Equatable {
     required this.imc,
     required this.armCircunference,
     required this.status,
+    required this.edema,
     required this.measlesVaccinated,
     required this.vitamineAVaccinated,
     required this.symptoms,
@@ -40,6 +41,7 @@ class Visit extends Equatable {
   final double imc;
   final double armCircunference;
   final String status;
+  final String edema;
   final bool measlesVaccinated;
   final bool vitamineAVaccinated;
   final List<Symptom> symptoms;
@@ -48,7 +50,7 @@ class Visit extends Equatable {
 
   @override
   List<Object> get props => [visitId, pointId, childId, tutorId, caseId, createDate,
-    height, weight, imc, armCircunference, status, measlesVaccinated,
+    height, weight, imc, armCircunference, status, edema, measlesVaccinated,
     vitamineAVaccinated, symptoms, treatments, observations,
   ];
 
@@ -70,6 +72,7 @@ class Visit extends Equatable {
     final imc = data['imc']?? 0.0;
     final armCircunference = data['armCircunference']?? 0.0;
     final status = data['status']?? "";
+    final edema = data['edema']?? "";
     final measlesVaccinated = data['measlesVaccinated']?? false;
     final vitamineAVaccinated = data['vitamineAVaccinated']?? false;
 
@@ -114,6 +117,7 @@ class Visit extends Equatable {
       imc: imc,
       armCircunference: armCircunference,
       status: status,
+      edema: edema,
       measlesVaccinated: measlesVaccinated,
       vitamineAVaccinated: vitamineAVaccinated,
       symptoms: symptoms,
@@ -134,6 +138,7 @@ class Visit extends Equatable {
       'imc': imc,
       'armCircunference': armCircunference,
       'status': status,
+      'edema': edema,
       'measlesVaccinated': measlesVaccinated,
       'vitamineAVaccinated': vitamineAVaccinated,
       'symtoms': symptoms,

@@ -54,7 +54,7 @@ class _VisitDataGridState extends LocalizationSampleViewState {
 
   /// Translate names
   late String _point, _tutor, _child, _case,  _createDate, _height, _weight, _imc,
-      _armCirunference, _status, _measlesVaccinated, _vitamineAVaccinated,
+      _armCirunference, _status, _edema, _measlesVaccinated, _vitamineAVaccinated,
       _symptomsES, _symptomsEN, _symptomsFR, _treatmentsES, _treatmentsEN,
       _treatmentsFR, _observations, _exportXLS, _exportPDF, _total, _visits;
 
@@ -69,6 +69,7 @@ class _VisitDataGridState extends LocalizationSampleViewState {
     'IMC': 150,
     'Perímetro braquial (cm)': 150,
     'Estado': 150,
+    'Edema': 150,
     'Vacunado del sarampión': 150,
     'Programa de vacunación Vitamina A': 150,
     'Síntomas (ES)': 200,
@@ -301,6 +302,7 @@ class _VisitDataGridState extends LocalizationSampleViewState {
         _imc = 'BMI';
         _armCirunference = 'Arm circumference (cm)';
         _status = 'Status';
+        _edema = 'Edema';
         _measlesVaccinated = 'Measles vaccinated';
         _vitamineAVaccinated = 'Vitamine A Vaccinated';
         _symptomsES = 'Symptoms (ES)';
@@ -327,6 +329,7 @@ class _VisitDataGridState extends LocalizationSampleViewState {
         _imc = 'IMC';
         _armCirunference = 'Perímetro braquial (cm)';
         _status = 'Estado';
+        _edema = 'Edema';
         _measlesVaccinated = 'Vacunado del sarampión';
         _vitamineAVaccinated = 'Programa de vacunación Vitamina A';
         _symptomsES = 'Síntomas (ES)';
@@ -353,6 +356,7 @@ class _VisitDataGridState extends LocalizationSampleViewState {
         _imc = 'IMC';
         _armCirunference = 'Circonférence du bras (cm)';
         _status = 'État';
+        _edema = 'Oedème';
         _measlesVaccinated = 'Vacciné contre la rougeole';
         _vitamineAVaccinated = 'Programme de vaccination à la vitamine A';
         _symptomsES = 'Symptômes (ES)';
@@ -512,6 +516,18 @@ class _VisitDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
+            columnName: 'Edema',
+            width: columnWidths['Edema']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _edema,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
             columnName: 'Vacunado del sarampión',
             width: columnWidths['Vacunado del sarampión']!,
             label: Container(
@@ -639,6 +655,7 @@ class _VisitDataGridState extends LocalizationSampleViewState {
     _imc = 'IMC';
     _armCirunference = 'Perímetro braquial (cm)';
     _status = 'Estado';
+    _edema = 'Edema';
     _measlesVaccinated = 'Vacunado del sarampión';
     _vitamineAVaccinated = 'Programa de vacunación Vitamina A';
     _symptomsES = 'Síntomas (ES)';

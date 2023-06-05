@@ -36,6 +36,7 @@ class VisitDataGridSource extends DataGridSource {
           DataGridCell<double>(columnName: 'IMC', value: visitCombined.visit.imc),
           DataGridCell<double>(columnName: 'Perímetro braquial (cm)', value: visitCombined.visit.armCircunference),
           DataGridCell<String>(columnName: 'Estado', value: visitCombined.visit.status),
+          DataGridCell<String>(columnName: 'Edema', value: visitCombined.visit.edema),
           DataGridCell<bool>(columnName: 'Vacunado del sarampión', value: visitCombined.visit.measlesVaccinated),
           DataGridCell<bool>(columnName: 'Programa de vacunación Vitamina A', value: visitCombined.visit.vitamineAVaccinated),
           DataGridCell<String>(columnName: 'Síntomas (ES)', value: _symptomsESString(visitCombined.visit.symptoms)),
@@ -98,15 +99,16 @@ class VisitDataGridSource extends DataGridSource {
       _buildStandardContainer(row.getCells()[8].value.toString()),
       _buildStandardContainer(row.getCells()[9].value.toString()),
       _buildStandardContainer(row.getCells()[10].value.toString()),
-      _buildBoolean(row.getCells()[11].value),
+      _buildStandardContainer(row.getCells()[11].value.toString()),
       _buildBoolean(row.getCells()[12].value),
-      _buildStandardContainer(row.getCells()[13].value.toString()),
+      _buildBoolean(row.getCells()[13].value),
       _buildStandardContainer(row.getCells()[14].value.toString()),
       _buildStandardContainer(row.getCells()[15].value.toString()),
       _buildStandardContainer(row.getCells()[16].value.toString()),
       _buildStandardContainer(row.getCells()[17].value.toString()),
       _buildStandardContainer(row.getCells()[18].value.toString()),
       _buildStandardContainer(row.getCells()[19].value.toString()),
+      _buildStandardContainer(row.getCells()[20].value.toString()),
     ]);
   }
 
