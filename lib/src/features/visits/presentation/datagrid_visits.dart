@@ -55,8 +55,9 @@ class _VisitDataGridState extends LocalizationSampleViewState {
   /// Translate names
   late String _point, _tutor, _child, _case,  _createDate, _height, _weight, _imc,
       _armCirunference, _status, _edema, _measlesVaccinated, _vitamineAVaccinated,
-      _symptomsES, _symptomsEN, _symptomsFR, _treatmentsES, _treatmentsEN,
-      _treatmentsFR, _observations, _exportXLS, _exportPDF, _total, _visits;
+      _complicationsES, _complicationsEN, _complicationsFR, _symptomsES,
+      _symptomsEN, _symptomsFR, _treatmentsES, _treatmentsEN, _treatmentsFR,
+      _observations, _exportXLS, _exportPDF, _total, _visits;
 
   late Map<String, double> columnWidths = {
     'Punto': 150,
@@ -72,6 +73,9 @@ class _VisitDataGridState extends LocalizationSampleViewState {
     'Edema': 150,
     'Vacunado del sarampión': 150,
     'Programa de vacunación Vitamina A': 150,
+    'Complicaciones (ES)': 200,
+    'Complicaciones (EN)': 200,
+    'Complicaciones (FR)': 200,
     'Síntomas (ES)': 200,
     'Síntomas (EN)': 200,
     'Síntomas (FR)': 200,
@@ -305,6 +309,9 @@ class _VisitDataGridState extends LocalizationSampleViewState {
         _edema = 'Edema';
         _measlesVaccinated = 'Measles vaccinated';
         _vitamineAVaccinated = 'Vitamine A Vaccinated';
+        _complicationsES = 'Complications (ES)';
+        _complicationsEN = 'Complications (EN)';
+        _complicationsFR = 'Complications (FR)';
         _symptomsES = 'Symptoms (ES)';
         _symptomsEN = 'Symptoms (EN)';
         _symptomsFR = 'Symptoms (FR)';
@@ -332,6 +339,9 @@ class _VisitDataGridState extends LocalizationSampleViewState {
         _edema = 'Edema';
         _measlesVaccinated = 'Vacunado del sarampión';
         _vitamineAVaccinated = 'Programa de vacunación Vitamina A';
+        _complicationsES = 'Complicaciones (ES)';
+        _complicationsEN = 'Complicaciones (EN)';
+        _complicationsFR = 'Complicaciones (FR)';
         _symptomsES = 'Síntomas (ES)';
         _symptomsEN = 'Síntomas (EN)';
         _symptomsFR = 'Síntomas (FR)';
@@ -359,6 +369,9 @@ class _VisitDataGridState extends LocalizationSampleViewState {
         _edema = 'Oedème';
         _measlesVaccinated = 'Vacciné contre la rougeole';
         _vitamineAVaccinated = 'Programme de vaccination à la vitamine A';
+        _complicationsES = 'Complications (ES)';
+        _complicationsEN = 'Complications (EN)';
+        _complicationsFR = 'Complications (FR)';
         _symptomsES = 'Symptômes (ES)';
         _symptomsEN = 'Symptômes (EN)';
         _symptomsFR = 'Symptômes (FR)';
@@ -552,6 +565,42 @@ class _VisitDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
+            columnName: 'Complicaciones (ES)',
+            width: columnWidths['Complicaciones (ES)']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _complicationsES,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Complicaciones (EN)',
+            width: columnWidths['Complicaciones (EN)']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _complicationsEN,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Complicaciones (FR)',
+            width: columnWidths['Complicaciones (FR)']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _complicationsFR,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
             columnName: 'Síntomas (ES)',
             width: columnWidths['Síntomas (ES)']!,
             label: Container(
@@ -658,6 +707,9 @@ class _VisitDataGridState extends LocalizationSampleViewState {
     _edema = 'Edema';
     _measlesVaccinated = 'Vacunado del sarampión';
     _vitamineAVaccinated = 'Programa de vacunación Vitamina A';
+    _complicationsES = 'Complicaciones (ES)';
+    _complicationsEN = 'Complicaciones (EN)';
+    _complicationsFR = 'Complicaciones (FR)';
     _symptomsES = 'Síntomas (ES)';
     _symptomsEN = 'Síntomas (EN)';
     _symptomsFR = 'Síntomas (FR)';

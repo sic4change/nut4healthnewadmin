@@ -1,5 +1,6 @@
 
 /// Packages import
+import 'package:adminnut4health/src/features/complications/domain/complication.dart';
 import 'package:adminnut4health/src/features/symptoms/domain/symptom.dart';
 import 'package:adminnut4health/src/features/treatments/domain/treatment.dart';
 import 'package:adminnut4health/src/features/visits/domain/visitCombined.dart';
@@ -39,6 +40,9 @@ class VisitDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Edema', value: visitCombined.visit.edema),
           DataGridCell<bool>(columnName: 'Vacunado del sarampión', value: visitCombined.visit.measlesVaccinated),
           DataGridCell<bool>(columnName: 'Programa de vacunación Vitamina A', value: visitCombined.visit.vitamineAVaccinated),
+          DataGridCell<String>(columnName: 'Complicaciones (ES)', value: _complicationsESString(visitCombined.visit.complications)),
+          DataGridCell<String>(columnName: 'Complicaciones (EN)', value: _complicationsENString(visitCombined.visit.complications)),
+          DataGridCell<String>(columnName: 'Complicaciones (FR)', value: _complicationsFRString(visitCombined.visit.complications)),
           DataGridCell<String>(columnName: 'Síntomas (ES)', value: _symptomsESString(visitCombined.visit.symptoms)),
           DataGridCell<String>(columnName: 'Síntomas (EN)', value: _symptomsENString(visitCombined.visit.symptoms)),
           DataGridCell<String>(columnName: 'Síntomas (FR)', value: _symptomsFRString(visitCombined.visit.symptoms)),
@@ -109,6 +113,9 @@ class VisitDataGridSource extends DataGridSource {
       _buildStandardContainer(row.getCells()[18].value.toString()),
       _buildStandardContainer(row.getCells()[19].value.toString()),
       _buildStandardContainer(row.getCells()[20].value.toString()),
+      _buildStandardContainer(row.getCells()[21].value.toString()),
+      _buildStandardContainer(row.getCells()[22].value.toString()),
+      _buildStandardContainer(row.getCells()[23].value.toString()),
     ]);
   }
 
@@ -154,6 +161,48 @@ class VisitDataGridSource extends DataGridSource {
         child: _getWidget(const Icon(Icons.calendar_month, size: 20), value.toString()),
       );
     }
+  }
+
+  String _complicationsESString(List<Complication> value){
+    var complications = "";
+
+    for (var complication in value) {
+      complications = "$complications${complication.name}, ";
+    }
+
+    if (complications.contains(", ")) {
+      complications = complications.substring(0, complications.lastIndexOf(", "));
+    }
+
+    return complications;
+  }
+
+  String _complicationsENString(List<Complication> value){
+    var complications = "";
+
+    for (var complication in value) {
+      complications = "$complications${complication.nameEn}, ";
+    }
+
+    if (complications.contains(", ")) {
+      complications = complications.substring(0, complications.lastIndexOf(", "));
+    }
+
+    return complications;
+  }
+
+  String _complicationsFRString(List<Complication> value){
+    var complications = "";
+
+    for (var complication in value) {
+      complications = "$complications${complication.nameFr}, ";
+    }
+
+    if (complications.contains(", ")) {
+      complications = complications.substring(0, complications.lastIndexOf(", "));
+    }
+
+    return complications;
   }
 
   String _symptomsESString(List<Symptom> value){

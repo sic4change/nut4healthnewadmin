@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:adminnut4health/src/features/complications/domain/complication.dart';
 import 'package:adminnut4health/src/features/symptoms/domain/symptom.dart';
 import 'package:adminnut4health/src/features/treatments/domain/treatment.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -25,6 +26,7 @@ class Visit extends Equatable {
     required this.edema,
     required this.measlesVaccinated,
     required this.vitamineAVaccinated,
+    required this.complications,
     required this.symptoms,
     required this.treatments,
     required this.observations,
@@ -44,6 +46,7 @@ class Visit extends Equatable {
   final String edema;
   final bool measlesVaccinated;
   final bool vitamineAVaccinated;
+  final List<Complication> complications;
   final List<Symptom> symptoms;
   final List<Treatment> treatments;
   final String observations;
@@ -51,7 +54,7 @@ class Visit extends Equatable {
   @override
   List<Object> get props => [visitId, pointId, childId, tutorId, caseId, createDate,
     height, weight, imc, armCircunference, status, edema, measlesVaccinated,
-    vitamineAVaccinated, symptoms, treatments, observations,
+    vitamineAVaccinated, complications, symptoms, treatments, observations,
   ];
 
   @override
@@ -75,6 +78,19 @@ class Visit extends Equatable {
     final edema = data['edema']?? "";
     final measlesVaccinated = data['measlesVaccinated']?? false;
     final vitamineAVaccinated = data['vitamineAVaccinated']?? false;
+
+    final complicationsFirebase = data['complications'];
+    final complications = List<Complication>.empty(growable: true);
+    if (complicationsFirebase != null) {
+      for (var complication in complicationsFirebase) {
+        complications.add(Complication(
+            complicationId: complication['id']?? "",
+            name: complication['name']?? "",
+            nameEn: complication['name_en']?? "",
+            nameFr: complication['name_fr']?? ""
+        ));
+      }
+    }
 
     final symptomsFirebase = data['symtoms'];
     final symptoms = List<Symptom>.empty(growable: true);
@@ -120,6 +136,7 @@ class Visit extends Equatable {
       edema: edema,
       measlesVaccinated: measlesVaccinated,
       vitamineAVaccinated: vitamineAVaccinated,
+      complications: complications,
       symptoms: symptoms,
       treatments: treatments,
       observations: observations,
@@ -141,6 +158,7 @@ class Visit extends Equatable {
       'edema': edema,
       'measlesVaccinated': measlesVaccinated,
       'vitamineAVaccinated': vitamineAVaccinated,
+      'complications': complications,
       'symtoms': symptoms,
       'treatments': treatments,
       'observations': observations,
