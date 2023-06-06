@@ -24,10 +24,20 @@ class Visit extends Equatable {
     required this.armCircunference,
     required this.status,
     required this.edema,
-    required this.measlesVaccinated,
+    required this.respiratonStatus,
+    required this.appetiteTest,
+    required this.infection,
+    required this.eyesDeficiency,
+    required this.deshidratation,
+    required this.vomiting,
+    required this.diarrhea,
+    required this.fever,
+    required this.cough,
+    required this.vaccinationCard,
+    required this.rubeolaVaccinated,
     required this.vitamineAVaccinated,
+    required this.acidfolicAndFerroVaccinated,
     required this.complications,
-    required this.symptoms,
     required this.treatments,
     required this.observations,
   });
@@ -44,17 +54,29 @@ class Visit extends Equatable {
   final double armCircunference;
   final String status;
   final String edema;
-  final bool measlesVaccinated;
+  final String respiratonStatus;
+  final String appetiteTest;
+  final String infection;
+  final String eyesDeficiency;
+  final String deshidratation;
+  final String vomiting;
+  final String diarrhea;
+  final String fever;
+  final String cough;
+  final String vaccinationCard;
+  final String rubeolaVaccinated;
   final bool vitamineAVaccinated;
+  final bool acidfolicAndFerroVaccinated;
   final List<Complication> complications;
-  final List<Symptom> symptoms;
   final List<Treatment> treatments;
   final String observations;
 
   @override
   List<Object> get props => [visitId, pointId, childId, tutorId, caseId, createDate,
-    height, weight, imc, armCircunference, status, edema, measlesVaccinated,
-    vitamineAVaccinated, complications, symptoms, treatments, observations,
+    height, weight, imc, armCircunference, status, edema, respiratonStatus, appetiteTest,
+    infection, eyesDeficiency, deshidratation, vomiting, diarrhea, fever, cough,
+    vaccinationCard, rubeolaVaccinated, vitamineAVaccinated, complications, treatments,
+    observations,
   ];
 
   @override
@@ -76,8 +98,19 @@ class Visit extends Equatable {
     final armCircunference = data['armCircunference']?? 0.0;
     final status = data['status']?? "";
     final edema = data['edema']?? "";
-    final measlesVaccinated = data['measlesVaccinated']?? false;
+    final respiratonStatus = data['respiratonStatus']?? "";
+    final appetiteTest = data['appetiteTest']?? "";
+    final infection = data['infection']?? "";
+    final eyesDeficiency = data['eyesDeficiency']?? "";
+    final deshidratation = data['deshidratation']?? "";
+    final vomiting = data['vomiting']?? "";
+    final diarrhea = data['diarrhea']?? "";
+    final fever = data['fever']?? "";
+    final cough = data['cough']?? "";
+    final vaccinationCard = data['vaccinationCard']?? "";
+    final rubeolaVaccinated = data['rubeolaVaccinated']?? "";
     final vitamineAVaccinated = data['vitamineAVaccinated']?? false;
+    final acidfolicAndFerroVaccinated = data['acidfolicAndFerroVaccinated']?? false;
 
     final complicationsFirebase = data['complications'];
     final complications = List<Complication>.empty(growable: true);
@@ -88,19 +121,6 @@ class Visit extends Equatable {
             name: complication['name']?? "",
             nameEn: complication['name_en']?? "",
             nameFr: complication['name_fr']?? ""
-        ));
-      }
-    }
-
-    final symptomsFirebase = data['symtoms'];
-    final symptoms = List<Symptom>.empty(growable: true);
-    if (symptomsFirebase != null) {
-      for (var symptom in symptomsFirebase) {
-        symptoms.add(Symptom(
-            symptomId: symptom['id']?? "",
-            name: symptom['name']?? "",
-            nameEn: symptom['name_en']?? "",
-            nameFr: symptom['name_fr']?? ""
         ));
       }
     }
@@ -134,10 +154,20 @@ class Visit extends Equatable {
       armCircunference: armCircunference,
       status: status,
       edema: edema,
-      measlesVaccinated: measlesVaccinated,
+      respiratonStatus: respiratonStatus,
+      appetiteTest: appetiteTest,
+      infection: infection,
+      eyesDeficiency: eyesDeficiency,
+      deshidratation: deshidratation,
+      vomiting: vomiting,
+      diarrhea: diarrhea,
+      fever: fever,
+      cough: cough,
+      vaccinationCard: vaccinationCard,
+      rubeolaVaccinated: rubeolaVaccinated,
       vitamineAVaccinated: vitamineAVaccinated,
+      acidfolicAndFerroVaccinated: acidfolicAndFerroVaccinated,
       complications: complications,
-      symptoms: symptoms,
       treatments: treatments,
       observations: observations,
     );
@@ -156,10 +186,20 @@ class Visit extends Equatable {
       'armCircunference': armCircunference,
       'status': status,
       'edema': edema,
-      'measlesVaccinated': measlesVaccinated,
+      'respiratonStatus': respiratonStatus,
+      'appetiteTest': appetiteTest,
+      'infection': infection,
+      'eyesDeficiency': eyesDeficiency,
+      'deshidratation': deshidratation,
+      'vomiting': vomiting,
+      'diarrhea': diarrhea,
+      'fever': fever,
+      'cough': cough,
+      'vaccinationCard': vaccinationCard,
+      'rubeolaVaccinated': rubeolaVaccinated,
       'vitamineAVaccinated': vitamineAVaccinated,
+      'acidfolicAndFerroVaccinated': acidfolicAndFerroVaccinated,
       'complications': complications,
-      'symtoms': symptoms,
       'treatments': treatments,
       'observations': observations,
     };

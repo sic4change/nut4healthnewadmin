@@ -54,10 +54,12 @@ class _VisitDataGridState extends LocalizationSampleViewState {
 
   /// Translate names
   late String _point, _tutor, _child, _case,  _createDate, _height, _weight, _imc,
-      _armCirunference, _status, _edema, _measlesVaccinated, _vitamineAVaccinated,
-      _complicationsES, _complicationsEN, _complicationsFR, _symptomsES,
-      _symptomsEN, _symptomsFR, _treatmentsES, _treatmentsEN, _treatmentsFR,
-      _observations, _exportXLS, _exportPDF, _total, _visits;
+      _armCirunference, _status, _edema, _respirationStatus, _appetiteTest,
+      _infection, _eyesDeficiency, _deshidratation, _vomiting, _diarrhea, _fever,
+      _cough, _vaccinationCard, _rubeolaVaccinated, _vitamineAVaccinated,
+      _acidFolicAndFerroVaccinated, _complicationsES, _complicationsEN, _complicationsFR,
+      _treatmentsES, _treatmentsEN, _treatmentsFR, _observations, _exportXLS,
+      _exportPDF, _total, _visits;
 
   late Map<String, double> columnWidths = {
     'Punto': 150,
@@ -71,14 +73,22 @@ class _VisitDataGridState extends LocalizationSampleViewState {
     'Perímetro braquial (cm)': 150,
     'Estado': 150,
     'Edema': 150,
-    'Vacunado del sarampión': 150,
+    'Respiración': 150,
+    'Apetito': 150,
+    'Infección': 150,
+    'Deficiencia ojos': 150,
+    'Deshidratación': 150,
+    'Vómitos': 150,
+    'Diarrea': 150,
+    'Fiebre': 150,
+    'Tos': 150,
+    'Carta de vacunación': 150,
+    'Vacunación rubéola': 150,
     'Programa de vacunación Vitamina A': 150,
+    'Vacunación Ácido fólico y Hierro': 150,
     'Complicaciones (ES)': 200,
     'Complicaciones (EN)': 200,
     'Complicaciones (FR)': 200,
-    'Síntomas (ES)': 200,
-    'Síntomas (EN)': 200,
-    'Síntomas (FR)': 200,
     'Tratamientos (ES)': 200,
     'Tratamientos (EN)': 200,
     'Tratamientos (FR)': 200,
@@ -307,14 +317,22 @@ class _VisitDataGridState extends LocalizationSampleViewState {
         _armCirunference = 'Arm circumference (cm)';
         _status = 'Status';
         _edema = 'Edema';
-        _measlesVaccinated = 'Measles vaccinated';
+        _respirationStatus = 'Respiration status';
+        _appetiteTest = 'Appetite test';
+        _infection = 'Infection';
+        _eyesDeficiency = 'Eyes deficiency';
+        _deshidratation = 'Deshidratation';
+        _vomiting = 'Vomiting';
+        _diarrhea = 'Diarrhea';
+        _fever = 'Fever';
+        _cough = 'Cough';
+        _vaccinationCard = 'Vaccination card';
+        _rubeolaVaccinated = 'Rubeola vaccinated';
         _vitamineAVaccinated = 'Vitamine A Vaccinated';
+        _acidFolicAndFerroVaccinated = 'Acid Folic and Iron Vaccinated';
         _complicationsES = 'Complications (ES)';
         _complicationsEN = 'Complications (EN)';
         _complicationsFR = 'Complications (FR)';
-        _symptomsES = 'Symptoms (ES)';
-        _symptomsEN = 'Symptoms (EN)';
-        _symptomsFR = 'Symptoms (FR)';
         _treatmentsES = 'Treatments (ES)';
         _treatmentsEN = 'Treatments (EN)';
         _treatmentsFR = 'Treatments (FR)';
@@ -337,14 +355,22 @@ class _VisitDataGridState extends LocalizationSampleViewState {
         _armCirunference = 'Perímetro braquial (cm)';
         _status = 'Estado';
         _edema = 'Edema';
-        _measlesVaccinated = 'Vacunado del sarampión';
+        _respirationStatus = 'Respiración';
+        _appetiteTest = 'Apetito';
+        _infection = 'Infección';
+        _eyesDeficiency = 'Deficiencia ojos';
+        _deshidratation = 'Deshidratación';
+        _vomiting = 'Vómitos';
+        _diarrhea = 'Diarrea';
+        _fever = 'Fiebre';
+        _cough = 'Tos';
+        _vaccinationCard = 'Carta de vacunación';
+        _rubeolaVaccinated = 'Vacunación rubéola';
         _vitamineAVaccinated = 'Programa de vacunación Vitamina A';
+        _acidFolicAndFerroVaccinated = 'Vacunación Ácido fólico y Hierro';
         _complicationsES = 'Complicaciones (ES)';
         _complicationsEN = 'Complicaciones (EN)';
         _complicationsFR = 'Complicaciones (FR)';
-        _symptomsES = 'Síntomas (ES)';
-        _symptomsEN = 'Síntomas (EN)';
-        _symptomsFR = 'Síntomas (FR)';
         _treatmentsES = 'Tratamientos (ES)';
         _treatmentsEN = 'Tratamientos (EN)';
         _treatmentsFR = 'Tratamientos (FR)';
@@ -367,14 +393,22 @@ class _VisitDataGridState extends LocalizationSampleViewState {
         _armCirunference = 'Circonférence du bras (cm)';
         _status = 'État';
         _edema = 'Oedème';
-        _measlesVaccinated = 'Vacciné contre la rougeole';
+        _respirationStatus = 'Respiration status';
+        _appetiteTest = 'Appetite test';
+        _infection = 'Infection';
+        _eyesDeficiency = 'Déficience oculaire';
+        _deshidratation = 'Déshydratation';
+        _vomiting = 'Vomissement';
+        _diarrhea = 'Diarrhée';
+        _fever = 'Fièvre';
+        _cough = 'Toux';
+        _vaccinationCard = 'Carnet de vaccination';
+        _rubeolaVaccinated = 'Vacciné contre la rubéole';
         _vitamineAVaccinated = 'Programme de vaccination à la vitamine A';
+        _acidFolicAndFerroVaccinated = 'Vaccination acide folique et fer';
         _complicationsES = 'Complications (ES)';
         _complicationsEN = 'Complications (EN)';
         _complicationsFR = 'Complications (FR)';
-        _symptomsES = 'Symptômes (ES)';
-        _symptomsEN = 'Symptômes (EN)';
-        _symptomsFR = 'Symptômes (FR)';
         _treatmentsES = 'Traitements (ES)';
         _treatmentsEN = 'Traitements (EN)';
         _treatmentsFR = 'Traitements (FR)';
@@ -541,13 +575,132 @@ class _VisitDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
-            columnName: 'Vacunado del sarampión',
-            width: columnWidths['Vacunado del sarampión']!,
+            columnName: 'Respiración',
+            width: columnWidths['Respiración']!,
             label: Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _measlesVaccinated,
+                _respirationStatus,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Apetito',
+            width: columnWidths['Apetito']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _appetiteTest,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Infección',
+            width: columnWidths['Infección']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _infection,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Deficiencia ojos',
+            width: columnWidths['Deficiencia ojos']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _eyesDeficiency,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Deshidratación',
+            width: columnWidths['Deshidratación']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _deshidratation,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Vómitos',
+            width: columnWidths['Vómitos']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _vomiting,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Diarrea',
+            width: columnWidths['Diarrea']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _diarrhea,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Fiebre',
+            width: columnWidths['Fiebre']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _fever,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Tos',
+            width: columnWidths['Tos']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _cough,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),GridColumn(
+            columnName: 'Carta de vacunación',
+            width: columnWidths['Carta de vacunación']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _vaccinationCard,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Vacunación rubéola',
+            width: columnWidths['Vacunación rubéola']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _rubeolaVaccinated,
                 overflow: TextOverflow.ellipsis,
               ),
             )
@@ -560,6 +713,18 @@ class _VisitDataGridState extends LocalizationSampleViewState {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 _vitamineAVaccinated,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Vacunación Ácido fólico y Hierro',
+            width: columnWidths['Vacunación Ácido fólico y Hierro']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _acidFolicAndFerroVaccinated,
                 overflow: TextOverflow.ellipsis,
               ),
             )
@@ -596,42 +761,6 @@ class _VisitDataGridState extends LocalizationSampleViewState {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 _complicationsFR,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-        ),
-        GridColumn(
-            columnName: 'Síntomas (ES)',
-            width: columnWidths['Síntomas (ES)']!,
-            label: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _symptomsES,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-        ),
-        GridColumn(
-            columnName: 'Síntomas (EN)',
-            width: columnWidths['Síntomas (EN)']!,
-            label: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _symptomsEN,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-        ),
-        GridColumn(
-            columnName: 'Síntomas (FR)',
-            width: columnWidths['Síntomas (FR)']!,
-            label: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _symptomsFR,
                 overflow: TextOverflow.ellipsis,
               ),
             )
@@ -705,14 +834,22 @@ class _VisitDataGridState extends LocalizationSampleViewState {
     _armCirunference = 'Perímetro braquial (cm)';
     _status = 'Estado';
     _edema = 'Edema';
-    _measlesVaccinated = 'Vacunado del sarampión';
+    _respirationStatus = 'Respiración';
+    _appetiteTest = 'Apetito';
+    _infection = 'Infección';
+    _eyesDeficiency = 'Deficiencia ojos';
+    _deshidratation = 'Deshidratación';
+    _vomiting = 'Vómitos';
+    _diarrhea = 'Diarrea';
+    _fever = 'Fiebre';
+    _cough = 'Tos';
+    _vaccinationCard = 'Carta de vacunación';
+    _rubeolaVaccinated = 'Vacunación rubéola';
     _vitamineAVaccinated = 'Programa de vacunación Vitamina A';
+    _acidFolicAndFerroVaccinated = 'Vacunación Ácido fólico y Hierro';
     _complicationsES = 'Complicaciones (ES)';
     _complicationsEN = 'Complicaciones (EN)';
     _complicationsFR = 'Complicaciones (FR)';
-    _symptomsES = 'Síntomas (ES)';
-    _symptomsEN = 'Síntomas (EN)';
-    _symptomsFR = 'Síntomas (FR)';
     _treatmentsES = 'Tratamientos (ES)';
     _treatmentsEN = 'Tratamientos (EN)';
     _treatmentsFR = 'Tratamientos (FR)';
