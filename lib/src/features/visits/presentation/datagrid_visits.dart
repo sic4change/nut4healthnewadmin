@@ -58,8 +58,7 @@ class _VisitDataGridState extends LocalizationSampleViewState {
       _infection, _eyesDeficiency, _deshidratation, _vomiting, _diarrhea, _fever,
       _cough, _vaccinationCard, _rubeolaVaccinated, _vitamineAVaccinated,
       _acidFolicAndFerroVaccinated, _complicationsES, _complicationsEN, _complicationsFR,
-      _treatmentsES, _treatmentsEN, _treatmentsFR, _observations, _exportXLS,
-      _exportPDF, _total, _visits;
+      _observations, _exportXLS, _exportPDF, _total, _visits;
 
   late Map<String, double> columnWidths = {
     'Punto': 150,
@@ -89,9 +88,6 @@ class _VisitDataGridState extends LocalizationSampleViewState {
     'Complicaciones (ES)': 200,
     'Complicaciones (EN)': 200,
     'Complicaciones (FR)': 200,
-    'Tratamientos (ES)': 200,
-    'Tratamientos (EN)': 200,
-    'Tratamientos (FR)': 200,
     'Observaciones': 150,
   };
 
@@ -333,9 +329,6 @@ class _VisitDataGridState extends LocalizationSampleViewState {
         _complicationsES = 'Complications (ES)';
         _complicationsEN = 'Complications (EN)';
         _complicationsFR = 'Complications (FR)';
-        _treatmentsES = 'Treatments (ES)';
-        _treatmentsEN = 'Treatments (EN)';
-        _treatmentsFR = 'Treatments (FR)';
         _observations = 'Observations';
 
         _exportXLS = 'Export XLS';
@@ -371,9 +364,6 @@ class _VisitDataGridState extends LocalizationSampleViewState {
         _complicationsES = 'Complicaciones (ES)';
         _complicationsEN = 'Complicaciones (EN)';
         _complicationsFR = 'Complicaciones (FR)';
-        _treatmentsES = 'Tratamientos (ES)';
-        _treatmentsEN = 'Tratamientos (EN)';
-        _treatmentsFR = 'Tratamientos (FR)';
         _observations = 'Observaciones';
 
         _exportXLS = 'Exportar XLS';
@@ -409,9 +399,6 @@ class _VisitDataGridState extends LocalizationSampleViewState {
         _complicationsES = 'Complications (ES)';
         _complicationsEN = 'Complications (EN)';
         _complicationsFR = 'Complications (FR)';
-        _treatmentsES = 'Traitements (ES)';
-        _treatmentsEN = 'Traitements (EN)';
-        _treatmentsFR = 'Traitements (FR)';
         _observations = 'Observations';
 
         _exportXLS = 'Exporter XLS';
@@ -766,42 +753,6 @@ class _VisitDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
-            columnName: 'Tratamientos (ES)',
-            width: columnWidths['Tratamientos (ES)']!,
-            label: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _treatmentsES,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-        ),
-        GridColumn(
-            columnName: 'Tratamientos (EN)',
-            width: columnWidths['Tratamientos (EN)']!,
-            label: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _treatmentsEN,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-        ),
-        GridColumn(
-            columnName: 'Tratamientos (FR)',
-            width: columnWidths['Tratamientos (FR)']!,
-            label: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _treatmentsFR,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-        ),
-        GridColumn(
             columnName: 'Observaciones',
             width: columnWidths['Observaciones']!,
             label: Container(
@@ -850,9 +801,6 @@ class _VisitDataGridState extends LocalizationSampleViewState {
     _complicationsES = 'Complicaciones (ES)';
     _complicationsEN = 'Complicaciones (EN)';
     _complicationsFR = 'Complicaciones (FR)';
-    _treatmentsES = 'Tratamientos (ES)';
-    _treatmentsEN = 'Tratamientos (EN)';
-    _treatmentsFR = 'Tratamientos (FR)';
     _observations = 'Observaciones';
 
     _exportXLS = 'Exportar XLS';

@@ -1,8 +1,6 @@
 
 /// Packages import
 import 'package:adminnut4health/src/features/complications/domain/complication.dart';
-import 'package:adminnut4health/src/features/symptoms/domain/symptom.dart';
-import 'package:adminnut4health/src/features/treatments/domain/treatment.dart';
 import 'package:adminnut4health/src/features/visits/domain/visitCombined.dart';
 import 'package:flutter/material.dart';
 
@@ -54,9 +52,6 @@ class VisitDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Complicaciones (ES)', value: _complicationsESString(visitCombined.visit.complications)),
           DataGridCell<String>(columnName: 'Complicaciones (EN)', value: _complicationsENString(visitCombined.visit.complications)),
           DataGridCell<String>(columnName: 'Complicaciones (FR)', value: _complicationsFRString(visitCombined.visit.complications)),
-          DataGridCell<String>(columnName: 'Tratamientos (ES)', value: _treatmentsES(visitCombined.visit.treatments)),
-          DataGridCell<String>(columnName: 'Tratamientos (EN)', value: _treatmentsEN(visitCombined.visit.treatments)),
-          DataGridCell<String>(columnName: 'Tratamientos (FR)', value: _treatmentsFR(visitCombined.visit.treatments)),
           DataGridCell<String>(columnName: 'Observaciones', value: visitCombined.visit.observations),
         ]);
       }).toList();
@@ -129,9 +124,6 @@ class VisitDataGridSource extends DataGridSource {
       _buildStandardContainer(row.getCells()[26].value.toString()),
       _buildStandardContainer(row.getCells()[27].value.toString()),
       _buildStandardContainer(row.getCells()[28].value.toString()),
-      _buildStandardContainer(row.getCells()[29].value.toString()),
-      _buildStandardContainer(row.getCells()[30].value.toString()),
-      _buildStandardContainer(row.getCells()[31].value.toString()),
     ]);
   }
 
@@ -219,90 +211,6 @@ class VisitDataGridSource extends DataGridSource {
     }
 
     return complications;
-  }
-
-  String _symptomsESString(List<Symptom> value){
-    var symptoms = "";
-
-    for (var symptom in value) {
-      symptoms = "$symptoms${symptom.name}, ";
-    }
-
-    if (symptoms.contains(", ")) {
-      symptoms = symptoms.substring(0, symptoms.lastIndexOf(", "));
-    }
-
-    return symptoms;
-  }
-
-  String _symptomsENString(List<Symptom> value){
-    var symptoms = "";
-
-    for (var symptom in value) {
-      symptoms = "$symptoms${symptom.nameEn}, ";
-    }
-
-    if (symptoms.contains(", ")) {
-      symptoms = symptoms.substring(0, symptoms.lastIndexOf(", "));
-    }
-
-    return symptoms;
-  }
-
-  String _symptomsFRString(List<Symptom> value){
-    var symptoms = "";
-
-    for (var symptom in value) {
-      symptoms = "$symptoms${symptom.nameFr}, ";
-    }
-
-    if (symptoms.contains(", ")) {
-      symptoms = symptoms.substring(0, symptoms.lastIndexOf(", "));
-    }
-
-    return symptoms;
-  }
-
-  String _treatmentsES(List<Treatment> value){
-    var treatments = "";
-
-    for (var treatment in value) {
-      treatments = "$treatments${treatment.name}, ";
-    }
-
-    if (treatments.contains(", ")) {
-      treatments = treatments.substring(0, treatments.lastIndexOf(", "));
-    }
-
-    return treatments;
-  }
-
-  String _treatmentsEN(List<Treatment> value){
-    var treatments = "";
-
-    for (var treatment in value) {
-      treatments = "$treatments${treatment.nameEn}, ";
-    }
-
-    if (treatments.contains(", ")) {
-      treatments = treatments.substring(0, treatments.lastIndexOf(", "));
-    }
-
-    return treatments;
-  }
-
-  String _treatmentsFR(List<Treatment> value){
-    var treatments = "";
-
-    for (var treatment in value) {
-      treatments = "$treatments${treatment.nameFr}, ";
-    }
-
-    if (treatments.contains(", ")) {
-      treatments = treatments.substring(0, treatments.lastIndexOf(", "));
-    }
-
-    return treatments;
   }
 
   Widget _buildStandardContainer(String value) {

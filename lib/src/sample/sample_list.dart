@@ -3,8 +3,6 @@ import 'package:adminnut4health/src/features/childs/presentation/datagrid_childs
 import 'package:adminnut4health/src/features/complications/presentation/datagrid_complications.dart';
 import 'package:adminnut4health/src/features/contracts/presentation/contracts_by_point_and_muac_statistic.dart';
 import 'package:adminnut4health/src/features/notifications/presentation/datagrid_notifications.dart';
-import 'package:adminnut4health/src/features/symptoms/presentation/datagrid_symptoms.dart';
-import 'package:adminnut4health/src/features/treatments/presentation/datagrid_treatments.dart';
 import 'package:adminnut4health/src/features/tutors/presentation/datagrid_tutors.dart';
 import 'package:adminnut4health/src/features/users/presentation/datagrid_users.dart';
 import 'package:adminnut4health/src/features/visits/presentation/datagrid_visits.dart';
@@ -943,8 +941,6 @@ Map<String, Function> getSampleWidget() {
     'child_datagrid': (Key key) => ChildDataGrid(key: key),
     'case_datagrid': (Key key) => CaseDataGrid(key: key),
     'visit_datagrid': (Key key) => VisitDataGrid(key: key),
-    'symptom_datagrid': (Key key) => SymptomDataGrid(key: key),
-    'treatment_datagrid': (Key key) => TreatmentDataGrid(key: key),
     'notification_datagrid': (Key key) => NotificationDataGrid(key: key),
     'complication_datagrid': (Key key) => ComplicationDataGrid(key: key),
 

@@ -138,28 +138,6 @@
           },
           {
             "type": "child",
-            "title": "Síntomas",
-            "subItems": [
-              {
-                "type": "sample",
-                "title": "Síntomas",
-                "key": "symptom_datagrid"
-              }
-            ]
-          },
-          {
-            "type": "child",
-            "title": "Tratamientos",
-            "subItems": [
-              {
-                "type": "sample",
-                "title": "Tratamientos",
-                "key": "treatment_datagrid"
-              }
-            ]
-          },
-          {
-            "type": "child",
             "title": "Complicaciones",
             "subItems": [
               {

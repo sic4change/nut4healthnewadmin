@@ -1,8 +1,6 @@
 import 'dart:collection';
 
 import 'package:adminnut4health/src/features/complications/domain/complication.dart';
-import 'package:adminnut4health/src/features/symptoms/domain/symptom.dart';
-import 'package:adminnut4health/src/features/treatments/domain/treatment.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
@@ -38,7 +36,6 @@ class Visit extends Equatable {
     required this.vitamineAVaccinated,
     required this.acidfolicAndFerroVaccinated,
     required this.complications,
-    required this.treatments,
     required this.observations,
   });
 
@@ -68,14 +65,13 @@ class Visit extends Equatable {
   final bool vitamineAVaccinated;
   final bool acidfolicAndFerroVaccinated;
   final List<Complication> complications;
-  final List<Treatment> treatments;
   final String observations;
 
   @override
   List<Object> get props => [visitId, pointId, childId, tutorId, caseId, createDate,
     height, weight, imc, armCircunference, status, edema, respiratonStatus, appetiteTest,
     infection, eyesDeficiency, deshidratation, vomiting, diarrhea, fever, cough,
-    vaccinationCard, rubeolaVaccinated, vitamineAVaccinated, complications, treatments,
+    vaccinationCard, rubeolaVaccinated, vitamineAVaccinated, complications,
     observations,
   ];
 
@@ -125,20 +121,6 @@ class Visit extends Equatable {
       }
     }
 
-    final treatmentsFirebase = data['treatments'];
-    final treatments = List<Treatment>.empty(growable: true);
-    if (treatmentsFirebase != null) {
-      for (var treatment in treatmentsFirebase) {
-        treatments.add(Treatment(
-            treatmentId: treatment['id']?? "",
-            name: treatment['name']?? "",
-            nameEn: treatment['name_en']?? "",
-            nameFr: treatment['name_fr']?? "",
-            price: treatment['price']?? 0.0)
-        );
-      }
-    }
-
     final observations = data['observations']?? "";
 
     return Visit(
@@ -168,7 +150,6 @@ class Visit extends Equatable {
       vitamineAVaccinated: vitamineAVaccinated,
       acidfolicAndFerroVaccinated: acidfolicAndFerroVaccinated,
       complications: complications,
-      treatments: treatments,
       observations: observations,
     );
   }
@@ -200,7 +181,6 @@ class Visit extends Equatable {
       'vitamineAVaccinated': vitamineAVaccinated,
       'acidfolicAndFerroVaccinated': acidfolicAndFerroVaccinated,
       'complications': complications,
-      'treatments': treatments,
       'observations': observations,
     };
   }
