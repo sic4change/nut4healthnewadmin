@@ -55,7 +55,7 @@ class ContractDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Contacto', value: contractWithScreenerAndMedicalAndPoint.contract.childPhoneContract),
           DataGridCell<String>(columnName: 'Lugar', value: contractWithScreenerAndMedicalAndPoint.contract.childAddress?.replaceAll('ء', '\\u1574')),
           DataGridCell<DateTime>(columnName: 'Fecha', value: contractWithScreenerAndMedicalAndPoint.contract.creationDate == DateTime(0, 0, 0) ? null : contractWithScreenerAndMedicalAndPoint.contract.creationDate),
-          DataGridCell<String>(columnName: 'Puesto Salud', value: contractWithScreenerAndMedicalAndPoint.point?.fullName?.replaceAll('ء', '\\u1574') ?? ""),
+          DataGridCell<String>(columnName: 'Puesto Salud', value: contractWithScreenerAndMedicalAndPoint.point?.name.replaceAll('ء', '\\u1574') ?? ""),
           DataGridCell<String>(columnName: 'Agente Salud', value: contractWithScreenerAndMedicalAndPoint.screener == null ? "" : "${contractWithScreenerAndMedicalAndPoint.screener?.name} ${contractWithScreenerAndMedicalAndPoint.screener?.surname}"),
           DataGridCell<String>(columnName: 'Servicio Salud', value: contractWithScreenerAndMedicalAndPoint.medical == null ? "" : "${contractWithScreenerAndMedicalAndPoint.medical?.name} ${contractWithScreenerAndMedicalAndPoint.medical?.surname}"),
           DataGridCell<DateTime>(columnName: 'Fecha Atención Médica', value: contractWithScreenerAndMedicalAndPoint.contract.medicalDate == DateTime(0, 0, 0) ? null : contractWithScreenerAndMedicalAndPoint.contract.medicalDate),
