@@ -53,7 +53,7 @@ class _VisitDataGridState extends LocalizationSampleViewState {
   var currentUserRole = "";
 
   /// Translate names
-  late String _point, _tutor, _child, _case,  _createDate, _height, _weight, _imc,
+  late String _point, _tutor, _child, _case, _admission, _createDate,  _height, _weight, _imc,
       _armCirunference, _status, _edema, _respirationStatus, _appetiteTest,
       _infection, _eyesDeficiency, _deshidratation, _vomiting, _diarrhea, _fever,
       _cough, _vaccinationCard, _rubeolaVaccinated, _vitamineAVaccinated,
@@ -65,6 +65,7 @@ class _VisitDataGridState extends LocalizationSampleViewState {
     'Madre, padre o tutor': 150,
     'Niño/a': 150,
     'Caso': 150,
+    'Admisión': 150,
     'Fecha de alta': 150,
     'Altura (cm)': 150,
     'Peso (kg)': 150,
@@ -306,6 +307,7 @@ class _VisitDataGridState extends LocalizationSampleViewState {
         _tutor = 'Mother, father or tutor';
         _child = 'Child';
         _case = 'Case';
+        _admission = 'Admission';
         _createDate = 'Register date';
         _height = 'Height (cm)';
         _weight = 'Weight (kg)';
@@ -341,6 +343,7 @@ class _VisitDataGridState extends LocalizationSampleViewState {
         _tutor = 'Madre, padre o tutor';
         _child = 'Niño/a';
         _case = 'Caso';
+        _admission = 'Admisión';
         _createDate = 'Fecha de alta';
         _height = 'Altura (cm)';
         _weight = 'Peso (kg)';
@@ -376,6 +379,7 @@ class _VisitDataGridState extends LocalizationSampleViewState {
         _tutor = 'Mère, père ou tuteur';
         _child = 'Enfant';
         _case = 'Cas';
+        _admission = 'Admission';
         _createDate = 'Date d\'enregistrement';
         _height = 'Taille (cm)';
         _weight = 'Poids (kg)';
@@ -473,6 +477,18 @@ class _VisitDataGridState extends LocalizationSampleViewState {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 _case,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Admisión',
+            width: columnWidths['Admisión']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _admission,
                 overflow: TextOverflow.ellipsis,
               ),
             )
@@ -778,6 +794,7 @@ class _VisitDataGridState extends LocalizationSampleViewState {
     _tutor = 'Madre, padre o tutor';
     _child = 'Niño/a';
     _case = 'Caso';
+    _admission = 'Admisión';
     _createDate = 'Fecha de alta';
     _height = 'Altura (cm)';
     _weight = 'Peso (kg)';

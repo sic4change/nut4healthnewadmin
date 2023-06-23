@@ -37,6 +37,7 @@ class Visit extends Equatable {
     required this.acidfolicAndFerroVaccinated,
     required this.complications,
     required this.observations,
+    required this.admission,
   });
 
   final VisitID visitId;
@@ -66,13 +67,14 @@ class Visit extends Equatable {
   final bool acidfolicAndFerroVaccinated;
   final List<Complication> complications;
   final String observations;
+  final String admission;
 
   @override
   List<Object> get props => [visitId, pointId, childId, tutorId, caseId, createDate,
     height, weight, imc, armCircunference, status, edema, respiratonStatus, appetiteTest,
     infection, eyesDeficiency, deshidratation, vomiting, diarrhea, fever, cough,
     vaccinationCard, rubeolaVaccinated, vitamineAVaccinated, complications,
-    observations,
+    observations, admission,
   ];
 
   @override
@@ -122,6 +124,7 @@ class Visit extends Equatable {
     }
 
     final observations = data['observations']?? "";
+    final admission = data['admission']?? "";
 
     return Visit(
       visitId: documentId,
@@ -151,6 +154,7 @@ class Visit extends Equatable {
       acidfolicAndFerroVaccinated: acidfolicAndFerroVaccinated,
       complications: complications,
       observations: observations,
+      admission: admission,
     );
   }
 
@@ -182,6 +186,7 @@ class Visit extends Equatable {
       'acidfolicAndFerroVaccinated': acidfolicAndFerroVaccinated,
       'complications': complications,
       'observations': observations,
+      'admission': admission,
     };
   }
 }
