@@ -30,6 +30,7 @@ class Visit extends Equatable {
     required this.vomiting,
     required this.diarrhea,
     required this.fever,
+    required this.temperature,
     required this.cough,
     required this.vaccinationCard,
     required this.rubeolaVaccinated,
@@ -38,6 +39,8 @@ class Visit extends Equatable {
     required this.complications,
     required this.observations,
     required this.admission,
+    required this.amoxicilina,
+    required this.otherTratments,
   });
 
   final VisitID visitId;
@@ -60,21 +63,24 @@ class Visit extends Equatable {
   final String vomiting;
   final String diarrhea;
   final String fever;
+  final String temperature;
   final String cough;
   final String vaccinationCard;
   final String rubeolaVaccinated;
-  final bool vitamineAVaccinated;
-  final bool acidfolicAndFerroVaccinated;
+  final String vitamineAVaccinated;
+  final String acidfolicAndFerroVaccinated;
   final List<Complication> complications;
   final String observations;
   final String admission;
+  final String amoxicilina;
+  final String otherTratments;
 
   @override
   List<Object> get props => [visitId, pointId, childId, tutorId, caseId, createDate,
     height, weight, imc, armCircunference, status, edema, respiratonStatus, appetiteTest,
-    infection, eyesDeficiency, deshidratation, vomiting, diarrhea, fever, cough,
-    vaccinationCard, rubeolaVaccinated, vitamineAVaccinated, complications,
-    observations, admission,
+    infection, eyesDeficiency, deshidratation, vomiting, diarrhea, fever, temperature,
+    cough, vaccinationCard, rubeolaVaccinated, vitamineAVaccinated, complications,
+    observations, admission, amoxicilina, otherTratments,
   ];
 
   @override
@@ -104,11 +110,34 @@ class Visit extends Equatable {
     final vomiting = data['vomiting']?? "";
     final diarrhea = data['diarrhea']?? "";
     final fever = data['fever']?? "";
+    final temperature = data['temperature']?? "";
     final cough = data['cough']?? "";
     final vaccinationCard = data['vaccinationCard']?? "";
     final rubeolaVaccinated = data['rubeolaVaccinated']?? "";
-    final vitamineAVaccinated = data['vitamineAVaccinated']?? false;
-    final acidfolicAndFerroVaccinated = data['acidfolicAndFerroVaccinated']?? false;
+
+    final vitamineAVaccinated = data['vitamineAVaccinated'];
+    String vitamineAVaccinatedString = "--";
+    if (vitamineAVaccinated is bool) {
+      vitamineAVaccinatedString = vitamineAVaccinated? "Sí":"No";
+    } else {
+      vitamineAVaccinatedString = vitamineAVaccinated ?? "";
+    }
+
+    final acidfolicAndFerroVaccinated = data['acidfolicAndFerroVaccinated'];
+    String acidfolicAndFerroVaccinatedString = "--";
+    if (acidfolicAndFerroVaccinated is bool) {
+      acidfolicAndFerroVaccinatedString = acidfolicAndFerroVaccinated? "Sí":"No";
+    } else {
+      acidfolicAndFerroVaccinatedString = acidfolicAndFerroVaccinated ?? "";
+    }
+
+    final amoxicilina = data['amoxicilina'];
+    String amoxicilinaString = "--";
+    if (amoxicilina is bool) {
+      amoxicilinaString = amoxicilina? "Sí":"No";
+    } else {
+      amoxicilinaString = amoxicilina ?? "";
+    }
 
     final complicationsFirebase = data['complications'];
     final complications = List<Complication>.empty(growable: true);
@@ -125,6 +154,7 @@ class Visit extends Equatable {
 
     final observations = data['observations']?? "";
     final admission = data['admission']?? "";
+    final otherTratments = data['otherTratments']?? "";
 
     return Visit(
       visitId: documentId,
@@ -147,14 +177,17 @@ class Visit extends Equatable {
       vomiting: vomiting,
       diarrhea: diarrhea,
       fever: fever,
+      temperature: temperature,
       cough: cough,
       vaccinationCard: vaccinationCard,
       rubeolaVaccinated: rubeolaVaccinated,
-      vitamineAVaccinated: vitamineAVaccinated,
-      acidfolicAndFerroVaccinated: acidfolicAndFerroVaccinated,
+      vitamineAVaccinated: vitamineAVaccinatedString,
+      acidfolicAndFerroVaccinated: acidfolicAndFerroVaccinatedString,
       complications: complications,
       observations: observations,
       admission: admission,
+      amoxicilina: amoxicilinaString,
+      otherTratments: otherTratments,
     );
   }
 
@@ -179,6 +212,7 @@ class Visit extends Equatable {
       'vomiting': vomiting,
       'diarrhea': diarrhea,
       'fever': fever,
+      'temperature': temperature,
       'cough': cough,
       'vaccinationCard': vaccinationCard,
       'rubeolaVaccinated': rubeolaVaccinated,
@@ -187,6 +221,8 @@ class Visit extends Equatable {
       'complications': complications,
       'observations': observations,
       'admission': admission,
+      'amoxicilina': amoxicilina,
+      'otherTratments': otherTratments,
     };
   }
 }

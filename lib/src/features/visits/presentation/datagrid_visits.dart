@@ -56,9 +56,10 @@ class _VisitDataGridState extends LocalizationSampleViewState {
   late String _point, _tutor, _child, _case, _admission, _createDate,  _height, _weight, _imc,
       _armCirunference, _status, _edema, _respirationStatus, _appetiteTest,
       _infection, _eyesDeficiency, _deshidratation, _vomiting, _diarrhea, _fever,
-      _cough, _vaccinationCard, _rubeolaVaccinated, _vitamineAVaccinated,
-      _acidFolicAndFerroVaccinated, _complicationsES, _complicationsEN, _complicationsFR,
-      _observations, _exportXLS, _exportPDF, _total, _visits;
+      _temperature, _cough, _vaccinationCard, _rubeolaVaccinated, _vitamineAVaccinated,
+      _acidFolicAndFerroVaccinated, _amoxicilina, _otherTratments, _complicationsES,
+      _complicationsEN, _complicationsFR, _observations, _exportXLS, _exportPDF,
+      _total, _visits;
 
   late Map<String, double> columnWidths = {
     'Punto': 150,
@@ -81,11 +82,14 @@ class _VisitDataGridState extends LocalizationSampleViewState {
     'Vómitos': 150,
     'Diarrea': 150,
     'Fiebre': 150,
+    'Temperatura': 150,
     'Tos': 150,
     'Carta de vacunación': 150,
     'Vacunación rubéola': 150,
     'Programa de vacunación Vitamina A': 150,
     'Vacunación Ácido fólico y Hierro': 150,
+    'Amoxicilina': 150,
+    'Otros tratamientos': 200,
     'Complicaciones (ES)': 200,
     'Complicaciones (EN)': 200,
     'Complicaciones (FR)': 200,
@@ -323,11 +327,14 @@ class _VisitDataGridState extends LocalizationSampleViewState {
         _vomiting = 'Vomiting';
         _diarrhea = 'Diarrhea';
         _fever = 'Fever';
+        _temperature = 'Temperature';
         _cough = 'Cough';
         _vaccinationCard = 'Vaccination card';
         _rubeolaVaccinated = 'Rubeola vaccinated';
         _vitamineAVaccinated = 'Vitamine A Vaccinated';
         _acidFolicAndFerroVaccinated = 'Acid Folic and Iron Vaccinated';
+        _amoxicilina = 'Amoxicillin';
+        _otherTratments = 'Other treatments';
         _complicationsES = 'Complications (ES)';
         _complicationsEN = 'Complications (EN)';
         _complicationsFR = 'Complications (FR)';
@@ -359,11 +366,14 @@ class _VisitDataGridState extends LocalizationSampleViewState {
         _vomiting = 'Vómitos';
         _diarrhea = 'Diarrea';
         _fever = 'Fiebre';
+        _temperature = 'Temperatura';
         _cough = 'Tos';
         _vaccinationCard = 'Carta de vacunación';
         _rubeolaVaccinated = 'Vacunación rubéola';
         _vitamineAVaccinated = 'Programa de vacunación Vitamina A';
         _acidFolicAndFerroVaccinated = 'Vacunación Ácido fólico y Hierro';
+        _amoxicilina = 'Amoxicilina';
+        _otherTratments = 'Otros tratamientos';
         _complicationsES = 'Complicaciones (ES)';
         _complicationsEN = 'Complicaciones (EN)';
         _complicationsFR = 'Complicaciones (FR)';
@@ -395,11 +405,14 @@ class _VisitDataGridState extends LocalizationSampleViewState {
         _vomiting = 'Vomissement';
         _diarrhea = 'Diarrhée';
         _fever = 'Fièvre';
+        _temperature = 'Température';
         _cough = 'Toux';
         _vaccinationCard = 'Carnet de vaccination';
         _rubeolaVaccinated = 'Vacciné contre la rubéole';
         _vitamineAVaccinated = 'Programme de vaccination à la vitamine A';
         _acidFolicAndFerroVaccinated = 'Vaccination acide folique et fer';
+        _amoxicilina = 'Amoxicilline';
+        _otherTratments = 'Autres traitements';
         _complicationsES = 'Complications (ES)';
         _complicationsEN = 'Complications (EN)';
         _complicationsFR = 'Complications (FR)';
@@ -674,6 +687,18 @@ class _VisitDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
+            columnName: 'Temperatura',
+            width: columnWidths['Temperatura']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _temperature,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
             columnName: 'Tos',
             width: columnWidths['Tos']!,
             label: Container(
@@ -728,6 +753,30 @@ class _VisitDataGridState extends LocalizationSampleViewState {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 _acidFolicAndFerroVaccinated,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Amoxicilina',
+            width: columnWidths['Amoxicilina']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _amoxicilina,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Otros tratamientos',
+            width: columnWidths['Otros tratamientos']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _otherTratments,
                 overflow: TextOverflow.ellipsis,
               ),
             )
@@ -810,11 +859,14 @@ class _VisitDataGridState extends LocalizationSampleViewState {
     _vomiting = 'Vómitos';
     _diarrhea = 'Diarrea';
     _fever = 'Fiebre';
+    _temperature = 'Temperatura';
     _cough = 'Tos';
     _vaccinationCard = 'Carta de vacunación';
     _rubeolaVaccinated = 'Vacunación rubéola';
     _vitamineAVaccinated = 'Programa de vacunación Vitamina A';
     _acidFolicAndFerroVaccinated = 'Vacunación Ácido fólico y Hierro';
+    _amoxicilina = 'Amoxicilina';
+    _otherTratments = 'Otros tratamientos';
     _complicationsES = 'Complicaciones (ES)';
     _complicationsEN = 'Complicaciones (EN)';
     _complicationsFR = 'Complicaciones (FR)';
