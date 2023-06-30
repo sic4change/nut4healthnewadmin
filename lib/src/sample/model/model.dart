@@ -12,7 +12,6 @@ import '../model/web_view.dart';
 
 /// Local import
 import '../sample_list.dart';
-import '../widgets/search_bar.dart';
 
 /// WidgetCategory of the each control as Data Visualization, Editors,etc.,
 class WidgetCategory {
