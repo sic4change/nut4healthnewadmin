@@ -65,7 +65,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
     'Teléfono': 150,
     'Fecha de nacimiento': 150,
     'Fecha de alta': 150,
-    'Etnia': 150,
+    'Idioma': 150,
     'Sexo': 150,
     'Vínculo': 150,
     'Estado de la mujer': 150,
@@ -321,7 +321,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
         _phone = 'Teléfono';
         _birthdate = 'Fecha de nacimiento';
         _createDate = 'Fecha de alta';
-        _ethnicity = 'Etnia';
+        _ethnicity = 'Idioma';
         _sex = 'Sexo';
         _maleRelation = 'Vínculo';
         _womanStatus = 'Estado de la mujer';
@@ -346,7 +346,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
         _phone = 'Téléphone';
         _birthdate = 'Date de naissance';
         _createDate = 'Date d\'enregistrement';
-        _ethnicity = 'Appartenance ethnique';
+        _ethnicity = 'Langue';
         _sex = 'Sexe';
         _maleRelation = 'Lier';
         _womanStatus = 'État de femme';
@@ -471,8 +471,8 @@ class _TutorDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
-            columnName: 'Etnia',
-            width: columnWidths['Etnia']!,
+            columnName: 'Idioma',
+            width: columnWidths['Idioma']!,
             label: Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(8.0),
@@ -619,7 +619,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
     _phone = 'Teléfono';
     _birthdate = 'Fecha de nacimiento';
     _createDate = 'Fecha de alta';
-    _ethnicity = 'Etnia';
+    _ethnicity = 'Idioma';
     _sex = 'Sexo';
     _maleRelation = 'Vínculo';
     _womanStatus = 'Estado de la mujer';

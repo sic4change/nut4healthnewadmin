@@ -65,7 +65,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
     'Código': 150,
     'Fecha de alta': 150,
     'Última visita': 150,
-    'Etnia': 150,
+    'Idioma': 150,
     'Sexo': 150,
     'Madre, padre o tutor': 150,
     'Observaciones': 150,
@@ -307,7 +307,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
         _code = 'Código';
         _createDate = 'Fecha de alta';
         _lastDate = 'Última visita';
-        _ethnicity = 'Etnia';
+        _ethnicity = 'Idioma';
         _sex = 'Sexo';
         _tutor = 'Madre, padre o tutor';
         _observations = 'Observaciones';
@@ -325,7 +325,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
         _code = 'Code';
         _createDate = 'Date d\'enregistrement';
         _lastDate = 'Derniere visite';
-        _ethnicity = 'Appartenance ethnique';
+        _ethnicity = 'Langue';
         _sex = 'Sexe';
         _tutor = 'Mère, père ou tuteur';
         _observations = 'Observations';
@@ -443,8 +443,8 @@ class _ChildDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
-            columnName: 'Etnia',
-            width: columnWidths['Etnia']!,
+            columnName: 'Idioma',
+            width: columnWidths['Idioma']!,
             label: Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(8.0),
@@ -507,7 +507,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
     _code = 'Código';
     _createDate = 'Fecha de alta';
     _lastDate = 'Última visita';
-    _ethnicity = 'Etnia';
+    _ethnicity = 'Idioma';
     _sex = 'Sexo';
     _tutor = 'Madre, padre o tutor';
     _observations = 'Observaciones';

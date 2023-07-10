@@ -31,7 +31,7 @@ class ChildDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Código', value: childWithPointAndTutor.child.code),
           DataGridCell<DateTime>(columnName: 'Fecha de alta', value: childWithPointAndTutor.child.createDate),
           DataGridCell<DateTime>(columnName: 'Última visita', value: childWithPointAndTutor.child.lastDate),
-          DataGridCell<String>(columnName: 'Etnia', value: childWithPointAndTutor.child.ethnicity),
+          DataGridCell<String>(columnName: 'Idioma', value: childWithPointAndTutor.child.ethnicity),
           DataGridCell<String>(columnName: 'Sexo', value: childWithPointAndTutor.child.sex),
           DataGridCell<String>(columnName: 'Madre, padre o tutor', value: childWithPointAndTutor.tutor?.name?? ""),
           DataGridCell<String>(columnName: 'Observaciones', value: childWithPointAndTutor.child.observations),
