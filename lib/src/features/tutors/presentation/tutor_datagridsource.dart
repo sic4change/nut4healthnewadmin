@@ -36,8 +36,6 @@ class TutorDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Vínculo', value: tutorWithUser.tutor.maleRelation),
           DataGridCell<String>(columnName: 'Estado de la mujer', value: tutorWithUser.tutor.womanStatus),
           DataGridCell<int>(columnName: 'Edad del bebé', value: tutorWithUser.tutor.babyAge),
-          DataGridCell<double>(columnName: 'Perímetro braquial', value: tutorWithUser.tutor.armCircunference),
-          DataGridCell<String>(columnName: 'Estado', value: tutorWithUser.tutor.status),
           DataGridCell<int>(columnName: 'Semanas', value: tutorWithUser.tutor.weeks),
           DataGridCell<String>(columnName: 'Hijos/as menores a 6 meses', value: tutorWithUser.tutor.childMinor),
           DataGridCell<String>(columnName: 'Observaciones', value: tutorWithUser.tutor.observations),
@@ -100,9 +98,7 @@ class TutorDataGridSource extends DataGridSource {
       _buildStandardContainer(row.getCells()[13].value.toString()),
       _buildStandardContainer(row.getCells()[14].value.toString()),
       _buildStandardContainer(row.getCells()[15].value.toString()),
-      _buildStandardContainer(row.getCells()[16].value.toString()),
-      _buildStandardContainer(row.getCells()[17].value.toString()),
-      _buildActive(row.getCells()[18].value),
+      _buildActive(row.getCells()[16].value),
     ]);
   }
 
