@@ -10,7 +10,7 @@ class Point extends Equatable {
   const Point({required this.pointId, required this.name , required this.fullName,
     required this.type, required this.country, required this.province, required this.phoneCode,
     required this.phoneLength, required this.active, required this.latitude,
-    required this.longitude, required this.cases, required this.casesnormopeso,
+    required this.longitude, required this.language, required this.cases, required this.casesnormopeso,
     required this.casesmoderada, required this.casessevera, required this.transactionHash});
 
   final PointID pointId;
@@ -24,6 +24,7 @@ class Point extends Equatable {
   final bool active;
   final double latitude;
   final double longitude;
+  final String language;
   final int cases;
   final int casesnormopeso;
   final int casesmoderada;
@@ -32,8 +33,8 @@ class Point extends Equatable {
 
   @override
   List<Object> get props => [pointId, name, fullName, type, country, province, phoneCode,
-    phoneLength, active, latitude, longitude, cases, casesnormopeso, casesmoderada, casessevera,
-    transactionHash];
+    phoneLength, active, latitude, longitude, language, cases, casesnormopeso, casesmoderada,
+    casessevera, transactionHash];
 
   @override
   bool get stringify => true;
@@ -53,6 +54,7 @@ class Point extends Equatable {
     final active = data['active'] as bool;
     final latitude = data['latitude'] as double;
     final longitude = data['longitude'] as double;
+    final language = data['language']??"";
     final cases = data['cases'] as int;
     final casesnormopeso = data['casesnormopeso'] as int;
     final casesmoderada = data['casesmoderada'] as int;
@@ -71,6 +73,7 @@ class Point extends Equatable {
         active: active,
         latitude: latitude,
         longitude: longitude,
+        language: language,
         cases: cases,
         casesnormopeso: casesnormopeso,
         casesmoderada: casesmoderada,
@@ -91,6 +94,7 @@ class Point extends Equatable {
       'active': active,
       'latitude': latitude,
       'longitude': longitude,
+      'language': language,
       'cases': cases,
       'casesnormopeso': casesnormopeso,
       'casesmoderada': casesmoderada,

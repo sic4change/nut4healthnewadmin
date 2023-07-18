@@ -131,6 +131,7 @@ class FirestoreRepository {
                     phoneLength: 0,
                     latitude: 0.0,
                     longitude: 0.0,
+                    language: "",
                     cases: 0,
                     casesnormopeso: 0,
                     casesmoderada: 0,

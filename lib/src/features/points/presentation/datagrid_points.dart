@@ -75,6 +75,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
       _active,
       _latitude,
       _longitude,
+      _language,
       _cases,
       _casesnormopeso,
       _casesmoderada,
@@ -103,6 +104,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
     'Activo': 150,
     'Latitud': 200,
     'Longitud': 200,
+    'Idioma': 200,
     'Casos': 150,
     'Casos Normopeso': 150,
     'Casos Moderada': 150,
@@ -119,6 +121,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
       activeController,
       latitudeController,
       longitudeController,
+      languageController,
       casesController,
       casesnormopesoController,
       casesmoderadaController,
@@ -247,10 +250,11 @@ class _PointDataGridState extends LocalizationSampleViewState {
                   active: row[6].toString() == 'true' ? true : false,
                   latitude: row[7] as double,
                   longitude: row[8] as double,
-                  cases: row[9] as int,
-                  casesnormopeso: row[10] as int,
-                  casesmoderada: row[11] as int,
-                  casessevera: row[12] as int,
+                  language: row[9] as String,
+                  cases: row[10] as int,
+                  casesnormopeso: row[11] as int,
+                  casesmoderada: row[12] as int,
+                  casessevera: row[13] as int,
                   transactionHash: "",
                 ));
           }
@@ -619,6 +623,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
         ),
         _buildRow(controller: latitudeController!, columnName: 'Latitud', text: _latitude),
         _buildRow(controller: longitudeController!, columnName: 'Longitud', text: _longitude),
+        _buildRow(controller: languageController!, columnName: 'Idioma', text: _language),
       ],
     );
   }
@@ -672,6 +677,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
         ),
         _buildRow(controller: latitudeController!, columnName: 'Latitud', text: _latitude),
         _buildRow(controller: longitudeController!, columnName: 'Longitud', text: _longitude),
+        _buildRow(controller: languageController!, columnName: 'Idioma', text: _language),
       ],
     );
   }
@@ -685,6 +691,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
     activeController!.text = '✔';
     latitudeController!.text = '';
     longitudeController!.text = '';
+    languageController!.text = '';
   }
 
   // Updating the data to the TextEditingController
@@ -779,6 +786,14 @@ class _PointDataGridState extends LocalizationSampleViewState {
 
     longitudeController!.text = longitude ?? '';
 
+    final String? language = row
+        .getCells()
+        .firstWhere((DataGridCell element) => element.columnName == 'Idioma')
+        ?.value
+        .toString();
+
+    languageController!.text = language ?? '';
+
     final String? cases = row
         .getCells()
         .firstWhere((DataGridCell element) => element.columnName == 'Casos')
@@ -861,6 +876,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
                 active: activeController!.text == '✔' ? true : false,
                 latitude: double.parse(latitudeController!.text),
                 longitude: double.parse(longitudeController!.text),
+                language: languageController!.text,
                 cases: 0,
                 casesnormopeso: 0,
                 casesmoderada: 0,
@@ -900,6 +916,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
               active: activeController!.text == '✔' ? true : false,
               latitude: double.parse(latitudeController!.text),
               longitude: double.parse(longitudeController!.text),
+              language: languageController!.text,
               cases: int.parse(casesController!.text),
               casesnormopeso: int.parse(casesnormopesoController!.text),
               casesmoderada: int.parse(casesmoderadaController!.text),
@@ -1051,6 +1068,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
         _removedPoint = 'Point deleted successfully.';
         _latitude = 'Latitude';
         _longitude = 'Longitude';
+        _language = 'Language';
         _cases = 'Cases';
         _casesnormopeso = 'Normal weight cases';
         _casesmoderada = 'Moderate cases';
@@ -1079,6 +1097,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
         _removedPoint = 'Punto eliminado correctamente';
         _latitude = 'Latitud';
         _longitude = 'Longitud';
+        _language = 'Idioma';
         _cases = 'Casos';
         _casesnormopeso = 'Casos Normopeso';
         _casesmoderada = 'Casos Moderada';
@@ -1107,6 +1126,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
         _removedPoint = 'Point supprimé avec succès.';
         _latitude = 'Latitude';
         _longitude = 'Longitude';
+        _language = 'Langage';
         _cases = 'Cas';
         _casesnormopeso = 'Cas poids normal';
         _casesmoderada = 'Cas modérés';
@@ -1253,6 +1273,17 @@ class _PointDataGridState extends LocalizationSampleViewState {
               ),
             )),
         GridColumn(
+            columnName: 'Idioma',
+            width: columnWidths['Idioma']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _language,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )),
+        GridColumn(
             columnName: 'Casos',
             width: columnWidths['Casos']!,
             label: Container(
@@ -1323,6 +1354,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
     activeController = TextEditingController();
     latitudeController = TextEditingController();
     longitudeController = TextEditingController();
+    languageController = TextEditingController();
     casesController = TextEditingController();
     casesnormopesoController = TextEditingController();
     casesmoderadaController = TextEditingController();
@@ -1339,6 +1371,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
     _active = 'Activo';
     _latitude = 'Latitud';
     _longitude = 'Longitud';
+    _language = 'Idioma';
     _cases = 'Casos';
     _casesnormopeso = 'Casos Normopeso';
     _casesmoderada = 'Casos Moderada';
