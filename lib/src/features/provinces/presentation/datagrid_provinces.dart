@@ -3,6 +3,7 @@
 
 
 import 'package:adminnut4health/src/features/provinces/domain/province.dart';
+import 'package:adminnut4health/src/features/regions/domain/region.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -62,7 +63,7 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
   var currentUserRole = "";
 
   /// Translate names
-  late String _id, _name, _country, _active,  _newProvince, _importCSV, _exportXLS,
+  late String _id, _name, _country, _region, _active,  _newProvince, _importCSV, _exportXLS,
       _exportPDF, _total, _editProvince, _removeProvince, _save, _cancel,
       _provinces, _removedProvince;
 
@@ -70,6 +71,7 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
     'Id': 150,
     'Nombre': 150,
     'País': 150,
+    'Región': 150,
     'Activo': 150,
   };
 
@@ -77,7 +79,6 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
   TextEditingController?
       idController,
       nameController,
-      countryController,
       activeController;
 
   /// Used to validate the forms
@@ -99,6 +100,14 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
       provinceDataGridSource.setCountries(List.empty());
     } else {
       provinceDataGridSource.setCountries(countries.value!);
+    }
+  }
+
+  _saveRegions(AsyncValue<List<Region>>? regions) {
+    if (regions == null) {
+      provinceDataGridSource.setRegions(List.empty());
+    } else {
+      provinceDataGridSource.setRegions(regions.value!);
     }
   }
 
@@ -186,7 +195,12 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
                       .firstWhere(
                           (element) => element.name == row[1].toString())
                       .countryId,
-                  active: row[2].toString() == 'true' ? true : false,
+                  regionId: provinceDataGridSource
+                      .getRegions()
+                      .firstWhere(
+                          (element) => element.name == row[2].toString())
+                      .regionId,
+                  active: row[3].toString() == 'true' ? true : false,
                 )
             );
           }
@@ -214,14 +228,18 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
             color: model.textColor, fontWeight: FontWeight.bold, fontSize: 16),
         title: Text(_newProvince),
         actions: _buildActionCreateButtons(context),
-        content: Scrollbar(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Form(
-              key: _formKey,
-              child: _buildAlertDialogCreateContent(),
-            ),
-          ),
+        content: StatefulBuilder(
+            builder: (context, setState) {
+            return Scrollbar(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Form(
+                  key: _formKey,
+                  child: _buildAlertDialogCreateContent(context, setState),
+                ),
+              ),
+            );
+          }
         ),
       ),
     );
@@ -401,7 +419,7 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
     }
   }
 
-  Widget _buildRowComboSelection({required TextEditingController controller,
+  /*Widget _buildRowComboSelection({required TextEditingController controller,
     required String columnName, required List<String> dropDownMenuItems,
     required String text}) {
     String value = controller.text;
@@ -432,6 +450,74 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
                 return DropdownMenuItem<String>(
                   value: option,
                   child: Text(option.length > 12 ? option.substring(0, 12) + '...' : option),
+                );
+              }).toList()),
+        ),
+      ],
+    );
+  }
+  */
+
+  Widget _buildRowComboSelection(
+      {required BuildContext context,
+        required String optionSelected,
+        required String columnName,
+        required List<String> dropDownMenuItems,
+        required String text,
+        required void Function(void Function()) setState}) {
+    String value = optionSelected;
+    if (optionSelected.isEmpty) {
+      if (dropDownMenuItems.isNotEmpty) {
+        value = dropDownMenuItems[0];
+      } else {
+        value = "";
+      }
+    }
+    return Row(
+      children: <Widget>[
+        Container(
+            width: 150,
+            padding: const EdgeInsets.symmetric(vertical: 15),
+            child: Text(text)),
+        SizedBox(
+          width: 150,
+          child: DropdownButtonFormField<String>(
+              value: value,
+              autofocus: true,
+              focusColor: Colors.transparent,
+              icon: const Icon(Icons.arrow_drop_down_sharp),
+              isExpanded: false,
+              onChanged: (newValue) {
+                setState(() {
+                  value = newValue!;
+                  optionSelected = newValue!;
+                  if (columnName == 'País') {
+                    Country countrySelected = provinceDataGridSource.getCountries()!.firstWhere((element) => element.name == newValue);
+                    ref.watch(provincesScreenControllerProvider.notifier).setCountrySelected(countrySelected);
+                    ref.watch(provincesScreenControllerProvider.notifier).
+                    setRegionOptions(provinceDataGridSource.getRegions().where((element) => element.countryId == countrySelected.countryId).toList());
+                    try {
+                      ref.watch(provincesScreenControllerProvider.notifier).
+                      setRegionSelected(ref.watch(provincesScreenControllerProvider.notifier).getRegionOptions()[0]);
+                    } catch(e) {
+                      ref.watch(provincesScreenControllerProvider.notifier).
+                      setRegionSelected(const Region(regionId: '', name: '', countryId: '', active: false));
+                    }
+                  } else if (columnName == 'Región') {
+                    Region regionSelected = provinceDataGridSource.getRegions()!.firstWhere((element) => element.name == newValue);
+                    ref.watch(provincesScreenControllerProvider.notifier).setRegionSelected(regionSelected);
+                  } else {
+                    activeController!.text = value;
+                  }
+
+                });
+              },
+              items: dropDownMenuItems.map((option) {
+                return DropdownMenuItem<String>(
+                  value: option,
+                  child: Text(option.length > 12
+                      ? option.substring(0, 12) + '...'
+                      : option),
                 );
               }).toList()),
         ),
@@ -473,33 +559,75 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
   }
 
   /// Building the forms to edit the data
-  Widget _buildAlertDialogContent() {
+  Widget _buildAlertDialogContent(BuildContext context, void Function(void Function()) setState) {
     final activeOptions = ["✔", "✘"];
     final countryOptions = provinceDataGridSource.getCountries().map((e) => e.name).toList();
     countryOptions.insert(0, "");
     return Column(
       children: <Widget>[
         _buildRow(controller: nameController!, columnName: 'Nombre', text: _name),
-        _buildRowComboSelection(controller: countryController!, columnName: 'País',
-            dropDownMenuItems: countryOptions, text: _country),
-        _buildRowComboSelection(controller: activeController!, columnName: 'Activo',
-            dropDownMenuItems: activeOptions, text: _active),
+        _buildRowComboSelection(
+          context: context,
+          optionSelected: ref.watch(provincesScreenControllerProvider.notifier).getCountrySelected().name,
+          columnName: 'País',
+          dropDownMenuItems: provinceDataGridSource.getCountries().map((e) => e.name).toList(),
+          text: _country,
+          setState: setState,
+        ),
+        _buildRowComboSelection(
+          context: context,
+          optionSelected: ref.watch(provincesScreenControllerProvider.notifier).getRegionSelected().name,
+          columnName: 'Región',
+          dropDownMenuItems: ref.watch(provincesScreenControllerProvider.notifier)
+              .getRegionOptions().map((e) => e.name).toList(),
+          text: _region,
+          setState: setState,
+        ),
+        _buildRowComboSelection(
+          context: context,
+          optionSelected: activeController!.text,
+          columnName: 'Activo',
+          dropDownMenuItems: activeOptions,
+          text: _active,
+          setState: setState,
+        ),
       ],
     );
   }
 
   /// Building the forms to create the data
-  Widget _buildAlertDialogCreateContent() {
+  Widget _buildAlertDialogCreateContent(BuildContext context, void Function(void Function()) setState) {
     final activeOptions = ["✔", "✘"];
     final countryOptions = provinceDataGridSource.getCountries().map((e) => e.name).toList();
     countryOptions.insert(0, "");
     return Column(
       children: <Widget>[
         _buildRow(controller: nameController!, columnName: 'Nombre', text: _name),
-        _buildRowComboSelection(controller: countryController!, columnName: 'País',
-            dropDownMenuItems: countryOptions, text: _country),
-        _buildRowComboSelection(controller: activeController!, columnName: 'Activo',
-            dropDownMenuItems: activeOptions, text: _active),
+        _buildRowComboSelection(
+          context: context,
+          optionSelected: ref.watch(provincesScreenControllerProvider.notifier).getCountrySelected().name,
+          columnName: 'País',
+          dropDownMenuItems: provinceDataGridSource.getCountries().map((e) => e.name).toList(),
+          text: _country,
+          setState: setState,
+        ),
+        _buildRowComboSelection(
+          context: context,
+          optionSelected: ref.watch(provincesScreenControllerProvider.notifier).getRegionSelected().name,
+          columnName: 'Región',
+          dropDownMenuItems: ref.watch(provincesScreenControllerProvider.notifier)
+              .getRegionOptions().map((e) => e.name).toList(),
+          text: _region,
+          setState: setState,
+        ),
+        _buildRowComboSelection(
+          context: context,
+          optionSelected: activeController!.text,
+          columnName: 'Activo',
+          dropDownMenuItems: activeOptions,
+          text: _active,
+          setState: setState,
+        ),
       ],
     );
   }
@@ -507,7 +635,6 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
   void _createTextFieldContext() {
     idController!.text = '';
     nameController!.text = '';
-    countryController!.text = '';
     activeController!.text = '';
   }
 
@@ -531,14 +658,24 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
 
     nameController!.text = name ?? '';
 
-    final String? code = row
+    final String? countryString = row
         .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'País')
+        .firstWhere((DataGridCell element) => element.columnName == 'País')
+        ?.value
+        .toString();
+    final country = provinceDataGridSource.getCountries().firstWhere((element) => element.name == countryString);
+    ref.watch(provincesScreenControllerProvider.notifier).setCountrySelected(country);
+
+    final String? regionString = row
+        .getCells()
+        .firstWhere((DataGridCell element) => element.columnName == 'Región')
         ?.value
         .toString();
 
-    countryController!.text = code ?? '';
+    final region = provinceDataGridSource.getRegions().firstWhere((element) => element.name == regionString);
+    ref.watch(provincesScreenControllerProvider.notifier).setRegionSelected(region);
+    ref.watch(provincesScreenControllerProvider.notifier).
+    setRegionOptions(provinceDataGridSource.getRegions().where((element) => element.countryId == ref.watch(provincesScreenControllerProvider.notifier).getCountrySelected().countryId).toList());
 
 
     final String? active = row
@@ -564,14 +701,18 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
             color: model.textColor, fontWeight: FontWeight.bold, fontSize: 16),
         title: Text(_editProvince),
         actions: _buildActionButtons(row, context),
-        content: Scrollbar(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Form(
-              key: _formKey,
-              child: _buildAlertDialogContent(),
-            ),
-          ),
+        content: StatefulBuilder(
+            builder: (context, setState) {
+            return Scrollbar(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Form(
+                  key: _formKey,
+                  child: _buildAlertDialogContent(context, setState),
+                ),
+              ),
+            );
+          }
         ),
       ),
     );
@@ -583,7 +724,8 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
           Province(
               provinceId: "",
               name: nameController!.text,
-              country: provinceDataGridSource.getCountries().firstWhere((element) => element.name == countryController!.text).countryId,
+              country: ref.watch(provincesScreenControllerProvider.notifier).getCountrySelected().countryId,
+              regionId: ref.watch(provincesScreenControllerProvider.notifier).getRegionSelected().regionId,
               active: activeController!.text == '✔' ? true : false)
       );
       Navigator.pop(buildContext);
@@ -598,7 +740,8 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
       ref.read(provincesScreenControllerProvider.notifier).updateProvince(
           Province(provinceId: id!,
               name: nameController!.text,
-              country: provinceDataGridSource.getCountries().firstWhere((element) => element.name == countryController!.text).countryId,
+              country: ref.watch(provincesScreenControllerProvider.notifier).getCountrySelected().countryId,
+              regionId: ref.watch(provincesScreenControllerProvider.notifier).getRegionSelected().regionId,
               active: activeController!.text == '✔' ? true : false
           )
       );
@@ -726,6 +869,7 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
         _id = 'Id';
         _name = 'Name';
         _country = 'Country';
+        _region = 'Region';
         _active = 'Active';
         _newProvince = 'New Municipality';
         _importCSV = 'Import CSV';
@@ -743,6 +887,7 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
         _id = 'Id';
         _name = 'Nombre';
         _country = 'País';
+        _region = 'Región';
         _active = 'Activo';
         _newProvince = 'Crear Municipio';
         _importCSV = 'Importar CSV';
@@ -760,6 +905,7 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
         _id = 'Id';
         _name = 'Nom';
         _country = 'Code';
+        _region = 'Région';
         _active = 'Actif';
         _newProvince = 'Créer un Municipalité';
         _importCSV = 'Importer CSV';
@@ -837,6 +983,18 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
           ),
         ),
         GridColumn(
+          columnName: 'Región',
+          width: columnWidths['Región']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _region,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+        GridColumn(
           columnName: 'Activo',
           width: columnWidths['Activo']!,
           label: Container(
@@ -854,16 +1012,16 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
   @override
   void initState() {
     super.initState();
-    provinceDataGridSource = ProvinceDataGridSource(List.empty(), List.empty());
+    provinceDataGridSource = ProvinceDataGridSource(List.empty(), List.empty(), List.empty());
     idController = TextEditingController();
     nameController = TextEditingController();
-    countryController = TextEditingController();
     activeController = TextEditingController();
     selectedLocale = model.locale.toString();
 
     _id = 'Id';
     _name = 'Nombre';
     _country = 'País';
+    _region = 'Región';
     _active = 'Activo';
     _newProvince = 'Crear Municipio';
     _importCSV = 'Importar CSV';
@@ -874,7 +1032,7 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
     _removeProvince = 'Eliminar';
     _cancel = 'Cancelar';
     _save = 'Guardar';
-    _provinces = 'Provincias';
+    _provinces = 'Municipios';
     _removedProvince = '';
   }
 
@@ -904,13 +1062,21 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
             });
           }
           final countriesAsyncValue = ref.watch(countriesStreamProvider);
+          final regionsAsyncValue = ref.watch(regionsStreamProvider);
           final provinciesAsyncValue = ref.watch(provincesStreamProvider);
+
           if (countriesAsyncValue.value != null) {
             _saveCountries(countriesAsyncValue);
           }
+
+          if (regionsAsyncValue.value != null) {
+            _saveRegions(regionsAsyncValue);
+          }
+
           if (provinciesAsyncValue.value != null) {
             _saveProvinces(provinciesAsyncValue);
           }
+
           return _buildView(provinciesAsyncValue);
         });
   }

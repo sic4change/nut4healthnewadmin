@@ -96,7 +96,7 @@ class FirestoreRepository {
                 return CityWithProvinceAndCountry(city, province, country);
               } catch(e) {
                 const Province province = Province(provinceId: '', name: '',
-                    country: '', active: false);
+                    country: '', regionId: '', active: false);
                 const Country country = Country(countryId: '', name: '',
                     code: '', active: false, cases: 0, casesnormopeso: 0,
                     casesmoderada: 0, casessevera: 0);

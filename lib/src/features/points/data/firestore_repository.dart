@@ -105,7 +105,7 @@ class FirestoreRepository {
               final Country country = countryMap[point.country]!;
               return PointWithProvinceAndCountry(point, province, country);
             } catch(e) {
-              const Province province = Province(provinceId: '', name: '', country: '',
+              const Province province = Province(provinceId: '', name: '', country: '', regionId: '',
                   active: false);
               const Country country = Country(countryId: '', name: '', code: '',
                   active: false, cases: 0, casesnormopeso: 0, casesmoderada: 0,
