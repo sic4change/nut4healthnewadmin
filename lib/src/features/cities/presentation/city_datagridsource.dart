@@ -1,5 +1,6 @@
 /// Dart import
 /// Packages import
+import 'package:adminnut4health/src/features/regions/domain/region.dart';
 import 'package:flutter/material.dart';
 
 /// DataGrid import
@@ -15,16 +16,20 @@ class CityDataGridSource extends DataGridSource {
   /// Creates the city data source class with required details.
   CityDataGridSource(List<CityWithProvinceAndCountry> cityData,
       List<Province> provinceData,
-      List<Country> countryData) {
+      List<Country> countryData,
+      List<Region> regionData,
+      ) {
     _cities = cityData;
     _provinces = provinceData;
     _countries = countryData;
+    _regions = regionData;
     buildDataGridRows();
   }
 
   List<DataGridRow> _dataGridRows = <DataGridRow>[];
   List<CityWithProvinceAndCountry>? _cities = <CityWithProvinceAndCountry>[];
   List<Country> _countries = <Country>[];
+  List<Region> _regions = <Region>[];
   List<Province> _provinces = <Province>[];
 
 
@@ -36,6 +41,7 @@ class CityDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Id', value: cityWithProvinceAndCountry.city.cityId),
           DataGridCell<String>(columnName: 'Nombre', value: cityWithProvinceAndCountry.city.name),
           DataGridCell<String>(columnName: 'País', value: cityWithProvinceAndCountry.country?.name),
+          DataGridCell<String>(columnName: 'Región', value: cityWithProvinceAndCountry.region?.name),
           DataGridCell<String>(columnName: 'Municipio', value: cityWithProvinceAndCountry.province?.name),
           DataGridCell<bool>(columnName: 'Activo', value: cityWithProvinceAndCountry.city.active),
         ]);
@@ -122,7 +128,12 @@ class CityDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[3].value.toString()),
       ),
-      _buildActive(row.getCells()[4].value)
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[4].value.toString()),
+      ),
+      _buildActive(row.getCells()[5].value)
     ]);
   }
 
@@ -142,6 +153,14 @@ class CityDataGridSource extends DataGridSource {
     return _countries;
   }
 
+  setRegions(List<Region> regionData) {
+    _regions = regionData;
+  }
+
+  List<Region> getRegions() {
+    return _regions;
+  }
+
   setProvinces(List<Province> provinceData) {
     _provinces = provinceData;
   }
@@ -149,7 +168,6 @@ class CityDataGridSource extends DataGridSource {
   List<Province> getProvinces() {
     return _provinces;
   }
-
 
   /// Update DataSource
   void updateDataSource() {
