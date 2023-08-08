@@ -82,6 +82,7 @@ class FirestoreRepository {
                       fullName: "",
                       type: "",
                       country: "",
+                      regionId: '',
                       active: false,
                       province: "",
                       phoneCode: "",

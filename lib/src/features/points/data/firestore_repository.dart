@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:adminnut4health/src/features/regions/domain/region.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -18,8 +19,13 @@ String documentIdFromCurrentDate() {
 class FirestorePath {
   static String country(String uid) => 'countries/$uid';
   static String countries() => 'countries';
+
+  static String region(String uid) => 'regions/$uid';
+  static String regions() => 'regions';
+
   static String province(String uid) => 'provinces/$uid';
   static String provinces() => 'provinces';
+
   static String point(String uid) => 'points/$uid';
   static String points() => 'points';
 }
@@ -83,6 +89,12 @@ class FirestoreRepository {
         builder: (data, documentId) => Country.fromMap(data, documentId),
       );
 
+  Stream<List<Region>> watchRegions() =>
+      _dataSource.watchCollection(
+        path: FirestorePath.regions(),
+        builder: (data, documentId) => Region.fromMap(data, documentId),
+      );
+
   Stream<List<Province>> watchProvinces() =>
       _dataSource.watchCollection(
         path: FirestorePath.provinces(),
@@ -91,27 +103,38 @@ class FirestoreRepository {
 
 
   Stream<List<PointWithProvinceAndCountry>> watchPointsWithProvincesAndCountrys() {
-    return CombineLatestStream.combine3(watchPoints(), watchProvinces(), watchCountries(),
-            (List<Point> points, List<Province> provinces, List<Country> countries) {
+    return CombineLatestStream.combine4(
+        watchPoints(),
+        watchProvinces(),
+        watchCountries(),
+        watchRegions(),
+            (List<Point> points,
+             List<Province> provinces,
+             List<Country> countries,
+             List<Region> regions,
+            ) {
           final Map<String, Province> provinceMap = Map.fromEntries(
             provinces.map((province) => MapEntry(province.provinceId, province)),
           );
+
           final Map<String, Country> countryMap = Map.fromEntries(
             countries.map((country) => MapEntry(country.countryId, country)),
           );
+
+          final Map<String, Region> regionMap = Map.fromEntries(
+            regions.map((region) => MapEntry(region.regionId, region)),
+          );
+
           return points.map((point)  {
-            try {
-              final Province province = provinceMap[point.province]!;
-              final Country country = countryMap[point.country]!;
-              return PointWithProvinceAndCountry(point, province, country);
-            } catch(e) {
-              const Province province = Province(provinceId: '', name: '', country: '', regionId: '',
-                  active: false);
-              const Country country = Country(countryId: '', name: '', code: '',
-                  active: false, cases: 0, casesnormopeso: 0, casesmoderada: 0,
-                  casessevera: 0);
-              return PointWithProvinceAndCountry(point, province, country);
-            }
+            final Province province = provinceMap[point.province]??
+              const Province(provinceId: '', name: '', country: '', regionId: '', active: false);
+
+            final Country country = countryMap[point.country]?? const Country(countryId: '', name: '', code: '',
+                active: false, cases: 0, casesnormopeso: 0, casesmoderada: 0, casessevera: 0);
+
+            final Region region = regionMap[point.regionId]?? const Region(regionId: '', name: '', countryId: '', active: false);
+
+            return PointWithProvinceAndCountry(point, province, country, region);
           }).toList();
         });
   }
@@ -148,6 +171,15 @@ final countriesStreamProvider = StreamProvider.autoDispose<List<Country>>((ref) 
   }
   final database = ref.watch(databaseProvider);
   return database.watchCountries();
+});
+
+final regionsStreamProvider = StreamProvider.autoDispose<List<Region>>((ref) {
+  final user = ref.watch(authStateChangesProvider).value;
+  if (user == null) {
+    throw AssertionError('User can\'t be null');
+  }
+  final database = ref.watch(databaseProvider);
+  return database.watchRegions();
 });
 
 final pointStreamProvider =

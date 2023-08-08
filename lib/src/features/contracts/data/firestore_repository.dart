@@ -113,7 +113,7 @@ class FirestoreRepository {
 
   Stream<List<ContractWithScreenerAndMedicalAndPoint>> watchContractWithConfigurationAndPoints() {
     const emptyUser = User(userId: '', name: '', email: '', role: '');
-    const emptyPoint = Point(pointId: '', name: '', fullName: '', type: '', country: '',
+    const emptyPoint = Point(pointId: '', name: '', fullName: '', type: '', country: '', regionId: '',
         province: '', phoneCode: '', phoneLength: 0, active: false, latitude: 0.0, longitude: 0.0,
         language: "", cases: 0, casesnormopeso: 0, casesmoderada: 0, casessevera: 0, transactionHash: "");
     return CombineLatestStream.combine3(
@@ -135,7 +135,7 @@ class FirestoreRepository {
   }
 
   Stream<List<ContractPointStadistic>> watchContractPoints(String pointId) {
-    const emptyPoint = Point(pointId: '', name: '', fullName: '', type: '', country: '',
+    const emptyPoint = Point(pointId: '', name: '', fullName: '', type: '', country: '', regionId: '',
         province: '', phoneCode: '', phoneLength: 0,  active: false, latitude: 0.0, longitude: 0.0,
         language: "", cases: 0, casesnormopeso: 0, casesmoderada: 0, casessevera: 0, transactionHash: "");
     return CombineLatestStream.combine2(
