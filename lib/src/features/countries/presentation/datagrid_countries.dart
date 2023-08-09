@@ -61,7 +61,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
   var currentUserRole = "";
 
   /// Translate names
-  late String _id, _name, _code, _active, _cases, _casesNormopeso, _casesModerada,
+  late String _id, _name, _code, _active, _needValidation, _cases, _casesNormopeso, _casesModerada,
       _casesSevera, _newCountry, _importCSV, _exportXLS, _exportPDF, _total,
       _editCountry, _removeCountry, _save, _cancel, _countries, _removedCountry;
 
@@ -70,6 +70,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
     'Nombre': 150,
     'Código': 150,
     'Activo': 150,
+    'Necesita validación': 200,
     'Casos': 150,
     'Casos Normopeso': 150,
     'Casos Moderada': 150,
@@ -82,6 +83,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
       nameController,
       codeController,
       activeController,
+      needValidationController,
       casesController,
       casesNormopesoController,
       casesModeradaController,
@@ -182,10 +184,11 @@ class _CountryDataGridState extends LocalizationSampleViewState {
                   name: row[0].toString(),
                   code: row[1].toString(),
                   active: row[2].toString() == 'true' ? true : false,
-                  cases: int.parse(row[3].toString()),
-                  casesnormopeso: int.parse(row[4].toString()),
-                  casesmoderada: int.parse(row[5].toString()),
-                  casessevera: int.parse(row[6].toString())
+                  needValidation: row[3].toString() == 'true' ? true : false,
+                  cases: int.parse(row[4].toString()),
+                  casesnormopeso: int.parse(row[5].toString()),
+                  casesmoderada: int.parse(row[6].toString()),
+                  casessevera: int.parse(row[7].toString())
                 )
             );
           }
@@ -489,6 +492,8 @@ class _CountryDataGridState extends LocalizationSampleViewState {
         _buildRow(controller: codeController!, columnName: 'Código', text: _code),
         _buildRowComboSelection(controller: activeController!, columnName: 'Activo',
             dropDownMenuItems: activeOptions, text: _active),
+        _buildRowComboSelection(controller: needValidationController!, columnName: 'Necesita validación',
+            dropDownMenuItems: activeOptions, text: _needValidation),
       ],
     );
   }
@@ -502,6 +507,8 @@ class _CountryDataGridState extends LocalizationSampleViewState {
         _buildRow(controller: codeController!, columnName: 'Código', text: _code),
         _buildRowComboSelection(controller: activeController!, columnName: 'Activo',
             dropDownMenuItems: activeOptions, text: _active),
+        _buildRowComboSelection(controller: needValidationController!, columnName: 'Necesita validación',
+            dropDownMenuItems: activeOptions, text: _needValidation),
       ],
     );
   }
@@ -511,6 +518,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
     nameController!.text = '';
     codeController!.text = '';
     activeController!.text = '';
+    needValidationController!.text = '';
   }
 
   // Updating the data to the TextEditingController
@@ -553,6 +561,16 @@ class _CountryDataGridState extends LocalizationSampleViewState {
         .toString();
 
     activeController!.text = active != "false" ? '✔' : '✘';
+
+    final String? needValidation = row
+        .getCells()
+        .firstWhere(
+          (DataGridCell element) => element.columnName == 'Necesita validación',
+    )
+        ?.value
+        .toString();
+
+    needValidationController!.text = needValidation != "false" ? '✔' : '✘';
 
     final String? cases = row
         .getCells()
@@ -624,6 +642,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
               name: nameController!.text,
               code: codeController!.text,
               active: activeController!.text == '✔' ? true : false,
+              needValidation: needValidationController!.text == '✔' ? true : false,
               cases: 0,
               casesnormopeso: 0,
               casesmoderada: 0,
@@ -644,6 +663,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
               name: nameController!.text,
               code: codeController!.text,
               active: activeController!.text == '✔' ? true : false,
+              needValidation: needValidationController!.text == '✔' ? true : false,
               cases: int.parse(casesController!.text),
               casesnormopeso: int.parse(casesNormopesoController!.text),
               casesmoderada: int.parse(casesModeradaController!.text),
@@ -774,6 +794,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
         _name = 'Name';
         _code = 'Code';
         _active = 'Active';
+        _needValidation = 'Need validation';
         _cases = 'Cases';
         _casesNormopeso = 'Normal weight cases';
         _casesModerada = 'Moderate cases';
@@ -794,6 +815,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
         _name = 'Nombre';
         _code = 'Código';
         _active = 'Activo';
+        _needValidation = 'Necesita validación';
         _cases = 'Casos';
         _casesNormopeso = 'Casos Normopeso';
         _casesModerada = 'Casos Moderada';
@@ -815,6 +837,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
         _name = 'Nom';
         _code = 'Code';
         _active = 'Actif';
+        _needValidation = 'Besoin de validation';
         _cases = 'Cas';
         _casesNormopeso = 'Cas poids normal';
         _casesModerada = 'Cas modérés';
@@ -906,6 +929,17 @@ class _CountryDataGridState extends LocalizationSampleViewState {
               )),
         ),
         GridColumn(
+          columnName: 'Necesita validación',
+          width: columnWidths['Necesita validación']!,
+          label: Container(
+              padding: const EdgeInsets.all(8.0),
+              alignment: Alignment.center,
+              child: Text(
+                _needValidation,
+                overflow: TextOverflow.ellipsis,
+              )),
+        ),
+        GridColumn(
           columnName: 'Casos',
           width: columnWidths['Casos']!,
           label: Container(
@@ -961,6 +995,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
     nameController = TextEditingController();
     codeController = TextEditingController();
     activeController = TextEditingController();
+    needValidationController = TextEditingController();
     casesController = TextEditingController();
     casesNormopesoController = TextEditingController();
     casesModeradaController = TextEditingController();
@@ -971,6 +1006,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
     _name = 'Nombre';
     _code = 'Código';
     _active = 'Activo';
+    _needValidation = 'Necesita validación';
     _cases = 'Casos';
     _casesNormopeso = 'Casos Normopeso';
     _casesModerada = 'Casos Moderada';

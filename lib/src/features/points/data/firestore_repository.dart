@@ -130,7 +130,7 @@ class FirestoreRepository {
               const Province(provinceId: '', name: '', country: '', regionId: '', active: false);
 
             final Country country = countryMap[point.country]?? const Country(countryId: '', name: '', code: '',
-                active: false, cases: 0, casesnormopeso: 0, casesmoderada: 0, casessevera: 0);
+                active: false, needValidation: false, cases: 0, casesnormopeso: 0, casesmoderada: 0, casessevera: 0);
 
             final Region region = regionMap[point.regionId]?? const Region(regionId: '', name: '', countryId: '', active: false);
 

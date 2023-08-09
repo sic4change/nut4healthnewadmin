@@ -78,7 +78,7 @@ class FirestoreRepository {
                 return RegionFull(region, country);
               } catch(e) {
                 const Country country = Country(countryId: '', name: '', code: '',
-                    active: false, cases: 0, casesnormopeso: 0, casesmoderada: 0,
+                    active: false, needValidation: false, cases: 0, casesnormopeso: 0, casesmoderada: 0,
                 casessevera: 0);
                 return RegionFull(region, country);
               }

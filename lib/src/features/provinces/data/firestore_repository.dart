@@ -91,7 +91,7 @@ class FirestoreRepository {
 
             return provinces.map((province) {
               final Country country = countryMap[province.country] ?? const Country(countryId: '', name: '', code: '',
-                  active: false, cases: 0, casesnormopeso: 0, casesmoderada: 0, casessevera: 0);
+                  active: false, needValidation: false, cases: 0, casesnormopeso: 0, casesmoderada: 0, casessevera: 0);
 
               final Region region = regionMap[province.regionId] ?? const Region(regionId: '', name: '', countryId: '', active: false);
 
