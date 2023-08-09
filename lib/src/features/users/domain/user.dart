@@ -12,7 +12,7 @@ class User extends Equatable {
   const User({
     required this.userId, this.username, this.name,
     this.surname, required this.email, this.phone, required this. role, this.dni,
-    this.photo, this.point, this.configuration, this.points, this.createdate,
+    this.photo, this.point, this.regionId, this.configuration, this.points, this.createdate,
     this.active, this.emptyUser, this.address, this.pointTransactionHash,
     this.roleTransactionHash, this.configurationTransactionHash});
 
@@ -26,6 +26,7 @@ class User extends Equatable {
   final String role;
   final String? photo;
   final String? point;
+  final String? regionId;
   final String? configuration;
   final int? points;
   final DateTime? createdate;
@@ -38,7 +39,7 @@ class User extends Equatable {
 
   @override
   List<Object> get props => [userId, username ?? "", name ?? "", surname ?? "",
-    role, dni ?? "", email, phone ?? "", photo ?? "", point ?? "",
+    role, dni ?? "", email, phone ?? "", photo ?? "", point ?? "", regionId ?? "",
     configuration ?? "", points ?? 0, createdate ?? DateTime(0, 0, 0),
     active ?? false, emptyUser ?? false,address?? "",  pointTransactionHash ?? "",
     roleTransactionHash ?? "", configurationTransactionHash?? ""];
@@ -64,6 +65,7 @@ class User extends Equatable {
     final dni = data['dni'] ?? "";
     final photo = data['photo'] ?? "";
     final point = data['point'] ?? "";
+    final regionId = data['regionId'] ?? "";
     final configuration = data['configuration'] ?? "";
     final points = data['points'] ?? 0;
     final Timestamp createdateFirebase = data['createdate'] ?? Timestamp(0, 0);
@@ -86,6 +88,7 @@ class User extends Equatable {
         dni: dni,
         photo: photo,
         point: point,
+        regionId: regionId,
         configuration: configuration,
         points: points,
         createdate: createdate,
@@ -109,6 +112,7 @@ class User extends Equatable {
       'dni': dni,
       'photo': photo,
       'point': point,
+      'regionId': regionId,
       'configuration': configuration,
       'points': points,
       'createdate': createdate,
