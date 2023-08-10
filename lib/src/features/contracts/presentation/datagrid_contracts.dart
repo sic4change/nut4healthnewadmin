@@ -765,14 +765,23 @@ class _ContractDataGridState extends LocalizationSampleViewState {
             },
           );
 
-          if (User.currentRole == 'direccion-regional-salud' || User.currentRole == 'medico-jefe') {
+          if (User.currentRole == 'medico-jefe') {
             final pointsAsyncValue = ref.watch(pointsByRegionStreamProvider);
             if (pointsAsyncValue.value != null) {
               final points = pointsAsyncValue.value!;
               if (pointsIds.isEmpty) {
                 pointsIds = points.map((e) => e.pointId).toList();
               }
-              contractsAsyncValue = ref.watch(contractsByRegionStreamProvider(pointsIds));
+              contractsAsyncValue = ref.watch(contractsByPointsStreamProvider(pointsIds));
+            }
+          } else if (User.currentRole == 'direccion-regional-salud') {
+            final pointsAsyncValue = ref.watch(pointsByProvinceStreamProvider);
+            if (pointsAsyncValue.value != null) {
+              final points = pointsAsyncValue.value!;
+              if (pointsIds.isEmpty) {
+                pointsIds = points.map((e) => e.pointId).toList();
+              }
+              contractsAsyncValue = ref.watch(contractsByPointsStreamProvider(pointsIds));
             }
           } else {
             contractsAsyncValue = ref.watch(contractsStreamProvider);

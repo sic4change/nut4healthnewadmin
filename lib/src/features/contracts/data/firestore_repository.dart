@@ -130,6 +130,16 @@ class FirestoreRepository {
     return points;
   }
 
+  Stream<List<Point>> watchPointsByProvince() {
+    Stream<List<Point>> points =  _dataSource.watchCollection(
+      path: FirestorePath.points(),
+      builder: (data, documentId) => Point.fromMap(data, documentId),
+      queryBuilder: (query) => query.where('province', isEqualTo: User.currentProvinceId),
+      sort: (a, b) => a.name.compareTo(b.name),
+    );
+    return points;
+  }
+
   Stream<List<ContractWithScreenerAndMedicalAndPoint>> watchContractWithConfigurationAndPoints() {
     const emptyUser = User(userId: '', name: '', email: '', role: '');
     const emptyPoint = Point(pointId: '', name: '', fullName: '', type: '', country: '', regionId: '',
@@ -153,39 +163,7 @@ class FirestoreRepository {
           });
   }
 
-  /*Stream<List<ContractWithScreenerAndMedicalAndPoint>> watchContractsbyRegion() {
-    const emptyUser = User(userId: '', name: '', email: '', role: '');
-    const emptyPoint = Point(pointId: '', name: '', fullName: '', type: '', country: '', regionId: '',
-        province: '', phoneCode: '', phoneLength: 0, active: false, latitude: 0.0, longitude: 0.0,
-        language: "", cases: 0, casesnormopeso: 0, casesmoderada: 0, casessevera: 0, transactionHash: "");
-    return CombineLatestStream.combine3(
-        watchContracts(), watchUsers(), watchPoints(),
-            (List<Contract> contracts, List<User> users, List<Point> points) {
-          final contractsList = contracts.map((contract) {
-            final Map<String, Point> pointMap = Map.fromEntries(
-              points.map((point) => MapEntry(point.pointId, point)),
-            );
-            final point = pointMap[contract.point] ?? emptyPoint;
-            final Map<String, User> userMap = Map.fromEntries(
-              users.map((user) => MapEntry(user.userId, user)),
-            );
-            final medical = userMap[contract.medicalId] ?? emptyUser;
-            final screener = userMap[contract.screenerId] ?? emptyUser;
-
-            if (point.regionId == User.currentRegionId) {
-              return ContractWithScreenerAndMedicalAndPoint(contract, screener, medical, point);
-            }
-          }).toList();
-
-          final List<ContractWithScreenerAndMedicalAndPoint> contractsListNotNull = List.empty(growable: true);
-          for (var c in contractsList) {
-            if (c != null) contractsListNotNull.add(c);
-          }
-          return contractsListNotNull;
-        });
-  }*/
-
-  Stream<List<ContractWithScreenerAndMedicalAndPoint>> watchContractsFullbyRegion(List<String> pointsIds) {
+  Stream<List<ContractWithScreenerAndMedicalAndPoint>> watchContractsFullbyPoints(List<String> pointsIds) {
     const emptyUser = User(userId: '', name: '', email: '', role: '');
     const emptyPoint = Point(pointId: '', name: '', fullName: '', type: '', country: '', regionId: '',
         province: '', phoneCode: '', phoneLength: 0, active: false, latitude: 0.0, longitude: 0.0,
@@ -317,13 +295,13 @@ final contractsStreamProvider = StreamProvider.autoDispose<List<ContractWithScre
   return database.watchContractWithConfigurationAndPoints();
 });
 
-final contractsByRegionStreamProvider = StreamProvider.autoDispose.family<List<ContractWithScreenerAndMedicalAndPoint>, List<String>>((ref, pointsIds) {
+final contractsByPointsStreamProvider = StreamProvider.autoDispose.family<List<ContractWithScreenerAndMedicalAndPoint>, List<String>>((ref, pointsIds) {
   final user = ref.watch(authStateChangesProvider).value;
   if (user == null) {
     throw AssertionError('User can\'t be null');
   }
   final database = ref.watch(databaseProvider);
-  return database.watchContractsFullbyRegion(pointsIds);
+  return database.watchContractsFullbyPoints(pointsIds);
 });
 
 final contractsStadisticsStreamProvider = StreamProvider.autoDispose.family<List<ContractPointStadistic>, String>((ref, pointId) {
@@ -351,6 +329,15 @@ final pointsByRegionStreamProvider = StreamProvider.autoDispose<List<Point>>((re
   }
   final database = ref.watch(databaseProvider);
   return database.watchPointsByRegion();
+});
+
+final pointsByProvinceStreamProvider = StreamProvider.autoDispose<List<Point>>((ref) {
+  final user = ref.watch(authStateChangesProvider).value;
+  if (user == null) {
+    throw AssertionError('User can\'t be null');
+  }
+  final database = ref.watch(databaseProvider);
+  return database.watchPointsByProvince();
 });
 
 final screenersStreamProvider = StreamProvider.autoDispose<List<User>>((ref) {

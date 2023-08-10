@@ -52,6 +52,7 @@ class _SampleBrowserState extends ConsumerState<SampleBrowser> {
 
       if (localUser.value != null) {
         User.currentRegionId = localUser.value!.regionId ?? "";
+        User.currentProvinceId = localUser.value!.provinceId ?? "";
       }
 
       final claims = user.getIdTokenResult();
