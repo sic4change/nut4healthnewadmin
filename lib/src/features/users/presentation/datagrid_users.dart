@@ -2,6 +2,7 @@
 /// import 'package:flutter/foundation.dart';
 
 
+import 'package:adminnut4health/src/features/provinces/domain/province.dart';
 import 'package:adminnut4health/src/features/regions/domain/region.dart';
 import 'package:adminnut4health/src/features/users/presentation/users_screen_controller.dart';
 import 'package:csv/csv.dart';
@@ -68,7 +69,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
 
   /// Translate names
   late String _photo, _username, _name, _surnames, _dni, _email, _phone, _role,
-      _configuration, _region, _point, _points, _createDate, _address,_pointTransactionHash,
+      _configuration, _region, _province, _point, _points, _createDate, _address,_pointTransactionHash,
       _roleTransactionHash, _configurationTransactionHash, _newUser, _importCSV,
       _exportXLS, _exportPDF, _total, _editUser, _removeUser, _save, _cancel,
       _users, _removedUser;
@@ -84,6 +85,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
     'Rol': 150,
     'Configuración': 150,
     'Región': 200,
+    'Municipio': 200,
     'Punto': 200,
     'Puntos': 150,
     'CreateDate': 150,
@@ -102,7 +104,6 @@ class _UserDataGridState extends LocalizationSampleViewState {
       phoneController,
       pointsController,
       pointController,
-      regionController,
       roleController,
       configurationController;
 
@@ -142,6 +143,14 @@ class _UserDataGridState extends LocalizationSampleViewState {
       userDataGridSource.setRegions(List.empty());
     } else {
       userDataGridSource.setRegions(regions.value!);
+    }
+  }
+  
+  _saveProvinces(AsyncValue<List<Province>>? provinces) {
+    if (provinces == null) {
+      userDataGridSource.setProvinces(List.empty());
+    } else {
+      userDataGridSource.setProvinces(provinces.value!);
     }
   }
 
@@ -235,6 +244,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
                   email: userToUpdate.email,
                   phone: row[6].toString(),
                   role: row[7].toString(),
+                  //TODO: REGION Y MUNICIPIO
                   point: userDataGridSource
                       .getPoints()
                       .firstWhere(
@@ -258,6 +268,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
                     email: row[5].toString(),
                     phone: row[6].toString(),
                     role: row[7].toString(),
+                    //TODO: REGION Y MUNICIPIO
                     point: userDataGridSource
                         .getPoints()
                         .firstWhere(
@@ -298,14 +309,18 @@ class _UserDataGridState extends LocalizationSampleViewState {
             color: model.textColor, fontWeight: FontWeight.bold, fontSize: 16),
         title: Text(_newUser),
         actions: _buildActionCreateButtons(context),
-        content: Scrollbar(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Form(
-              key: _formKey,
-              child: _buildAlertDialogCreateContent(),
-            ),
-          ),
+        content: StatefulBuilder(
+          builder: (context, setState) {
+            return Scrollbar(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Form(
+                  key: _formKey,
+                  child: _buildAlertDialogCreateContent(context, setState),
+                ),
+              ),
+            );
+          }
         ),
       ),
     );
@@ -485,12 +500,19 @@ class _UserDataGridState extends LocalizationSampleViewState {
     }
   }
 
-  Widget _buildRowComboSelection({required TextEditingController controller,
-    required String columnName, required List<String> dropDownMenuItems,
-    required String text}) {
-    String value = controller.text;
-    if (value.isEmpty) {
-      value = dropDownMenuItems[0];
+  Widget _buildRowComboSelection({required BuildContext context,
+    required String optionSelected,
+    required String columnName,
+    required List<String> dropDownMenuItems,
+    required String text,
+    required void Function(void Function()) setState}) {
+    String value = optionSelected;
+    if (optionSelected.isEmpty) {
+      if (dropDownMenuItems.isNotEmpty) {
+        value = dropDownMenuItems[0];
+      } else {
+        value = "";
+      }
     }
     return Row(
       children: <Widget>[
@@ -515,7 +537,29 @@ class _UserDataGridState extends LocalizationSampleViewState {
                 onChanged: (newValue) {
                   setState(() {
                     value = newValue!;
-                    controller.text = newValue!;
+                    if (columnName == 'Región') {
+                      Region regionSelected = userDataGridSource.getRegions().firstWhere((r) => r.name == newValue);
+                      ref.watch(usersScreenControllerProvider.notifier).setRegionSelected(regionSelected);
+                      ref.watch(usersScreenControllerProvider.notifier).
+                      setProvinceOptions(userDataGridSource.getProvinces().where((p) => p.regionId == regionSelected.regionId).toList());
+                      try {
+                        ref.watch(usersScreenControllerProvider.notifier).
+                        setProvinceSelected(ref.watch(usersScreenControllerProvider.notifier).getProvinceOptions()[0]);
+                      } catch(e) {
+                        ref.watch(usersScreenControllerProvider.notifier).
+                        setProvinceSelected(const Province(provinceId: '', country: "", regionId: '', name: "", active: false));
+                      }
+                    } else if (columnName == 'Municipio') {
+                      Province provinceSelected = userDataGridSource.getProvinces().firstWhere((element) => element.name == newValue);
+                      ref.watch(usersScreenControllerProvider.notifier).setProvinceSelected(provinceSelected);
+                    } else if (columnName == 'Rol'){
+                      roleController!.text = newValue;
+                    } else if (columnName == 'Punto'){
+                      pointController!.text = newValue;
+                    } else if (columnName == 'Configuración'){
+                      configurationController!.text = newValue;
+                    }
+                    
                   });
                 },
                 items: dropDownMenuItems.map((option) {
@@ -572,10 +616,8 @@ class _UserDataGridState extends LocalizationSampleViewState {
   }
 
   /// Building the forms to edit the data
-  Widget _buildAlertDialogContent() {
+  Widget _buildAlertDialogContent(BuildContext context, void Function(void Function()) setState) {
     final roleOptions = ["Super Admin", "Donante", "Servicio Salud", "Agente Salud", "Médico Jefe", "Dirección Regional de Salud"];
-    final regionOptions = userDataGridSource.getRegions().map((e) => e.name).toList();
-    regionOptions.insert(0, "");
     final pointOptions = userDataGridSource.getPoints().map((e) => e.name).toList();
     pointOptions.insert(0, "");
     final configurationOptions = userDataGridSource.getConfigurations().map((e) => e.name).toList();
@@ -587,24 +629,56 @@ class _UserDataGridState extends LocalizationSampleViewState {
         _buildRow(controller: surnamesController!, columnName: 'Apellidos', text: _surnames),
         _buildRow(controller: dniController!, columnName: 'DNI/DPI', text: _dni),
         _buildRow(controller: phoneController!, columnName: 'Teléfono', text: _phone),
-        _buildRowComboSelection(controller: roleController!, columnName: 'Rol',
-            dropDownMenuItems: roleOptions, text: _role),
-        _buildRowComboSelection(controller: regionController!, columnName: 'Región',
-            dropDownMenuItems: regionOptions, text: _region),
-        _buildRowComboSelection(controller: pointController!, columnName: 'Punto',
-            dropDownMenuItems: pointOptions, text: _point),
-        _buildRowComboSelection(controller: configurationController!,
-            columnName: 'Configuración', dropDownMenuItems: configurationOptions,
-            text: _configuration),
+        _buildRowComboSelection(
+          context: context,
+          optionSelected: roleController!.text,
+          columnName: 'Rol',
+          dropDownMenuItems: roleOptions,
+          text: _role,
+          setState: setState,
+        ),
+        const SizedBox(height: 20),
+        _buildRowComboSelection(
+          context: context,
+          optionSelected: ref.watch(usersScreenControllerProvider.notifier).getRegionSelected().name,
+          columnName: 'Región',
+          dropDownMenuItems: userDataGridSource.getRegions().map((e) => e.name).toList(),
+          text: _region,
+          setState: setState,
+        ),
+        const SizedBox(height: 20),
+        _buildRowComboSelection(
+          context: context,
+          optionSelected: ref.watch(usersScreenControllerProvider.notifier).getProvinceSelected().name,
+          columnName: 'Municipio',
+          dropDownMenuItems: ref.watch(usersScreenControllerProvider.notifier)
+              .getProvinceOptions().map((e) => e.name).toList(),
+          text: _province,
+          setState: setState,
+        ),
+        _buildRowComboSelection(
+          context: context,
+          optionSelected: pointController!.text,
+          columnName: 'Punto',
+          dropDownMenuItems: pointOptions,
+          text: _point,
+          setState: setState,
+        ),
+        _buildRowComboSelection(
+          context: context,
+          optionSelected: configurationController!.text,
+          columnName: 'Configuración',
+          dropDownMenuItems: configurationOptions,
+          text: _configuration,
+          setState: setState,
+        ),
       ],
     );
   }
 
   /// Building the forms to create the data
-  Widget _buildAlertDialogCreateContent() {
+  Widget _buildAlertDialogCreateContent(BuildContext context, void Function(void Function()) setState) {
     final roleOptions = ["Super Admin", "Donante", "Servicio Salud", "Agente Salud", "Médico Jefe", "Dirección Regional de Salud"];
-    final regionOptions = userDataGridSource.getRegions().map((e) => e.name).toList();
-    regionOptions.insert(0, "");
     final pointOptions = userDataGridSource.getPoints().map((e) => e.name).toList();
     pointOptions.insert(0, "");
     final configurationOptions = userDataGridSource.getConfigurations().map((e) => e.name).toList();
@@ -617,15 +691,49 @@ class _UserDataGridState extends LocalizationSampleViewState {
         _buildRow(controller: dniController!, columnName: 'DNI/DPI', text: _dni),
         _buildRow(controller: emailController!, columnName: 'Email', text: _email),
         _buildRow(controller: phoneController!, columnName: 'Teléfono', text: _phone),
-        _buildRowComboSelection(controller: roleController!, columnName: 'Rol',
-            dropDownMenuItems: roleOptions, text: _role),
-        _buildRowComboSelection(controller: regionController!, columnName: 'Región',
-            dropDownMenuItems: regionOptions, text: _region),
-        _buildRowComboSelection(controller: pointController!, columnName: 'Punto',
-            dropDownMenuItems: pointOptions, text: _point),
-        _buildRowComboSelection(controller: configurationController!,
-            columnName: 'Configuración', dropDownMenuItems: configurationOptions,
-            text: _configuration),
+        _buildRowComboSelection(
+          context: context,
+          optionSelected: roleController!.text,
+          columnName: 'Rol',
+          dropDownMenuItems: roleOptions,
+          text: _role,
+          setState: setState,
+        ),
+        const SizedBox(height: 20),
+        _buildRowComboSelection(
+          context: context,
+          optionSelected: ref.watch(usersScreenControllerProvider.notifier).getRegionSelected().name,
+          columnName: 'Región',
+          dropDownMenuItems: userDataGridSource.getRegions().map((e) => e.name).toList(),
+          text: _region,
+          setState: setState,
+        ),
+        const SizedBox(height: 20),
+        _buildRowComboSelection(
+          context: context,
+          optionSelected: ref.watch(usersScreenControllerProvider.notifier).getProvinceSelected().name,
+          columnName: 'Municipio',
+          dropDownMenuItems: ref.watch(usersScreenControllerProvider.notifier)
+              .getProvinceOptions().map((e) => e.name).toList(),
+          text: _province,
+          setState: setState,
+        ),
+        _buildRowComboSelection(
+          context: context,
+          optionSelected: pointController!.text,
+          columnName: 'Punto',
+          dropDownMenuItems: pointOptions,
+          text: _point,
+          setState: setState,
+        ),
+        _buildRowComboSelection(
+          context: context,
+          optionSelected: configurationController!.text,
+          columnName: 'Configuración',
+          dropDownMenuItems: configurationOptions,
+          text: _configuration,
+          setState: setState,
+        ),
       ],
     );
   }
@@ -639,7 +747,6 @@ class _UserDataGridState extends LocalizationSampleViewState {
     phoneController!.text =  '';
     pointsController!.text = '';
     roleController!.text = '';
-    regionController!.text = '';
     pointController!.text = '';
     configurationController!.text = '';
   }
@@ -709,15 +816,26 @@ class _UserDataGridState extends LocalizationSampleViewState {
 
     roleController!.text = rol ?? '';
 
-    final String? region = row
+    final String? regionString = row
         .getCells()
-        .firstWhere(
-          (DataGridCell element) => element.columnName == 'Región',
-    )
+        .firstWhere((DataGridCell element) => element.columnName == 'Región')
         ?.value
         .toString();
 
-    regionController!.text = region ?? '';
+    final region = userDataGridSource.getRegions().firstWhere((r) => r.name == regionString);
+    ref.watch(usersScreenControllerProvider.notifier).setRegionSelected(region);
+
+    final String? provinceString = row
+        .getCells()
+        .firstWhere((DataGridCell element) => element.columnName == 'Municipio')
+        ?.value
+        .toString();
+
+    final province = userDataGridSource.getProvinces().firstWhere((p) => p.name == provinceString);
+    ref.watch(usersScreenControllerProvider.notifier).setProvinceSelected(province);
+    ref.watch(usersScreenControllerProvider.notifier).
+    setProvinceOptions(userDataGridSource.getProvinces().where((p) =>
+    p.regionId == ref.watch(usersScreenControllerProvider.notifier).getRegionSelected().regionId).toList());
 
     final String? point = row
         .getCells()
@@ -761,14 +879,18 @@ class _UserDataGridState extends LocalizationSampleViewState {
             color: model.textColor, fontWeight: FontWeight.bold, fontSize: 16),
         title: Text(_editUser),
         actions: _buildActionButtons(row, context),
-        content: Scrollbar(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Form(
-              key: _formKey,
-              child: _buildAlertDialogContent(),
-            ),
-          ),
+        content: StatefulBuilder(
+          builder: (context, setState) {
+            return Scrollbar(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Form(
+                  key: _formKey,
+                  child: _buildAlertDialogContent(context, setState),
+                ),
+              ),
+            );
+          }
         ),
       ),
     );
@@ -782,7 +904,8 @@ class _UserDataGridState extends LocalizationSampleViewState {
               surname: surnamesController!.text, dni: dniController!.text,
               email: emailController!.text, phone: phoneController!.text,
               role: roleController!.text,
-              regionId: userDataGridSource.getRegions().firstWhere((r) => r.name == regionController!.text).regionId,
+              regionId: ref.watch(usersScreenControllerProvider.notifier).getRegionSelected().regionId,
+              provinceId: ref.watch(usersScreenControllerProvider.notifier).getProvinceSelected().provinceId,
               point: userDataGridSource.getPoints().firstWhere((element) => element.name == pointController!.text).pointId,
               configuration: userDataGridSource.getConfigurations().firstWhere((element) => element.name == configurationController!.text).id,
               points: int.tryParse(pointsController!.text))
@@ -801,7 +924,8 @@ class _UserDataGridState extends LocalizationSampleViewState {
               username: usernameController!.text, name: nameController!.text,
               surname: surnamesController!.text, dni: dniController!.text,
               email: emailController!.text, phone: phoneController!.text,
-              regionId: userDataGridSource.getRegions().firstWhere((r) => r.name == regionController!.text).regionId,
+              regionId: ref.watch(usersScreenControllerProvider.notifier).getRegionSelected().regionId,
+              provinceId: ref.watch(usersScreenControllerProvider.notifier).getProvinceSelected().provinceId,
               point: userDataGridSource.getPoints().firstWhere((element) => element.name == pointController!.text).pointId,
               configuration: userDataGridSource.getConfigurations().firstWhere((element) => element.name == configurationController!.text).id,
               points: int.tryParse(pointsController!.text),
@@ -941,6 +1065,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
         _role = 'Role';
         _configuration = 'Configuration';
         _region = 'Region';
+        _province = 'Municipality';
         _point = 'Point';
         _points = 'Points';
         _createDate = 'Creation Date';
@@ -971,6 +1096,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
         _role = 'Rol';
         _configuration = 'Configuración';
         _region = 'Región';
+        _province = 'Municipio';
         _point = 'Punto';
         _points = 'Puntos';
         _createDate = 'Fecha alta';
@@ -1001,6 +1127,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
         _role = 'Rôle';
         _configuration = 'Configuration';
         _region = 'Région';
+        _province = 'Municipalité';
         _point = 'Point';
         _points = 'Points';
         _createDate = 'Date de création';
@@ -1153,6 +1280,17 @@ class _UserDataGridState extends LocalizationSampleViewState {
               )),
         ),
         GridColumn(
+          columnName: 'Municipio',
+          width: columnWidths['Municipio']!,
+          label: Container(
+              padding: const EdgeInsets.all(8.0),
+              alignment: Alignment.center,
+              child: Text(
+                _province,
+                overflow: TextOverflow.ellipsis,
+              )),
+        ),
+        GridColumn(
           columnName: 'Punto',
           width: columnWidths['Punto']!,
           label: Container(
@@ -1252,7 +1390,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
   @override
   void initState() {
     super.initState();
-    userDataGridSource = UserDataGridSource(List.empty(), List.empty(), List.empty(), List.empty());
+    userDataGridSource = UserDataGridSource(List.empty(), List.empty(), List.empty(), List.empty(), List.empty());
     usernameController = TextEditingController();
     nameController = TextEditingController();
     surnamesController = TextEditingController();
@@ -1260,7 +1398,6 @@ class _UserDataGridState extends LocalizationSampleViewState {
     emailController = TextEditingController();
     phoneController = TextEditingController();
     roleController = TextEditingController();
-    regionController = TextEditingController();
     pointController  = TextEditingController();
     configurationController  = TextEditingController();
     pointsController = TextEditingController();
@@ -1277,6 +1414,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
     _role = 'Rol';
     _configuration = 'Configuración';
     _region = 'Región';
+    _province = 'Municipio';
     _point = 'Punto';
     _points = 'Puntos';
     _createDate = 'Fecha alta';
@@ -1324,6 +1462,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
           }
           final usersAsyncValue = ref.watch(usersStreamProvider);
           final regionsAsyncValue = ref.watch(regionsStreamProvider);
+          final provincesAsyncValue = ref.watch(provincesStreamProvider);
           final pointsAsyncValue = ref.watch(pointsStreamProvider);
           final configurationsAsyncValue = ref.watch(configurationsStreamProvider);
 
@@ -1332,6 +1471,9 @@ class _UserDataGridState extends LocalizationSampleViewState {
           }
           if (regionsAsyncValue.value != null) {
             _saveRegions(regionsAsyncValue);
+          }
+          if (provincesAsyncValue.value != null) {
+            _saveProvinces(provincesAsyncValue);
           }
           if (pointsAsyncValue.value != null) {
             _savePoints(pointsAsyncValue);

@@ -2,6 +2,7 @@
 import 'dart:math' as math;
 
 import 'package:adminnut4health/src/features/points/domain/point.dart';
+import 'package:adminnut4health/src/features/provinces/domain/province.dart';
 import 'package:adminnut4health/src/features/regions/domain/region.dart';
 /// Packages import
 import 'package:flutter/material.dart';
@@ -18,9 +19,10 @@ import '../domain/UserWithConfigurationAndPoint.dart';
 class UserDataGridSource extends DataGridSource {
   /// Creates the user data source class with required details.
   UserDataGridSource(List<UserWithConfigurationAndPoint> userData,
-      List<Region> regionData, List<Point> pointData, List<Configuration> configurationData) {
+      List<Region> regionData, List<Province> provinceData, List<Point> pointData, List<Configuration> configurationData) {
     _users = userData;
     _regions = regionData;
+    _provinces = provinceData;
     _points = pointData;
     _configurations = configurationData;
     buildDataGridRows();
@@ -29,6 +31,7 @@ class UserDataGridSource extends DataGridSource {
   List<DataGridRow> _dataGridRows = <DataGridRow>[];
   List<UserWithConfigurationAndPoint>? _users = <UserWithConfigurationAndPoint>[];
   List<Region> _regions = <Region>[];
+  List<Province> _provinces = <Province>[];
   List<Point> _points = <Point>[];
   List<Configuration> _configurations = <Configuration>[];
 
@@ -46,6 +49,7 @@ class UserDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Teléfono', value: userWithConfiguration.user.phone),
           DataGridCell<String>(columnName: 'Rol', value: userWithConfiguration.user.role),
           DataGridCell<String>(columnName: 'Región', value: userWithConfiguration.region?.name),
+          DataGridCell<String>(columnName: 'Municipio', value: userWithConfiguration.province?.name),
           DataGridCell<String>(columnName: 'Punto', value: userWithConfiguration.point?.name),
           DataGridCell<String>(columnName: 'Configuración', value: userWithConfiguration.configuration?.name),
           DataGridCell<int>(columnName: 'Puntos', value: userWithConfiguration.user.points),
@@ -214,26 +218,26 @@ class UserDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[8].value.toString()),
       ),
-      _buildPoint(row.getCells()[9].value),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[10].value.toString()),
+        child: Text(row.getCells()[9].value.toString()),
       ),
+      _buildPoint(row.getCells()[10].value),
       Container(
         padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.center,
+        alignment: Alignment.centerLeft,
         child: Text(row.getCells()[11].value.toString()),
       ),
-      _buildDate(row.getCells()[12].value),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.center,
-        child: Text(row.getCells()[13].value.toString()),
+        child: Text(row.getCells()[12].value.toString()),
       ),
+      _buildDate(row.getCells()[13].value),
       Container(
         padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
+        alignment: Alignment.center,
         child: Text(row.getCells()[14].value.toString()),
       ),
       Container(
@@ -245,6 +249,11 @@ class UserDataGridSource extends DataGridSource {
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[16].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[17].value.toString()),
       ),
     ]);
   }
@@ -263,6 +272,14 @@ class UserDataGridSource extends DataGridSource {
 
   List<Region> getRegions() {
     return _regions;
+  }
+
+  setProvinces(List<Province> provinceData) {
+    _provinces = provinceData;
+  }
+
+  List<Province> getProvinces() {
+    return _provinces;
   }
 
   setPoints(List<Point> pointData) {

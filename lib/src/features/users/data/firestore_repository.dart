@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:adminnut4health/src/features/provinces/domain/province.dart';
 import 'package:adminnut4health/src/features/regions/domain/region.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -29,6 +30,9 @@ class FirestorePath {
 
   static String region(String uid) => 'regions/$uid';
   static String regions() => 'regions';
+
+  static String province(String uid) => 'provinces/$uid';
+  static String provinces() => 'provinces';
 }
 
 class FirestoreRepository {
@@ -83,16 +87,24 @@ class FirestoreRepository {
         builder: (data, documentId) => Region.fromMap(data, documentId),
       );
 
+  Stream<List<Province>> watchProvinces() =>
+      _dataSource.watchCollection(
+        path: FirestorePath.provinces(),
+        builder: (data, documentId) => Province.fromMap(data, documentId),
+      );
+
   Stream<List<UserWithConfigurationAndPoint>> watchUsersWithConfigurations() {
-    return CombineLatestStream.combine4(
+    return CombineLatestStream.combine5(
       watchUsers(),
       watchConfigurations(),
       watchPoints(),
-      watchRegions(),(
+      watchRegions(),
+      watchProvinces(),(
         List<User> users,
         List<Configuration> configurations,
         List<Point> points,
         List<Region> regions,
+        List<Province> provinces,
         ) {
             final Map<String, Configuration> configurationMap = Map.fromEntries(
               configurations.map((config) => MapEntry(config.id, config)),
@@ -104,6 +116,10 @@ class FirestoreRepository {
 
             final Map<String, Region> regionMap = Map.fromEntries(
               regions.map((r) => MapEntry(r.regionId, r)),
+            );
+
+            final Map<String, Province> provinceMap = Map.fromEntries(
+              provinces.map((p) => MapEntry(p.provinceId, p)),
             );
 
             return users.map((user) {
@@ -146,7 +162,10 @@ class FirestoreRepository {
               final Region region = regionMap[user.regionId]??
                 const Region(regionId: '', name: '', countryId: '', active: false);
 
-              return UserWithConfigurationAndPoint(user, configuration, point, region);
+              final Province province = provinceMap[user.provinceId]??
+                const Province(provinceId: '', name: '', country: '', regionId: '', active: false);
+
+              return UserWithConfigurationAndPoint(user, configuration, point, region, province);
               }).toList();
           });
   }
@@ -194,6 +213,15 @@ final regionsStreamProvider = StreamProvider.autoDispose<List<Region>>((ref) {
   }
   final database = ref.watch(databaseProvider);
   return database.watchRegions();
+});
+
+final provincesStreamProvider = StreamProvider.autoDispose<List<Province>>((ref) {
+  final user = ref.watch(authStateChangesProvider).value;
+  if (user == null) {
+    throw AssertionError('User can\'t be null');
+  }
+  final database = ref.watch(databaseProvider);
+  return database.watchProvinces();
 });
 
 final configurationsStreamProvider = StreamProvider.autoDispose<List<Configuration>>((ref) {
