@@ -2,6 +2,9 @@
 /// import 'package:flutter/foundation.dart';
 
 
+import 'package:adminnut4health/src/features/authentication/data/firebase_auth_repository.dart';
+import 'package:adminnut4health/src/features/users/data/firestore_repository.dart';
+import 'package:adminnut4health/src/features/users/domain/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -758,7 +761,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
                 (_, state) => {
             },
           );
-          final contractsAsyncValue = ref.watch(contractsStreamProvider);
+
+          final contractsAsyncValue = User.currentRole == 'direccion-regional-salud' || User.currentRole == 'medico-jefe'? ref.watch(contractsByRegionStreamProvider): ref.watch(contractsStreamProvider);
           if (contractsAsyncValue.value != null) {
             _saveContracts(contractsAsyncValue);
           }

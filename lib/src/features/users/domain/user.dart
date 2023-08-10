@@ -16,6 +16,8 @@ class User extends Equatable {
     this.active, this.emptyUser, this.address, this.pointTransactionHash,
     this.roleTransactionHash, this.configurationTransactionHash});
 
+  static String currentRegionId = "", currentRole = "";
+
   final UserID userId;
   final String? username;
   final String? name;

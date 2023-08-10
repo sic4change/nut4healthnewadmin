@@ -1,16 +1,20 @@
 /// dart imports
 import 'dart:io' show Platform;
 
+import 'package:adminnut4health/src/features/users/data/firestore_repository.dart';
+import 'package:adminnut4health/src/features/users/domain/user.dart';
 /// package imports
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../features/authentication/data/firebase_auth_repository.dart';
 import '../routing/app_router.dart';
 /// local imports
 import 'model/helper.dart';
@@ -21,7 +25,7 @@ import 'widgets/animate_opacity_widget.dart';
 
 /// Root widget of the sample browser
 /// Contains the Homepage wrapped with a MaterialApp widget
-class SampleBrowser extends StatefulWidget {
+class SampleBrowser extends ConsumerStatefulWidget {
   /// Creates sample browser widget
   const SampleBrowser();
 
@@ -29,7 +33,7 @@ class SampleBrowser extends StatefulWidget {
   _SampleBrowserState createState() => _SampleBrowserState();
 }
 
-class _SampleBrowserState extends State<SampleBrowser> {
+class _SampleBrowserState extends ConsumerState<SampleBrowser> {
   late SampleModel _sampleListModel;
   @override
   void initState() {
@@ -41,6 +45,29 @@ class _SampleBrowserState extends State<SampleBrowser> {
 
   @override
   Widget build(BuildContext context) {
+
+    final user = ref.watch(authRepositoryProvider).currentUser;
+    if (user != null && user.metadata.lastSignInTime != null) {
+      final localUser = ref.watch(userStreamProvider(user.uid));
+
+      if (localUser.value != null) {
+        User.currentRegionId = localUser.value!.regionId ?? "";
+      }
+
+      final claims = user.getIdTokenResult();
+      claims.then((value) => {
+        if (value.claims != null && value.claims!['donante'] == true && User.currentRole != "donante") {
+          User.currentRole = 'donante'
+        } else if (value.claims != null && value.claims!['super-admin'] == true && User.currentRole != "super-admin") {
+          User.currentRole = 'super-admin'
+        } else if (value.claims != null && value.claims!['medico-jefe'] == true && User.currentRole != "medico-jefe") {
+          User.currentRole = 'medico-jefe'
+        } else if (value.claims != null && value.claims!['direccion-regional-salud'] == true && User.currentRole != "direccion-regional-salud") {
+          User.currentRole = 'direccion-regional-salud'
+        }
+      });
+    }
+
     final Map<String, WidgetBuilder> navigationRoutes = <String, WidgetBuilder>{
       _sampleListModel.isWebFullView ? '/' : '/demos': (BuildContext context) =>
           const HomePage()
