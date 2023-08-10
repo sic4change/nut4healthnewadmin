@@ -97,6 +97,9 @@ class _ContractDataGridState extends LocalizationSampleViewState {
   /// Used to validate the forms
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  AsyncValue<List<ContractWithScreenerAndMedicalAndPoint>> contractsAsyncValue = AsyncValue.data(List.empty());
+  List<String> pointsIds = List.empty();
+
   Widget getLocationWidget(String location) {
     return Row(
       children: <Widget>[
@@ -762,10 +765,23 @@ class _ContractDataGridState extends LocalizationSampleViewState {
             },
           );
 
-          final contractsAsyncValue = User.currentRole == 'direccion-regional-salud' || User.currentRole == 'medico-jefe'? ref.watch(contractsByRegionStreamProvider): ref.watch(contractsStreamProvider);
+          if (User.currentRole == 'direccion-regional-salud' || User.currentRole == 'medico-jefe') {
+            final pointsAsyncValue = ref.watch(pointsByRegionStreamProvider);
+            if (pointsAsyncValue.value != null) {
+              final points = pointsAsyncValue.value!;
+              if (pointsIds.isEmpty) {
+                pointsIds = points.map((e) => e.pointId).toList();
+              }
+              contractsAsyncValue = ref.watch(contractsByRegionStreamProvider(pointsIds));
+            }
+          } else {
+            contractsAsyncValue = ref.watch(contractsStreamProvider);
+          }
+
           if (contractsAsyncValue.value != null) {
             _saveContracts(contractsAsyncValue);
           }
+
           return _buildView(contractsAsyncValue);
         });
   }

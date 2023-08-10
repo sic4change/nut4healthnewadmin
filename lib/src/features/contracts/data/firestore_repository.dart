@@ -67,14 +67,14 @@ class FirestoreRepository {
     return contracts;
   }
 
-  /*Stream<List<Contract>> watchContractsByRegion(List<String> pointsIds) {
+  Stream<List<Contract>> watchContractsByRegion(List<String> pointsIds) {
     Stream<List<Contract>> contracts = _dataSource.watchCollection(
       path: FirestorePath.contracts(),
       builder: (data, documentId) => Contract.fromMap(data, documentId),
       queryBuilder: (query) => query.where('point', whereIn: pointsIds),
     );
     return contracts;
-  }*/
+  }
 
   Stream<List<Contract>> watchContractsByPoint(String pointId) {
     Stream<List<Contract>> contracts = _dataSource.watchCollection(
@@ -153,7 +153,7 @@ class FirestoreRepository {
           });
   }
 
-  Stream<List<ContractWithScreenerAndMedicalAndPoint>> watchContractsbyRegion() {
+  /*Stream<List<ContractWithScreenerAndMedicalAndPoint>> watchContractsbyRegion() {
     const emptyUser = User(userId: '', name: '', email: '', role: '');
     const emptyPoint = Point(pointId: '', name: '', fullName: '', type: '', country: '', regionId: '',
         province: '', phoneCode: '', phoneLength: 0, active: false, latitude: 0.0, longitude: 0.0,
@@ -183,9 +183,9 @@ class FirestoreRepository {
           }
           return contractsListNotNull;
         });
-  }
+  }*/
 
-  /*Stream<List<ContractWithScreenerAndMedicalAndPoint>> watchContractsFullbyRegion(List<String> pointsIds) {
+  Stream<List<ContractWithScreenerAndMedicalAndPoint>> watchContractsFullbyRegion(List<String> pointsIds) {
     const emptyUser = User(userId: '', name: '', email: '', role: '');
     const emptyPoint = Point(pointId: '', name: '', fullName: '', type: '', country: '', regionId: '',
         province: '', phoneCode: '', phoneLength: 0, active: false, latitude: 0.0, longitude: 0.0,
@@ -193,7 +193,8 @@ class FirestoreRepository {
     return CombineLatestStream.combine3(
         watchContractsByRegion(pointsIds), watchUsers(), watchPoints(),
             (List<Contract> contracts, List<User> users, List<Point> points) {
-          return contracts.map((contract) {
+          final lalala = contracts;
+          return lalala.map((contract) {
             final Map<String, Point> pointMap = Map.fromEntries(
               points.map((point) => MapEntry(point.pointId, point)),
             );
@@ -206,7 +207,7 @@ class FirestoreRepository {
             return ContractWithScreenerAndMedicalAndPoint(contract, screener, medical, point);
           }).toList();
         });
-  }*/
+  }
 
   Stream<List<ContractPointStadistic>> watchContractPoints(String pointId) {
     const emptyPoint = Point(pointId: '', name: '', fullName: '', type: '', country: '', regionId: '',
@@ -316,13 +317,13 @@ final contractsStreamProvider = StreamProvider.autoDispose<List<ContractWithScre
   return database.watchContractWithConfigurationAndPoints();
 });
 
-final contractsByRegionStreamProvider = StreamProvider.autoDispose<List<ContractWithScreenerAndMedicalAndPoint>>((ref) {
+final contractsByRegionStreamProvider = StreamProvider.autoDispose.family<List<ContractWithScreenerAndMedicalAndPoint>, List<String>>((ref, pointsIds) {
   final user = ref.watch(authStateChangesProvider).value;
   if (user == null) {
     throw AssertionError('User can\'t be null');
   }
   final database = ref.watch(databaseProvider);
-  return database.watchContractsbyRegion();
+  return database.watchContractsFullbyRegion(pointsIds);
 });
 
 final contractsStadisticsStreamProvider = StreamProvider.autoDispose.family<List<ContractPointStadistic>, String>((ref, pointId) {
