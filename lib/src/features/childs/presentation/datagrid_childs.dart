@@ -2,6 +2,7 @@
 /// import 'package:flutter/foundation.dart';
 
 import 'package:adminnut4health/src/features/childs/domain/childWithPointAndTutor.dart';
+import 'package:adminnut4health/src/features/users/domain/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -49,9 +50,6 @@ class _ChildDataGridState extends LocalizationSampleViewState {
   /// Selected locale
   late String selectedLocale;
 
-  late String currentUserEmail;
-  var currentUserRole = "";
-
   /// Translate names
   late String _point, _name, _surnames, _birthdate, _code, _createDate, _lastDate,
       _ethnicity, _sex, _tutor, _observations, _exportXLS, _exportPDF, _total,
@@ -71,6 +69,9 @@ class _ChildDataGridState extends LocalizationSampleViewState {
     'Observaciones': 150,
   };
 
+  AsyncValue<List<ChildWithPointAndTutor>> childrenAsyncValue = AsyncValue.data(List.empty());
+  List<String> pointsIds = List.empty();
+
   Widget getLocationWidget(String location) {
     return Row(
       children: <Widget>[
@@ -82,7 +83,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
     );
   }
 
-  _saveChilds(AsyncValue<List<ChildWithPointAndTutor>>? childs) {
+  _saveChildren(AsyncValue<List<ChildWithPointAndTutor>>? childs) {
     if (childs == null) {
       childDataGridSource.setChilds(List.empty());
     } else {
@@ -189,7 +190,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
       document.dispose();
     }
 
-    if (currentUserRole == 'super-admin') {
+    if (User.currentRole == 'super-admin') {
       return Row(
         children: <Widget>[
           _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
@@ -528,28 +529,33 @@ class _ChildDataGridState extends LocalizationSampleViewState {
                 (_, state) => {
             },
           );
-          final user = ref.watch(authRepositoryProvider).currentUser;
-          if (user != null && user.metadata != null && user.metadata!.lastSignInTime != null) {
-            final claims = user.getIdTokenResult();
-            claims.then((value) => {
-              if (value.claims != null && value.claims!['donante'] == true && currentUserRole != "donante") {
-                setState(() {
-                  currentUserRole = 'donante';
-                }),
-              } else if (value.claims != null && value.claims!['super-admin'] == true && currentUserRole != "super-admin") {
-                setState(() {
-                  currentUserRole = 'super-admin';
-                }),
-              }
-            });
 
-            currentUserEmail = user.email??"";
+          if (User.currentRole == 'medico-jefe') {
+            final pointsAsyncValue = ref.watch(pointsByRegionStreamProvider);
+            if (pointsAsyncValue.value != null) {
+              final points = pointsAsyncValue.value!;
+              if (pointsIds.isEmpty) {
+                pointsIds = points.map((e) => e.pointId).toList();
+              }
+              childrenAsyncValue = ref.watch(childrenByPointsStreamProvider(pointsIds));
+            }
+          } else if (User.currentRole == 'direccion-regional-salud') {
+            final pointsAsyncValue = ref.watch(pointsByProvinceStreamProvider);
+            if (pointsAsyncValue.value != null) {
+              final points = pointsAsyncValue.value!;
+              if (pointsIds.isEmpty) {
+                pointsIds = points.map((e) => e.pointId).toList();
+              }
+              childrenAsyncValue = ref.watch(childrenByPointsStreamProvider(pointsIds));
+            }
+          } else {
+            childrenAsyncValue = ref.watch(childsStreamProvider);
           }
-          final childsAsyncValue = ref.watch(childsStreamProvider);
-          if (childsAsyncValue.value != null) {
-            _saveChilds(childsAsyncValue);
+
+          if (childrenAsyncValue.value != null) {
+            _saveChildren(childrenAsyncValue);
           }
-          return _buildView(childsAsyncValue);
+          return _buildView(childrenAsyncValue);
         });
   }
 

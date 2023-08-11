@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:adminnut4health/src/features/users/domain/user.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../authentication/data/firebase_auth_repository.dart';
@@ -59,11 +60,38 @@ class FirestoreRepository {
         builder: (data, documentId) => Child.fromMap(data, documentId),
       );
 
+  Stream<List<Child>> watchChildrenByPoints(List<String> pointsIds) =>
+      _dataSource.watchCollection(
+        path: FirestorePath.childs(),
+        builder: (data, documentId) => Child.fromMap(data, documentId),
+        queryBuilder: (query) => query.where('point', whereIn: pointsIds),
+      );
+
   Stream<List<Point>> watchPoints() =>
       _dataSource.watchCollection(
         path: FirestorePath.points(),
         builder: (data, documentId) => Point.fromMap(data, documentId),
       );
+
+  Stream<List<Point>> watchPointsByRegion() {
+    Stream<List<Point>> points =  _dataSource.watchCollection(
+      path: FirestorePath.points(),
+      builder: (data, documentId) => Point.fromMap(data, documentId),
+      queryBuilder: (query) => query.where('regionId', isEqualTo: User.currentRegionId),
+      sort: (a, b) => a.name.compareTo(b.name),
+    );
+    return points;
+  }
+
+  Stream<List<Point>> watchPointsByProvince() {
+    Stream<List<Point>> points =  _dataSource.watchCollection(
+      path: FirestorePath.points(),
+      builder: (data, documentId) => Point.fromMap(data, documentId),
+      queryBuilder: (query) => query.where('province', isEqualTo: User.currentProvinceId),
+      sort: (a, b) => a.name.compareTo(b.name),
+    );
+    return points;
+  }
 
   Stream<List<Tutor>> watchTutors() =>
       _dataSource.watchCollection(
@@ -86,110 +114,113 @@ class FirestoreRepository {
             );
 
             return childs.map((child) {
-              try {
-                final Point point = pointMap[child.pointId]!;
-                final Tutor tutor = tutorMap[child.tutorId]!;
-                return ChildWithPointAndTutor(child, point, tutor);
-              } catch (e) {
-                try {
-                  final Tutor tutor = tutorMap[child.tutorId]!;
-                  return ChildWithPointAndTutor(
-                      child,
-                      const Point(
-                          pointId: "",
-                          name: "",
-                          fullName: "",
-                          type: "",
-                          active: false,
-                          country: "",
-                          regionId: '',
-                          province: "",
-                          phoneCode: "",
-                          phoneLength: 0,
-                          latitude: 0.0,
-                          longitude: 0.0,
-                        language: "",
-                          cases: 0,
-                          casesnormopeso: 0,
-                          casesmoderada: 0,
-                          casessevera: 0,
-                          transactionHash: "",
-                      ),
-                      tutor);
-                } catch (e) {
-                  try {
-                    final Point point = pointMap[child.pointId]!;
-                    return ChildWithPointAndTutor(
-                        child,
-                        point,
-                        Tutor(
-                          tutorId: "",
-                          pointId: "",
-                          name: "",
-                          surnames: "",
-                          address: "",
-                          phone: "",
-                          birthdate: DateTime.now(),
-                          createDate: DateTime.now(),
-                          ethnicity: "",
-                          sex: "",
-                          maleRelation: "",
-                          womanStatus: "",
-                          babyAge: 0,
-                          armCircunference: 0.0,
-                          status: "",
-                          weeks: 0,
-                          childMinor: "",
-                          observations: "",
-                          active: false,
-                        ));
-            } catch (e) {
-                    return ChildWithPointAndTutor(
-                        child,
-                        const Point(
-                            pointId: "",
-                            name: "",
-                            fullName: "",
-                            type: "",
-                            active: false,
-                            country: "",
-                            regionId: '',
-                            province: "",
-                            phoneCode: "",
-                            phoneLength: 0,
-                            latitude: 0.0,
-                            longitude: 0.0,
-                            language: "",
-                            cases: 0,
-                            casesnormopeso: 0,
-                            casesmoderada: 0,
-                            casessevera: 0,
-                            transactionHash: "",
-                        ),
-                        Tutor(
-                          tutorId: "",
-                          pointId: "",
-                          name: "",
-                          surnames: "",
-                          address: "",
-                          phone: "",
-                          birthdate: DateTime.now(),
-                          createDate: DateTime.now(),
-                          ethnicity: "",
-                          sex: "",
-                          maleRelation: "",
-                          womanStatus: "",
-                          babyAge: 0,
-                          armCircunference: 0.0,
-                          status: "",
-                          weeks: 0,
-                          childMinor: "",
-                          observations: "",
-                          active: false,
-                        ));
-            }
-                }
-              }
+              final Point point = pointMap[child.pointId] ?? const Point(
+                pointId: "",
+                name: "",
+                fullName: "",
+                type: "",
+                active: false,
+                country: "",
+                regionId: '',
+                province: "",
+                phoneCode: "",
+                phoneLength: 0,
+                latitude: 0.0,
+                longitude: 0.0,
+                language: "",
+                cases: 0,
+                casesnormopeso: 0,
+                casesmoderada: 0,
+                casessevera: 0,
+                transactionHash: "",
+              );
+
+              final Tutor tutor = tutorMap[child.tutorId] ?? Tutor(
+                tutorId: "",
+                pointId: "",
+                name: "",
+                surnames: "",
+                address: "",
+                phone: "",
+                birthdate: DateTime.now(),
+                createDate: DateTime.now(),
+                ethnicity: "",
+                sex: "",
+                maleRelation: "",
+                womanStatus: "",
+                babyAge: 0,
+                armCircunference: 0.0,
+                status: "",
+                weeks: 0,
+                childMinor: "",
+                observations: "",
+                active: false,
+              );
+
+              return ChildWithPointAndTutor(child, point, tutor);
+            }).toList();
+          });
+  }
+
+  Stream<List<ChildWithPointAndTutor>> watchChildrenFullByPoints(List<String> pointsIds) {
+    return CombineLatestStream.combine3(
+      watchChildrenByPoints(pointsIds),
+      watchPoints(),
+      watchTutors(),
+          (List<Child> childs, List<Point> points, List<Tutor> tutors) {
+            final Map<String, Point> pointMap = Map.fromEntries(
+              points.map((point) => MapEntry(point.pointId, point)),
+            );
+
+            final Map<String, Tutor> tutorMap = Map.fromEntries(
+              tutors.map((tutor) => MapEntry(tutor.tutorId, tutor)),
+            );
+
+            return childs.map((child) {
+              final Point point = pointMap[child.pointId] ?? const Point(
+                pointId: "",
+                name: "",
+                fullName: "",
+                type: "",
+                active: false,
+                country: "",
+                regionId: '',
+                province: "",
+                phoneCode: "",
+                phoneLength: 0,
+                latitude: 0.0,
+                longitude: 0.0,
+                language: "",
+                cases: 0,
+                casesnormopeso: 0,
+                casesmoderada: 0,
+                casessevera: 0,
+                transactionHash: "",
+              );
+
+              final Tutor tutor = tutorMap[child.tutorId] ?? Tutor(
+                tutorId: "",
+                pointId: "",
+                name: "",
+                surnames: "",
+                address: "",
+                phone: "",
+                birthdate: DateTime.now(),
+                createDate: DateTime.now(),
+                ethnicity: "",
+                sex: "",
+                maleRelation: "",
+                womanStatus: "",
+                babyAge: 0,
+                armCircunference: 0.0,
+                status: "",
+                weeks: 0,
+                childMinor: "",
+                observations: "",
+                active: false,
+              );
+
+              return ChildWithPointAndTutor(child, point, tutor);
             }).toList();
           });
   }
@@ -221,6 +252,15 @@ final childsStreamProvider = StreamProvider.autoDispose<List<ChildWithPointAndTu
   return database.watchChildsWithPoints();
 });
 
+final childrenByPointsStreamProvider = StreamProvider.autoDispose.family<List<ChildWithPointAndTutor>, List<String>>((ref, pointsIds) {
+  final user = ref.watch(authStateChangesProvider).value;
+  if (user == null) {
+    throw AssertionError('User can\'t be null');
+  }
+  final database = ref.watch(databaseProvider);
+  return database.watchChildrenFullByPoints(pointsIds);
+});
+
 final tutorsStreamProvider = StreamProvider.autoDispose<List<Tutor>>((ref) {
   final child = ref.watch(authStateChangesProvider).value;
   if (child == null) {
@@ -237,6 +277,24 @@ final pointsStreamProvider = StreamProvider.autoDispose<List<Point>>((ref) {
   }
   final database = ref.watch(databaseProvider);
   return database.watchPoints();
+});
+
+final pointsByRegionStreamProvider = StreamProvider.autoDispose<List<Point>>((ref) {
+  final user = ref.watch(authStateChangesProvider).value;
+  if (user == null) {
+    throw AssertionError('User can\'t be null');
+  }
+  final database = ref.watch(databaseProvider);
+  return database.watchPointsByRegion();
+});
+
+final pointsByProvinceStreamProvider = StreamProvider.autoDispose<List<Point>>((ref) {
+  final user = ref.watch(authStateChangesProvider).value;
+  if (user == null) {
+    throw AssertionError('User can\'t be null');
+  }
+  final database = ref.watch(databaseProvider);
+  return database.watchPointsByProvince();
 });
 
 final childStreamProvider =

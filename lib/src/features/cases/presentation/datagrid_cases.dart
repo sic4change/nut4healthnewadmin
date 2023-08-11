@@ -2,6 +2,7 @@
 /// import 'package:flutter/foundation.dart';
 
 import 'package:adminnut4health/src/features/cases/domain/caseWithPointChildAndTutor.dart';
+import 'package:adminnut4health/src/features/users/domain/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -49,9 +50,6 @@ class _CaseDataGridState extends LocalizationSampleViewState {
   /// Selected locale
   late String selectedLocale;
 
-  late String currentUserEmail;
-  var currentUserRole = "";
-
   /// Translate names
   late String _point, _tutor, _child, _name, _createDate, _lastDate, _visits,
       _observations, _status, _exportXLS, _exportPDF, _total, _cases;
@@ -67,6 +65,9 @@ class _CaseDataGridState extends LocalizationSampleViewState {
     'Observaciones': 150,
     'Estado': 150,
   };
+
+  AsyncValue<List<CaseWithPointChildAndTutor>> casesAsyncValue = AsyncValue.data(List.empty());
+  List<String> pointsIds = List.empty();
 
   Widget getLocationWidget(String location) {
     return Row(
@@ -186,7 +187,7 @@ class _CaseDataGridState extends LocalizationSampleViewState {
       document.dispose();
     }
 
-    if (currentUserRole == 'super-admin') {
+    if (User.currentRole == 'super-admin') {
       return Row(
         children: <Widget>[
           _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
@@ -493,24 +494,29 @@ class _CaseDataGridState extends LocalizationSampleViewState {
                 (_, state) => {
             },
           );
-          final user = ref.watch(authRepositoryProvider).currentUser;
-          if (user != null && user.metadata != null && user.metadata!.lastSignInTime != null) {
-            final claims = user.getIdTokenResult();
-            claims.then((value) => {
-              if (value.claims != null && value.claims!['donante'] == true && currentUserRole != "donante") {
-                setState(() {
-                  currentUserRole = 'donante';
-                }),
-              } else if (value.claims != null && value.claims!['super-admin'] == true && currentUserRole != "super-admin") {
-                setState(() {
-                  currentUserRole = 'super-admin';
-                }),
-              }
-            });
 
-            currentUserEmail = user.email??"";
+          if (User.currentRole == 'medico-jefe') {
+            final pointsAsyncValue = ref.watch(pointsByRegionStreamProvider);
+            if (pointsAsyncValue.value != null) {
+              final points = pointsAsyncValue.value!;
+              if (pointsIds.isEmpty) {
+                pointsIds = points.map((e) => e.pointId).toList();
+              }
+              casesAsyncValue = ref.watch(casesByPointsStreamProvider(pointsIds));
+            }
+          } else if (User.currentRole == 'direccion-regional-salud') {
+            final pointsAsyncValue = ref.watch(pointsByProvinceStreamProvider);
+            if (pointsAsyncValue.value != null) {
+              final points = pointsAsyncValue.value!;
+              if (pointsIds.isEmpty) {
+                pointsIds = points.map((e) => e.pointId).toList();
+              }
+              casesAsyncValue = ref.watch(casesByPointsStreamProvider(pointsIds));
+            }
+          } else {
+            casesAsyncValue = ref.watch(casesStreamProvider);
           }
-          final casesAsyncValue = ref.watch(casesStreamProvider);
+
           if (casesAsyncValue.value != null) {
             _saveCases(casesAsyncValue);
           }
