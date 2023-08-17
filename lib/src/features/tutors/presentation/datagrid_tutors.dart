@@ -1,6 +1,7 @@
 /// Package imports
 /// import 'package:flutter/foundation.dart';
 
+import 'package:adminnut4health/src/features/tutors/domain/tutor.dart';
 import 'package:adminnut4health/src/features/tutors/domain/tutorWithPoint.dart';
 import 'package:adminnut4health/src/features/users/domain/user.dart';
 import 'package:flutter/material.dart';
@@ -51,11 +52,13 @@ class _TutorDataGridState extends LocalizationSampleViewState {
   late String selectedLocale;
 
   /// Translate names
-  late String _point, _name, _surnames, _address, _phone, _birthdate, _createDate,
+  late String _chefValidation, _regionalValidation, _point, _name, _surnames, _address, _phone, _birthdate, _createDate,
       _ethnicity, _sex, _maleRelation, _womanStatus, _babyAge, _weeks,
       _childMinor, _observations, _active, _exportXLS, _exportPDF, _total, _tutors;
 
   late Map<String, double> columnWidths = {
+    'Validación Médico Jefe': 200,
+    'Validación Dirección Regional': 200,
     'Punto': 150,
     'Nombre': 150,
     'Apellidos': 150,
@@ -202,6 +205,22 @@ class _TutorDataGridState extends LocalizationSampleViewState {
           _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
         ],
       );
+    } else if (User.needValidation){
+      return Row(
+        children: <Widget>[
+          _buildValidationButton("VALIDAR DATOS", onPressed: () {
+            if (User.currentRole == 'medico-jefe') {
+              chefValidation();
+            }
+
+            if (User.currentRole == 'direccion-regional-salud') {
+              regionalValidation();
+            }
+          }),
+          _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
+          _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
+        ],
+      );
     } else {
       return Row(
         children: <Widget>[
@@ -211,6 +230,77 @@ class _TutorDataGridState extends LocalizationSampleViewState {
       );
     }
   }
+
+  Widget _buildValidationButton(String buttonName,
+      {required VoidCallback onPressed}) {
+    return Container(
+        height: 60.0,
+        padding: const EdgeInsets.only(left: 10.0, top: 10.0, bottom: 10.0),
+        child: TextButton(
+          onPressed: onPressed,
+          child: const Text(
+              "VALIDAR DATOS"),)
+    );
+  }
+
+  Future<void> chefValidation() async {
+    for (var t in tutorDataGridSource.getTutors()!) {
+      ref.read(tutorsScreenControllerProvider.notifier).updateTutor(
+          Tutor(
+              tutorId: t.tutor.tutorId,
+              pointId: t.tutor.pointId,
+              name: t.tutor.name,
+              surnames: t.tutor.surnames,
+              address: t.tutor.address,
+              phone: t.tutor.phone,
+              birthdate: t.tutor.birthdate,
+              createDate: t.tutor.createDate,
+              ethnicity: t.tutor.ethnicity,
+              sex: t.tutor.sex,
+              maleRelation: t.tutor.maleRelation,
+              womanStatus: t.tutor.womanStatus,
+              armCircunference: t.tutor.armCircunference,
+              status: t.tutor.status,
+              babyAge: t.tutor.babyAge,
+              weeks: t.tutor.weeks,
+              childMinor: t.tutor.childMinor,
+              observations: t.tutor.observations,
+              active: t.tutor.active,
+              chefValidation: true,
+              regionalValidation: t.tutor.regionalValidation
+          )
+      );
+    }}
+
+  Future<void> regionalValidation() async {
+    final casesWithChefValidation = tutorDataGridSource.getTutors()!.where((c) => c.tutor.chefValidation);
+    for (var t in casesWithChefValidation) {
+      ref.read(tutorsScreenControllerProvider.notifier).updateTutor(
+          Tutor(
+              tutorId: t.tutor.tutorId,
+              pointId: t.tutor.pointId,
+              name: t.tutor.name,
+              surnames: t.tutor.surnames,
+              address: t.tutor.address,
+              phone: t.tutor.phone,
+              birthdate: t.tutor.birthdate,
+              createDate: t.tutor.createDate,
+              ethnicity: t.tutor.ethnicity,
+              sex: t.tutor.sex,
+              maleRelation: t.tutor.maleRelation,
+              womanStatus: t.tutor.womanStatus,
+              armCircunference: t.tutor.armCircunference,
+              status: t.tutor.status,
+              babyAge: t.tutor.babyAge,
+              weeks: t.tutor.weeks,
+              childMinor: t.tutor.childMinor,
+              observations: t.tutor.observations,
+              active: t.tutor.active,
+              chefValidation: t.tutor.chefValidation,
+              regionalValidation: true
+          )
+      );
+    }}
 
   Widget _buildExcelExportingButton(String buttonName,
       {required VoidCallback onPressed}) {
@@ -288,6 +378,8 @@ class _TutorDataGridState extends LocalizationSampleViewState {
     final selectedLocale = model.locale.toString();
     switch (selectedLocale) {
       case 'en_US':
+        _chefValidation = 'Chef validation';
+        _regionalValidation = 'Regional validation';
         _point = 'Point';
         _name = 'Name';
         _surnames = 'Surnames';
@@ -311,6 +403,8 @@ class _TutorDataGridState extends LocalizationSampleViewState {
         _tutors = 'Tutors';
         break;
       case 'es_ES':
+        _chefValidation = 'Validación Médico Jefe';
+        _regionalValidation = 'Validación Dirección Regional';
         _point = 'Punto';
         _name = 'Nombre';
         _surnames = 'Apellidos';
@@ -334,6 +428,8 @@ class _TutorDataGridState extends LocalizationSampleViewState {
         _tutors = 'Tutores';
         break;
       case 'fr_FR':
+        _chefValidation = 'Validation du médecin-chef';
+        _regionalValidation = 'Validation direction régionale de la santé';
         _point = 'Place';
         _name = 'Nom';
         _surnames = 'Noms de famille';
@@ -379,6 +475,30 @@ class _TutorDataGridState extends LocalizationSampleViewState {
       allowSorting: true,
       allowMultiColumnSorting: true,
       columns: <GridColumn>[
+        GridColumn(
+            columnName: 'Validación Médico Jefe',
+            width: columnWidths['Validación Médico Jefe']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _chefValidation,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Validación Dirección Regional',
+            width: columnWidths['Validación Dirección Regional']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _regionalValidation,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
         GridColumn(
             columnName: 'Punto',
             width: columnWidths['Punto']!,
@@ -581,6 +701,8 @@ class _TutorDataGridState extends LocalizationSampleViewState {
     tutorDataGridSource = TutorDataGridSource(List.empty());
     selectedLocale = model.locale.toString();
 
+    _chefValidation = 'Validación Médico Jefe';
+    _regionalValidation = 'Validación Dirección Regional';
     _point = 'Punto';
     _name = 'Nombre';
     _surnames = 'Apellidos';
@@ -615,7 +737,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
           );
 
           if (User.currentRole == 'medico-jefe') {
-            final pointsAsyncValue = ref.watch(pointsByRegionStreamProvider);
+            final pointsAsyncValue = ref.watch(pointsByProvinceStreamProvider);
             if (pointsAsyncValue.value != null) {
               final points = pointsAsyncValue.value!;
               if (pointsIds.isEmpty) {
@@ -624,7 +746,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
               tutorsAsyncValue = ref.watch(tutorsByPointsStreamProvider(pointsIds));
             }
           } else if (User.currentRole == 'direccion-regional-salud') {
-            final pointsAsyncValue = ref.watch(pointsByProvinceStreamProvider);
+            final pointsAsyncValue = ref.watch(pointsByRegionStreamProvider);
             if (pointsAsyncValue.value != null) {
               final points = pointsAsyncValue.value!;
               if (pointsIds.isEmpty) {

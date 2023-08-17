@@ -63,6 +63,12 @@ class FirestoreRepository {
     Stream<List<Contract>> contracts = _dataSource.watchCollection(
       path: FirestorePath.contracts(),
       builder: (data, documentId) => Contract.fromMap(data, documentId),
+      queryBuilder: (query) {
+        if (User.currentRole != 'super-admin') {
+          query = query.where('chefValidation', isEqualTo: true).where('regionalValidation', isEqualTo: true);
+        }
+        return query;
+      },
     );
     return contracts;
   }
@@ -71,7 +77,13 @@ class FirestoreRepository {
     Stream<List<Contract>> contracts = _dataSource.watchCollection(
       path: FirestorePath.contracts(),
       builder: (data, documentId) => Contract.fromMap(data, documentId),
-      queryBuilder: (query) => query.where('point', whereIn: pointsIds),
+      queryBuilder: (query) {
+        query = query.where('point', whereIn: pointsIds);
+        if (User.currentRole == 'direccion-regional-salud') {
+          query = query.where('chefValidation', isEqualTo: true);
+        }
+        return query;
+      },
     );
     return contracts;
   }

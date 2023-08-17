@@ -57,6 +57,8 @@ class VisitDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Complicaciones (EN)', value: _complicationsENString(visitCombined.visit.complications)),
           DataGridCell<String>(columnName: 'Complicaciones (FR)', value: _complicationsFRString(visitCombined.visit.complications)),
           DataGridCell<String>(columnName: 'Observaciones', value: visitCombined.visit.observations),
+          DataGridCell<bool>(columnName: 'Validación Médico Jefe', value: visitCombined.visit.chefValidation),
+          DataGridCell<bool>(columnName: 'Validación Dirección Regional', value: visitCombined.visit.regionalValidation),
         ]);
       }).toList();
     }
@@ -100,6 +102,8 @@ class VisitDataGridSource extends DataGridSource {
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(cells: <Widget>[
+      _buildBoolean(row.getCells()[33].value),
+      _buildBoolean(row.getCells()[34].value),
       _buildStandardContainer(row.getCells()[1].value.toString()),
       _buildStandardContainer(row.getCells()[2].value.toString()),
       _buildStandardContainer(row.getCells()[3].value.toString()),
@@ -143,6 +147,25 @@ class VisitDataGridSource extends DataGridSource {
     return _visits;
   }
 
+  Widget _buildBoolean(bool value) {
+    final Map<String, Image> images = <String, Image>{
+      '✔': Image.asset('images/Perfect.png'),
+      '✘': Image.asset('images/Insufficient.png'),
+    };
+
+    if (value) {
+      return Padding(
+        padding: const EdgeInsets.only(left: 16.0),
+        child: _getWidget(images['✔']!, ''),
+      );
+    } else  {
+      return Padding(
+        padding: const EdgeInsets.only(left: 16.0),
+        child: _getWidget(images['✘']!, ''),
+      );
+    }
+  }
+
   /// Update DataSource
   void updateDataSource() {
     notifyListeners();
@@ -152,20 +175,6 @@ class VisitDataGridSource extends DataGridSource {
     '✔': Image.asset('images/Perfect.png'),
     '✘': Image.asset('images/Insufficient.png'),
   };
-
-  Widget _buildBoolean(bool value) {
-    if (value) {
-      return Padding(
-        padding: const EdgeInsets.only(left: 16.0),
-        child: _getWidget(_images['✔']!, ''),
-      );
-    } else  {
-      return Padding(
-        padding: const EdgeInsets.only(left: 16.0),
-        child: _getWidget(_images['✘']!, ''),
-      );
-    }
-  }
 
   Widget _buildDate(dynamic value) {
     String valueString = value.toString();

@@ -58,13 +58,25 @@ class FirestoreRepository {
       _dataSource.watchCollection(
         path: FirestorePath.childs(),
         builder: (data, documentId) => Child.fromMap(data, documentId),
+        queryBuilder: (query) {
+          if (User.currentRole != 'super-admin') {
+            query = query.where('chefValidation', isEqualTo: true).where('regionalValidation', isEqualTo: true);
+          }
+          return query;
+        },
       );
 
   Stream<List<Child>> watchChildrenByPoints(List<String> pointsIds) =>
       _dataSource.watchCollection(
         path: FirestorePath.childs(),
         builder: (data, documentId) => Child.fromMap(data, documentId),
-        queryBuilder: (query) => query.where('point', whereIn: pointsIds),
+        queryBuilder: (query) {
+          query = query.where('point', whereIn: pointsIds);
+          if (User.currentRole == 'direccion-regional-salud') {
+            query = query.where('chefValidation', isEqualTo: true);
+          }
+          return query;
+        },
       );
 
   Stream<List<Point>> watchPoints() =>
@@ -155,6 +167,8 @@ class FirestoreRepository {
                 childMinor: "",
                 observations: "",
                 active: false,
+                chefValidation: false,
+                regionalValidation: false,
               );
 
               return ChildWithPointAndTutor(child, point, tutor);
@@ -218,6 +232,8 @@ class FirestoreRepository {
                 childMinor: "",
                 observations: "",
                 active: false,
+                chefValidation: false,
+                regionalValidation: false,
               );
 
               return ChildWithPointAndTutor(child, point, tutor);

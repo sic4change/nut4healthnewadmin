@@ -120,6 +120,8 @@ class FirestoreRepository {
                   ethnicity: "",
                   sex: "",
                   observations: "",
+                  chefValidation: false,
+                  regionalValidation: false,
                 );
 
                 return NotificationWithPointAndChild(notification, point, child);

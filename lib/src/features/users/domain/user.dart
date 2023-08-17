@@ -17,6 +17,7 @@ class User extends Equatable {
     this.roleTransactionHash, this.configurationTransactionHash});
 
   static String currentRegionId = "", currentProvinceId = "", currentRole = "";
+  static bool needValidation = false;
 
   final UserID userId;
   final String? username;

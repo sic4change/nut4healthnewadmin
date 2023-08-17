@@ -80,13 +80,25 @@ class FirestoreRepository {
       _dataSource.watchCollection(
         path: FirestorePath.tutors(),
         builder: (data, documentId) => Tutor.fromMap(data, documentId),
+        queryBuilder: (query) {
+          if (User.currentRole != 'super-admin') {
+            query = query.where('chefValidation', isEqualTo: true).where('regionalValidation', isEqualTo: true);
+          }
+          return query;
+        },
       );
 
   Stream<List<Tutor>> watchTutorsByPoints(List<String> pointsIds) =>
       _dataSource.watchCollection(
         path: FirestorePath.tutors(),
         builder: (data, documentId) => Tutor.fromMap(data, documentId),
-        queryBuilder: (query) => query.where('point', whereIn: pointsIds),
+        queryBuilder: (query) {
+          query = query.where('point', whereIn: pointsIds);
+          if (User.currentRole == 'direccion-regional-salud') {
+            query = query.where('chefValidation', isEqualTo: true);
+          }
+          return query;
+        },
     );
 
   Stream<List<TutorWithPoint>> watchTutorsWithPoints() {

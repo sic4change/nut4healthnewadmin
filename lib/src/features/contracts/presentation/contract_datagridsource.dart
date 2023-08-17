@@ -63,6 +63,8 @@ class ContractDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Duración', value: contractWithScreenerAndMedicalAndPoint.contract.duration ?? "0"),
           DataGridCell<String>(columnName: 'Hash transacción', value: contractWithScreenerAndMedicalAndPoint.contract.transactionHash),
           DataGridCell<String>(columnName: 'Hash transacción validada', value: contractWithScreenerAndMedicalAndPoint.contract.transactionValidateHash),
+          DataGridCell<bool>(columnName: 'Validación Médico Jefe', value: contractWithScreenerAndMedicalAndPoint.contract.chefValidation),
+          DataGridCell<bool>(columnName: 'Validación Dirección Regional', value: contractWithScreenerAndMedicalAndPoint.contract.regionalValidation),
         ]);
       }).toList();
     }
@@ -84,11 +86,23 @@ class ContractDataGridSource extends DataGridSource {
     );
   }
 
-  Widget _buildEmail(dynamic value) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16.0),
-      child: _getWidget(const Icon(Icons.email, size: 20), value),
-    );
+  Widget _buildBoolean(bool value) {
+    final Map<String, Image> images = <String, Image>{
+      '✔': Image.asset('images/Perfect.png'),
+      '✘': Image.asset('images/Insufficient.png'),
+    };
+
+    if (value) {
+      return Padding(
+        padding: const EdgeInsets.only(left: 16.0),
+        child: _getWidget(images['✔']!, ''),
+      );
+    } else  {
+      return Padding(
+        padding: const EdgeInsets.only(left: 16.0),
+        child: _getWidget(images['✘']!, ''),
+      );
+    }
   }
 
   Widget _buildPhone(dynamic value) {
@@ -237,6 +251,8 @@ class ContractDataGridSource extends DataGridSource {
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(cells: <Widget>[
+      _buildBoolean(row.getCells()[24].value),
+      _buildBoolean(row.getCells()[25].value),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,

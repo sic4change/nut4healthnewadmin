@@ -3,6 +3,7 @@
 
 
 import 'package:adminnut4health/src/features/authentication/data/firebase_auth_repository.dart';
+import 'package:adminnut4health/src/features/contracts/domain/contract.dart';
 import 'package:adminnut4health/src/features/users/data/firestore_repository.dart';
 import 'package:adminnut4health/src/features/users/domain/user.dart';
 import 'package:flutter/material.dart';
@@ -61,13 +62,15 @@ class _ContractDataGridState extends LocalizationSampleViewState {
   late String selectedLocale;
 
   /// Translate names
-  late String _id, _code, _status, _exportXLS, _exportPDF, _total, _contracts,
+  late String _chefValidation, _regionalValidation, _id, _code, _status, _exportXLS, _exportPDF, _total, _contracts,
       _armCircunference, _armCircunferenceConfirmed, _weight, _height, _name,
       _surnames, _sex, _dni, _tutor, _contact, _address, _date, _point, _agent,
       _medical, _medicalDate, _smsSent, _duration, _desnutrition, _transactionHash,
       _transactionValidateHash;
 
   late Map<String, double> columnWidths = {
+    'Validación Médico Jefe': 200,
+    'Validación Dirección Regional': 200,
     'Id': 150,
     'Código': 150,
     'Estado': 150,
@@ -227,13 +230,112 @@ class _ContractDataGridState extends LocalizationSampleViewState {
       document.dispose();
     }
 
-    return Row(
-      children: <Widget>[
-        _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
-        _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
-      ],
+    if (User.needValidation){
+      return Row(
+        children: <Widget>[
+          _buildValidationButton("VALIDAR DATOS", onPressed: () {
+            if (User.currentRole == 'medico-jefe') {
+              chefValidation();
+            }
+
+            if (User.currentRole == 'direccion-regional-salud') {
+              regionalValidation();
+            }
+          }),
+          _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
+          _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
+        ],
+      );
+    } else {
+      return Row(
+        children: <Widget>[
+          _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
+          _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
+        ],
+      );
+    }
+  }
+
+  Widget _buildValidationButton(String buttonName,
+      {required VoidCallback onPressed}) {
+    return Container(
+        height: 60.0,
+        padding: const EdgeInsets.only(left: 10.0, top: 10.0, bottom: 10.0),
+        child: TextButton(
+          onPressed: onPressed,
+          child: const Text(
+              "VALIDAR DATOS"),)
     );
   }
+
+  Future<void> chefValidation() async {
+    for (var c in contractDataGridSource.getContracts()!) {
+      ref.read(contractsScreenControllerProvider.notifier).updateContract(
+          Contract(
+            contractId: c.contract.contractId,
+            status: c.contract.status,
+            code: c.contract.code,
+            point: c.contract.point,
+            screenerId: c.contract.screenerId,
+            medicalId: c.contract.medicalId,
+            armCircunference: c.contract.armCircunference,
+            armCircumferenceMedical: c.contract.armCircumferenceMedical,
+            weight: c.contract.weight,
+            height: c.contract.height,
+            childName: c.contract.childName,
+            childSurname: c.contract.childSurname,
+            sex: c.contract.sex,
+            childDNI: c.contract.childDNI,
+            childTutor: c.contract.childTutor,
+            childPhoneContract: c.contract.childPhoneContract,
+            childAddress: c.contract.childAddress,
+            creationDate: c.contract.creationDate,
+            medicalDate: c.contract.medicalDate,
+            smsSent: c.contract.smsSent,
+            duration: c.contract.duration,
+            percentage: c.contract.percentage,
+            transactionHash: c.contract.transactionHash,
+            transactionValidateHash: c.contract.transactionValidateHash,
+            chefValidation: true,
+            regionalValidation: c.contract.regionalValidation,
+          )
+      );
+    }}
+
+  Future<void> regionalValidation() async {
+    final contractsWithChefValidation = contractDataGridSource.getContracts()!.where((c) => c.contract.chefValidation);
+    for (var c in contractsWithChefValidation) {
+      ref.read(contractsScreenControllerProvider.notifier).updateContract(
+          Contract(
+            contractId: c.contract.contractId,
+            status: c.contract.status,
+            code: c.contract.code,
+            point: c.contract.point,
+            screenerId: c.contract.screenerId,
+            medicalId: c.contract.medicalId,
+            armCircunference: c.contract.armCircunference,
+            armCircumferenceMedical: c.contract.armCircumferenceMedical,
+            weight: c.contract.weight,
+            height: c.contract.height,
+            childName: c.contract.childName,
+            childSurname: c.contract.childSurname,
+            sex: c.contract.sex,
+            childDNI: c.contract.childDNI,
+            childTutor: c.contract.childTutor,
+            childPhoneContract: c.contract.childPhoneContract,
+            childAddress: c.contract.childAddress,
+            creationDate: c.contract.creationDate,
+            medicalDate: c.contract.medicalDate,
+            smsSent: c.contract.smsSent,
+            duration: c.contract.duration,
+            percentage: c.contract.percentage,
+            transactionHash: c.contract.transactionHash,
+            transactionValidateHash: c.contract.transactionValidateHash,
+            chefValidation: c.contract.chefValidation,
+            regionalValidation: true,
+          )
+      );
+    }}
 
   Widget _buildExcelExportingButton(String buttonName,
       {required VoidCallback onPressed}) {
@@ -311,6 +413,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     final selectedLocale = model.locale.toString();
     switch (selectedLocale) {
       case 'en_US':
+        _chefValidation = 'Chef validation';
+        _regionalValidation = 'Regional validation';
         _id = 'Id';
         _code = 'Code';
         _status = 'Status';
@@ -341,6 +445,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _transactionValidateHash = 'Transaction validate Hash';
         break;
       case 'es_ES':
+        _chefValidation = 'Validación Médico Jefe';
+        _regionalValidation = 'Validación Dirección Regional';
         _id = 'Id';
         _code = 'Código';
         _status = 'Estado';
@@ -371,6 +477,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _transactionValidateHash = 'Hash transacción validada';
         break;
       case 'fr_FR':
+        _chefValidation = 'Validation du médecin-chef';
+        _regionalValidation = 'Validation direction régionale de la santé';
         _id = 'Identifiant';
         _code = 'Code';
         _status = 'Statut';
@@ -422,6 +530,30 @@ class _ContractDataGridState extends LocalizationSampleViewState {
       allowSorting: true,
       allowMultiColumnSorting: true,
       columns: <GridColumn>[
+        GridColumn(
+            columnName: 'Validación Médico Jefe',
+            width: columnWidths['Validación Médico Jefe']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _chefValidation,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Validación Dirección Regional',
+            width: columnWidths['Validación Dirección Regional']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _regionalValidation,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
         GridColumn(
             width: columnWidths['Id']!,
             columnName: 'Id',
@@ -723,6 +855,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
 
     selectedLocale = model.locale.toString();
 
+    _chefValidation = 'Validación Médico Jefe';
+    _regionalValidation = 'Validación Dirección Regional';
     _id = 'Id';
     _code = 'Código';
     _contracts = 'Diagnosis';
@@ -766,7 +900,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
           );
 
           if (User.currentRole == 'medico-jefe') {
-            final pointsAsyncValue = ref.watch(pointsByRegionStreamProvider);
+            final pointsAsyncValue = ref.watch(pointsByProvinceStreamProvider);
             if (pointsAsyncValue.value != null) {
               final points = pointsAsyncValue.value!;
               if (pointsIds.isEmpty) {
@@ -775,7 +909,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
               contractsAsyncValue = ref.watch(contractsByPointsStreamProvider(pointsIds));
             }
           } else if (User.currentRole == 'direccion-regional-salud') {
-            final pointsAsyncValue = ref.watch(pointsByProvinceStreamProvider);
+            final pointsAsyncValue = ref.watch(pointsByRegionStreamProvider);
             if (pointsAsyncValue.value != null) {
               final points = pointsAsyncValue.value!;
               if (pointsIds.isEmpty) {

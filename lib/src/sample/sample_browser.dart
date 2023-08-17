@@ -1,6 +1,7 @@
 /// dart imports
 import 'dart:io' show Platform;
 
+import 'package:adminnut4health/src/features/countries/data/firestore_repository.dart';
 import 'package:adminnut4health/src/features/users/data/firestore_repository.dart';
 import 'package:adminnut4health/src/features/users/domain/user.dart';
 /// package imports
@@ -47,14 +48,10 @@ class _SampleBrowserState extends ConsumerState<SampleBrowser> {
   Widget build(BuildContext context) {
 
     final user = ref.watch(authRepositoryProvider).currentUser;
+    final countries = ref.watch(countriesStreamProvider).value;
+    final regions = ref.watch(regionsStreamProvider).value;
+
     if (user != null && user.metadata.lastSignInTime != null) {
-      final localUser = ref.watch(userStreamProvider(user.uid));
-
-      if (localUser.value != null) {
-        User.currentRegionId = localUser.value!.regionId ?? "";
-        User.currentProvinceId = localUser.value!.provinceId ?? "";
-      }
-
       final claims = user.getIdTokenResult();
       claims.then((value) => {
         if (value.claims != null && value.claims!['donante'] == true && User.currentRole != "donante") {
@@ -67,6 +64,18 @@ class _SampleBrowserState extends ConsumerState<SampleBrowser> {
           User.currentRole = 'direccion-regional-salud'
         }
       });
+
+      final localUser = ref.watch(userStreamProvider(user.uid));
+
+      if (localUser.value != null) {
+        User.currentRegionId = localUser.value!.regionId ?? "";
+        User.currentProvinceId = localUser.value!.provinceId ?? "";
+        if ((User.currentRole == 'direccion-regional-salud' || User.currentRole == 'medico-jefe') && countries != null && regions != null) {
+          final currentRegion = regions.firstWhere((r) => r.regionId == User.currentRegionId);
+          final country = countries.firstWhere((c) => c.countryId == currentRegion.countryId);
+          User.needValidation = country.needValidation;
+        }
+      }
     }
 
     final Map<String, WidgetBuilder> navigationRoutes = <String, WidgetBuilder>{

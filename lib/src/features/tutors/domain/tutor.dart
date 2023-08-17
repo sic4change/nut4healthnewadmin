@@ -26,6 +26,8 @@ class Tutor extends Equatable {
     required this.childMinor,
     required this.observations,
     required this.active,
+    required this.chefValidation,
+    required this.regionalValidation,
   });
 
   final TutorID tutorId;
@@ -47,11 +49,13 @@ class Tutor extends Equatable {
   final String childMinor;
   final String observations;
   final bool active;
+  final bool chefValidation;
+  final bool regionalValidation;
 
   @override
   List<Object> get props => [tutorId, pointId, name, surnames, address, phone,
     birthdate,createDate, ethnicity, sex, maleRelation, womanStatus, babyAge,
-    armCircunference, status, weeks, observations, active, ];
+    armCircunference, status, weeks, observations, active, chefValidation, regionalValidation];
 
   @override
   bool get stringify => true;
@@ -80,6 +84,8 @@ class Tutor extends Equatable {
     final childMinor = data['childMinor']?? "";
     final observations = data['observations']?? "";
     final active = data['active']?? false;
+    final chefValidation = data['chefValidation']?? false;
+    final regionalValidation = data['regionalValidation']?? false;
 
     return Tutor(
       tutorId: documentId,
@@ -101,6 +107,8 @@ class Tutor extends Equatable {
       childMinor: childMinor,
       observations: observations,
       active: active,
+      chefValidation: chefValidation,
+      regionalValidation: regionalValidation,
     );
   }
 
@@ -124,6 +132,8 @@ class Tutor extends Equatable {
       'childMinor': childMinor,
       'observations': observations,
       'active': active,
+      'chefValidation': chefValidation,
+      'regionalValidation': regionalValidation,
     };
   }
 }

@@ -44,11 +44,11 @@ class FirestoreRepository {
       );
 
   Future<void> deleteVisit({required Visit visit}) async {
-    await _dataSource.deleteData(path: FirestorePath.visit(visit.caseId));
+    await _dataSource.deleteData(path: FirestorePath.visit(visit.visitId));
   }
 
   Future<void> updateVisit({required Visit visit}) async {
-    await _dataSource.updateData(path: FirestorePath.visit(visit.caseId), data: visit.toMap());
+    await _dataSource.updateData(path: FirestorePath.visit(visit.visitId), data: visit.toMap());
   }
 
   Future<void> addVisit({required Visit visit}) async {
@@ -65,13 +65,25 @@ class FirestoreRepository {
       _dataSource.watchCollection(
         path: FirestorePath.visits(),
         builder: (data, documentId) => Visit.fromMap(data, documentId),
+        queryBuilder: (query) {
+          if (User.currentRole != 'super-admin') {
+            query = query.where('chefValidation', isEqualTo: true).where('regionalValidation', isEqualTo: true);
+          }
+          return query;
+        },
       );
 
   Stream<List<Visit>> watchVisitsByPoints(List<String> pointsIds) =>
       _dataSource.watchCollection(
         path: FirestorePath.visits(),
         builder: (data, documentId) => Visit.fromMap(data, documentId),
-        queryBuilder: (query) => query.where('point', whereIn: pointsIds),
+        queryBuilder: (query) {
+          query = query.where('point', whereIn: pointsIds);
+          if (User.currentRole == 'direccion-regional-salud') {
+            query = query.where('chefValidation', isEqualTo: true);
+          }
+          return query;
+        },
       );
 
   Stream<List<Point>> watchPoints() =>
@@ -181,6 +193,8 @@ class FirestoreRepository {
                   ethnicity: "",
                   sex: "",
                   observations: "",
+                  chefValidation: false,
+                  regionalValidation: false,
                 );
 
                 final tutor = tutorMap[visit.tutorId]?? Tutor(
@@ -203,6 +217,8 @@ class FirestoreRepository {
                   childMinor: "",
                   observations: "",
                   active: false,
+                  chefValidation: false,
+                  regionalValidation: false,
                 );
 
                 final myCase = caseMap[visit.caseId]?? Case(
@@ -216,6 +232,8 @@ class FirestoreRepository {
                   observations: "",
                   status: "",
                   visits: 0,
+                  chefValidation: false,
+                  regionalValidation: false,
                 );
 
                 return VisitCombined(visit, point, child, tutor, myCase);
@@ -286,6 +304,8 @@ class FirestoreRepository {
                   ethnicity: "",
                   sex: "",
                   observations: "",
+                  chefValidation: false,
+                  regionalValidation: false,
                 );
 
                 final tutor = tutorMap[visit.tutorId]?? Tutor(
@@ -308,6 +328,8 @@ class FirestoreRepository {
                   childMinor: "",
                   observations: "",
                   active: false,
+                  chefValidation: false,
+                  regionalValidation: false,
                 );
 
                 final myCase = caseMap[visit.caseId]?? Case(
@@ -321,6 +343,8 @@ class FirestoreRepository {
                   observations: "",
                   status: "",
                   visits: 0,
+                  chefValidation: false,
+                  regionalValidation: false,
                 );
 
                 return VisitCombined(visit, point, child, tutor, myCase);
