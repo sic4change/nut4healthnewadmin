@@ -9,4 +9,5 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 
 part 'show_alert_dialog.dart';
+part 'show_validation_dialog.dart';
 part 'show_exception_alert_dialog.dart';

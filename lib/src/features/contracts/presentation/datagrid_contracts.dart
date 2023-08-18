@@ -6,6 +6,7 @@ import 'package:adminnut4health/src/features/authentication/data/firebase_auth_r
 import 'package:adminnut4health/src/features/contracts/domain/contract.dart';
 import 'package:adminnut4health/src/features/users/data/firestore_repository.dart';
 import 'package:adminnut4health/src/features/users/domain/user.dart';
+import 'package:adminnut4health/src/utils/alert_dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -234,13 +235,18 @@ class _ContractDataGridState extends LocalizationSampleViewState {
       return Row(
         children: <Widget>[
           _buildValidationButton("VALIDAR DATOS", onPressed: () {
-            if (User.currentRole == 'medico-jefe') {
-              chefValidation();
-            }
+            showValidationDialog(
+              context: context,
+              onPressed: () {
+                if (User.currentRole == 'medico-jefe') {
+                  chefValidation();
+                }
 
-            if (User.currentRole == 'direccion-regional-salud') {
-              regionalValidation();
-            }
+                if (User.currentRole == 'direccion-regional-salud') {
+                  regionalValidation();
+                }
+              }
+            );
           }),
           _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
           _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
@@ -269,7 +275,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
   }
 
   Future<void> chefValidation() async {
-    for (var c in contractDataGridSource.getContracts()!) {
+    final contracts = contractDataGridSource.getContracts()!.where((c) => !c.contract.chefValidation);
+    for (var c in contracts) {
       ref.read(contractsScreenControllerProvider.notifier).updateContract(
           Contract(
             contractId: c.contract.contractId,
@@ -303,7 +310,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     }}
 
   Future<void> regionalValidation() async {
-    final contractsWithChefValidation = contractDataGridSource.getContracts()!.where((c) => c.contract.chefValidation);
+    final contractsWithChefValidation = contractDataGridSource.getContracts()!.where((c) => c.contract.chefValidation && !c.contract.regionalValidation);
     for (var c in contractsWithChefValidation) {
       ref.read(contractsScreenControllerProvider.notifier).updateContract(
           Contract(

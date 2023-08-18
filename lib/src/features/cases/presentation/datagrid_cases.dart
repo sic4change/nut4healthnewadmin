@@ -4,6 +4,7 @@
 import 'package:adminnut4health/src/features/cases/domain/case.dart';
 import 'package:adminnut4health/src/features/cases/domain/caseWithPointChildAndTutor.dart';
 import 'package:adminnut4health/src/features/users/domain/user.dart';
+import 'package:adminnut4health/src/utils/alert_dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -202,13 +203,18 @@ class _CaseDataGridState extends LocalizationSampleViewState {
       return Row(
         children: <Widget>[
           _buildValidationButton("VALIDAR DATOS", onPressed: () {
-            if (User.currentRole == 'medico-jefe') {
-              chefValidation();
-            }
+            showValidationDialog(
+                context: context,
+                onPressed: () {
+                  if (User.currentRole == 'medico-jefe') {
+                    chefValidation();
+                  }
 
-            if (User.currentRole == 'direccion-regional-salud') {
-              regionalValidation();
-            }
+                  if (User.currentRole == 'direccion-regional-salud') {
+                    regionalValidation();
+                  }
+                }
+            );
           }),
           _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
           _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
@@ -237,7 +243,8 @@ class _CaseDataGridState extends LocalizationSampleViewState {
   }
 
   Future<void> chefValidation() async {
-    for (var c in caseDataGridSource.getCases()!) {
+    final cases = caseDataGridSource.getCases()!.where((c) => !c.myCase.chefValidation);
+    for (var c in cases) {
       ref.read(casesScreenControllerProvider.notifier).updateCase(
         Case(
             caseId: c.myCase.caseId,
@@ -256,7 +263,7 @@ class _CaseDataGridState extends LocalizationSampleViewState {
     }}
 
   Future<void> regionalValidation() async {
-    final casesWithChefValidation = caseDataGridSource.getCases()!.where((c) => c.myCase.chefValidation);
+    final casesWithChefValidation = caseDataGridSource.getCases()!.where((c) => c.myCase.chefValidation && !c.myCase.regionalValidation);
     for (var c in casesWithChefValidation) {
       ref.read(casesScreenControllerProvider.notifier).updateCase(
         Case(

@@ -4,6 +4,7 @@
 import 'package:adminnut4health/src/features/tutors/domain/tutor.dart';
 import 'package:adminnut4health/src/features/tutors/domain/tutorWithPoint.dart';
 import 'package:adminnut4health/src/features/users/domain/user.dart';
+import 'package:adminnut4health/src/utils/alert_dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -209,13 +210,18 @@ class _TutorDataGridState extends LocalizationSampleViewState {
       return Row(
         children: <Widget>[
           _buildValidationButton("VALIDAR DATOS", onPressed: () {
-            if (User.currentRole == 'medico-jefe') {
-              chefValidation();
-            }
+            showValidationDialog(
+                context: context,
+                onPressed: () {
+                  if (User.currentRole == 'medico-jefe') {
+                    chefValidation();
+                  }
 
-            if (User.currentRole == 'direccion-regional-salud') {
-              regionalValidation();
-            }
+                  if (User.currentRole == 'direccion-regional-salud') {
+                    regionalValidation();
+                  }
+                }
+            );
           }),
           _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
           _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
@@ -244,7 +250,8 @@ class _TutorDataGridState extends LocalizationSampleViewState {
   }
 
   Future<void> chefValidation() async {
-    for (var t in tutorDataGridSource.getTutors()!) {
+    final tutors = tutorDataGridSource.getTutors()!.where((t) => !t.tutor.chefValidation);
+    for (var t in tutors) {
       ref.read(tutorsScreenControllerProvider.notifier).updateTutor(
           Tutor(
               tutorId: t.tutor.tutorId,
@@ -273,8 +280,8 @@ class _TutorDataGridState extends LocalizationSampleViewState {
     }}
 
   Future<void> regionalValidation() async {
-    final casesWithChefValidation = tutorDataGridSource.getTutors()!.where((c) => c.tutor.chefValidation);
-    for (var t in casesWithChefValidation) {
+    final tutorsWithChefValidation = tutorDataGridSource.getTutors()!.where((t) => t.tutor.chefValidation && !t.tutor.regionalValidation);
+    for (var t in tutorsWithChefValidation) {
       ref.read(tutorsScreenControllerProvider.notifier).updateTutor(
           Tutor(
               tutorId: t.tutor.tutorId,

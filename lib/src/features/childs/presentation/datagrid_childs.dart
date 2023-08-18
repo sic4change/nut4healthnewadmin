@@ -4,6 +4,7 @@
 import 'package:adminnut4health/src/features/childs/domain/child.dart';
 import 'package:adminnut4health/src/features/childs/domain/childWithPointAndTutor.dart';
 import 'package:adminnut4health/src/features/users/domain/user.dart';
+import 'package:adminnut4health/src/utils/alert_dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -204,13 +205,18 @@ class _ChildDataGridState extends LocalizationSampleViewState {
       return Row(
         children: <Widget>[
           _buildValidationButton("VALIDAR DATOS", onPressed: () {
-            if (User.currentRole == 'medico-jefe') {
-              chefValidation();
-            }
+            showValidationDialog(
+                context: context,
+                onPressed: () {
+                  if (User.currentRole == 'medico-jefe') {
+                    chefValidation();
+                  }
 
-            if (User.currentRole == 'direccion-regional-salud') {
-              regionalValidation();
-            }
+                  if (User.currentRole == 'direccion-regional-salud') {
+                    regionalValidation();
+                  }
+                }
+            );
           }),
           _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
           _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
@@ -239,7 +245,8 @@ class _ChildDataGridState extends LocalizationSampleViewState {
   }
 
   Future<void> chefValidation() async {
-    for (var c in childDataGridSource.getChilds()!) {
+    final children = childDataGridSource.getChilds()!.where((c) => !c.child.chefValidation);
+    for (var c in children) {
       ref.read(childsScreenControllerProvider.notifier).updateChild(
           Child(
               childId: c.child.childId,
@@ -261,7 +268,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
     }}
 
   Future<void> regionalValidation() async {
-    final childrenWithChefValidation = childDataGridSource.getChilds()!.where((c) => c.child.chefValidation);
+    final childrenWithChefValidation = childDataGridSource.getChilds()!.where((c) => c.child.chefValidation && !c.child.regionalValidation);
     for (var c in childrenWithChefValidation) {
       ref.read(childsScreenControllerProvider.notifier).updateChild(
           Child(

@@ -4,6 +4,7 @@
 import 'package:adminnut4health/src/features/users/domain/user.dart';
 import 'package:adminnut4health/src/features/visits/domain/visit.dart';
 import 'package:adminnut4health/src/features/visits/domain/visitCombined.dart';
+import 'package:adminnut4health/src/utils/alert_dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -229,13 +230,18 @@ class _VisitDataGridState extends LocalizationSampleViewState {
       return Row(
         children: <Widget>[
           _buildValidationButton("VALIDAR DATOS", onPressed: () {
-            if (User.currentRole == 'medico-jefe') {
-              chefValidation();
-            }
+            showValidationDialog(
+                context: context,
+                onPressed: () {
+                  if (User.currentRole == 'medico-jefe') {
+                    chefValidation();
+                  }
 
-            if (User.currentRole == 'direccion-regional-salud') {
-              regionalValidation();
-            }
+                  if (User.currentRole == 'direccion-regional-salud') {
+                    regionalValidation();
+                  }
+                }
+            );
           }),
           _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
           _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
@@ -264,7 +270,8 @@ class _VisitDataGridState extends LocalizationSampleViewState {
   }
 
   Future<void> chefValidation() async {
-    for (var v in visitDataGridSource.getVisits()!) {
+    final visits =  visitDataGridSource.getVisits()!.where((v) => !v.visit.chefValidation);
+    for (var v in visits) {
       Visit newVisit = Visit(
           visitId: v.visit.visitId,
           pointId: v.visit.pointId,
@@ -305,8 +312,8 @@ class _VisitDataGridState extends LocalizationSampleViewState {
     }}
 
   Future<void> regionalValidation() async {
-    final casesWithChefValidation = visitDataGridSource.getVisits()!.where((c) => c.visit.chefValidation);
-    for (var v in casesWithChefValidation) {
+    final visitsWithChefValidation = visitDataGridSource.getVisits()!.where((v) => v.visit.chefValidation && !v.visit.regionalValidation);
+    for (var v in visitsWithChefValidation) {
       ref.read(visitsScreenControllerProvider.notifier).updateVisit(
           Visit(
               visitId: v.visit.visitId,
