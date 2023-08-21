@@ -101,7 +101,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
   }
 
   Widget _buildView(AsyncValue<List<TutorWithPoint>> tutors) {
-    if (tutors.value != null && tutors.value!.isNotEmpty) {
+    if (tutors.value != null) {
       tutorDataGridSource.buildDataGridRows();
       tutorDataGridSource.updateDataSource();
       selectedLocale = model.locale.toString();
@@ -120,6 +120,22 @@ class _TutorDataGridState extends LocalizationSampleViewState {
   Widget _buildLayoutBuilder() {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraint) {
+          if (tutorDataGridSource.getTutors()!.isEmpty) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _buildHeaderButtons(),
+                const Expanded(
+                  child: Center(
+                      child: SizedBox(
+                        width: 200,
+                        height: 200,
+                        child: Text("No hay datos que mostrar"),
+                      )),
+                ),
+              ],
+            );
+          } else {
           return Column(
             children: <Widget>[
               Column(
@@ -154,7 +170,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
               )
             ],
           );
-        });
+        }});
   }
 
   Widget _buildHeaderButtons() {

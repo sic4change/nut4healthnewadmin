@@ -121,7 +121,7 @@ class _VisitDataGridState extends LocalizationSampleViewState {
   }
 
   Widget _buildView(AsyncValue<List<VisitCombined>> visits) {
-    if (visits.value != null && visits.value!.isNotEmpty) {
+    if (visits.value != null) {
       visitDataGridSource.buildDataGridRows();
       visitDataGridSource.updateDataSource();
       selectedLocale = model.locale.toString();
@@ -140,6 +140,22 @@ class _VisitDataGridState extends LocalizationSampleViewState {
   Widget _buildLayoutBuilder() {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraint) {
+          if (visitDataGridSource.getVisits()!.isEmpty) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _buildHeaderButtons(),
+                const Expanded(
+                  child: Center(
+                      child: SizedBox(
+                        width: 200,
+                        height: 200,
+                        child: Text("No hay datos que mostrar"),
+                      )),
+                ),
+              ],
+            );
+          } else {
           return Column(
             children: <Widget>[
               Column(
@@ -174,7 +190,7 @@ class _VisitDataGridState extends LocalizationSampleViewState {
               )
             ],
           );
-        });
+        }});
   }
 
   Widget _buildHeaderButtons() {

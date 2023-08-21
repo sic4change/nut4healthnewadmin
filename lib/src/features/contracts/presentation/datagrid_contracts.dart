@@ -124,7 +124,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
   }
 
   Widget _buildView(AsyncValue<List<ContractWithScreenerAndMedicalAndPoint>> contracts) {
-    if (contracts.value != null && contracts.value!.isNotEmpty) {
+    if (contracts.value != null) {
       contractDataGridSource.buildDataGridRows();
       contractDataGridSource.updateDataSource();
       selectedLocale = model.locale.toString();
@@ -143,6 +143,22 @@ class _ContractDataGridState extends LocalizationSampleViewState {
   Widget _buildLayoutBuilder() {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraint) {
+          if (contractDataGridSource.getContracts()!.isEmpty) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _buildHeaderButtons(),
+                const Expanded(
+                  child: Center(
+                      child: SizedBox(
+                        width: 200,
+                        height: 200,
+                        child: Text("No hay datos que mostrar"),
+                      )),
+                ),
+              ],
+            );
+          } else {
           return Column(
               children: <Widget>[
                 Column(
@@ -177,7 +193,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
                 )
               ],
           );
-        });
+        }});
   }
 
   Future<String> readBlob(Blob blob) async {

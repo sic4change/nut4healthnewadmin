@@ -94,7 +94,7 @@ class _CaseDataGridState extends LocalizationSampleViewState {
   }
 
   Widget _buildView(AsyncValue<List<CaseWithPointChildAndTutor>> cases) {
-    if (cases.value != null && cases.value!.isNotEmpty) {
+    if (cases.value != null) {
       caseDataGridSource.buildDataGridRows();
       caseDataGridSource.updateDataSource();
       selectedLocale = model.locale.toString();
@@ -113,6 +113,22 @@ class _CaseDataGridState extends LocalizationSampleViewState {
   Widget _buildLayoutBuilder() {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraint) {
+          if (caseDataGridSource.getCases()!.isEmpty) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _buildHeaderButtons(),
+                const Expanded(
+                  child: Center(
+                      child: SizedBox(
+                        width: 200,
+                        height: 200,
+                        child: Text("No hay datos que mostrar"),
+                      )),
+                ),
+              ],
+            );
+          } else {
           return Column(
             children: <Widget>[
               Column(
@@ -147,7 +163,7 @@ class _CaseDataGridState extends LocalizationSampleViewState {
               )
             ],
           );
-        });
+        }});
   }
 
   Widget _buildHeaderButtons() {
