@@ -67,7 +67,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
       _armCircunference, _armCircunferenceConfirmed, _weight, _height, _name,
       _surnames, _sex, _dni, _tutor, _contact, _address, _date, _point, _agent,
       _medical, _medicalDate, _smsSent, _duration, _desnutrition, _transactionHash,
-      _transactionValidateHash;
+      _transactionValidateHash, _validateData;
 
   late Map<String, double> columnWidths = {
     'Validación Médico Jefe': 200,
@@ -250,9 +250,10 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     if (User.needValidation){
       return Row(
         children: <Widget>[
-          _buildValidationButton("VALIDAR DATOS", onPressed: () {
+          _buildValidationButton(onPressed: () {
             showValidationDialog(
               context: context,
+                selectedLocale: selectedLocale,
               onPressed: () {
                 if (User.currentRole == 'medico-jefe') {
                   chefValidation();
@@ -278,15 +279,24 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     }
   }
 
-  Widget _buildValidationButton(String buttonName,
-      {required VoidCallback onPressed}) {
+  Widget _buildValidationButton({required VoidCallback onPressed}) {
+    switch (selectedLocale) {
+      case 'en_US':
+        _validateData = 'VALIDATE DATA';
+        break;
+      case 'es_ES':
+        _validateData = 'VALIDAR DATOS';
+        break;
+      case 'fr_FR':
+        _validateData = 'VALIDER LES DONNÉES';
+        break;
+    }
     return Container(
         height: 60.0,
         padding: const EdgeInsets.only(left: 10.0, top: 10.0, bottom: 10.0),
         child: TextButton(
           onPressed: onPressed,
-          child: const Text(
-              "VALIDAR DATOS"),)
+          child: Text(_validateData),)
     );
   }
 
@@ -909,6 +919,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     _desnutrition = 'Desnutrición';
     _transactionHash = 'Hash transacción';
     _transactionValidateHash = 'Hash transacción validada';
+    _validateData = 'VALIDAR DATOS';
   }
 
 

@@ -55,7 +55,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
   /// Translate names
   late String _chefValidation, _regionalValidation, _point, _name, _surnames, _birthdate, _code, _createDate, _lastDate,
       _ethnicity, _sex, _tutor, _observations, _exportXLS, _exportPDF, _total,
-      _childs;
+      _childs, _validateData;
 
   late Map<String, double> columnWidths = {
     'Validación Médico Jefe': 200,
@@ -220,9 +220,10 @@ class _ChildDataGridState extends LocalizationSampleViewState {
     } else if (User.needValidation){
       return Row(
         children: <Widget>[
-          _buildValidationButton("VALIDAR DATOS", onPressed: () {
+          _buildValidationButton(onPressed: () {
             showValidationDialog(
                 context: context,
+                selectedLocale: selectedLocale,
                 onPressed: () {
                   if (User.currentRole == 'medico-jefe') {
                     chefValidation();
@@ -248,15 +249,24 @@ class _ChildDataGridState extends LocalizationSampleViewState {
     }
   }
 
-  Widget _buildValidationButton(String buttonName,
-      {required VoidCallback onPressed}) {
+  Widget _buildValidationButton({required VoidCallback onPressed}) {
+    switch (selectedLocale) {
+      case 'en_US':
+        _validateData = 'VALIDATE DATA';
+        break;
+      case 'es_ES':
+        _validateData = 'VALIDAR DATOS';
+        break;
+      case 'fr_FR':
+        _validateData = 'VALIDER LES DONNÉES';
+        break;
+    }
     return Container(
         height: 60.0,
         padding: const EdgeInsets.only(left: 10.0, top: 10.0, bottom: 10.0),
         child: TextButton(
           onPressed: onPressed,
-          child: const Text(
-              "VALIDAR DATOS"),)
+          child: Text(_validateData),)
     );
   }
 
@@ -648,6 +658,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
     _exportPDF = 'Exportar PDF';
     _total = 'Niños/as totales';
     _childs = 'Niños/as';
+    _validateData = 'VALIDAR DATOS';
   }
 
 

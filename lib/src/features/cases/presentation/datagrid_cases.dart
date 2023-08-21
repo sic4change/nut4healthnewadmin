@@ -55,7 +55,7 @@ class _CaseDataGridState extends LocalizationSampleViewState {
 
   /// Translate names
   late String _chefValidation, _regionalValidation, _point, _tutor, _child, _name, _createDate, _lastDate, _visits,
-      _observations, _status, _exportXLS, _exportPDF, _total, _cases;
+      _observations, _status, _exportXLS, _exportPDF, _total, _cases, _validateData;
 
   late Map<String, double> columnWidths = {
     'Validación Médico Jefe': 200,
@@ -218,9 +218,10 @@ class _CaseDataGridState extends LocalizationSampleViewState {
     } else if (User.needValidation){
       return Row(
         children: <Widget>[
-          _buildValidationButton("VALIDAR DATOS", onPressed: () {
+          _buildValidationButton(onPressed: () {
             showValidationDialog(
                 context: context,
+                selectedLocale: selectedLocale,
                 onPressed: () {
                   if (User.currentRole == 'medico-jefe') {
                     chefValidation();
@@ -246,15 +247,24 @@ class _CaseDataGridState extends LocalizationSampleViewState {
     }
   }
 
-  Widget _buildValidationButton(String buttonName,
-      {required VoidCallback onPressed}) {
+  Widget _buildValidationButton({required VoidCallback onPressed}) {
+    switch (selectedLocale) {
+      case 'en_US':
+        _validateData = 'VALIDATE DATA';
+        break;
+      case 'es_ES':
+        _validateData = 'VALIDAR DATOS';
+        break;
+      case 'fr_FR':
+        _validateData = 'VALIDER LES DONNÉES';
+        break;
+    }
     return Container(
         height: 60.0,
         padding: const EdgeInsets.only(left: 10.0, top: 10.0, bottom: 10.0),
         child: TextButton(
           onPressed: onPressed,
-          child: const Text(
-              "VALIDAR DATOS"),)
+          child: Text(_validateData),)
     );
   }
 
@@ -608,6 +618,7 @@ class _CaseDataGridState extends LocalizationSampleViewState {
     _exportPDF = 'Exportar PDF';
     _total = 'Casos totales';
     _cases = 'Casos';
+    _validateData = 'VALIDAR DATOS';
   }
 
 

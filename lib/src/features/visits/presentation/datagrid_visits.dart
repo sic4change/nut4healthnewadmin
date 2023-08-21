@@ -59,7 +59,7 @@ class _VisitDataGridState extends LocalizationSampleViewState {
       _temperature, _cough, _vaccinationCard, _rubeolaVaccinated, _vitamineAVaccinated,
       _acidFolicAndFerroVaccinated, _amoxicilina, _otherTratments, _complicationsES,
       _complicationsEN, _complicationsFR, _observations, _exportXLS, _exportPDF,
-      _total, _visits;
+      _total, _visits, _validateData;
 
   late Map<String, double> columnWidths = {
     'Validación Médico Jefe': 200,
@@ -245,9 +245,10 @@ class _VisitDataGridState extends LocalizationSampleViewState {
     } else if (User.needValidation){
       return Row(
         children: <Widget>[
-          _buildValidationButton("VALIDAR DATOS", onPressed: () {
+          _buildValidationButton(onPressed: () {
             showValidationDialog(
                 context: context,
+                selectedLocale: selectedLocale,
                 onPressed: () {
                   if (User.currentRole == 'medico-jefe') {
                     chefValidation();
@@ -273,15 +274,25 @@ class _VisitDataGridState extends LocalizationSampleViewState {
     }
   }
 
-  Widget _buildValidationButton(String buttonName,
+  Widget _buildValidationButton(
       {required VoidCallback onPressed}) {
+    switch (selectedLocale) {
+      case 'en_US':
+        _validateData = 'VALIDATE DATA';
+        break;
+      case 'es_ES':
+        _validateData = 'VALIDAR DATOS';
+        break;
+      case 'fr_FR':
+        _validateData = 'VALIDER LES DONNÉES';
+        break;
+    }
     return Container(
         height: 60.0,
         padding: const EdgeInsets.only(left: 10.0, top: 10.0, bottom: 10.0),
         child: TextButton(
           onPressed: onPressed,
-          child: const Text(
-              "VALIDAR DATOS"),)
+          child: Text(_validateData),)
     );
   }
 
@@ -1046,6 +1057,7 @@ class _VisitDataGridState extends LocalizationSampleViewState {
     _exportPDF = 'Exportar PDF';
     _total = 'Visitas totales';
     _visits = 'Visitas';
+    _validateData = 'VALIDAR DATOS';
   }
 
 
