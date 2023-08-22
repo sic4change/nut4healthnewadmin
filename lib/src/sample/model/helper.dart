@@ -1,11 +1,14 @@
 /// dart imports
 import 'dart:io' show Platform;
 
+import 'package:adminnut4health/src/routing/app_router.dart';
+import 'package:adminnut4health/src/sample/sample_browser.dart';
 /// Package imports
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Local imports
@@ -472,7 +475,7 @@ Widget getFooter(BuildContext context, SampleModel model) {
 }
 
 /// Show Right drawer which contains theme settings for web.
-Widget showWebThemeSettings(SampleModel model) {
+Widget showWebThemeSettings(BuildContext context, SampleModel model) {
   int selectedValue = model.selectedThemeIndex;
   final selectedLocale = model.locale.toString();
   switch (selectedLocale) {
@@ -498,7 +501,7 @@ Widget showWebThemeSettings(SampleModel model) {
       _language = 'Langue';
       break;
   }
-  return StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
+  return StatefulBuilder(builder: (BuildContext mainContext, StateSetter setState) {
     final double width = MediaQuery.of(context).size.width * 0.4;
     final Color textColor =
         model.themeData.colorScheme.brightness == Brightness.light
@@ -655,7 +658,7 @@ Widget showWebThemeSettings(SampleModel model) {
                                   model.paletteColor),
                             ),
                             onPressed: () => _applyThemeAndPaletteColor(
-                                model, context, selectedValue),
+                                model, mainContext, context, selectedValue),
                             child: Text(_set,
                                 style: const TextStyle(
                                     fontSize: 16,
@@ -673,7 +676,7 @@ Widget showWebThemeSettings(SampleModel model) {
 
 /// Apply the selected theme to the whole application.
 void _applyThemeAndPaletteColor(
-    SampleModel model, BuildContext context, int selectedValue) {
+    SampleModel model, BuildContext mainContext, BuildContext context, int selectedValue) {
   model.selectedThemeIndex = selectedValue;
   model.backgroundColor = model.currentThemeData!.brightness == Brightness.dark
       ? model.currentPrimaryColor
@@ -688,6 +691,10 @@ void _applyThemeAndPaletteColor(
   // ignore: invalid_use_of_protected_member
   model.notifyListeners();
   Navigator.pop(context);
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(builder: (context) => const SampleBrowser()),
+  );
 }
 
 /// Adding the palette color in the theme setting panel.
@@ -941,7 +948,7 @@ void showBottomSettingsPanel(SampleModel model, BuildContext context) {
                               model.paletteColor),
                         ),
                         onPressed: () => _applyThemeAndPaletteColor(
-                            model, context, selectedIndex),
+                            model, context, context, selectedIndex),
                         child: Text(_set,
                             style: const TextStyle(
                                 fontFamily: 'HeeboMedium',

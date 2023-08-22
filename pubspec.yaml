@@ -65,6 +65,7 @@ flutter:
     - images/pdf_viewer/
     - assets/pdf/
     - assets/sample_details.json
+    - assets/sample_details_fr.json
     - assets/worldmap.json
     - assets/africa.json
     - assets/europe.json

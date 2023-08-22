@@ -14,7 +14,7 @@ import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await updateControlItems();
+  //await updateControlItems('fr_FR');
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

@@ -142,7 +142,7 @@ class _WebLayoutPageState extends State<WebLayoutPage> {
                             key: sampleInputKey,
                             webLayoutPageState: this)))),
         endDrawerEnableOpenDragGesture: false,
-        endDrawer: showWebThemeSettings(model),
+        endDrawer: showWebThemeSettings(context, model),
         appBar: PreferredSize(
             preferredSize: const Size.fromHeight(60.0),
             child: Container(
