@@ -252,8 +252,8 @@ class ContractDataGridSource extends DataGridSource {
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(cells: <Widget>[
-      _buildBoolean(row.getCells()[24].value),
       _buildBoolean(row.getCells()[25].value),
+      _buildBoolean(row.getCells()[26].value),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
