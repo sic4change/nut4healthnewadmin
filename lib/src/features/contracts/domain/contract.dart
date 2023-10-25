@@ -7,10 +7,11 @@ typedef ContractID = String;
 @immutable
 class Contract extends Equatable {
 
-  const Contract({required this.contractId, this.status, this.code, this.point,
-    this.screenerId, this.medicalId, this.armCircunference, this.armCircumferenceMedical,
-    this.weight, this.height, this.childName, this.childSurname, this.sex, this.childDNI,
-    this.childTutor, this.childPhoneContract, this.childAddress, this.creationDate,
+  const Contract({required this.contractId, this.status, this.code, this.isFEFA,
+    this.point, this.screenerId, this.medicalId, this.armCircunference,
+    this.armCircumferenceMedical, this.weight, this.height, this.childName,
+    this.childSurname, this.sex, this.childDNI, this.childTutor,
+    this.childPhoneContract, this.childAddress, this.creationDate,
     this.medicalDate, this.smsSent, this.duration, this.percentage,
     this.transactionHash, this.transactionValidateHash,
   });
@@ -18,6 +19,7 @@ class Contract extends Equatable {
   final ContractID contractId;
   final String? status;
   final String? code;
+  final bool? isFEFA;
   final String? point;
   final String? screenerId;
   final String? medicalId;
@@ -42,6 +44,7 @@ class Contract extends Equatable {
 
   @override
   List<Object> get props => [contractId, status ?? "", code ?? "", point ?? "",
+    (code != null && code!.contains("-99")) ? true : false,
     screenerId ?? "", medicalId ?? "", armCircunference ?? 0.0, armCircumferenceMedical ?? 0.0,
     weight ?? 0.0, height ?? 0.0, childName ?? "", childSurname ?? "", sex ?? "",
     childDNI ?? "", childTutor ?? "", childPhoneContract ?? "", childAddress ?? "",
@@ -60,6 +63,7 @@ class Contract extends Equatable {
 
     final status = data['status'] ?? "";
     final code = data['code'] ?? "";
+    final isFEFA = (code != null && code.contains("-99")) ? true : false;
     final point = data['point'] ?? "";
     final screenerId = data['screenerId'] ?? "";
     final medicalId = data['medicalId'] ?? "";
@@ -86,6 +90,7 @@ class Contract extends Equatable {
         contractId: documentId,
         status: status,
         code: code,
+        isFEFA: isFEFA,
         point: point,
         screenerId: screenerId,
         medicalId: medicalId,
@@ -114,6 +119,7 @@ class Contract extends Equatable {
     return {
       'status': status,
       'code': code,
+      'isFEFA': isFEFA,
       'point': point,
       'screenerId': screenerId,
       'medicalId': medicalId,
