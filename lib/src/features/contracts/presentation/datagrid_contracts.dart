@@ -63,7 +63,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
   late String selectedLocale;
 
   /// Translate names
-  late String _chefValidation, _regionalValidation, _id, _code, _status, _exportXLS, _exportPDF, _total, _contracts,
+  late String _chefValidation, _regionalValidation, _id, _code, _fefa, _status, _exportXLS, _exportPDF, _total, _contracts,
       _armCircunference, _armCircunferenceConfirmed, _weight, _height, _name,
       _surnames, _sex, _dni, _tutor, _contact, _address, _date, _point, _agent,
       _medical, _medicalDate, _smsSent, _duration, _desnutrition, _transactionHash,
@@ -74,6 +74,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     'Validación Dirección Regional': 200,
     'Id': 150,
     'Código': 150,
+    'FEFA': 150,
     'Estado': 150,
     'Desnutrición': 150,
     'Perímetro braquial (cm)': 150,
@@ -219,7 +220,6 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     Future<void> exportDataGridToPdf() async {
       final ByteData data = await rootBundle.load('images/nut_logo.jpg');
       final PdfDocument document = _key.currentState!.exportToPdfDocument(
-          fitAllColumnsInOnePage: true,
           excludeColumns: ['Id', 'Nombre', 'Apellidos', 'Lugar', 'Madre, Padre o Tutor', 'Contacto'],
           cellExport: (DataGridCellPdfExportDetails details) {
 
@@ -450,6 +450,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _regionalValidation = 'Regional validation';
         _id = 'Id';
         _code = 'Code';
+        _fefa = 'FEFA';
         _status = 'Status';
         _armCircunference = 'Brachial circumference (cm)';
         _armCircunferenceConfirmed = 'Confirmed brachial circumference (cm)';
@@ -482,6 +483,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _regionalValidation = 'Validación Dirección Regional';
         _id = 'Id';
         _code = 'Código';
+        _fefa = 'FEFA';
         _status = 'Estado';
         _armCircunference = 'Perímetro braquial (cm)';
         _armCircunferenceConfirmed = 'Perímetro braquial confirmado (cm)';
@@ -514,6 +516,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _regionalValidation = 'Validation direction régionale de la santé';
         _id = 'Identifiant';
         _code = 'Code';
+        _fefa = 'FEFA';
         _status = 'Statut';
         _armCircunference = 'Circonférence brachiale (cm)';
         _armCircunferenceConfirmed = 'Circonférence brachiale confirme (cm)';
@@ -610,6 +613,18 @@ class _ContractDataGridState extends LocalizationSampleViewState {
               overflow: TextOverflow.ellipsis,
             ),
           )
+        ),
+        GridColumn(
+            columnName: 'FEFA',
+            width: columnWidths['FEFA']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _fefa,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
         ),
         GridColumn(
           columnName: 'Estado',
@@ -892,6 +907,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     _regionalValidation = 'Validación Dirección Regional';
     _id = 'Id';
     _code = 'Código';
+    _fefa = 'FEFA';
     _contracts = 'Diagnosis';
     _status = 'Estado';
     _armCircunference = 'Perímetro braquial (cm)';
