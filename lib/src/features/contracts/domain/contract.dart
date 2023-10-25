@@ -13,7 +13,8 @@ class Contract extends Equatable {
     this.childSurname, this.sex, this.childDNI, this.childTutor,
     this.childPhoneContract, this.childAddress, this.creationDate,
     this.medicalDate, this.smsSent, this.duration, this.percentage,
-    this.transactionHash, this.transactionValidateHash,
+    this.transactionHash, this.transactionValidateHash,required this.chefValidation,
+    required this.regionalValidation,
   });
 
   final ContractID contractId;
@@ -41,6 +42,8 @@ class Contract extends Equatable {
   final int? percentage;
   final String? transactionHash;
   final String? transactionValidateHash;
+  final bool chefValidation;
+  final bool regionalValidation;
 
   @override
   List<Object> get props => [contractId, status ?? "", code ?? "", point ?? "",
@@ -50,6 +53,7 @@ class Contract extends Equatable {
     childDNI ?? "", childTutor ?? "", childPhoneContract ?? "", childAddress ?? "",
     creationDate ?? DateTime(0, 0, 0,), medicalDate ?? DateTime(0, 0, 0), smsSent ?? false,
     duration ?? "0", percentage ?? 0, transactionHash?? "", transactionValidateHash?? "",
+    chefValidation, regionalValidation,
   ];
 
   @override
@@ -85,6 +89,8 @@ class Contract extends Equatable {
     final percentage = data['percentage'] ?? 0;
     final transactionHash = data['transactionHash']?? "";
     final transactionValidateHash = data['transactionValidateHash']?? "";
+    final chefValidation = data['chefValidation']?? false;
+    final regionalValidation = data['regionalValidation']?? false;
 
     return Contract(
         contractId: documentId,
@@ -112,6 +118,8 @@ class Contract extends Equatable {
         percentage: percentage,
         transactionHash: transactionHash,
         transactionValidateHash: transactionValidateHash,
+        chefValidation: chefValidation,
+        regionalValidation: regionalValidation,
     );
   }
 
@@ -141,6 +149,8 @@ class Contract extends Equatable {
       'percentage': percentage,
       'transactionHash': transactionHash,
       'transactionValidateHash': transactionValidateHash,
+      'chefValidation': chefValidation,
+      'regionalValidation': regionalValidation,
     };
   }
 }

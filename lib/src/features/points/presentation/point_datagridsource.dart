@@ -1,5 +1,6 @@
 /// Dart import
 /// Packages import
+import 'package:adminnut4health/src/features/regions/domain/region.dart';
 import 'package:flutter/material.dart';
 
 /// DataGrid import
@@ -15,16 +16,20 @@ class PointDataGridSource extends DataGridSource {
   /// Creates the point data source class with required details.
   PointDataGridSource(List<PointWithProvinceAndCountry> pointData,
       List<Province> provinceData,
-      List<Country> countryData) {
+      List<Country> countryData,
+      List<Region> regionData,
+      ) {
     _points = pointData;
     _provinces = provinceData;
     _countries = countryData;
+    _regions = regionData;
     buildDataGridRows();
   }
 
   List<DataGridRow> _dataGridRows = <DataGridRow>[];
   List<PointWithProvinceAndCountry>? _points = <PointWithProvinceAndCountry>[];
   List<Country> _countries = <Country>[];
+  List<Region> _regions = <Region>[];
   List<Province> _provinces = <Province>[];
 
 
@@ -39,6 +44,7 @@ class PointDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Código', value: pointWithProvinceAndCountry.point.phoneCode),
           DataGridCell<int>(columnName: 'Nº dígitos teléfono', value: pointWithProvinceAndCountry.point.phoneLength),
           DataGridCell<String>(columnName: 'País', value: pointWithProvinceAndCountry.country?.name),
+          DataGridCell<String>(columnName: 'Región', value: pointWithProvinceAndCountry.region?.name),
           DataGridCell<String>(columnName: 'Municipio', value: pointWithProvinceAndCountry.province?.name),
           DataGridCell<bool>(columnName: 'Activo', value: pointWithProvinceAndCountry.point.active),
           DataGridCell<double>(columnName: 'Latitud', value: pointWithProvinceAndCountry.point.latitude),
@@ -148,12 +154,12 @@ class PointDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[6].value.toString()),
       ),
-      _buildActive(row.getCells()[7].value),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[8].value.toString()),
+        child: Text(row.getCells()[7].value.toString()),
       ),
+      _buildActive(row.getCells()[8].value),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
@@ -162,7 +168,7 @@ class PointDataGridSource extends DataGridSource {
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[10].value),
+        child: Text(row.getCells()[10].value.toString()),
       ),
       Container(
         padding: const EdgeInsets.all(8.0),
@@ -189,6 +195,11 @@ class PointDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[15].value.toString()),
       ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[16].value.toString()),
+      ),
     ]);
   }
 
@@ -206,6 +217,14 @@ class PointDataGridSource extends DataGridSource {
 
   List<Country>? getCountries() {
     return _countries;
+  }
+
+  setRegions(List<Region> regionData) {
+    _regions = regionData;
+  }
+
+  List<Region>? getRegions() {
+    return _regions;
   }
 
   setProvinces(List<Province> provinceData) {

@@ -8,8 +8,8 @@ typedef PointID = String;
 class Point extends Equatable {
 
   const Point({required this.pointId, required this.name , required this.fullName,
-    required this.type, required this.country, required this.province, required this.phoneCode,
-    required this.phoneLength, required this.active, required this.latitude,
+    required this.type, required this.country, required this.regionId, required this.province,
+    required this.phoneCode, required this.phoneLength, required this.active, required this.latitude,
     required this.longitude, required this.language, required this.cases, required this.casesnormopeso,
     required this.casesmoderada, required this.casessevera, required this.transactionHash});
 
@@ -18,6 +18,7 @@ class Point extends Equatable {
   final String fullName;
   final String type;
   final String country;
+  final String regionId;
   final String province;
   final String phoneCode;
   final int phoneLength;
@@ -32,7 +33,7 @@ class Point extends Equatable {
   final String transactionHash;
 
   @override
-  List<Object> get props => [pointId, name, fullName, type, country, province, phoneCode,
+  List<Object> get props => [pointId, name, fullName, type, country, regionId, province, phoneCode,
     phoneLength, active, latitude, longitude, language, cases, casesnormopeso, casesmoderada,
     casessevera, transactionHash];
 
@@ -48,6 +49,7 @@ class Point extends Equatable {
     final fullName = data['fullName'];
     final type = data['type']?? "";
     final country = data['country'];
+    final regionId = data['regionId']?? "";
     final province = data['province'];
     final phoneCode = data['phoneCode'];
     final phoneLength = data['phoneLength']??0;
@@ -67,6 +69,7 @@ class Point extends Equatable {
         fullName: fullName,
         type: type,
         country: country,
+        regionId: regionId,
         province: province,
         phoneCode: phoneCode,
         phoneLength: phoneLength,
@@ -88,6 +91,7 @@ class Point extends Equatable {
       'fullName': fullName,
       'type': type,
       'country': country,
+      'regionId': regionId,
       'province': province,
       'phoneCode': phoneCode,
       'phoneLength': phoneLength,

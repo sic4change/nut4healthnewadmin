@@ -17,6 +17,8 @@ class Case extends Equatable {
     required this.observations,
     required this.status,
     required this.visits,
+    required this.chefValidation,
+    required this.regionalValidation,
   });
 
   final CaseID caseId;
@@ -29,10 +31,12 @@ class Case extends Equatable {
   final String observations;
   final String status;
   final int visits;
+  final bool chefValidation;
+  final bool regionalValidation;
 
   @override
   List<Object> get props => [caseId, pointId, childId, tutorId, name,
-    createDate, lastDate, observations, status, visits];
+    createDate, lastDate, observations, status, visits, chefValidation, regionalValidation];
 
   @override
   bool get stringify => true;
@@ -52,6 +56,8 @@ class Case extends Equatable {
     final observations = data['observations']?? "";
     final status = data['status']?? "";
     final visits = data['visits']?? "";
+    final chefValidation = data['chefValidation']?? false;
+    final regionalValidation = data['regionalValidation']?? false;
 
     return Case(
       caseId: documentId,
@@ -64,6 +70,8 @@ class Case extends Equatable {
       observations: observations,
       status: status,
       visits: visits,
+      chefValidation: chefValidation,
+      regionalValidation: regionalValidation,
     );
   }
 
@@ -78,6 +86,8 @@ class Case extends Equatable {
       'observations': observations,
       'status': status,
       'visits': visits,
+      'chefValidation': chefValidation,
+      'regionalValidation': regionalValidation,
     };
   }
 }

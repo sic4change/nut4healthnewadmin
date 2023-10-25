@@ -1,5 +1,6 @@
 /// Dart import
 /// Packages import
+import 'package:adminnut4health/src/features/regions/domain/region.dart';
 import 'package:flutter/material.dart';
 
 /// DataGrid import
@@ -12,15 +13,21 @@ import '../domain/ProvinceWithCountry.dart';
 /// Set province's data collection to data grid source.
 class ProvinceDataGridSource extends DataGridSource {
   /// Creates the province data source class with required details.
-  ProvinceDataGridSource(List<ProvinceWithCountry> provinceData, List<Country> countryData) {
+  ProvinceDataGridSource(
+      List<ProvinceWithCountry> provinceData,
+      List<Country> countryData,
+      List<Region> regionData,
+      ) {
     _provinces = provinceData;
     _countries = countryData;
+    _regions = regionData;
     buildDataGridRows();
   }
 
   List<DataGridRow> _dataGridRows = <DataGridRow>[];
   List<ProvinceWithCountry>? _provinces = <ProvinceWithCountry>[];
   List<Country> _countries = <Country>[];
+  List<Region> _regions = <Region>[];
 
   /// Building DataGridRows
   void buildDataGridRows() {
@@ -30,6 +37,7 @@ class ProvinceDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Id', value: provinceWithCountry.province.provinceId),
           DataGridCell<String>(columnName: 'Nombre', value: provinceWithCountry.province.name),
           DataGridCell<String>(columnName: 'País', value: provinceWithCountry.country?.name),
+          DataGridCell<String>(columnName: 'Región', value: provinceWithCountry.region?.name),
           DataGridCell<bool>(columnName: 'Activo', value: provinceWithCountry.province.active),
         ]);
       }).toList();
@@ -110,7 +118,12 @@ class ProvinceDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[2].value.toString()),
       ),
-      _buildActive(row.getCells()[3].value)
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[3].value.toString()),
+      ),
+      _buildActive(row.getCells()[4].value)
     ]);
   }
 
@@ -130,6 +143,13 @@ class ProvinceDataGridSource extends DataGridSource {
     return _countries;
   }
 
+  setRegions(List<Region> regionData) {
+    _regions = regionData;
+  }
+
+  List<Region> getRegions() {
+    return _regions;
+  }
 
   /// Update DataSource
   void updateDataSource() {

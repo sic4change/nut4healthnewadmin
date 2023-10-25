@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:adminnut4health/src/features/provinces/domain/province.dart';
+import 'package:adminnut4health/src/features/regions/domain/region.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../authentication/data/firebase_auth_repository.dart';
@@ -19,10 +21,18 @@ String documentIdFromCurrentDate() {
 class FirestorePath {
   static String user(String uid) => 'users/$uid';
   static String users() => 'users';
+
   static String configuration(String uid) => 'configurations/$uid';
   static String configurations() => 'configurations';
+
   static String point(String uid) => 'points/$uid';
   static String points() => 'points';
+
+  static String region(String uid) => 'regions/$uid';
+  static String regions() => 'regions';
+
+  static String province(String uid) => 'provinces/$uid';
+  static String provinces() => 'provinces';
 }
 
 class FirestoreRepository {
@@ -71,91 +81,71 @@ class FirestoreRepository {
         builder: (data, documentId) => Point.fromMap(data, documentId),
       );
 
+  Stream<List<Region>> watchRegions() =>
+      _dataSource.watchCollection(
+        path: FirestorePath.regions(),
+        builder: (data, documentId) => Region.fromMap(data, documentId),
+      );
+
+  Stream<List<Province>> watchProvinces() =>
+      _dataSource.watchCollection(
+        path: FirestorePath.provinces(),
+        builder: (data, documentId) => Province.fromMap(data, documentId),
+      );
+
   Stream<List<UserWithConfigurationAndPoint>> watchUsersWithConfigurations() {
-    return CombineLatestStream.combine3(
+    return CombineLatestStream.combine5(
       watchUsers(),
       watchConfigurations(),
-          watchPoints(),
-          (List<User> users, List<Configuration> configurations, List<Point> points) {
+      watchPoints(),
+      watchRegions(),
+      watchProvinces(),(
+        List<User> users,
+        List<Configuration> configurations,
+        List<Point> points,
+        List<Region> regions,
+        List<Province> provinces,
+        ) {
             final Map<String, Configuration> configurationMap = Map.fromEntries(
               configurations.map((config) => MapEntry(config.id, config)),
             );
+
             final Map<String, Point> pointMap = Map.fromEntries(
               points.map((point) => MapEntry(point.pointId, point)),
             );
+
+            final Map<String, Region> regionMap = Map.fromEntries(
+              regions.map((r) => MapEntry(r.regionId, r)),
+            );
+
+            final Map<String, Province> provinceMap = Map.fromEntries(
+              provinces.map((p) => MapEntry(p.provinceId, p)),
+            );
+
             return users.map((user) {
-              try {
-                final Configuration configuration = configurationMap[user
-                    .configuration]!;
-                final Point point = pointMap[user.point]!;
-                return UserWithConfigurationAndPoint(
-                    user, configuration, point);
-              } catch (e) {
-                try {
-                  final Point point = pointMap[user.point]!;
-                  return UserWithConfigurationAndPoint(
-                      user,
-                      const Configuration(
-                          id: '',
-                          name: '',
-                          money: '',
-                          payByConfirmation: 0,
-                          payByDiagnosis: 0,
-                          pointByConfirmation: 0,
-                          pointsByDiagnosis: 0,
-                          monthlyPayment: 0,
-                          blockChainConfiguration: 0,
-                          hash: "",
-                      ),
-                      point);
-                } catch (e) {
-                  try {
-                    final Configuration configuration = configurationMap[user
-                        .configuration]!;
-                    return UserWithConfigurationAndPoint(
-                  user,
-                  configuration,
-                  const Point(
-                      pointId: "",
-                      name: "",
-                      fullName: "",
-                      type: "",
-                      active: false,
-                      country: "",
-                      province: "",
-                      phoneCode: "",
-                      phoneLength: 0,
-                      latitude: 0.0,
-                      longitude: 0.0,
-                      language: "",
-                      cases: 0,
-                      casesnormopeso: 0,
-                      casesmoderada: 0,
-                      casessevera: 0,
-                      transactionHash: "",
-                  ));
-            } catch (e) {
-                    return UserWithConfigurationAndPoint(
-                  user,
+              final Configuration configuration = configurationMap[user.configuration]??
                   const Configuration(
-                      id: '',
-                      name: '',
-                      money: '',
-                      payByConfirmation: 0,
-                      payByDiagnosis: 0,
-                      pointByConfirmation: 0,
-                      pointsByDiagnosis: 0,
-                      monthlyPayment: 0,
-                      blockChainConfiguration: 0,
-                      hash: "",
-                  ),
+                    id: '',
+                    name: '',
+                    money: '',
+                    payByConfirmation: 0,
+                    payByDiagnosis: 0,
+                    pointByConfirmation: 0,
+                    pointsByDiagnosis: 0,
+                    monthlyPayment: 0,
+                    blockChainConfiguration: 0,
+                    hash: "",
+                  );
+
+              final Point point = pointMap[user.point]??
                   const Point(
                     pointId: "",
                     name: "",
                     fullName: "",
                     type: "",
-                    country: "",
                     active: false,
+                    country: "",
+                    regionId: '',
                     province: "",
                     phoneCode: "",
                     phoneLength: 0,
@@ -167,11 +157,16 @@ class FirestoreRepository {
                     casesmoderada: 0,
                     casessevera: 0,
                     transactionHash: "",
-                  ));
-            }
-                }
-              }
-            }).toList();
+                  );
+
+              final Region region = regionMap[user.regionId]??
+                const Region(regionId: '', name: '', countryId: '', active: false);
+
+              final Province province = provinceMap[user.provinceId]??
+                const Province(provinceId: '', name: '', country: '', regionId: '', active: false);
+
+              return UserWithConfigurationAndPoint(user, configuration, point, region, province);
+              }).toList();
           });
   }
 
@@ -209,6 +204,24 @@ final pointsStreamProvider = StreamProvider.autoDispose<List<Point>>((ref) {
   }
   final database = ref.watch(databaseProvider);
   return database.watchPoints();
+});
+
+final regionsStreamProvider = StreamProvider.autoDispose<List<Region>>((ref) {
+  final user = ref.watch(authStateChangesProvider).value;
+  if (user == null) {
+    throw AssertionError('User can\'t be null');
+  }
+  final database = ref.watch(databaseProvider);
+  return database.watchRegions();
+});
+
+final provincesStreamProvider = StreamProvider.autoDispose<List<Province>>((ref) {
+  final user = ref.watch(authStateChangesProvider).value;
+  if (user == null) {
+    throw AssertionError('User can\'t be null');
+  }
+  final database = ref.watch(databaseProvider);
+  return database.watchProvinces();
 });
 
 final configurationsStreamProvider = StreamProvider.autoDispose<List<Configuration>>((ref) {

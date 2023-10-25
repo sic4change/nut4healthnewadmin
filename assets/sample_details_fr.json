@@ -1,164 +1,164 @@
 [
   {
-    "categoryName": "Administración",
+    "categoryName": "Administration",
     "mobileCategoryId": 1,
     "webCategoryId": 1,
     "controlList": [
       {
-        "title": "Administración",
-        "description": "Gestión completa de todas las entidades",
+        "title": "Administration",
+        "description": "Gestion complète de toutes les entités",
         "image": "images/Datagrid.png",
         "displayType": "tab",
         "controlId": 1,
         "subItems": [
           {
             "type": "child",
-            "title": "Gestión usuarios",
+            "title": "Gestion des utilisateurs",
             "subItems": [
               {
                 "type": "sample",
-                "title": "Usuarios",
+                "title": "Utilisateurs",
                 "key": "user_datagrid"
               }
             ]
           },
           {
             "type": "child",
-            "title": "Diagnósticos",
+            "title": "Diagnostiques",
             "subItems": [
               {
                 "type": "sample",
-                "title": "Diagnósticos",
+                "title": "Diagnostiques",
                 "key": "contract_datagrid"
               }
             ]
           },
           {
             "type": "child",
-            "title": "Pagos",
+            "title": "Paiements",
             "subItems": [
               {
                 "type": "sample",
-                "title": "Pagos",
+                "title": "Paiements",
                 "key": "payment_datagrid"
               }
             ]
           },
           {
             "type": "child",
-            "title": "Configuraciones",
+            "title": "Configurations",
             "subItems": [
               {
                 "type": "sample",
-                "title": "Configuraciones",
+                "title": "Configurations",
                 "key": "configuration_datagrid"
               }
             ]
           },
           {
             "type": "child",
-            "title": "Reportes",
+            "title": "Rapports",
             "subItems": [
               {
                 "type": "sample",
-                "title": "Reportes",
+                "title": "Rapports",
                 "key": "report_datagrid"
               }
             ]
           },
           {
             "type": "child",
-            "title": "Ubicaciones",
+            "title": "Localisations",
             "subItems": [
               {
                 "type": "sample",
-                "title": "Países",
+                "title": "Pays",
                 "key": "country_datagrid"
               },
               {
                 "type": "sample",
-                "title": "Regiones",
+                "title": "Regions",
                 "key": "region_datagrid"
               },
               {
                 "type": "sample",
-                "title": "Municipios",
+                "title": "Communes",
                 "key": "province_datagrid"
               },
               {
                 "type": "sample",
-                "title": "Comunidades",
+                "title": "Communautés",
                 "key": "city_datagrid"
               },
               {
                 "type": "sample",
-                "title": "Puestos de salud",
+                "title": "Postes de santé",
                 "key": "point_datagrid"
               }
             ]
           },
           {
             "type": "child",
-            "title": "Acompañantes",
+            "title": "Accompagnantes",
             "subItems": [
               {
                 "type": "sample",
-                "title": "Acompañantes",
+                "title": "Accompagnantes",
                 "key": "tutor_datagrid"
               }
             ]
           },
           {
             "type": "child",
-            "title": "Niños/as",
+            "title": "Enfants",
             "subItems": [
               {
                 "type": "sample",
-                "title": "Niños/as",
+                "title": "Enfants",
                 "key": "child_datagrid"
               }
             ]
           },
           {
             "type": "child",
-            "title": "Casos",
+            "title": "Cas",
             "subItems": [
               {
                 "type": "sample",
-                "title": "Casos",
+                "title": "Cas",
                 "key": "case_datagrid"
               }
             ]
           },
           {
             "type": "child",
-            "title": "Visitas",
+            "title": "Visites",
             "subItems": [
               {
                 "type": "sample",
-                "title": "Visitas",
+                "title": "Visites",
                 "key": "visit_datagrid"
               }
             ]
           },
           {
             "type": "child",
-            "title": "Complicaciones",
+            "title": "Complications",
             "subItems": [
               {
                 "type": "sample",
-                "title": "Complicaciones",
+                "title": "Complications",
                 "key": "complication_datagrid"
               }
             ]
           },
           {
             "type": "child",
-            "title": "Notificaciones",
+            "title": "Notifications",
             "subItems": [
               {
                 "type": "sample",
-                "title": "Notificaciones",
+                "title": "Notifications",
                 "key": "notification_datagrid"
               }
             ]
@@ -168,25 +168,25 @@
     ]
   },
   {
-    "categoryName": "Geolocalización de datos",
+    "categoryName": "Géolocalisation des données",
     "mobileCategoryId": 2,
     "webCategoryId": 2,
     "controlList": [
       {
-        "title": "Geolocalización de datos",
-        "description": "Mapas",
+        "title": "Géolocalisation des données",
+        "description": "Cartes",
         "image": "images/map.png",
         "displayType": "tab",
         "controlId": 1,
         "subItems": [
           {
             "type": "child",
-            "title": "Por paises",
+            "title": "Par pays",
             "displayType": "tab",
             "subItems": [
               {
                 "type": "sample",
-                "title": "Por paises",
+                "title": "Par pays",
                 "key": "country_map",
                 "codeLink": ""
               }
@@ -194,12 +194,12 @@
           },
           {
             "type": "child",
-            "title": "Por puestos de salud",
+            "title": "Par postes de santé",
             "displayType": "tab",
             "subItems": [
               {
                 "type": "sample",
-                "title": "Por puestos de salud",
+                "title": "Par postes de santé",
                 "key": "point_map",
                 "codeLink": ""
               }
@@ -210,25 +210,25 @@
     ]
   },
   {
-    "categoryName": "Estadísticas",
+    "categoryName": "Statistiques",
     "mobileCategoryId": 3,
     "webCategoryId": 3,
     "controlList": [
       {
-        "title": "Estadísticas",
-        "description": "Gráficas",
+        "title": "Statistiques",
+        "description": "Graphique",
         "image": "images/range_selector.png",
         "displayType": "tab",
         "controlId": 1,
         "subItems": [
           {
             "type": "child",
-            "title": "Diagnósticos fechas",
+            "title": "Date diagnostics",
             "displayType": "tab",
             "subItems": [
               {
                 "type": "sample",
-                "title": "Diagnósticos por fechas",
+                "title": "Diagnóstics par date",
                 "key": "cases_points_dates",
                 "codeLink": ""
               }
@@ -236,12 +236,12 @@
           },
           {
             "type": "child",
-            "title": "Diagnósticos tipo de desnutrición",
+            "title": "Diagnostics type de malnutrition",
             "displayType": "tab",
             "subItems": [
               {
                 "type": "sample",
-                "title": "Diagnósticos tipo de desnutrición",
+                "title": "Diagnostics type de malnutrition",
                 "key": "cases_points_diagnosis_type",
                 "codeLink": ""
               }
@@ -249,12 +249,12 @@
           },
           {
             "type": "child",
-            "title": "Diagnósticos por perímetro braquial",
+            "title": "Diagnostics par périmètre brachial",
             "displayType": "tab",
             "subItems": [
               {
                 "type": "sample",
-                "title": "Diagnósticos por perímetro braquial",
+                "title": "Diagnostics par périmètre brachial",
                 "key": "cases_points_diagnosis_perimetro",
                 "codeLink": ""
               }
@@ -262,12 +262,12 @@
           },
           {
             "type": "child",
-            "title": "Diagnósticos por sexos",
+            "title": "Diagnostics par sexe",
             "displayType": "tab",
             "subItems": [
               {
                 "type": "sample",
-                "title": "Diagnósticos por sexos",
+                "title": "Diagnostics par sexe",
                 "key": "cases_points_diagnosis_sex",
                 "codeLink": ""
               }
@@ -275,12 +275,12 @@
           },
           {
             "type": "child",
-            "title": "Diagnósticos por agente y fechas",
+            "title": "Diagnostics par agent et par date",
             "displayType": "tab",
             "subItems": [
               {
                 "type": "sample",
-                "title": "Diagnósticos por agente y fechas",
+                "title": "Diagnostics par agent et par date",
                 "key": "cases_screeners_dates",
                 "codeLink": ""
               }
@@ -290,5 +290,4 @@
       }
     ]
   }
-
 ]

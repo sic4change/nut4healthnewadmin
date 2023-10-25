@@ -33,6 +33,8 @@ class CaseDataGridSource extends DataGridSource {
           DataGridCell<int>(columnName: 'Nº visitas', value: myCaseWithPointChildAndTutor.myCase.visits),
           DataGridCell<String>(columnName: 'Observaciones', value: myCaseWithPointChildAndTutor.myCase.observations),
           DataGridCell<String>(columnName: 'Estado', value: myCaseWithPointChildAndTutor.myCase.status),
+          DataGridCell<bool>(columnName: 'Validación Médico Jefe', value: myCaseWithPointChildAndTutor.myCase.chefValidation),
+          DataGridCell<bool>(columnName: 'Validación Dirección Regional', value: myCaseWithPointChildAndTutor.myCase.regionalValidation),
         ]);
       }).toList();
     }
@@ -76,6 +78,8 @@ class CaseDataGridSource extends DataGridSource {
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(cells: <Widget>[
+      _buildBoolean(row.getCells()[10].value),
+      _buildBoolean(row.getCells()[11].value),
       _buildStandardContainer(row.getCells()[1].value.toString()),
       _buildStandardContainer(row.getCells()[2].value.toString()),
       _buildStandardContainer(row.getCells()[3].value.toString()),
@@ -109,6 +113,25 @@ class CaseDataGridSource extends DataGridSource {
       return Padding(
         padding: const EdgeInsets.only(left: 16.0),
         child: _getWidget(const Icon(Icons.calendar_month, size: 20), value.toString()),
+      );
+    }
+  }
+
+  Widget _buildBoolean(bool value) {
+    final Map<String, Image> images = <String, Image>{
+      '✔': Image.asset('images/Perfect.png'),
+      '✘': Image.asset('images/Insufficient.png'),
+    };
+
+    if (value) {
+      return Padding(
+        padding: const EdgeInsets.only(left: 16.0),
+        child: _getWidget(images['✔']!, ''),
+      );
+    } else  {
+      return Padding(
+        padding: const EdgeInsets.only(left: 16.0),
+        child: _getWidget(images['✘']!, ''),
       );
     }
   }

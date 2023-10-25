@@ -19,6 +19,8 @@ class Child extends Equatable {
     required this.ethnicity,
     required this.sex,
     required this.observations,
+    required this.chefValidation,
+    required this.regionalValidation,
   });
 
   final ChildID childId;
@@ -33,10 +35,13 @@ class Child extends Equatable {
   final String ethnicity;
   final String sex;
   final String observations;
+  final bool chefValidation;
+  final bool regionalValidation;
 
   @override
   List<Object> get props => [childId, tutorId, pointId, name, surnames,
-    birthdate, code, createDate, lastDate, ethnicity, sex, observations,];
+    birthdate, code, createDate, lastDate, ethnicity, sex, observations,
+    chefValidation, regionalValidation];
 
   @override
   bool get stringify => true;
@@ -59,6 +64,8 @@ class Child extends Equatable {
     final ethnicity = data['ethnicity']?? "";
     final sex = data['sex']?? "";
     final observations = data['observations']?? "";
+    final chefValidation = data['chefValidation']?? false;
+    final regionalValidation = data['regionalValidation']?? false;
 
     return Child(
       childId: documentId,
@@ -73,6 +80,8 @@ class Child extends Equatable {
       ethnicity: ethnicity,
       sex: sex,
       observations: observations,
+      chefValidation: chefValidation,
+      regionalValidation: regionalValidation,
     );
   }
 
@@ -89,6 +98,8 @@ class Child extends Equatable {
       'ethnicity': ethnicity,
       'sex': sex,
       'observations': observations,
+      'chefValidation': chefValidation,
+      'regionalValidation': regionalValidation,
     };
   }
 }

@@ -288,6 +288,16 @@ class SampleModel extends Listenable {
   /// Used to create the instance of [SampleModel]
   static SampleModel instance = SampleModel();
 
+  void reset() {
+    searchControlItems = <Control>[];
+    sampleList = <SubItem>[];
+    searchResults = <SubItem>[];
+    searchSampleItems = <SubItem>[];
+    categoryList = SampleModel._categoryList;
+    controlList = SampleModel._controlList;
+    routes = SampleModel._routes;
+  }
+
   /// Specifies the widget initial rendering
   late bool isInitialRender;
 
@@ -534,7 +544,12 @@ class SampleModel extends Listenable {
 /// Get the control details category wise, by parsing [sample_details.json]
 /// Then store the details in [SampleModel._categoryList]
 /// and [SampleModel._controlList]
-Future<void> updateControlItems() async {
+Future<void> updateControlItems(String locale) async {
+  SampleModel._categoryList.clear();
+  SampleModel._controlList.clear();
+  SampleModel._routes.clear();
+
+
   if (!kIsWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
     await DesktopWindow.setMinWindowSize(const Size(775, 230));
   }
@@ -543,7 +558,7 @@ Future<void> updateControlItems() async {
   bool isChild = false;
   final bool isWeb =
       kIsWeb || Platform.isWindows || Platform.isMacOS || Platform.isLinux;
-  final String jsonText =
+  final String jsonText = locale == 'fr_FR'? await rootBundle.loadString('assets/sample_details_fr.json'):
       await rootBundle.loadString('assets/sample_details.json');
   List<SubItem> firstLevelSubItems = <SubItem>[];
   List<SubItem> secondLevelSubItems = <SubItem>[];

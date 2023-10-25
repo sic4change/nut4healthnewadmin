@@ -1,7 +1,10 @@
 /// Package imports
 /// import 'package:flutter/foundation.dart';
 
+import 'package:adminnut4health/src/features/cases/domain/case.dart';
 import 'package:adminnut4health/src/features/cases/domain/caseWithPointChildAndTutor.dart';
+import 'package:adminnut4health/src/features/users/domain/user.dart';
+import 'package:adminnut4health/src/utils/alert_dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -36,6 +39,7 @@ class CaseDataGrid extends LocalizationSampleView {
   _CaseDataGridState createState() => _CaseDataGridState();
 }
 
+// TODO: Message when validating
 class _CaseDataGridState extends LocalizationSampleViewState {
 
   final GlobalKey<SfDataGridState> _key = GlobalKey<SfDataGridState>();
@@ -49,14 +53,13 @@ class _CaseDataGridState extends LocalizationSampleViewState {
   /// Selected locale
   late String selectedLocale;
 
-  late String currentUserEmail;
-  var currentUserRole = "";
-
   /// Translate names
-  late String _point, _tutor, _child, _name, _createDate, _lastDate, _visits,
-      _observations, _status, _exportXLS, _exportPDF, _total, _cases;
+  late String _chefValidation, _regionalValidation, _point, _tutor, _child, _name, _createDate, _lastDate, _visits,
+      _observations, _status, _exportXLS, _exportPDF, _total, _cases, _validateData;
 
   late Map<String, double> columnWidths = {
+    'Validación Médico Jefe': 200,
+    'Validación Dirección Regional': 200,
     'Punto': 150,
     'Madre, padre o tutor': 150,
     'Niño/a': 150,
@@ -67,6 +70,9 @@ class _CaseDataGridState extends LocalizationSampleViewState {
     'Observaciones': 150,
     'Estado': 150,
   };
+
+  AsyncValue<List<CaseWithPointChildAndTutor>> casesAsyncValue = AsyncValue.data(List.empty());
+  List<String> pointsIds = List.empty();
 
   Widget getLocationWidget(String location) {
     return Row(
@@ -88,7 +94,7 @@ class _CaseDataGridState extends LocalizationSampleViewState {
   }
 
   Widget _buildView(AsyncValue<List<CaseWithPointChildAndTutor>> cases) {
-    if (cases.value != null && cases.value!.isNotEmpty) {
+    if (cases.value != null) {
       caseDataGridSource.buildDataGridRows();
       caseDataGridSource.updateDataSource();
       selectedLocale = model.locale.toString();
@@ -107,6 +113,22 @@ class _CaseDataGridState extends LocalizationSampleViewState {
   Widget _buildLayoutBuilder() {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraint) {
+          if (caseDataGridSource.getCases()!.isEmpty) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _buildHeaderButtons(),
+                const Expanded(
+                  child: Center(
+                      child: SizedBox(
+                        width: 200,
+                        height: 200,
+                        child: Text("No hay datos que mostrar"),
+                      )),
+                ),
+              ],
+            );
+          } else {
           return Column(
             children: <Widget>[
               Column(
@@ -141,7 +163,7 @@ class _CaseDataGridState extends LocalizationSampleViewState {
               )
             ],
           );
-        });
+        }});
   }
 
   Widget _buildHeaderButtons() {
@@ -186,9 +208,31 @@ class _CaseDataGridState extends LocalizationSampleViewState {
       document.dispose();
     }
 
-    if (currentUserRole == 'super-admin') {
+    if (User.currentRole == 'super-admin') {
       return Row(
         children: <Widget>[
+          _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
+          _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
+        ],
+      );
+    } else if (User.needValidation){
+      return Row(
+        children: <Widget>[
+          _buildValidationButton(onPressed: () {
+            showValidationDialog(
+                context: context,
+                selectedLocale: selectedLocale,
+                onPressed: () {
+                  if (User.currentRole == 'medico-jefe') {
+                    chefValidation();
+                  }
+
+                  if (User.currentRole == 'direccion-regional-salud') {
+                    regionalValidation();
+                  }
+                }
+            );
+          }),
           _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
           _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
         ],
@@ -202,6 +246,67 @@ class _CaseDataGridState extends LocalizationSampleViewState {
       );
     }
   }
+
+  Widget _buildValidationButton({required VoidCallback onPressed}) {
+    switch (selectedLocale) {
+      case 'en_US':
+        _validateData = 'VALIDATE DATA';
+        break;
+      case 'es_ES':
+        _validateData = 'VALIDAR DATOS';
+        break;
+      case 'fr_FR':
+        _validateData = 'VALIDER LES DONNÉES';
+        break;
+    }
+    return Container(
+        height: 60.0,
+        padding: const EdgeInsets.only(left: 10.0, top: 10.0, bottom: 10.0),
+        child: TextButton(
+          onPressed: onPressed,
+          child: Text(_validateData),)
+    );
+  }
+
+  Future<void> chefValidation() async {
+    final cases = caseDataGridSource.getCases()!.where((c) => !c.myCase.chefValidation);
+    for (var c in cases) {
+      ref.read(casesScreenControllerProvider.notifier).updateCase(
+        Case(
+            caseId: c.myCase.caseId,
+            pointId: c.myCase.pointId,
+            childId: c.myCase.childId,
+            tutorId: c.myCase.tutorId,
+            name: c.myCase.name,
+            createDate: c.myCase.createDate,
+            lastDate: c.myCase.lastDate,
+            observations: c.myCase.observations,
+            status: c.myCase.status,
+            visits: c.myCase.visits,
+            chefValidation: true,
+            regionalValidation: c.myCase.regionalValidation)
+      );
+    }}
+
+  Future<void> regionalValidation() async {
+    final casesWithChefValidation = caseDataGridSource.getCases()!.where((c) => c.myCase.chefValidation && !c.myCase.regionalValidation);
+    for (var c in casesWithChefValidation) {
+      ref.read(casesScreenControllerProvider.notifier).updateCase(
+        Case(
+            caseId: c.myCase.caseId,
+            pointId: c.myCase.pointId,
+            childId: c.myCase.childId,
+            tutorId: c.myCase.tutorId,
+            name: c.myCase.name,
+            createDate: c.myCase.createDate,
+            lastDate: c.myCase.lastDate,
+            observations: c.myCase.observations,
+            status: c.myCase.status,
+            visits: c.myCase.visits,
+            chefValidation: c.myCase.chefValidation,
+            regionalValidation: true)
+      );
+    }}
 
   Widget _buildExcelExportingButton(String buttonName,
       {required VoidCallback onPressed}) {
@@ -279,6 +384,8 @@ class _CaseDataGridState extends LocalizationSampleViewState {
     final selectedLocale = model.locale.toString();
     switch (selectedLocale) {
       case 'en_US':
+        _chefValidation = 'Chef validation';
+        _regionalValidation = 'Regional validation';
         _point = 'Point';
         _tutor = 'Mother, father or tutor';
         _child = 'Child';
@@ -295,6 +402,8 @@ class _CaseDataGridState extends LocalizationSampleViewState {
         _cases = 'Cases';
         break;
       case 'es_ES':
+        _chefValidation = 'Validación Médico Jefe';
+        _regionalValidation = 'Validación Dirección Regional';
         _point = 'Punto';
         _name = 'Nombre';
         _tutor = 'Madre, padre o tutor';
@@ -311,6 +420,8 @@ class _CaseDataGridState extends LocalizationSampleViewState {
         _cases = 'Casos';
         break;
       case 'fr_FR':
+        _chefValidation = 'Validation du médecin-chef';
+        _regionalValidation = 'Validation direction régionale de la santé';
         _point = 'Place';
         _name = 'Nom';
         _tutor = 'Mère, père ou tuteur';
@@ -349,6 +460,30 @@ class _CaseDataGridState extends LocalizationSampleViewState {
       allowSorting: true,
       allowMultiColumnSorting: true,
       columns: <GridColumn>[
+        GridColumn(
+            columnName: 'Validación Médico Jefe',
+            width: columnWidths['Validación Médico Jefe']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _chefValidation,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Validación Dirección Regional',
+            width: columnWidths['Validación Dirección Regional']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _regionalValidation,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
         GridColumn(
             columnName: 'Punto',
             width: columnWidths['Punto']!,
@@ -467,6 +602,8 @@ class _CaseDataGridState extends LocalizationSampleViewState {
     caseDataGridSource = CaseDataGridSource(List.empty());
     selectedLocale = model.locale.toString();
 
+    _chefValidation = 'Validación Médico Jefe';
+    _regionalValidation = 'Validación Dirección Regional';
     _point = 'Punto';
     _name = 'Nombre';
     _tutor = 'Madre, padre o tutor';
@@ -481,6 +618,7 @@ class _CaseDataGridState extends LocalizationSampleViewState {
     _exportPDF = 'Exportar PDF';
     _total = 'Casos totales';
     _cases = 'Casos';
+    _validateData = 'VALIDAR DATOS';
   }
 
 
@@ -493,24 +631,29 @@ class _CaseDataGridState extends LocalizationSampleViewState {
                 (_, state) => {
             },
           );
-          final user = ref.watch(authRepositoryProvider).currentUser;
-          if (user != null && user.metadata != null && user.metadata!.lastSignInTime != null) {
-            final claims = user.getIdTokenResult();
-            claims.then((value) => {
-              if (value.claims != null && value.claims!['donante'] == true && currentUserRole != "donante") {
-                setState(() {
-                  currentUserRole = 'donante';
-                }),
-              } else if (value.claims != null && value.claims!['super-admin'] == true && currentUserRole != "super-admin") {
-                setState(() {
-                  currentUserRole = 'super-admin';
-                }),
-              }
-            });
 
-            currentUserEmail = user.email??"";
+          if (User.currentRole == 'medico-jefe') {
+            final pointsAsyncValue = ref.watch(pointsByProvinceStreamProvider);
+            if (pointsAsyncValue.value != null) {
+              final points = pointsAsyncValue.value!;
+              if (pointsIds.isEmpty) {
+                pointsIds = points.map((e) => e.pointId).toList();
+              }
+              casesAsyncValue = ref.watch(casesByPointsStreamProvider(pointsIds));
+            }
+          } else if (User.currentRole == 'direccion-regional-salud') {
+            final pointsAsyncValue = ref.watch(pointsByRegionStreamProvider);
+            if (pointsAsyncValue.value != null) {
+              final points = pointsAsyncValue.value!;
+              if (pointsIds.isEmpty) {
+                pointsIds = points.map((e) => e.pointId).toList();
+              }
+              casesAsyncValue = ref.watch(casesByPointsStreamProvider(pointsIds));
+            }
+          } else {
+            casesAsyncValue = ref.watch(casesStreamProvider);
           }
-          final casesAsyncValue = ref.watch(casesStreamProvider);
+
           if (casesAsyncValue.value != null) {
             _saveCases(casesAsyncValue);
           }

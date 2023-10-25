@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:adminnut4health/src/features/points/domain/point.dart';
 import 'package:adminnut4health/src/features/tutors/domain/tutor.dart';
 import 'package:adminnut4health/src/features/tutors/domain/tutorWithPoint.dart';
+import 'package:adminnut4health/src/features/users/domain/user.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -30,6 +31,26 @@ class FirestoreRepository {
         path: FirestorePath.points(),
         builder: (data, documentId) => Point.fromMap(data, documentId),
       );
+
+  Stream<List<Point>> watchPointsByRegion() {
+    Stream<List<Point>> points =  _dataSource.watchCollection(
+      path: FirestorePath.points(),
+      builder: (data, documentId) => Point.fromMap(data, documentId),
+      queryBuilder: (query) => query.where('regionId', isEqualTo: User.currentRegionId),
+      sort: (a, b) => a.name.compareTo(b.name),
+    );
+    return points;
+  }
+
+  Stream<List<Point>> watchPointsByProvince() {
+    Stream<List<Point>> points =  _dataSource.watchCollection(
+      path: FirestorePath.points(),
+      builder: (data, documentId) => Point.fromMap(data, documentId),
+      queryBuilder: (query) => query.where('province', isEqualTo: User.currentProvinceId),
+      sort: (a, b) => a.name.compareTo(b.name),
+    );
+    return points;
+  }
 
   Future<void> setTutor({required Tutor tutor}) =>
       _dataSource.setData(
@@ -59,7 +80,26 @@ class FirestoreRepository {
       _dataSource.watchCollection(
         path: FirestorePath.tutors(),
         builder: (data, documentId) => Tutor.fromMap(data, documentId),
+        queryBuilder: (query) {
+          if (User.currentRole != 'super-admin') {
+            query = query.where('chefValidation', isEqualTo: true).where('regionalValidation', isEqualTo: true);
+          }
+          return query;
+        },
       );
+
+  Stream<List<Tutor>> watchTutorsByPoints(List<String> pointsIds) =>
+      _dataSource.watchCollection(
+        path: FirestorePath.tutors(),
+        builder: (data, documentId) => Tutor.fromMap(data, documentId),
+        queryBuilder: (query) {
+          query = query.where('point', whereIn: pointsIds);
+          if (User.currentRole == 'direccion-regional-salud') {
+            query = query.where('chefValidation', isEqualTo: true);
+          }
+          return query;
+        },
+    );
 
   Stream<List<TutorWithPoint>> watchTutorsWithPoints() {
     return CombineLatestStream.combine2(
@@ -70,32 +110,34 @@ class FirestoreRepository {
             points.map((point) => MapEntry(point.pointId, point)),
           );
           return tutors.map((tutor) {
-            try {
-              final Point point = pointMap[tutor.pointId]!;
+              final Point point = pointMap[tutor.pointId] ??
+                  const Point(pointId: "", name: "", fullName: "", type: "",
+                    country: "", regionId: '', active: false, province: "",  phoneCode: "",
+                    phoneLength: 0, latitude: 0.0, longitude: 0.0, language: "",
+                    cases: 0, casesnormopeso: 0, casesmoderada: 0, casessevera: 0,
+                    transactionHash: "");
               return TutorWithPoint(tutor, point);
-            } catch (e) {
-                return TutorWithPoint(
-                    tutor,
-                    const Point(
-                      pointId: "",
-                      name: "",
-                      fullName: "",
-                      type: "",
-                      country: "",
-                      active: false,
-                      province: "",
-                      phoneCode: "",
-                      phoneLength: 0,
-                      latitude: 0.0,
-                      longitude: 0.0,
-                      language: "",
-                      cases: 0,
-                      casesnormopeso: 0,
-                      casesmoderada: 0,
-                      casessevera: 0,
-                      transactionHash: "",
-                    ));
-          }}).toList();
+            }).toList();
+        });
+  }
+
+  Stream<List<TutorWithPoint>> watchTutorsFullByPoints(List<String> pointsIds) {
+    return CombineLatestStream.combine2(
+        watchTutorsByPoints(pointsIds),
+        watchPoints(),
+            (List<Tutor> tutors, List<Point> points,) {
+          final Map<String, Point> pointMap = Map.fromEntries(
+            points.map((point) => MapEntry(point.pointId, point)),
+          );
+          return tutors.map((tutor) {
+              final Point point = pointMap[tutor.pointId] ??
+                  const Point(pointId: "", name: "", fullName: "", type: "",
+                    country: "", regionId: '', active: false, province: "",  phoneCode: "",
+                    phoneLength: 0, latitude: 0.0, longitude: 0.0, language: "",
+                    cases: 0, casesnormopeso: 0, casesmoderada: 0, casessevera: 0,
+                    transactionHash: "");
+              return TutorWithPoint(tutor, point);
+            }).toList();
         });
   }
 
@@ -126,6 +168,15 @@ final tutorsStreamProvider = StreamProvider.autoDispose<List<TutorWithPoint>>((r
   return database.watchTutorsWithPoints();
 });
 
+final tutorsByPointsStreamProvider = StreamProvider.autoDispose.family<List<TutorWithPoint>, List<String>>((ref, pointsIds) {
+  final user = ref.watch(authStateChangesProvider).value;
+  if (user == null) {
+    throw AssertionError('User can\'t be null');
+  }
+  final database = ref.watch(databaseProvider);
+  return database.watchTutorsFullByPoints(pointsIds);
+});
+
 final tutorStreamProvider =
     StreamProvider.autoDispose.family<Tutor, TutorID>((ref, tutorId) {
   final user = ref.watch(authStateChangesProvider).value;
@@ -134,5 +185,23 @@ final tutorStreamProvider =
   }
   final database = ref.watch(databaseProvider);
   return database.watchTutor(tutorId: tutorId);
+});
+
+final pointsByRegionStreamProvider = StreamProvider.autoDispose<List<Point>>((ref) {
+  final user = ref.watch(authStateChangesProvider).value;
+  if (user == null) {
+    throw AssertionError('User can\'t be null');
+  }
+  final database = ref.watch(databaseProvider);
+  return database.watchPointsByRegion();
+});
+
+final pointsByProvinceStreamProvider = StreamProvider.autoDispose<List<Point>>((ref) {
+  final user = ref.watch(authStateChangesProvider).value;
+  if (user == null) {
+    throw AssertionError('User can\'t be null');
+  }
+  final database = ref.watch(databaseProvider);
+  return database.watchPointsByProvince();
 });
 

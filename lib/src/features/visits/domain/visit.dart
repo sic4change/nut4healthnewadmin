@@ -41,6 +41,8 @@ class Visit extends Equatable {
     required this.admission,
     required this.amoxicilina,
     required this.otherTratments,
+    required this.chefValidation,
+    required this.regionalValidation,
   });
 
   final VisitID visitId;
@@ -74,13 +76,15 @@ class Visit extends Equatable {
   final String admission;
   final String amoxicilina;
   final String otherTratments;
+  final bool chefValidation;
+  final bool regionalValidation;
 
   @override
   List<Object> get props => [visitId, pointId, childId, tutorId, caseId, createDate,
     height, weight, imc, armCircunference, status, edema, respiratonStatus, appetiteTest,
     infection, eyesDeficiency, deshidratation, vomiting, diarrhea, fever, temperature,
     cough, vaccinationCard, rubeolaVaccinated, vitamineAVaccinated, complications,
-    observations, admission, amoxicilina, otherTratments,
+    observations, admission, amoxicilina, otherTratments, chefValidation, regionalValidation
   ];
 
   @override
@@ -155,6 +159,8 @@ class Visit extends Equatable {
     final observations = data['observations']?? "";
     final admission = data['admission']?? "";
     final otherTratments = data['otherTratments']?? "";
+    final chefValidation = data['chefValidation']?? false;
+    final regionalValidation = data['regionalValidation']?? false;
 
     return Visit(
       visitId: documentId,
@@ -188,6 +194,8 @@ class Visit extends Equatable {
       admission: admission,
       amoxicilina: amoxicilinaString,
       otherTratments: otherTratments,
+      chefValidation: chefValidation,
+      regionalValidation: regionalValidation,
     );
   }
 
@@ -223,6 +231,8 @@ class Visit extends Equatable {
       'admission': admission,
       'amoxicilina': amoxicilina,
       'otherTratments': otherTratments,
+      'chefValidation': chefValidation,
+      'regionalValidation': regionalValidation,
     };
   }
 }

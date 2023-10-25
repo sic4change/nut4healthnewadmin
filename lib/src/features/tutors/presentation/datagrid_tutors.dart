@@ -1,7 +1,10 @@
 /// Package imports
 /// import 'package:flutter/foundation.dart';
 
+import 'package:adminnut4health/src/features/tutors/domain/tutor.dart';
 import 'package:adminnut4health/src/features/tutors/domain/tutorWithPoint.dart';
+import 'package:adminnut4health/src/features/users/domain/user.dart';
+import 'package:adminnut4health/src/utils/alert_dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -49,15 +52,15 @@ class _TutorDataGridState extends LocalizationSampleViewState {
   /// Selected locale
   late String selectedLocale;
 
-  late String currentUserEmail;
-  var currentUserRole = "";
-
   /// Translate names
-  late String _point, _name, _surnames, _address, _phone, _birthdate, _createDate,
+  late String _chefValidation, _regionalValidation, _point, _name, _surnames, _address, _phone, _birthdate, _createDate,
       _ethnicity, _sex, _maleRelation, _womanStatus, _babyAge, _weeks,
-      _childMinor, _observations, _active, _exportXLS, _exportPDF, _total, _tutors;
+      _childMinor, _observations, _active, _exportXLS, _exportPDF, _total, _tutors,
+      _validateData;
 
   late Map<String, double> columnWidths = {
+    'Validación Médico Jefe': 200,
+    'Validación Dirección Regional': 200,
     'Punto': 150,
     'Nombre': 150,
     'Apellidos': 150,
@@ -75,6 +78,9 @@ class _TutorDataGridState extends LocalizationSampleViewState {
     'Observaciones': 150,
     'Activo': 150,
   };
+
+  AsyncValue<List<TutorWithPoint>> tutorsAsyncValue = AsyncValue.data(List.empty());
+  List<String> pointsIds = List.empty();
 
   Widget getLocationWidget(String location) {
     return Row(
@@ -96,7 +102,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
   }
 
   Widget _buildView(AsyncValue<List<TutorWithPoint>> tutors) {
-    if (tutors.value != null && tutors.value!.isNotEmpty) {
+    if (tutors.value != null) {
       tutorDataGridSource.buildDataGridRows();
       tutorDataGridSource.updateDataSource();
       selectedLocale = model.locale.toString();
@@ -115,6 +121,22 @@ class _TutorDataGridState extends LocalizationSampleViewState {
   Widget _buildLayoutBuilder() {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraint) {
+          if (tutorDataGridSource.getTutors()!.isEmpty) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _buildHeaderButtons(),
+                const Expanded(
+                  child: Center(
+                      child: SizedBox(
+                        width: 200,
+                        height: 200,
+                        child: Text("No hay datos que mostrar"),
+                      )),
+                ),
+              ],
+            );
+          } else {
           return Column(
             children: <Widget>[
               Column(
@@ -149,7 +171,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
               )
             ],
           );
-        });
+        }});
   }
 
   Widget _buildHeaderButtons() {
@@ -194,9 +216,31 @@ class _TutorDataGridState extends LocalizationSampleViewState {
       document.dispose();
     }
 
-    if (currentUserRole == 'super-admin') {
+    if (User.currentRole == 'super-admin') {
       return Row(
         children: <Widget>[
+          _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
+          _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
+        ],
+      );
+    } else if (User.needValidation){
+      return Row(
+        children: <Widget>[
+          _buildValidationButton(onPressed: () {
+            showValidationDialog(
+                context: context,
+                selectedLocale: selectedLocale,
+                onPressed: () {
+                  if (User.currentRole == 'medico-jefe') {
+                    chefValidation();
+                  }
+
+                  if (User.currentRole == 'direccion-regional-salud') {
+                    regionalValidation();
+                  }
+                }
+            );
+          }),
           _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
           _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
         ],
@@ -210,6 +254,87 @@ class _TutorDataGridState extends LocalizationSampleViewState {
       );
     }
   }
+
+  Widget _buildValidationButton({required VoidCallback onPressed}) {
+    switch (selectedLocale) {
+      case 'en_US':
+        _validateData = 'VALIDATE DATA';
+        break;
+      case 'es_ES':
+        _validateData = 'VALIDAR DATOS';
+        break;
+      case 'fr_FR':
+        _validateData = 'VALIDER LES DONNÉES';
+        break;
+    }
+    return Container(
+        height: 60.0,
+        padding: const EdgeInsets.only(left: 10.0, top: 10.0, bottom: 10.0),
+        child: TextButton(
+          onPressed: onPressed,
+          child: Text(_validateData),)
+    );
+  }
+
+  Future<void> chefValidation() async {
+    final tutors = tutorDataGridSource.getTutors()!.where((t) => !t.tutor.chefValidation);
+    for (var t in tutors) {
+      ref.read(tutorsScreenControllerProvider.notifier).updateTutor(
+          Tutor(
+              tutorId: t.tutor.tutorId,
+              pointId: t.tutor.pointId,
+              name: t.tutor.name,
+              surnames: t.tutor.surnames,
+              address: t.tutor.address,
+              phone: t.tutor.phone,
+              birthdate: t.tutor.birthdate,
+              createDate: t.tutor.createDate,
+              ethnicity: t.tutor.ethnicity,
+              sex: t.tutor.sex,
+              maleRelation: t.tutor.maleRelation,
+              womanStatus: t.tutor.womanStatus,
+              armCircunference: t.tutor.armCircunference,
+              status: t.tutor.status,
+              babyAge: t.tutor.babyAge,
+              weeks: t.tutor.weeks,
+              childMinor: t.tutor.childMinor,
+              observations: t.tutor.observations,
+              active: t.tutor.active,
+              chefValidation: true,
+              regionalValidation: t.tutor.regionalValidation
+          )
+      );
+    }}
+
+  Future<void> regionalValidation() async {
+    final tutorsWithChefValidation = tutorDataGridSource.getTutors()!.where((t) => t.tutor.chefValidation && !t.tutor.regionalValidation);
+    for (var t in tutorsWithChefValidation) {
+      ref.read(tutorsScreenControllerProvider.notifier).updateTutor(
+          Tutor(
+              tutorId: t.tutor.tutorId,
+              pointId: t.tutor.pointId,
+              name: t.tutor.name,
+              surnames: t.tutor.surnames,
+              address: t.tutor.address,
+              phone: t.tutor.phone,
+              birthdate: t.tutor.birthdate,
+              createDate: t.tutor.createDate,
+              ethnicity: t.tutor.ethnicity,
+              sex: t.tutor.sex,
+              maleRelation: t.tutor.maleRelation,
+              womanStatus: t.tutor.womanStatus,
+              armCircunference: t.tutor.armCircunference,
+              status: t.tutor.status,
+              babyAge: t.tutor.babyAge,
+              weeks: t.tutor.weeks,
+              childMinor: t.tutor.childMinor,
+              observations: t.tutor.observations,
+              active: t.tutor.active,
+              chefValidation: t.tutor.chefValidation,
+              regionalValidation: true
+          )
+      );
+    }}
 
   Widget _buildExcelExportingButton(String buttonName,
       {required VoidCallback onPressed}) {
@@ -287,6 +412,8 @@ class _TutorDataGridState extends LocalizationSampleViewState {
     final selectedLocale = model.locale.toString();
     switch (selectedLocale) {
       case 'en_US':
+        _chefValidation = 'Chef validation';
+        _regionalValidation = 'Regional validation';
         _point = 'Point';
         _name = 'Name';
         _surnames = 'Surnames';
@@ -310,6 +437,8 @@ class _TutorDataGridState extends LocalizationSampleViewState {
         _tutors = 'Tutors';
         break;
       case 'es_ES':
+        _chefValidation = 'Validación Médico Jefe';
+        _regionalValidation = 'Validación Dirección Regional';
         _point = 'Punto';
         _name = 'Nombre';
         _surnames = 'Apellidos';
@@ -333,6 +462,8 @@ class _TutorDataGridState extends LocalizationSampleViewState {
         _tutors = 'Tutores';
         break;
       case 'fr_FR':
+        _chefValidation = 'Validation du médecin-chef';
+        _regionalValidation = 'Validation direction régionale de la santé';
         _point = 'Place';
         _name = 'Nom';
         _surnames = 'Noms de famille';
@@ -378,6 +509,30 @@ class _TutorDataGridState extends LocalizationSampleViewState {
       allowSorting: true,
       allowMultiColumnSorting: true,
       columns: <GridColumn>[
+        GridColumn(
+            columnName: 'Validación Médico Jefe',
+            width: columnWidths['Validación Médico Jefe']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _chefValidation,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Validación Dirección Regional',
+            width: columnWidths['Validación Dirección Regional']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _regionalValidation,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
         GridColumn(
             columnName: 'Punto',
             width: columnWidths['Punto']!,
@@ -580,6 +735,8 @@ class _TutorDataGridState extends LocalizationSampleViewState {
     tutorDataGridSource = TutorDataGridSource(List.empty());
     selectedLocale = model.locale.toString();
 
+    _chefValidation = 'Validación Médico Jefe';
+    _regionalValidation = 'Validación Dirección Regional';
     _point = 'Punto';
     _name = 'Nombre';
     _surnames = 'Apellidos';
@@ -600,6 +757,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
     _exportPDF = 'Exportar PDF';
     _total = 'Usuarios totales';
     _tutors = 'Tutores';
+    _validateData = 'VALIDAR DATOS';
   }
 
 
@@ -612,24 +770,29 @@ class _TutorDataGridState extends LocalizationSampleViewState {
                 (_, state) => {
             },
           );
-          final user = ref.watch(authRepositoryProvider).currentUser;
-          if (user != null && user.metadata != null && user.metadata!.lastSignInTime != null) {
-            final claims = user.getIdTokenResult();
-            claims.then((value) => {
-              if (value.claims != null && value.claims!['donante'] == true && currentUserRole != "donante") {
-                setState(() {
-                  currentUserRole = 'donante';
-                }),
-              } else if (value.claims != null && value.claims!['super-admin'] == true && currentUserRole != "super-admin") {
-                setState(() {
-                  currentUserRole = 'super-admin';
-                }),
-              }
-            });
 
-            currentUserEmail = user.email??"";
+          if (User.currentRole == 'medico-jefe') {
+            final pointsAsyncValue = ref.watch(pointsByProvinceStreamProvider);
+            if (pointsAsyncValue.value != null) {
+              final points = pointsAsyncValue.value!;
+              if (pointsIds.isEmpty) {
+                pointsIds = points.map((e) => e.pointId).toList();
+              }
+              tutorsAsyncValue = ref.watch(tutorsByPointsStreamProvider(pointsIds));
+            }
+          } else if (User.currentRole == 'direccion-regional-salud') {
+            final pointsAsyncValue = ref.watch(pointsByRegionStreamProvider);
+            if (pointsAsyncValue.value != null) {
+              final points = pointsAsyncValue.value!;
+              if (pointsIds.isEmpty) {
+                pointsIds = points.map((e) => e.pointId).toList();
+              }
+              tutorsAsyncValue = ref.watch(tutorsByPointsStreamProvider(pointsIds));
+            }
+          } else {
+            tutorsAsyncValue = ref.watch(tutorsStreamProvider);
           }
-          final tutorsAsyncValue = ref.watch(tutorsStreamProvider);
+
           if (tutorsAsyncValue.value != null) {
             _saveTutors(tutorsAsyncValue);
           }

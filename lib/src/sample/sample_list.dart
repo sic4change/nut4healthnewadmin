@@ -3,6 +3,7 @@ import 'package:adminnut4health/src/features/childs/presentation/datagrid_childs
 import 'package:adminnut4health/src/features/complications/presentation/datagrid_complications.dart';
 import 'package:adminnut4health/src/features/contracts/presentation/contracts_by_point_and_muac_statistic.dart';
 import 'package:adminnut4health/src/features/notifications/presentation/datagrid_notifications.dart';
+import 'package:adminnut4health/src/features/regions/presentation/datagrid_regions.dart';
 import 'package:adminnut4health/src/features/tutors/presentation/datagrid_tutors.dart';
 import 'package:adminnut4health/src/features/users/presentation/datagrid_users.dart';
 import 'package:adminnut4health/src/features/visits/presentation/datagrid_visits.dart';
@@ -933,6 +934,7 @@ Map<String, Function> getSampleWidget() {
     'payment_datagrid': (Key key) => PaymentDataGrid(key: key),
     'configuration_datagrid': (Key key) => ConfigurationDataGrid(key: key),
     'country_datagrid': (Key key) => CountryDataGrid(key: key),
+    'region_datagrid': (Key key) => RegionDataGrid(key: key),
     'province_datagrid': (Key key) => ProvinceDataGrid(key: key),
     'city_datagrid': (Key key) => CityDataGrid(key: key),
     'point_datagrid': (Key key) => PointDataGrid(key: key),

@@ -93,6 +93,7 @@ class FirestoreRepository {
                     type: "",
                     active: false,
                     country: "",
+                    regionId: '',
                     province: "",
                     phoneCode: "",
                     phoneLength: 0,
@@ -119,6 +120,8 @@ class FirestoreRepository {
                   ethnicity: "",
                   sex: "",
                   observations: "",
+                  chefValidation: false,
+                  regionalValidation: false,
                 );
 
                 return NotificationWithPointAndChild(notification, point, child);

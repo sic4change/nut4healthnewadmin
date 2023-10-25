@@ -1,7 +1,10 @@
 /// Package imports
 /// import 'package:flutter/foundation.dart';
 
+import 'package:adminnut4health/src/features/childs/domain/child.dart';
 import 'package:adminnut4health/src/features/childs/domain/childWithPointAndTutor.dart';
+import 'package:adminnut4health/src/features/users/domain/user.dart';
+import 'package:adminnut4health/src/utils/alert_dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -49,15 +52,14 @@ class _ChildDataGridState extends LocalizationSampleViewState {
   /// Selected locale
   late String selectedLocale;
 
-  late String currentUserEmail;
-  var currentUserRole = "";
-
   /// Translate names
-  late String _point, _name, _surnames, _birthdate, _code, _createDate, _lastDate,
+  late String _chefValidation, _regionalValidation, _point, _name, _surnames, _birthdate, _code, _createDate, _lastDate,
       _ethnicity, _sex, _tutor, _observations, _exportXLS, _exportPDF, _total,
-      _childs;
+      _childs, _validateData;
 
   late Map<String, double> columnWidths = {
+    'Validación Médico Jefe': 200,
+    'Validación Dirección Regional': 200,
     'Punto': 150,
     'Nombre': 150,
     'Apellidos': 150,
@@ -71,6 +73,9 @@ class _ChildDataGridState extends LocalizationSampleViewState {
     'Observaciones': 150,
   };
 
+  AsyncValue<List<ChildWithPointAndTutor>> childrenAsyncValue = AsyncValue.data(List.empty());
+  List<String> pointsIds = List.empty();
+
   Widget getLocationWidget(String location) {
     return Row(
       children: <Widget>[
@@ -82,7 +87,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
     );
   }
 
-  _saveChilds(AsyncValue<List<ChildWithPointAndTutor>>? childs) {
+  _saveChildren(AsyncValue<List<ChildWithPointAndTutor>>? childs) {
     if (childs == null) {
       childDataGridSource.setChilds(List.empty());
     } else {
@@ -91,7 +96,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
   }
 
   Widget _buildView(AsyncValue<List<ChildWithPointAndTutor>> childs) {
-    if (childs.value != null && childs.value!.isNotEmpty) {
+    if (childs.value != null) {
       childDataGridSource.buildDataGridRows();
       childDataGridSource.updateDataSource();
       selectedLocale = model.locale.toString();
@@ -110,6 +115,22 @@ class _ChildDataGridState extends LocalizationSampleViewState {
   Widget _buildLayoutBuilder() {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraint) {
+          if (childDataGridSource.getChilds()!.isEmpty) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _buildHeaderButtons(),
+                const Expanded(
+                  child: Center(
+                      child: SizedBox(
+                        width: 200,
+                        height: 200,
+                        child: Text("No hay datos que mostrar"),
+                      )),
+                ),
+              ],
+            );
+          } else {
           return Column(
             children: <Widget>[
               Column(
@@ -144,7 +165,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
               )
             ],
           );
-        });
+        }});
   }
 
   Widget _buildHeaderButtons() {
@@ -189,9 +210,31 @@ class _ChildDataGridState extends LocalizationSampleViewState {
       document.dispose();
     }
 
-    if (currentUserRole == 'super-admin') {
+    if (User.currentRole == 'super-admin') {
       return Row(
         children: <Widget>[
+          _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
+          _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
+        ],
+      );
+    } else if (User.needValidation){
+      return Row(
+        children: <Widget>[
+          _buildValidationButton(onPressed: () {
+            showValidationDialog(
+                context: context,
+                selectedLocale: selectedLocale,
+                onPressed: () {
+                  if (User.currentRole == 'medico-jefe') {
+                    chefValidation();
+                  }
+
+                  if (User.currentRole == 'direccion-regional-salud') {
+                    regionalValidation();
+                  }
+                }
+            );
+          }),
           _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
           _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
         ],
@@ -205,6 +248,73 @@ class _ChildDataGridState extends LocalizationSampleViewState {
       );
     }
   }
+
+  Widget _buildValidationButton({required VoidCallback onPressed}) {
+    switch (selectedLocale) {
+      case 'en_US':
+        _validateData = 'VALIDATE DATA';
+        break;
+      case 'es_ES':
+        _validateData = 'VALIDAR DATOS';
+        break;
+      case 'fr_FR':
+        _validateData = 'VALIDER LES DONNÉES';
+        break;
+    }
+    return Container(
+        height: 60.0,
+        padding: const EdgeInsets.only(left: 10.0, top: 10.0, bottom: 10.0),
+        child: TextButton(
+          onPressed: onPressed,
+          child: Text(_validateData),)
+    );
+  }
+
+  Future<void> chefValidation() async {
+    final children = childDataGridSource.getChilds()!.where((c) => !c.child.chefValidation);
+    for (var c in children) {
+      ref.read(childsScreenControllerProvider.notifier).updateChild(
+          Child(
+              childId: c.child.childId,
+              tutorId: c.child.tutorId,
+              pointId: c.child.pointId,
+              name: c.child.name,
+              surnames: c.child.surnames,
+              birthdate: c.child.birthdate,
+              code: c.child.code,
+              createDate: c.child.createDate,
+              lastDate: c.child.lastDate,
+              ethnicity: c.child.ethnicity,
+              sex: c.child.sex,
+              observations: c.child.observations,
+              chefValidation: true,
+              regionalValidation: c.child.regionalValidation
+          )
+      );
+    }}
+
+  Future<void> regionalValidation() async {
+    final childrenWithChefValidation = childDataGridSource.getChilds()!.where((c) => c.child.chefValidation && !c.child.regionalValidation);
+    for (var c in childrenWithChefValidation) {
+      ref.read(childsScreenControllerProvider.notifier).updateChild(
+          Child(
+              childId: c.child.childId,
+              tutorId: c.child.tutorId,
+              pointId: c.child.pointId,
+              name: c.child.name,
+              surnames: c.child.surnames,
+              birthdate: c.child.birthdate,
+              code: c.child.code,
+              createDate: c.child.createDate,
+              lastDate: c.child.lastDate,
+              ethnicity: c.child.ethnicity,
+              sex: c.child.sex,
+              observations: c.child.observations,
+              chefValidation: c.child.chefValidation,
+              regionalValidation: true
+          )
+      );
+    }}
 
   Widget _buildExcelExportingButton(String buttonName,
       {required VoidCallback onPressed}) {
@@ -282,6 +392,8 @@ class _ChildDataGridState extends LocalizationSampleViewState {
     final selectedLocale = model.locale.toString();
     switch (selectedLocale) {
       case 'en_US':
+        _chefValidation = 'Chef validation';
+        _regionalValidation = 'Regional validation';
         _point = 'Point';
         _name = 'Name';
         _surnames = 'Surnames';
@@ -300,6 +412,8 @@ class _ChildDataGridState extends LocalizationSampleViewState {
         _childs = 'Children';
         break;
       case 'es_ES':
+        _chefValidation = 'Validación Médico Jefe';
+        _regionalValidation = 'Validación Dirección Regional';
         _point = 'Punto';
         _name = 'Nombre';
         _surnames = 'Apellidos';
@@ -318,6 +432,8 @@ class _ChildDataGridState extends LocalizationSampleViewState {
         _childs = 'Niños/as';
         break;
       case 'fr_FR':
+        _chefValidation = 'Validation du médecin-chef';
+        _regionalValidation = 'Validation direction régionale de la santé';
         _point = 'Place';
         _name = 'Nom';
         _surnames = 'Noms de famille';
@@ -358,6 +474,30 @@ class _ChildDataGridState extends LocalizationSampleViewState {
       allowSorting: true,
       allowMultiColumnSorting: true,
       columns: <GridColumn>[
+        GridColumn(
+            columnName: 'Validación Médico Jefe',
+            width: columnWidths['Validación Médico Jefe']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _chefValidation,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Validación Dirección Regional',
+            width: columnWidths['Validación Dirección Regional']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _regionalValidation,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
         GridColumn(
             columnName: 'Punto',
             width: columnWidths['Punto']!,
@@ -500,6 +640,8 @@ class _ChildDataGridState extends LocalizationSampleViewState {
     childDataGridSource = ChildDataGridSource(List.empty());
     selectedLocale = model.locale.toString();
 
+    _chefValidation = 'Validación Médico Jefe';
+    _regionalValidation = 'Validación Dirección Regional';
     _point = 'Punto';
     _name = 'Nombre';
     _surnames = 'Apellidos';
@@ -516,6 +658,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
     _exportPDF = 'Exportar PDF';
     _total = 'Niños/as totales';
     _childs = 'Niños/as';
+    _validateData = 'VALIDAR DATOS';
   }
 
 
@@ -528,28 +671,33 @@ class _ChildDataGridState extends LocalizationSampleViewState {
                 (_, state) => {
             },
           );
-          final user = ref.watch(authRepositoryProvider).currentUser;
-          if (user != null && user.metadata != null && user.metadata!.lastSignInTime != null) {
-            final claims = user.getIdTokenResult();
-            claims.then((value) => {
-              if (value.claims != null && value.claims!['donante'] == true && currentUserRole != "donante") {
-                setState(() {
-                  currentUserRole = 'donante';
-                }),
-              } else if (value.claims != null && value.claims!['super-admin'] == true && currentUserRole != "super-admin") {
-                setState(() {
-                  currentUserRole = 'super-admin';
-                }),
-              }
-            });
 
-            currentUserEmail = user.email??"";
+          if (User.currentRole == 'medico-jefe') {
+            final pointsAsyncValue = ref.watch(pointsByProvinceStreamProvider);
+            if (pointsAsyncValue.value != null) {
+              final points = pointsAsyncValue.value!;
+              if (pointsIds.isEmpty) {
+                pointsIds = points.map((e) => e.pointId).toList();
+              }
+              childrenAsyncValue = ref.watch(childrenByPointsStreamProvider(pointsIds));
+            }
+          } else if (User.currentRole == 'direccion-regional-salud') {
+            final pointsAsyncValue = ref.watch(pointsByRegionStreamProvider);
+            if (pointsAsyncValue.value != null) {
+              final points = pointsAsyncValue.value!;
+              if (pointsIds.isEmpty) {
+                pointsIds = points.map((e) => e.pointId).toList();
+              }
+              childrenAsyncValue = ref.watch(childrenByPointsStreamProvider(pointsIds));
+            }
+          } else {
+            childrenAsyncValue = ref.watch(childsStreamProvider);
           }
-          final childsAsyncValue = ref.watch(childsStreamProvider);
-          if (childsAsyncValue.value != null) {
-            _saveChilds(childsAsyncValue);
+
+          if (childrenAsyncValue.value != null) {
+            _saveChildren(childrenAsyncValue);
           }
-          return _buildView(childsAsyncValue);
+          return _buildView(childrenAsyncValue);
         });
   }
 

@@ -1,16 +1,21 @@
 /// dart imports
 import 'dart:io' show Platform;
 
+import 'package:adminnut4health/src/features/countries/data/firestore_repository.dart';
+import 'package:adminnut4health/src/features/users/data/firestore_repository.dart';
+import 'package:adminnut4health/src/features/users/domain/user.dart';
 /// package imports
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../features/authentication/data/firebase_auth_repository.dart';
 import '../routing/app_router.dart';
 /// local imports
 import 'model/helper.dart';
@@ -21,7 +26,7 @@ import 'widgets/animate_opacity_widget.dart';
 
 /// Root widget of the sample browser
 /// Contains the Homepage wrapped with a MaterialApp widget
-class SampleBrowser extends StatefulWidget {
+class SampleBrowser extends ConsumerStatefulWidget {
   /// Creates sample browser widget
   const SampleBrowser();
 
@@ -29,55 +34,95 @@ class SampleBrowser extends StatefulWidget {
   _SampleBrowserState createState() => _SampleBrowserState();
 }
 
-class _SampleBrowserState extends State<SampleBrowser> {
+class _SampleBrowserState extends ConsumerState<SampleBrowser> {
   late SampleModel _sampleListModel;
+  bool isLoading = true;
   @override
   void initState() {
+    super.initState();
     _sampleListModel = SampleModel.instance;
     _initializeProperties();
-
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, WidgetBuilder> navigationRoutes = <String, WidgetBuilder>{
-      _sampleListModel.isWebFullView ? '/' : '/demos': (BuildContext context) =>
-          const HomePage()
-    };
-    for (int i = 0; i < _sampleListModel.routes!.length; i++) {
-      final SampleRoute sampleRoute = _sampleListModel.routes![i];
-      WidgetCategory? category;
-      for (int j = 0; j < _sampleListModel.categoryList.length; j++) {
-        if (sampleRoute.subItem!.categoryName ==
-            _sampleListModel.categoryList[j].categoryName) {
-          category = _sampleListModel.categoryList[j];
-          break;
+
+    final user = ref.watch(authRepositoryProvider).currentUser;
+    final countries = ref.watch(countriesStreamProvider).value;
+    final regions = ref.watch(regionsStreamProvider).value;
+
+    if (isLoading) {
+      loadJson();
+    } else {
+      if (user != null && user.metadata.lastSignInTime != null) {
+        final claims = user.getIdTokenResult();
+        claims.then((value) {
+          if (value.claims != null && value.claims!['donante'] == true && User.currentRole != "donante") {
+            User.currentRole = 'donante';
+          } else if (value.claims != null && value.claims!['super-admin'] == true && User.currentRole != "super-admin") {
+            User.currentRole = 'super-admin';
+          } else if (value.claims != null && value.claims!['medico-jefe'] == true && User.currentRole != "medico-jefe") {
+            User.currentRole = 'medico-jefe';
+          } else if (value.claims != null && value.claims!['direccion-regional-salud'] == true && User.currentRole != "direccion-regional-salud") {
+            User.currentRole = 'direccion-regional-salud';
+          }
+        });
+
+        final localUser = ref.watch(userStreamProvider(user.uid));
+
+        if (localUser.value != null) {
+          User.currentRegionId = localUser.value!.regionId ?? "";
+          User.currentProvinceId = localUser.value!.provinceId ?? "";
+          if ((User.currentRole == 'direccion-regional-salud' || User.currentRole == 'medico-jefe') && countries != null && regions != null) {
+            final currentRegion = regions.firstWhere((r) => r.regionId == User.currentRegionId);
+            final country = countries.firstWhere((c) => c.countryId == currentRegion.countryId);
+            User.needValidation = country.needValidation;
+          }
         }
       }
-
-      navigationRoutes[sampleRoute.routeName!] = (BuildContext context) =>
-          WebLayoutPage(
-              key: GlobalKey<State>(),
-              routeName: sampleRoute.routeName,
-              sampleModel: _sampleListModel,
-              category: category,
-              subItem: sampleRoute.subItem);
     }
 
-    if (_sampleListModel.isWebFullView) {
-      _sampleListModel.currentThemeData = ThemeData.from(
-          colorScheme: const ColorScheme.light().copyWith(
-              primary: _sampleListModel.currentPaletteColor,
-              secondary: _sampleListModel.currentPaletteColor));
-      _sampleListModel.paletteBorderColors = <Color>[];
-      _sampleListModel.changeTheme(_sampleListModel.currentThemeData!);
-    }
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    } else {
 
-    ///Avoiding page popping on escape key press
-    final Map<ShortcutActivator, Intent> shortcuts =
-        Map<ShortcutActivator, Intent>.of(WidgetsApp.defaultShortcuts)
-          ..remove(LogicalKeySet(LogicalKeyboardKey.escape));
+      final Map<String, WidgetBuilder> navigationRoutes = <String, WidgetBuilder>{
+        _sampleListModel.isWebFullView ? '/' : '/demos': (BuildContext context) =>
+        const HomePage()
+      };
+      for (int i = 0; i < _sampleListModel.routes!.length; i++) {
+        final SampleRoute sampleRoute = _sampleListModel.routes![i];
+        WidgetCategory? category;
+        for (int j = 0; j < _sampleListModel.categoryList.length; j++) {
+          if (sampleRoute.subItem!.categoryName ==
+              _sampleListModel.categoryList[j].categoryName) {
+            category = _sampleListModel.categoryList[j];
+            break;
+          }
+        }
+
+        navigationRoutes[sampleRoute.routeName!] = (BuildContext context) =>
+            WebLayoutPage(
+                key: GlobalKey<State>(),
+                routeName: sampleRoute.routeName,
+                sampleModel: _sampleListModel,
+                category: category,
+                subItem: sampleRoute.subItem);
+      }
+
+      if (_sampleListModel.isWebFullView) {
+        _sampleListModel.currentThemeData = ThemeData.from(
+            colorScheme: const ColorScheme.light().copyWith(
+                primary: _sampleListModel.currentPaletteColor,
+                secondary: _sampleListModel.currentPaletteColor));
+        _sampleListModel.paletteBorderColors = <Color>[];
+        _sampleListModel.changeTheme(_sampleListModel.currentThemeData!);
+      }
+
+      ///Avoiding page popping on escape key press
+      final Map<ShortcutActivator, Intent> shortcuts =
+      Map<ShortcutActivator, Intent>.of(WidgetsApp.defaultShortcuts)
+        ..remove(LogicalKeySet(LogicalKeyboardKey.escape));
     return _sampleListModel.isWebFullView
         ? MaterialApp(
             shortcuts: shortcuts,
@@ -157,7 +202,15 @@ class _SampleBrowserState extends State<SampleBrowser> {
                               onPrimary: Colors.white));
               _sampleListModel.changeTheme(_sampleListModel.currentThemeData!);
               return const HomePage();
-            }));
+            }));}
+  }
+
+  Future<void> loadJson() async{
+    await updateControlItems(_sampleListModel.locale.toString());
+    _sampleListModel.reset();
+    setState(() {
+      isLoading = false;
+    });
   }
 
   void _initializeProperties() {
@@ -195,10 +248,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    super.initState();
     sampleListModel = SampleModel.instance;
     _addColors();
     sampleListModel.addListener(_handleChange);
-    super.initState();
   }
 
   ///Notify the framework by calling this method
@@ -228,7 +281,7 @@ class _HomePageState extends State<HomePage> {
                 backgroundColor: model.webBackgroundColor,
                 endDrawerEnableOpenDragGesture: false,
                 endDrawer:
-                    model.isWebFullView ? showWebThemeSettings(model) : null,
+                    model.isWebFullView ? showWebThemeSettings(context, model) : null,
                 appBar: PreferredSize(
                     preferredSize: const Size.fromHeight(46.0),
                     child: AppBar(
@@ -271,7 +324,7 @@ class _HomePageState extends State<HomePage> {
                 key: scaffoldKey,
                 backgroundColor: model.webBackgroundColor,
                 endDrawerEnableOpenDragGesture: false,
-                endDrawer: showWebThemeSettings(model),
+                endDrawer: showWebThemeSettings(context, model),
                 resizeToAvoidBottomInset: false,
                 appBar: PreferredSize(
                     preferredSize: const Size.fromHeight(90.0),

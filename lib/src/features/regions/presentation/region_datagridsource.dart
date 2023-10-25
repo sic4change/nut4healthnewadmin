@@ -1,6 +1,5 @@
 /// Dart import
 /// Packages import
-import 'package:adminnut4health/src/features/regions/domain/region.dart';
 import 'package:flutter/material.dart';
 
 /// DataGrid import
@@ -8,42 +7,30 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../countries/domain/country.dart';
-import '../../provinces/domain/province.dart';
-import '../domain/CityWithProvinceAndCountry.dart';
+import '../domain/region_full.dart';
 
-/// Set city's data collection to data grid source.
-class CityDataGridSource extends DataGridSource {
-  /// Creates the city data source class with required details.
-  CityDataGridSource(List<CityWithProvinceAndCountry> cityData,
-      List<Province> provinceData,
-      List<Country> countryData,
-      List<Region> regionData,
-      ) {
-    _cities = cityData;
-    _provinces = provinceData;
-    _countries = countryData;
+/// Set region's data collection to data grid source.
+class RegionDataGridSource extends DataGridSource {
+  /// Creates the region data source class with required details.
+  RegionDataGridSource(List<RegionFull> regionData, List<Country> countryData) {
     _regions = regionData;
+    _countries = countryData;
     buildDataGridRows();
   }
 
   List<DataGridRow> _dataGridRows = <DataGridRow>[];
-  List<CityWithProvinceAndCountry>? _cities = <CityWithProvinceAndCountry>[];
+  List<RegionFull>? _regions = <RegionFull>[];
   List<Country> _countries = <Country>[];
-  List<Region> _regions = <Region>[];
-  List<Province> _provinces = <Province>[];
-
 
   /// Building DataGridRows
   void buildDataGridRows() {
-    if (_cities != null && _cities!.isNotEmpty) {
-      _dataGridRows = _cities!.map<DataGridRow>((CityWithProvinceAndCountry cityWithProvinceAndCountry) {
+    if (_regions != null && _regions!.isNotEmpty) {
+      _dataGridRows = _regions!.map<DataGridRow>((RegionFull regionWithCountry) {
         return DataGridRow(cells: <DataGridCell>[
-          DataGridCell<String>(columnName: 'Id', value: cityWithProvinceAndCountry.city.cityId),
-          DataGridCell<String>(columnName: 'Nombre', value: cityWithProvinceAndCountry.city.name),
-          DataGridCell<String>(columnName: 'País', value: cityWithProvinceAndCountry.country?.name),
-          DataGridCell<String>(columnName: 'Región', value: cityWithProvinceAndCountry.region?.name),
-          DataGridCell<String>(columnName: 'Municipio', value: cityWithProvinceAndCountry.province?.name),
-          DataGridCell<bool>(columnName: 'Activo', value: cityWithProvinceAndCountry.city.active),
+          DataGridCell<String>(columnName: 'Id', value: regionWithCountry.region.regionId),
+          DataGridCell<String>(columnName: 'Nombre', value: regionWithCountry.region.name),
+          DataGridCell<String>(columnName: 'País', value: regionWithCountry.country?.name),
+          DataGridCell<bool>(columnName: 'Activo', value: regionWithCountry.region.active),
         ]);
       }).toList();
     }
@@ -123,51 +110,26 @@ class CityDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[2].value.toString()),
       ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[3].value.toString()),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[4].value.toString()),
-      ),
-      _buildActive(row.getCells()[5].value)
+      _buildActive(row.getCells()[3].value)
     ]);
   }
 
-  setCities(List<CityWithProvinceAndCountry>? cityData) {
-    _cities = cityData;
+  setRegions(List<RegionFull>? regionData) {
+    _regions = regionData;
   }
 
-  List<CityWithProvinceAndCountry>? getCities() {
-    return _cities;
+  List<RegionFull>? getRegions() {
+    return _regions;
   }
 
   setCountries(List<Country> countryData) {
     _countries = countryData;
   }
 
-  List<Country>? getCountries() {
+  List<Country> getCountries() {
     return _countries;
   }
 
-  setRegions(List<Region> regionData) {
-    _regions = regionData;
-  }
-
-  List<Region> getRegions() {
-    return _regions;
-  }
-
-  setProvinces(List<Province> provinceData) {
-    _provinces = provinceData;
-  }
-
-  List<Province> getProvinces() {
-    return _provinces;
-  }
 
   /// Update DataSource
   void updateDataSource() {

@@ -35,6 +35,8 @@ class ChildDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Sexo', value: childWithPointAndTutor.child.sex),
           DataGridCell<String>(columnName: 'Madre, padre o tutor', value: childWithPointAndTutor.tutor?.name?? ""),
           DataGridCell<String>(columnName: 'Observaciones', value: childWithPointAndTutor.child.observations),
+          DataGridCell<bool>(columnName: 'Validación Médico Jefe', value: childWithPointAndTutor.child.chefValidation),
+          DataGridCell<bool>(columnName: 'Validación Dirección Regional', value: childWithPointAndTutor.child.regionalValidation),
         ]);
       }).toList();
     }
@@ -78,6 +80,8 @@ class ChildDataGridSource extends DataGridSource {
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(cells: <Widget>[
+      _buildBoolean(row.getCells()[12].value),
+      _buildBoolean(row.getCells()[13].value),
       _buildStandardContainer(row.getCells()[1].value.toString()),
       _buildStandardContainer(row.getCells()[2].value.toString()),
       _buildStandardContainer(row.getCells()[3].value.toString()),
@@ -103,6 +107,25 @@ class ChildDataGridSource extends DataGridSource {
   /// Update DataSource
   void updateDataSource() {
     notifyListeners();
+  }
+
+  Widget _buildBoolean(bool value) {
+    final Map<String, Image> images = <String, Image>{
+      '✔': Image.asset('images/Perfect.png'),
+      '✘': Image.asset('images/Insufficient.png'),
+    };
+
+    if (value) {
+      return Padding(
+        padding: const EdgeInsets.only(left: 16.0),
+        child: _getWidget(images['✔']!, ''),
+      );
+    } else  {
+      return Padding(
+        padding: const EdgeInsets.only(left: 16.0),
+        child: _getWidget(images['✘']!, ''),
+      );
+    }
   }
 
   Widget _buildDate(dynamic value) {
