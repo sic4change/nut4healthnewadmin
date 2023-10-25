@@ -10,8 +10,8 @@ class Contract extends Equatable {
   const Contract({required this.contractId, this.status, this.code, this.isFEFA,
     this.point, this.screenerId, this.medicalId, this.armCircunference,
     this.armCircumferenceMedical, this.weight, this.height, this.childName,
-    this.childSurname, this.sex, this.childDNI, this.childTutor,
-    this.tutorStatus, this.weeks,  this.childMinor, this.childPhoneContract,
+    this.childSurname, this.sex, this.childBirthdate, this.childDNI, this.childTutor,
+    this.tutorBirthdate, this.tutorStatus, this.weeks, this.childMinor, this.childPhoneContract,
     this.childAddress, this.creationDate, this.medicalDate, this.smsSent,
     this.duration, this.percentage,
     this.transactionHash, this.transactionValidateHash,required this.chefValidation,
@@ -32,8 +32,10 @@ class Contract extends Equatable {
   final String? childName;
   final String? childSurname;
   final String? sex;
+  final DateTime? childBirthdate;
   final String? childDNI;
   final String? childTutor;
+  final DateTime? tutorBirthdate;
   final String? tutorStatus;
   final int? weeks;
   final bool? childMinor;
@@ -54,11 +56,11 @@ class Contract extends Equatable {
     (code != null && code!.contains("-99")) ? true : false,
     screenerId ?? "", medicalId ?? "", armCircunference ?? 0.0, armCircumferenceMedical ?? 0.0,
     weight ?? 0.0, height ?? 0.0, childName ?? "", childSurname ?? "", sex ?? "",
-    childDNI ?? "", childTutor ?? "", tutorStatus ?? "", weeks ?? 0, childMinor ?? false,
-    childPhoneContract ?? "", childAddress ?? "",
-    creationDate ?? DateTime(0, 0, 0,), medicalDate ?? DateTime(0, 0, 0), smsSent ?? false,
-    duration ?? "0", percentage ?? 0, transactionHash?? "", transactionValidateHash?? "",
-    chefValidation, regionalValidation,
+    childBirthdate ?? DateTime(0, 0, 0,), childDNI ?? "", childTutor ?? "",
+    tutorBirthdate ?? DateTime(0, 0, 0,), tutorStatus ?? "", weeks ?? 0, childMinor ?? false,
+    childPhoneContract ?? "", childAddress ?? "", creationDate ?? DateTime(0, 0, 0,),
+    medicalDate ?? DateTime(0, 0, 0), smsSent ?? false, duration ?? "0", percentage ?? 0,
+    transactionHash?? "", transactionValidateHash?? "", chefValidation, regionalValidation,
   ];
 
   @override
@@ -70,6 +72,12 @@ class Contract extends Equatable {
       throw StateError('missing data for contractId: $documentId');
     }
 
+    DateTime convertStringToDate(String dateString) {
+      List<String> parts = dateString.split('/');
+      String formattedDate = '${parts[2]}-${parts[1].padLeft(2, '0')}-${parts[0].padLeft(2, '0')}';
+      return DateTime.parse(formattedDate);
+    }
+
     final status = data['status'] ?? "";
     final code = data['code'] ?? "";
     final isFEFA = (code != null && code.contains("-99")) ? true : false;
@@ -77,14 +85,16 @@ class Contract extends Equatable {
     final screenerId = data['screenerId'] ?? "";
     final medicalId = data['medicalId'] ?? "";
     final armCircunference = data['arm_circumference']  ?? 0.0;
-    final armCircumferenceMedical = data['arm_circumference_medical']  ?? 0.0;
+    final armCircumferenceMedical = data['arm_circumference_medical'] ?? 0.0;
     final weight = data['weight']  ?? 0.0;
     final height = data['height']  ?? 0.0;
     final childName = data['childName'] ?? "";
     final childSurname = data['childSurname'] ?? "";
     final sex = data['sex'] ?? "";
+    final childBirthdate = (data['childBirthdateMiliseconds'] != null) ? convertStringToDate(data['childBirthdate']) : DateTime(0, 0, 0,);
     final childDNI = data['childDNI'] ?? "";
     final childTutor = data['childTutor'] ?? "";
+    final tutorBirthdate = (data['tutorBirthdateMiliseconds'] != null) ? convertStringToDate(data['tutorBirthdate']) : DateTime(0, 0, 0,);
     final tutorStatus = data['tutorStatus'] ?? "";
     final weeks = data['weeks'] ?? 0;
     final childMinor = data['childMinor'];
@@ -115,8 +125,10 @@ class Contract extends Equatable {
         childName: childName,
         childSurname: childSurname,
         sex: sex,
+        childBirthdate: childBirthdate,
         childDNI: childDNI,
         childTutor: childTutor,
+        tutorBirthdate: tutorBirthdate,
         tutorStatus: tutorStatus,
         weeks: weeks,
         childMinor: childMinor,
@@ -149,8 +161,10 @@ class Contract extends Equatable {
       'childName': childName,
       'childSurname': childSurname,
       'sex': sex,
+      'childBirthdate': childBirthdate,
       'childDNI': childDNI,
       'childTutor': childTutor,
+      'tutorBirthdate': tutorBirthdate,
       'tutorStatus': tutorStatus,
       'weeks': weeks,
       'childMinor': childMinor,
@@ -167,5 +181,6 @@ class Contract extends Equatable {
       'regionalValidation': regionalValidation,
     };
   }
+
 }
 
