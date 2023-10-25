@@ -53,6 +53,7 @@ class ContractDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Sexo', value: contractWithScreenerAndMedicalAndPoint.contract.sex),
           DataGridCell<String>(columnName: 'Código Identificación', value: contractWithScreenerAndMedicalAndPoint.contract.childDNI),
           DataGridCell<String>(columnName: 'Madre, Padre o Tutor', value: contractWithScreenerAndMedicalAndPoint.contract.childTutor?.replaceAll('ء', '\\u1574')),
+          DataGridCell<String>(columnName: 'Estado tutor', value: contractWithScreenerAndMedicalAndPoint.contract.tutorStatus),
           DataGridCell<String>(columnName: 'Contacto', value: contractWithScreenerAndMedicalAndPoint.contract.childPhoneContract),
           DataGridCell<String>(columnName: 'Lugar', value: contractWithScreenerAndMedicalAndPoint.contract.childAddress?.replaceAll('ء', '\\u1574')),
           DataGridCell<DateTime>(columnName: 'Fecha', value: contractWithScreenerAndMedicalAndPoint.contract.creationDate == DateTime(0, 0, 0) ? null : contractWithScreenerAndMedicalAndPoint.contract.creationDate),
@@ -252,8 +253,8 @@ class ContractDataGridSource extends DataGridSource {
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(cells: <Widget>[
-      _buildBoolean(row.getCells()[25].value),
       _buildBoolean(row.getCells()[26].value),
+      _buildBoolean(row.getCells()[27].value),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
@@ -300,32 +301,37 @@ class ContractDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[13].value.toString()),
       ),
-      _buildPhone(row.getCells()[14].value.toString()),
-      _buildPoint(row.getCells()[15].value.toString()),
-      _buildDate(row.getCells()[16].value.toString()),
-      _buildPoint(row.getCells()[17].value.toString()),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[18].value.toString()),
+        child: Text(row.getCells()[14].value.toString()),
       ),
+      _buildPhone(row.getCells()[15].value.toString()),
+      _buildPoint(row.getCells()[16].value.toString()),
+      _buildDate(row.getCells()[17].value.toString()),
+      _buildPoint(row.getCells()[18].value.toString()),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[19].value.toString()),
       ),
-      _buildDate(row.getCells()[20].value.toString()),
-      _buildSMSSent(row.getCells()[21].value),
-      _buildDuration(row.getCells()[22].value.toString()),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[23].value.toString()),
+        child: Text(row.getCells()[20].value.toString()),
       ),
+      _buildDate(row.getCells()[21].value.toString()),
+      _buildSMSSent(row.getCells()[22].value),
+      _buildDuration(row.getCells()[23].value.toString()),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[24].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[25].value.toString()),
       ),
     ]);
   }

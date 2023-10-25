@@ -65,7 +65,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
   /// Translate names
   late String _chefValidation, _regionalValidation, _id, _code, _fefa, _status, _exportXLS, _exportPDF, _total, _contracts,
       _armCircunference, _armCircunferenceConfirmed, _weight, _height, _name,
-      _surnames, _sex, _dni, _tutor, _contact, _address, _date, _point, _agent,
+      _surnames, _sex, _dni, _tutor, _tutorStatus, _contact, _address, _date, _point, _agent,
       _medical, _medicalDate, _smsSent, _duration, _desnutrition, _transactionHash,
       _transactionValidateHash, _validateData;
 
@@ -86,6 +86,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     'Sexo': 150,
     'Código Identificación': 150,
     'Madre, Padre o Tutor': 150,
+    'Estado tutor': 150,
     'Contacto': 150,
     'Lugar': 150,
     'Fecha': 150,
@@ -308,6 +309,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
             contractId: c.contract.contractId,
             status: c.contract.status,
             code: c.contract.code,
+            isFEFA: c.contract.isFEFA,
             point: c.contract.point,
             screenerId: c.contract.screenerId,
             medicalId: c.contract.medicalId,
@@ -320,6 +322,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
             sex: c.contract.sex,
             childDNI: c.contract.childDNI,
             childTutor: c.contract.childTutor,
+            tutorStatus: c.contract.tutorStatus,
             childPhoneContract: c.contract.childPhoneContract,
             childAddress: c.contract.childAddress,
             creationDate: c.contract.creationDate,
@@ -343,6 +346,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
             contractId: c.contract.contractId,
             status: c.contract.status,
             code: c.contract.code,
+            isFEFA: c.contract.isFEFA,
             point: c.contract.point,
             screenerId: c.contract.screenerId,
             medicalId: c.contract.medicalId,
@@ -355,6 +359,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
             sex: c.contract.sex,
             childDNI: c.contract.childDNI,
             childTutor: c.contract.childTutor,
+            tutorStatus: c.contract.tutorStatus,
             childPhoneContract: c.contract.childPhoneContract,
             childAddress: c.contract.childAddress,
             creationDate: c.contract.creationDate,
@@ -461,6 +466,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _sex = 'Sex';
         _dni = 'Identification Code';
         _tutor = 'Mother, Father or Guardian';
+        _tutorStatus = 'Tutor Status';
         _contact = 'Contact';
         _address = 'Address';
         _exportXLS = 'Export XLS';
@@ -494,6 +500,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _sex = 'Sexo';
         _dni = 'Código Identificación';
         _tutor = 'Madre, Padre o Tutor';
+        _tutorStatus = 'Estado tutor';
         _contact = 'Contacto';
         _address = 'Lugar';
         _exportXLS = 'Exportar XLS';
@@ -527,6 +534,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _sex = 'Sexe';
         _dni = 'Code identification';
         _tutor = 'Mère, père ou tuteur';
+        _tutorStatus = 'Statut du tuteur';
         _contact = 'Contact';
         _address = 'Adresse';
         _exportXLS = 'Exporter XLS';
@@ -761,6 +769,18 @@ class _ContractDataGridState extends LocalizationSampleViewState {
           ),
         ),
         GridColumn(
+          columnName: 'Estado tutor',
+          width: columnWidths['Estado tutor']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _tutorStatus.toString(),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+        GridColumn(
           columnName: 'Contacto',
           width: columnWidths['Contacto']!,
           label: Container(
@@ -919,6 +939,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     _sex = 'Sexo';
     _dni = 'Código Identificación';
     _tutor = 'Madre, Padre o Tutor';
+    _tutorStatus = 'Estado tutor';
     _contact = 'Contacto';
     _address = 'Lugar';
     _exportXLS = 'Exportar XLS';
