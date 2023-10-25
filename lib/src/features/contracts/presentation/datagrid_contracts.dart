@@ -66,7 +66,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
   late String _chefValidation, _regionalValidation, _id, _code, _fefa, _status,
       _exportXLS, _exportPDF, _total, _contracts,
       _armCircunference, _armCircunferenceConfirmed, _weight, _height, _name,
-      _surnames, _sex, _childBirthdate, _dni, _tutor, _tutorBirthdate, _tutorStatus, _weeks, _childMinor,
+      _surnames, _sex, _childBirthdate, _dni, _tutor, _tutorBirthdate, _tutorDNI,
+      _tutorStatus, _weeks, _childMinor,
       _contact, _address, _date, _point, _agent,
       _medical, _medicalDate, _smsSent, _duration, _desnutrition, _transactionHash,
       _transactionValidateHash, _validateData;
@@ -90,6 +91,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     'Código Identificación': 150,
     'Madre, Padre o Tutor': 150,
     'Fecha nacimiento tutor': 150,
+    'Código Identificación tutor': 150,
     'Estado tutor': 150,
     'Semanas embarazo': 150,
     'Hijo/a menor a 6 meses': 150,
@@ -330,6 +332,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
             childDNI: c.contract.childDNI,
             childTutor: c.contract.childTutor,
             tutorBirthdate: c.contract.tutorBirthdate,
+            tutorDNI: c.contract.tutorDNI,
             tutorStatus: c.contract.tutorStatus,
             weeks: c.contract.weeks,
             childMinor: c.contract.childMinor,
@@ -371,6 +374,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
             childDNI: c.contract.childDNI,
             childTutor: c.contract.childTutor,
             tutorBirthdate: c.contract.tutorBirthdate,
+            tutorDNI: c.contract.tutorDNI,
             tutorStatus: c.contract.tutorStatus,
             weeks: c.contract.weeks,
             childMinor: c.contract.childMinor,
@@ -482,6 +486,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _dni = 'Identification Code';
         _tutor = 'Mother, Father or Guardian';
         _tutorBirthdate = 'Tutor Birthdate';
+        _tutorDNI = 'Tutor Identification Code';
         _tutorStatus = 'Tutor Status';
         _weeks = 'Pregnancy Weeks';
         _childMinor = 'Child under 6 months';
@@ -520,6 +525,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _dni = 'Código Identificación';
         _tutor = 'Madre, Padre o Tutor';
         _tutorBirthdate = 'Fecha nacimiento tutor';
+        _tutorDNI = 'Código Identificación tutor';
         _tutorStatus = 'Estado tutor';
         _weeks = 'Semanas embarazo';
         _childMinor = 'Hijo/a menor a 6 meses';
@@ -558,6 +564,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _dni = 'Code identification';
         _tutor = 'Mère, père ou tuteur';
         _tutorBirthdate = 'Date de naissance du tuteur';
+        _tutorDNI = 'Code d\'identification du tuteur';
         _tutorStatus = 'Statut du tuteur';
         _weeks = 'Semaines de grossesse';
         _childMinor = 'Enfant de moins de 6 mois';
@@ -819,6 +826,18 @@ class _ContractDataGridState extends LocalizationSampleViewState {
           ),
         ),
         GridColumn(
+          columnName: 'Código Identificación tutor',
+          width: columnWidths['Código Identificación tutor']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _tutorDNI.toString(),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+        GridColumn(
           columnName: 'Estado tutor',
           width: columnWidths['Estado tutor']!,
           label: Container(
@@ -1015,6 +1034,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     _dni = 'Código Identificación';
     _tutor = 'Madre, Padre o Tutor';
     _tutorBirthdate = 'Fecha nacimiento tutor';
+    _tutorDNI = 'Código Identificación tutor';
     _tutorStatus = 'Estado tutor';
     _weeks = 'Semanas embarazo';
     _childMinor = 'Hijo/a menor a 6 meses';
