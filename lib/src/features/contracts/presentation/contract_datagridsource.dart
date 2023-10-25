@@ -54,6 +54,8 @@ class ContractDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Código Identificación', value: contractWithScreenerAndMedicalAndPoint.contract.childDNI),
           DataGridCell<String>(columnName: 'Madre, Padre o Tutor', value: contractWithScreenerAndMedicalAndPoint.contract.childTutor?.replaceAll('ء', '\\u1574')),
           DataGridCell<String>(columnName: 'Estado tutor', value: contractWithScreenerAndMedicalAndPoint.contract.tutorStatus),
+          DataGridCell<int>(columnName: 'Semanas embarazo', value: contractWithScreenerAndMedicalAndPoint.contract.weeks == 0 ? null : contractWithScreenerAndMedicalAndPoint.contract.weeks),
+          DataGridCell<String>(columnName: 'Hijo/a menor a 6 meses', value: contractWithScreenerAndMedicalAndPoint.contract.childMinor == null ? '' : (contractWithScreenerAndMedicalAndPoint.contract.childMinor != null &&  contractWithScreenerAndMedicalAndPoint.contract.childMinor == false) ? '✘' : '✔'),
           DataGridCell<String>(columnName: 'Contacto', value: contractWithScreenerAndMedicalAndPoint.contract.childPhoneContract),
           DataGridCell<String>(columnName: 'Lugar', value: contractWithScreenerAndMedicalAndPoint.contract.childAddress?.replaceAll('ء', '\\u1574')),
           DataGridCell<DateTime>(columnName: 'Fecha', value: contractWithScreenerAndMedicalAndPoint.contract.creationDate == DateTime(0, 0, 0) ? null : contractWithScreenerAndMedicalAndPoint.contract.creationDate),
@@ -115,6 +117,19 @@ class ContractDataGridSource extends DataGridSource {
       );
     } else {
       return const Text("");
+    }
+  }
+
+  Widget _buildInt(dynamic value) {
+    String valueString = value.toString();
+    if (valueString == null || valueString.isEmpty || valueString == 'null') {
+      return const Text("");
+    } else {
+      return Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(valueString),
+      );
     }
   }
 
@@ -253,8 +268,8 @@ class ContractDataGridSource extends DataGridSource {
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(cells: <Widget>[
-      _buildBoolean(row.getCells()[26].value),
-      _buildBoolean(row.getCells()[27].value),
+      _buildBoolean(row.getCells()[28].value),
+      _buildBoolean(row.getCells()[29].value),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
@@ -306,32 +321,38 @@ class ContractDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[14].value.toString()),
       ),
-      _buildPhone(row.getCells()[15].value.toString()),
-      _buildPoint(row.getCells()[16].value.toString()),
-      _buildDate(row.getCells()[17].value.toString()),
+      _buildInt(row.getCells()[15].value),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[16].value.toString()),
+      ),
+      _buildPhone(row.getCells()[17].value.toString()),
       _buildPoint(row.getCells()[18].value.toString()),
+      _buildDate(row.getCells()[19].value.toString()),
+      _buildPoint(row.getCells()[20].value.toString()),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[19].value.toString()),
+        child: Text(row.getCells()[21].value.toString()),
       ),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[20].value.toString()),
+        child: Text(row.getCells()[22].value.toString()),
       ),
-      _buildDate(row.getCells()[21].value.toString()),
-      _buildSMSSent(row.getCells()[22].value),
-      _buildDuration(row.getCells()[23].value.toString()),
+      _buildDate(row.getCells()[23].value.toString()),
+      _buildSMSSent(row.getCells()[24].value),
+      _buildDuration(row.getCells()[25].value.toString()),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[24].value.toString()),
+        child: Text(row.getCells()[26].value.toString()),
       ),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[25].value.toString()),
+        child: Text(row.getCells()[27].value.toString()),
       ),
     ]);
   }

@@ -11,8 +11,9 @@ class Contract extends Equatable {
     this.point, this.screenerId, this.medicalId, this.armCircunference,
     this.armCircumferenceMedical, this.weight, this.height, this.childName,
     this.childSurname, this.sex, this.childDNI, this.childTutor,
-    this.tutorStatus, this.childPhoneContract, this.childAddress, this.creationDate,
-    this.medicalDate, this.smsSent, this.duration, this.percentage,
+    this.tutorStatus, this.weeks,  this.childMinor, this.childPhoneContract,
+    this.childAddress, this.creationDate, this.medicalDate, this.smsSent,
+    this.duration, this.percentage,
     this.transactionHash, this.transactionValidateHash,required this.chefValidation,
     required this.regionalValidation,
   });
@@ -34,6 +35,8 @@ class Contract extends Equatable {
   final String? childDNI;
   final String? childTutor;
   final String? tutorStatus;
+  final int? weeks;
+  final bool? childMinor;
   final String? childPhoneContract;
   final String? childAddress;
   final DateTime? creationDate;
@@ -51,7 +54,8 @@ class Contract extends Equatable {
     (code != null && code!.contains("-99")) ? true : false,
     screenerId ?? "", medicalId ?? "", armCircunference ?? 0.0, armCircumferenceMedical ?? 0.0,
     weight ?? 0.0, height ?? 0.0, childName ?? "", childSurname ?? "", sex ?? "",
-    childDNI ?? "", childTutor ?? "", tutorStatus ?? "", childPhoneContract ?? "", childAddress ?? "",
+    childDNI ?? "", childTutor ?? "", tutorStatus ?? "", weeks ?? 0, childMinor ?? false,
+    childPhoneContract ?? "", childAddress ?? "",
     creationDate ?? DateTime(0, 0, 0,), medicalDate ?? DateTime(0, 0, 0), smsSent ?? false,
     duration ?? "0", percentage ?? 0, transactionHash?? "", transactionValidateHash?? "",
     chefValidation, regionalValidation,
@@ -82,6 +86,8 @@ class Contract extends Equatable {
     final childDNI = data['childDNI'] ?? "";
     final childTutor = data['childTutor'] ?? "";
     final tutorStatus = data['tutorStatus'] ?? "";
+    final weeks = data['weeks'] ?? 0;
+    final childMinor = data['childMinor'];
     final childPhoneContract = data['childPhoneContract'] ?? "";
     final childAddress = data['childAddress']?? "";
     final creationDate = DateTime.fromMillisecondsSinceEpoch( data['creationDateMiliseconds']);
@@ -112,6 +118,8 @@ class Contract extends Equatable {
         childDNI: childDNI,
         childTutor: childTutor,
         tutorStatus: tutorStatus,
+        weeks: weeks,
+        childMinor: childMinor,
         childPhoneContract: childPhoneContract,
         childAddress: childAddress,
         creationDate: creationDate,
@@ -144,6 +152,8 @@ class Contract extends Equatable {
       'childDNI': childDNI,
       'childTutor': childTutor,
       'tutorStatus': tutorStatus,
+      'weeks': weeks,
+      'childMinor': childMinor,
       'childPhoneContract': childPhoneContract,
       'childAddress': childAddress,
       'creationDate': creationDate,

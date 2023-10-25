@@ -63,9 +63,11 @@ class _ContractDataGridState extends LocalizationSampleViewState {
   late String selectedLocale;
 
   /// Translate names
-  late String _chefValidation, _regionalValidation, _id, _code, _fefa, _status, _exportXLS, _exportPDF, _total, _contracts,
+  late String _chefValidation, _regionalValidation, _id, _code, _fefa, _status,
+      _exportXLS, _exportPDF, _total, _contracts,
       _armCircunference, _armCircunferenceConfirmed, _weight, _height, _name,
-      _surnames, _sex, _dni, _tutor, _tutorStatus, _contact, _address, _date, _point, _agent,
+      _surnames, _sex, _dni, _tutor, _tutorStatus, _weeks, _childMinor,
+      _contact, _address, _date, _point, _agent,
       _medical, _medicalDate, _smsSent, _duration, _desnutrition, _transactionHash,
       _transactionValidateHash, _validateData;
 
@@ -87,6 +89,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     'Código Identificación': 150,
     'Madre, Padre o Tutor': 150,
     'Estado tutor': 150,
+    'Semanas embarazo': 150,
+    'Hijo/a menor a 6 meses': 150,
     'Contacto': 150,
     'Lugar': 150,
     'Fecha': 150,
@@ -323,6 +327,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
             childDNI: c.contract.childDNI,
             childTutor: c.contract.childTutor,
             tutorStatus: c.contract.tutorStatus,
+            weeks: c.contract.weeks,
+            childMinor: c.contract.childMinor,
             childPhoneContract: c.contract.childPhoneContract,
             childAddress: c.contract.childAddress,
             creationDate: c.contract.creationDate,
@@ -360,6 +366,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
             childDNI: c.contract.childDNI,
             childTutor: c.contract.childTutor,
             tutorStatus: c.contract.tutorStatus,
+            weeks: c.contract.weeks,
+            childMinor: c.contract.childMinor,
             childPhoneContract: c.contract.childPhoneContract,
             childAddress: c.contract.childAddress,
             creationDate: c.contract.creationDate,
@@ -467,6 +475,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _dni = 'Identification Code';
         _tutor = 'Mother, Father or Guardian';
         _tutorStatus = 'Tutor Status';
+        _weeks = 'Pregnancy Weeks';
+        _childMinor = 'Child under 6 months';
         _contact = 'Contact';
         _address = 'Address';
         _exportXLS = 'Export XLS';
@@ -501,6 +511,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _dni = 'Código Identificación';
         _tutor = 'Madre, Padre o Tutor';
         _tutorStatus = 'Estado tutor';
+        _weeks = 'Semanas embarazo';
+        _childMinor = 'Hijo/a menor a 6 meses';
         _contact = 'Contacto';
         _address = 'Lugar';
         _exportXLS = 'Exportar XLS';
@@ -535,6 +547,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _dni = 'Code identification';
         _tutor = 'Mère, père ou tuteur';
         _tutorStatus = 'Statut du tuteur';
+        _weeks = 'Semaines de grossesse';
+        _childMinor = 'Enfant de moins de 6 mois';
         _contact = 'Contact';
         _address = 'Adresse';
         _exportXLS = 'Exporter XLS';
@@ -781,6 +795,30 @@ class _ContractDataGridState extends LocalizationSampleViewState {
           ),
         ),
         GridColumn(
+          columnName: 'Semanas embarazo',
+          width: columnWidths['Semanas embarazo']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _weeks.toString(),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+        GridColumn(
+          columnName: 'Hijo/a menor a 6 meses',
+          width: columnWidths['Hijo/a menor a 6 meses']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _childMinor.toString(),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+        GridColumn(
           columnName: 'Contacto',
           width: columnWidths['Contacto']!,
           label: Container(
@@ -940,6 +978,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     _dni = 'Código Identificación';
     _tutor = 'Madre, Padre o Tutor';
     _tutorStatus = 'Estado tutor';
+    _weeks = 'Semanas embarazo';
+    _childMinor = 'Hijo/a menor a 6 meses';
     _contact = 'Contacto';
     _address = 'Lugar';
     _exportXLS = 'Exportar XLS';
