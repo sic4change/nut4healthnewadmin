@@ -19,6 +19,9 @@ class PrimaryButton extends StatelessWidget {
       height: Sizes.p48,
       child: ElevatedButton(
         onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color.fromRGBO(0, 116, 227, 1),// Aquí defines el color de fondo
+        ),
         child: isLoading
             ? const CircularProgressIndicator()
             : Text(
