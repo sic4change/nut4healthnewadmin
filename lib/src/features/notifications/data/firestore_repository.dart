@@ -89,6 +89,8 @@ class FirestoreRepository {
                 final point = pointMap[notification.pointId] ?? const Point(
                     pointId: "",
                     name: "",
+                    pointName: "",
+                    pointCode: "",
                     fullName: "",
                     type: "",
                     active: false,

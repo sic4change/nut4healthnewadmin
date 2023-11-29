@@ -7,8 +7,9 @@ typedef PointID = String;
 @immutable
 class Point extends Equatable {
 
-  const Point({required this.pointId, required this.name , required this.fullName,
-    required this.type, required this.country, required this.regionId, required this.province,
+  const Point({required this.pointId, required this.name, required this.fullName,
+    required this.pointName, required this.pointCode, required this.type,
+    required this.country, required this.regionId, required this.province,
     required this.phoneCode, required this.phoneLength, required this.active, required this.latitude,
     required this.longitude, required this.language, required this.cases, required this.casesnormopeso,
     required this.casesmoderada, required this.casessevera, required this.transactionHash});
@@ -16,6 +17,8 @@ class Point extends Equatable {
   final PointID pointId;
   final String name;
   final String fullName;
+  final String pointName;
+  final String pointCode;
   final String type;
   final String country;
   final String regionId;
@@ -33,8 +36,9 @@ class Point extends Equatable {
   final String transactionHash;
 
   @override
-  List<Object> get props => [pointId, name, fullName, type, country, regionId, province, phoneCode,
-    phoneLength, active, latitude, longitude, language, cases, casesnormopeso, casesmoderada,
+  List<Object> get props => [pointId, name, fullName, pointName, pointCode, type,
+    country, regionId, province, phoneCode, phoneLength, active, latitude, longitude,
+    language, cases, casesnormopeso, casesmoderada,
     casessevera, transactionHash];
 
   @override
@@ -47,6 +51,8 @@ class Point extends Equatable {
     }
     final name = data['name'];
     final fullName = data['fullName'];
+    final pointName = data['pointName'];
+    final pointCode = data['pointCode'];
     final type = data['type']?? "";
     final country = data['country'];
     final regionId = data['regionId']?? "";
@@ -67,6 +73,8 @@ class Point extends Equatable {
         pointId: documentId,
         name: name,
         fullName: fullName,
+        pointName: pointName,
+        pointCode: pointCode,
         type: type,
         country: country,
         regionId: regionId,
@@ -89,6 +97,8 @@ class Point extends Equatable {
     return {
       'name': name,
       'fullName': fullName,
+      'pointName': pointName,
+      'pointCode': pointCode,
       'type': type,
       'country': country,
       'regionId': regionId,

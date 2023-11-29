@@ -68,6 +68,8 @@ class _PointDataGridState extends LocalizationSampleViewState {
   /// Translate names
   late String _id,
       _name,
+      _pointName,
+      _pointCode,
       _type,
       _code,
       _phoneLength,
@@ -98,6 +100,8 @@ class _PointDataGridState extends LocalizationSampleViewState {
   late Map<String, double> columnWidths = {
     'Id': 150,
     'Nombre': 150,
+    'Nombre Punto': 150,
+    'Código Punto': 150,
     'Tipo': 150,
     'Código': 150,
     'Nº dígitos teléfono': 150,
@@ -118,6 +122,8 @@ class _PointDataGridState extends LocalizationSampleViewState {
   /// Editing controller for forms to perform update the values.
   TextEditingController? idController,
       nameController,
+      pointNameController,
+      pointCodeController,
       typeController,
       codeController,
       phoneLengthController,
@@ -245,32 +251,34 @@ class _PointDataGridState extends LocalizationSampleViewState {
                   pointId: "",
                   name: row[0].toString(),
                   fullName: "",
-                  type: row[1].toString(),
-                  phoneCode: row[2].toString(),
-                  phoneLength: row[3] as int,
+                  pointName: row[1].toString(),
+                  pointCode: row[2].toString(),
+                  type: row[3].toString(),
+                  phoneCode: row[4].toString(),
+                  phoneLength: row[5] as int,
                   province: pointDataGridSource
                       .getProvinces()!
                       .firstWhere(
-                          (element) => element.name == row[4].toString())
+                          (element) => element.name == row[6].toString())
                       .provinceId,
                   country: pointDataGridSource
                       .getCountries()!
                       .firstWhere(
-                          (element) => element.name == row[5].toString())
+                          (element) => element.name == row[7].toString())
                       .countryId,
                   regionId: pointDataGridSource
                       .getRegions()!
                       .firstWhere(
-                          (r) => r.name == row[6].toString())
+                          (r) => r.name == row[8].toString())
                       .regionId,
-                  active: row[7].toString() == 'true' ? true : false,
-                  latitude: row[8] as double,
-                  longitude: row[9] as double,
-                  language: row[10] as String,
-                  cases: row[11] as int,
-                  casesnormopeso: row[12] as int,
-                  casesmoderada: row[13] as int,
-                  casessevera: row[14] as int,
+                  active: row[9].toString() == 'true' ? true : false,
+                  latitude: row[10] as double,
+                  longitude: row[11] as double,
+                  language: row[12] as String,
+                  cases: row[13] as int,
+                  casesnormopeso: row[14] as int,
+                  casesmoderada: row[15] as int,
+                  casessevera: row[16] as int,
                   transactionHash: "",
                 ));
           }
@@ -624,6 +632,8 @@ class _PointDataGridState extends LocalizationSampleViewState {
     return Column(
       children: <Widget>[
         _buildRow(controller: nameController!, columnName: 'Nombre', text: _name),
+        _buildRow(controller: pointNameController!, columnName: 'Nombre Punto', text: _pointName),
+        _buildRow(controller: pointCodeController!, columnName: 'Código Punto', text: _pointCode),
 
         _buildRowComboSelection(
           context: context,
@@ -687,6 +697,8 @@ class _PointDataGridState extends LocalizationSampleViewState {
     return Column(
       children: <Widget>[
         _buildRow(controller: nameController!, columnName: 'Nombre', text: _name),
+        _buildRow(controller: pointNameController!, columnName: 'Nombre Punto', text: _pointName),
+        _buildRow(controller: pointCodeController!, columnName: 'Código Punto', text: _pointCode),
 
         _buildRowComboSelection(
           context: context,
@@ -746,6 +758,8 @@ class _PointDataGridState extends LocalizationSampleViewState {
   void _createTextFieldContext() {
     idController!.text = '';
     nameController!.text = '';
+    pointNameController!.text = '';
+    pointCodeController!.text = '';
     typeController!.text = 'CRENAM';
     codeController!.text = '';
     phoneLengthController!.text = '';
@@ -772,6 +786,22 @@ class _PointDataGridState extends LocalizationSampleViewState {
         .toString();
 
     nameController!.text = name ?? '';
+
+    final String? pointName = row
+        .getCells()
+        .firstWhere((DataGridCell element) => element.columnName == 'Nombre Punto')
+        ?.value
+        .toString();
+
+    pointNameController!.text = pointName ?? '';
+
+    final String? pointCode = row
+        .getCells()
+        .firstWhere((DataGridCell element) => element.columnName == 'Código Punto')
+        ?.value
+        .toString();
+
+    pointCodeController!.text = pointCode ?? '';
 
     final String? type = row
         .getCells()
@@ -939,6 +969,8 @@ class _PointDataGridState extends LocalizationSampleViewState {
                 phoneCode: codeController!.text,
                 phoneLength: int.parse(phoneLengthController!.text),
                 name: nameController!.text,
+                pointName: pointNameController!.text,
+                pointCode: pointCodeController!.text,
                 province: ref
                     .watch(pointsScreenControllerProvider.notifier)
                     .getProvinceSelected()
@@ -979,6 +1011,8 @@ class _PointDataGridState extends LocalizationSampleViewState {
           Point(
               pointId: point.pointId,
               name: nameController!.text,
+              pointName: pointNameController!.text,
+              pointCode: pointCodeController!.text,
               fullName: "",
               type: typeController!.text,
               phoneCode: codeController!.text,
@@ -1090,11 +1124,11 @@ class _PointDataGridState extends LocalizationSampleViewState {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(Icons.edit, color: Colors.white, size: 16),
-            SizedBox(width: 8.0),
+            const Icon(Icons.edit, color: Colors.white, size: 16),
+            const SizedBox(width: 8.0),
             Text(
               _editPoint,
-              style: TextStyle(color: Colors.white, fontSize: 12),
+              style: const TextStyle(color: Colors.white, fontSize: 12),
             )
           ],
         ),
@@ -1109,7 +1143,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
       onTap: () => _handleDeleteWidgetTap(row),
       child: Container(
         color: Colors.redAccent,
-        padding: EdgeInsets.only(left: 8.0, right: 8.0),
+        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -1117,7 +1151,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
             const SizedBox(width: 8.0),
             Text(
               _removePoint,
-              style: TextStyle(color: Colors.white, fontSize: 12),
+              style: const TextStyle(color: Colors.white, fontSize: 12),
             ),
           ],
         ),
@@ -1131,6 +1165,8 @@ class _PointDataGridState extends LocalizationSampleViewState {
       case 'en_US':
         _id = 'Id';
         _name = 'Name';
+        _pointName = 'Point Name';
+        _pointCode = 'Point Code';
         _type = 'Type';
         _code = 'Code';
         _phoneLength = 'Number of phone digits';
@@ -1161,6 +1197,8 @@ class _PointDataGridState extends LocalizationSampleViewState {
       case 'es_ES':
         _id = 'Id';
         _name = 'Nombre';
+        _pointName = 'Nombre Punto';
+        _pointCode = 'Código Punto';
         _type = 'Tipo';
         _code = 'Código';
         _phoneLength = 'Nº dígitos teléfono';
@@ -1191,6 +1229,8 @@ class _PointDataGridState extends LocalizationSampleViewState {
       case 'fr_FR':
         _id = 'Id';
         _name = 'Nom';
+        _pointName = 'Nom du Point';
+        _pointCode = 'Code du Point';
         _type = 'Type';
         _code = 'Code';
         _phoneLength = 'Nombre de chiffres du téléphone';
@@ -1264,6 +1304,28 @@ class _PointDataGridState extends LocalizationSampleViewState {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 _name,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )),
+        GridColumn(
+            columnName: 'Nombre Punto',
+            width: columnWidths['Nombre Punto']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _pointName,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )),
+        GridColumn(
+            columnName: 'Código Punto',
+            width: columnWidths['Código Punto']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _pointCode,
                 overflow: TextOverflow.ellipsis,
               ),
             )),
@@ -1445,6 +1507,8 @@ class _PointDataGridState extends LocalizationSampleViewState {
     pointDataGridSource = PointDataGridSource(List.empty(), List.empty(), List.empty(), List.empty());
     idController = TextEditingController();
     nameController = TextEditingController();
+    pointNameController = TextEditingController();
+    pointCodeController = TextEditingController();
     typeController = TextEditingController();
     codeController = TextEditingController();
     phoneLengthController = TextEditingController();
@@ -1460,6 +1524,8 @@ class _PointDataGridState extends LocalizationSampleViewState {
 
     _id = 'Id';
     _name = 'Nombre';
+    _pointName = 'Nombre Punto';
+    _pointCode = 'Código Punto';
     _type = 'Tipo';
     _code = 'Código';
     _phoneLength = 'Nº dígitos teléfono';

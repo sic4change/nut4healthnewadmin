@@ -43,9 +43,10 @@ class _StatisticContractsByPointAndStatusPageState extends SampleViewState
   _StatisticContractsByPointAndStatusPageState();
 
   List<Point> points = <Point>[];
-  Point pointSelected = const Point(pointId: '', name: '', fullName: '', type: '', country: '', regionId: '',
-      province: '', phoneCode: '', phoneLength: 0, active: false, latitude: 0.0, longitude: 0.0,
-      language: "", cases: 0, casesnormopeso: 0, casesmoderada: 0, casessevera: 0, transactionHash: "");
+  Point pointSelected = const Point(pointId: '', name: '', pointName: "", pointCode: "",
+      fullName: '', type: '', country: '', regionId: '', province: '', phoneCode: '',
+      phoneLength: 0, active: false, latitude: 0.0, longitude: 0.0, language: "",
+      cases: 0, casesnormopeso: 0, casesmoderada: 0, casessevera: 0, transactionHash: "");
 
   int normopesoValues = 0;
   int moderadaValues = 0;

@@ -163,6 +163,8 @@ class FirestoreRepository {
                     pointId: "",
                     name: "",
                     fullName: "",
+                    pointName: "",
+                    pointCode: "",
                     type: "",
                     active: false,
                     country: "",
@@ -273,6 +275,8 @@ class FirestoreRepository {
                 final point = pointMap[visit.pointId] ?? const Point(
                     pointId: "",
                     name: "",
+                    pointName: "",
+                    pointCode: "",
                     fullName: "",
                     type: "",
                     active: false,

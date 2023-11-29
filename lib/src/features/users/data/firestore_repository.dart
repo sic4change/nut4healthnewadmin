@@ -141,6 +141,8 @@ class FirestoreRepository {
                   const Point(
                     pointId: "",
                     name: "",
+                    pointName: "",
+                    pointCode: "",
                     fullName: "",
                     type: "",
                     active: false,

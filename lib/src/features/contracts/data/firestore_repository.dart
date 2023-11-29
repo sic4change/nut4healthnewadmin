@@ -154,9 +154,11 @@ class FirestoreRepository {
 
   Stream<List<ContractWithScreenerAndMedicalAndPoint>> watchContractWithConfigurationAndPoints() {
     const emptyUser = User(userId: '', name: '', email: '', role: '');
-    const emptyPoint = Point(pointId: '', name: '', fullName: '', type: '', country: '', regionId: '',
-        province: '', phoneCode: '', phoneLength: 0, active: false, latitude: 0.0, longitude: 0.0,
-        language: "", cases: 0, casesnormopeso: 0, casesmoderada: 0, casessevera: 0, transactionHash: "");
+    const emptyPoint = Point(pointId: '', name: '', pointName: "", pointCode: "",
+        fullName: '', type: '', country: '', regionId: '', province: '', phoneCode: '',
+        phoneLength: 0, active: false, latitude: 0.0, longitude: 0.0,
+        language: "", cases: 0, casesnormopeso: 0, casesmoderada: 0, casessevera: 0,
+        transactionHash: "");
     return CombineLatestStream.combine3(
         watchContracts(), watchUsers(), watchPoints(),
           (List<Contract> contracts, List<User> users, List<Point> points) {
@@ -177,8 +179,9 @@ class FirestoreRepository {
 
   Stream<List<ContractWithScreenerAndMedicalAndPoint>> watchContractsFullbyPoints(List<String> pointsIds) {
     const emptyUser = User(userId: '', name: '', email: '', role: '');
-    const emptyPoint = Point(pointId: '', name: '', fullName: '', type: '', country: '', regionId: '',
-        province: '', phoneCode: '', phoneLength: 0, active: false, latitude: 0.0, longitude: 0.0,
+    const emptyPoint = Point(pointId: '', name: '', pointName: "", pointCode: "",
+        fullName: '', type: '', country: '', regionId: '', province: '', phoneCode: '',
+        phoneLength: 0, active: false, latitude: 0.0, longitude: 0.0,
         language: "", cases: 0, casesnormopeso: 0, casesmoderada: 0, casessevera: 0, transactionHash: "");
     return CombineLatestStream.combine3(
         watchContractsByRegion(pointsIds), watchUsers(), watchPoints(),
@@ -200,7 +203,8 @@ class FirestoreRepository {
   }
 
   Stream<List<ContractPointStadistic>> watchContractPoints(String pointId) {
-    const emptyPoint = Point(pointId: '', name: '', fullName: '', type: '', country: '', regionId: '',
+    const emptyPoint = Point(pointId: '', name: '', pointName: "", pointCode: "",
+        fullName: '', type: '', country: '', regionId: '',
         province: '', phoneCode: '', phoneLength: 0,  active: false, latitude: 0.0, longitude: 0.0,
         language: "", cases: 0, casesnormopeso: 0, casesmoderada: 0, casessevera: 0, transactionHash: "");
     return CombineLatestStream.combine2(

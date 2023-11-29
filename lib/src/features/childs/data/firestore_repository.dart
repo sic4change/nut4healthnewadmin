@@ -129,6 +129,8 @@ class FirestoreRepository {
               final Point point = pointMap[child.pointId] ?? const Point(
                 pointId: "",
                 name: "",
+                pointName: "",
+                pointCode: "",
                 fullName: "",
                 type: "",
                 active: false,
@@ -194,6 +196,8 @@ class FirestoreRepository {
               final Point point = pointMap[child.pointId] ?? const Point(
                 pointId: "",
                 name: "",
+                pointName: "",
+                pointCode: "",
                 fullName: "",
                 type: "",
                 active: false,
