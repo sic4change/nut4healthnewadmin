@@ -16,6 +16,7 @@ import '../features/contracts/presentation/contracts_by_point_and_sex_statistic.
 import '../features/contracts/presentation/contracts_by_point_and_status_statistic.dart';
 import '../features/contracts/presentation/contracts_by_screener_and_date_statistic.dart';
 import '../features/contracts/presentation/datagrid_contracts.dart';
+import '../features/contracts_report/presentation/datagrid_contracts.dart';
 import '../features/countries/presentation/datagrid_countries.dart';
 import '../features/countries/presentation/country_map.dart';
 import '../features/payments/presentation/datagrid_payments.dart';
@@ -945,6 +946,9 @@ Map<String, Function> getSampleWidget() {
     'visit_datagrid': (Key key) => VisitDataGrid(key: key),
     'notification_datagrid': (Key key) => NotificationDataGrid(key: key),
     'complication_datagrid': (Key key) => ComplicationDataGrid(key: key),
+
+    //reports
+    'diagnosis_mauritane_2024': (Key key) => Mauritane2024DailyContractDataGrid(key: key),
 
     //mapas
     'country_map': (Key key) => MapCountryPage(key),

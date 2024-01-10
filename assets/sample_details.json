@@ -289,6 +289,35 @@
         ]
       }
     ]
-  }
+  }, {
+  "categoryName": "Informes",
+  "mobileCategoryId": 3,
+  "webCategoryId": 3,
+  "controlList": [
+    {
+      "title": "Informes",
+      "description": "Informes",
+      "image": "images/range_selector.png",
+      "displayType": "tab",
+      "controlId": 1,
+      "subItems": [
+        {
+          "type": "child",
+          "title": "Diagnósticos diarios Mauritania 2024",
+          "displayType": "tab",
+          "subItems": [
+            {
+              "type": "sample",
+              "title": "Diagnósticos diarios Mauritania 2024",
+              "key": "diagnosis_mauritane_2024",
+              "codeLink": ""
+            }
+          ]
+        }
+
+      ]
+    }
+  ]
+}
 
 ]

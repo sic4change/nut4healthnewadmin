@@ -289,5 +289,33 @@
         ]
       }
     ]
-  }
+  }, {
+  "categoryName": "Rapports",
+  "mobileCategoryId": 3,
+  "webCategoryId": 3,
+  "controlList": [
+    {
+      "title": "Rapports",
+      "description": "Rapports",
+      "image": "images/range_selector.png",
+      "displayType": "tab",
+      "controlId": 1,
+      "subItems": [
+        {
+          "type": "child",
+          "title": "Diagnostiques quotidiens Mauritanie 2024",
+          "displayType": "tab",
+          "subItems": [
+            {
+              "type": "sample",
+              "title": "Diagnostiques quotidiens Mauritanie 2024",
+              "key": "diagnosis_mauritane_2024",
+              "codeLink": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
 ]
