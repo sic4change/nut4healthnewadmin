@@ -1,12 +1,7 @@
 /// Package imports
 /// import 'package:flutter/foundation.dart';
 
-
-import 'package:adminnut4health/src/features/authentication/data/firebase_auth_repository.dart';
-import 'package:adminnut4health/src/features/contracts/domain/contract.dart';
-import 'package:adminnut4health/src/features/users/data/firestore_repository.dart';
-import 'package:adminnut4health/src/features/users/domain/user.dart';
-import 'package:adminnut4health/src/utils/alert_dialogs.dart';
+import 'package:adminnut4health/src/features/contracts_report/domain/main_inform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,10 +19,7 @@ import 'package:syncfusion_flutter_pdf/pdf.dart';
 import '../../../sample/model/sample_view.dart';
 /// Local import
 import '../data/firestore_repository.dart';
-import '../domain/ContractWithScreenerAndMedicalAndPoint.dart';
 import 'contract_datagridsource.dart';
-
-import 'package:file_picker/file_picker.dart';
 import 'dart:html' show FileReader;
 
 import '../../../common_widgets/export/save_file_mobile.dart'
@@ -54,7 +46,7 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
   final GlobalKey<SfDataGridState> _key = GlobalKey<SfDataGridState>();
 
   /// DataGridSource required for SfDataGrid to obtain the row data.
-  late ContractDataGridSource contractDataGridSource;
+  late MainInformDataGridSource mainInformDataGridSource;
 
   static const double dataPagerHeight = 60;
   int _rowsPerPage = 15;
@@ -63,56 +55,20 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
   late String selectedLocale;
 
   /// Translate names
-  late String _chefValidation, _regionalValidation, _id, _code, _fefa, _status,
-      _exportXLS, _exportPDF, _total, _contracts,
-      _armCircunference, _armCircunferenceConfirmed, _weight, _height, _name,
-      _surnames, _sex, _childBirthdate, _dni, _tutor, _tutorBirthdate, _tutorDNI,
-      _tutorStatus, _weeks, _childMinor,
-      _contact, _address, _date, _point, _agent,
-      _medical, _medicalDate, _smsSent, _duration, _desnutrition, _transactionHash,
-      _transactionValidateHash, _validateData;
+  late String _place, _records, _childs, _fefas,
+      _exportXLS, _exportPDF, _total, _contracts;
 
   late Map<String, double> columnWidths = {
-    'Validación Médico Jefe': 200,
-    'Validación Dirección Regional': 200,
-    'Id': 150,
-    'Código': 150,
-    'FEFA': 150,
-    'Estado': 150,
-    'Desnutrición': 150,
-    'Perímetro braquial (cm)': 150,
-    'Perímetro braquial confirmado (cm)': 150,
-    'Peso (kg)': 150,
-    'Altura (cm)': 150,
-    'Nombre': 150,
-    'Apellidos': 150,
-    'Sexo': 150,
-    'Fecha nacimiento': 150,
-    'Código Identificación': 150,
-    'Madre, Padre o Tutor': 150,
-    'Fecha nacimiento tutor': 150,
-    'Código Identificación tutor': 150,
-    'Estado tutor': 150,
-    'Semanas embarazo': 150,
-    'Hijo/a menor a 6 meses': 150,
-    'Contacto': 150,
-    'Lugar': 150,
-    'Fecha': 150,
-    'Puesto Salud': 150,
-    'Agente Salud': 150,
-    'Servicio Salud': 150,
-    'Fecha Atención Médica': 150,
-    'SMS Enviado': 150,
-    'Duración': 150,
-    'Hash transacción': 150,
-    'Hash transacción validada': 150,
+    'Localidad': 150,
+    'Registros': 150,
+    'Niños/as': 150,
+    'FEFAS': 150,
   };
 
   /// Used to validate the forms
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  AsyncValue<List<ContractWithScreenerAndMedicalAndPoint>> contractsAsyncValue = AsyncValue.data(List.empty());
-  List<String> pointsIds = List.empty();
+  AsyncValue<List<MainInform>> mainInformsAsyncValue = AsyncValue.data(List.empty());
 
   Widget getLocationWidget(String location) {
     return Row(
@@ -125,18 +81,18 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
     );
   }
 
-  _saveContracts(AsyncValue<List<ContractWithScreenerAndMedicalAndPoint>>? contracts) {
-    if (contracts == null) {
-      contractDataGridSource.setContracts(List.empty());
+  _saveMainInforms(AsyncValue<List<MainInform>>? mainInforms) {
+    if (mainInforms == null) {
+      mainInformDataGridSource.setMainInforms(List.empty());
     } else {
-      contractDataGridSource.setContracts(contracts.value!);
+      mainInformDataGridSource.setMainInforms(mainInforms.value);
     }
   }
 
-  Widget _buildView(AsyncValue<List<ContractWithScreenerAndMedicalAndPoint>> contracts) {
-    if (contracts.value != null) {
-      contractDataGridSource.buildDataGridRows();
-      contractDataGridSource.updateDataSource();
+  Widget _buildView(AsyncValue<List<MainInform>> mainInforms) {
+    if (mainInforms.value != null) {
+      mainInformDataGridSource.buildDataGridRows();
+      mainInformDataGridSource.updateDataSource();
       selectedLocale = model.locale.toString();
       return _buildLayoutBuilder();
     } else {
@@ -153,7 +109,7 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
   Widget _buildLayoutBuilder() {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraint) {
-          if (contractDataGridSource.getContracts()!.isEmpty) {
+          if (mainInformDataGridSource.getMainInforms()!.isEmpty) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -213,14 +169,10 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
     return reader.result as String;
   }
 
-
   Widget _buildHeaderButtons() {
     Future<void> exportDataGridToExcel() async {
       final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
-          excludeColumns: ['Id', 'Nombre', 'Apellidos', 'Lugar', 'Madre, Padre o Tutor', 'Contacto'],
-          cellExport: (DataGridCellExcelExportDetails details) {
-
-          });
+          cellExport: (DataGridCellExcelExportDetails details) {});
       final List<int> bytes = workbook.saveAsStream();
       workbook.dispose();
       await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_contracts.xlsx');
@@ -229,10 +181,7 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
     Future<void> exportDataGridToPdf() async {
       final ByteData data = await rootBundle.load('images/nut_logo.jpg');
       final PdfDocument document = _key.currentState!.exportToPdfDocument(
-          excludeColumns: ['Id', 'Nombre', 'Apellidos', 'Lugar', 'Madre, Padre o Tutor', 'Contacto', 'FEFA'],
-          cellExport: (DataGridCellPdfExportDetails details) {
-
-          },
+          cellExport: (DataGridCellPdfExportDetails details) {},
           headerFooterExport: (DataGridPdfHeaderFooterExportDetails details) {
             final double width = details.pdfPage.getClientSize().width;
             final PdfPageTemplateElement header =
@@ -256,142 +205,14 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
       document.dispose();
     }
 
-    if (User.needValidation){
-      return Row(
-        children: <Widget>[
-          _buildValidationButton(onPressed: () {
-            showValidationDialog(
-              context: context,
-                selectedLocale: selectedLocale,
-              onPressed: () {
-                if (User.currentRole == 'medico-jefe') {
-                  chefValidation();
-                }
-
-                if (User.currentRole == 'direccion-regional-salud') {
-                  regionalValidation();
-                }
-              }
-            );
-          }),
-          _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
-          _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
-        ],
-      );
-    } else {
-      return Row(
-        children: <Widget>[
-          _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
-          _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
-        ],
-      );
-    }
-  }
-
-  Widget _buildValidationButton({required VoidCallback onPressed}) {
-    switch (selectedLocale) {
-      case 'en_US':
-        _validateData = 'VALIDATE DATA';
-        break;
-      case 'es_ES':
-        _validateData = 'VALIDAR DATOS';
-        break;
-      case 'fr_FR':
-        _validateData = 'VALIDER LES DONNÉES';
-        break;
-    }
-    return Container(
-        height: 60.0,
-        padding: const EdgeInsets.only(left: 10.0, top: 10.0, bottom: 10.0),
-        child: TextButton(
-          onPressed: onPressed,
-          child: Text(_validateData),)
+    return Row(
+      children: <Widget>[
+        _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
+        _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
+      ],
     );
+
   }
-
-  Future<void> chefValidation() async {
-    final contracts = contractDataGridSource.getContracts()!.where((c) => !c.contract.chefValidation);
-    for (var c in contracts) {
-      ref.read(contractsScreenControllerProvider.notifier).updateContract(
-          Contract(
-            contractId: c.contract.contractId,
-            status: c.contract.status,
-            code: c.contract.code,
-            isFEFA: c.contract.isFEFA,
-            point: c.contract.point,
-            screenerId: c.contract.screenerId,
-            medicalId: c.contract.medicalId,
-            armCircunference: c.contract.armCircunference,
-            armCircumferenceMedical: c.contract.armCircumferenceMedical,
-            weight: c.contract.weight,
-            height: c.contract.height,
-            childName: c.contract.childName,
-            childSurname: c.contract.childSurname,
-            sex: c.contract.sex,
-            childBirthdate: c.contract.childBirthdate,
-            childDNI: c.contract.childDNI,
-            childTutor: c.contract.childTutor,
-            tutorBirthdate: c.contract.tutorBirthdate,
-            tutorDNI: c.contract.tutorDNI,
-            tutorStatus: c.contract.tutorStatus,
-            weeks: c.contract.weeks,
-            childMinor: c.contract.childMinor,
-            childPhoneContract: c.contract.childPhoneContract,
-            childAddress: c.contract.childAddress,
-            creationDate: c.contract.creationDate,
-            medicalDate: c.contract.medicalDate,
-            smsSent: c.contract.smsSent,
-            duration: c.contract.duration,
-            percentage: c.contract.percentage,
-            transactionHash: c.contract.transactionHash,
-            transactionValidateHash: c.contract.transactionValidateHash,
-            chefValidation: true,
-            regionalValidation: c.contract.regionalValidation,
-          )
-      );
-    }}
-
-  Future<void> regionalValidation() async {
-    final contractsWithChefValidation = contractDataGridSource.getContracts()!.where((c) => c.contract.chefValidation && !c.contract.regionalValidation);
-    for (var c in contractsWithChefValidation) {
-      ref.read(contractsScreenControllerProvider.notifier).updateContract(
-          Contract(
-            contractId: c.contract.contractId,
-            status: c.contract.status,
-            code: c.contract.code,
-            isFEFA: c.contract.isFEFA,
-            point: c.contract.point,
-            screenerId: c.contract.screenerId,
-            medicalId: c.contract.medicalId,
-            armCircunference: c.contract.armCircunference,
-            armCircumferenceMedical: c.contract.armCircumferenceMedical,
-            weight: c.contract.weight,
-            height: c.contract.height,
-            childName: c.contract.childName,
-            childSurname: c.contract.childSurname,
-            sex: c.contract.sex,
-            childBirthdate: c.contract.childBirthdate,
-            childDNI: c.contract.childDNI,
-            childTutor: c.contract.childTutor,
-            tutorBirthdate: c.contract.tutorBirthdate,
-            tutorDNI: c.contract.tutorDNI,
-            tutorStatus: c.contract.tutorStatus,
-            weeks: c.contract.weeks,
-            childMinor: c.contract.childMinor,
-            childPhoneContract: c.contract.childPhoneContract,
-            childAddress: c.contract.childAddress,
-            creationDate: c.contract.creationDate,
-            medicalDate: c.contract.medicalDate,
-            smsSent: c.contract.smsSent,
-            duration: c.contract.duration,
-            percentage: c.contract.percentage,
-            transactionHash: c.contract.transactionHash,
-            transactionValidateHash: c.contract.transactionValidateHash,
-            chefValidation: c.contract.chefValidation,
-            regionalValidation: true,
-          )
-      );
-    }}
 
   Widget _buildExcelExportingButton(String buttonName,
       {required VoidCallback onPressed}) {
@@ -421,9 +242,9 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
 
 
   Widget _buildDataPager() {
-    var rows = contractDataGridSource.rows;
-    if (contractDataGridSource.effectiveRows.isNotEmpty ) {
-      rows = contractDataGridSource.effectiveRows;
+    var rows = mainInformDataGridSource.rows;
+    if (mainInformDataGridSource.effectiveRows.isNotEmpty ) {
+      rows = mainInformDataGridSource.effectiveRows;
     }
     var addMorePage = 0;
     if ((rows.length / _rowsPerPage).remainder(1) != 0) {
@@ -433,7 +254,7 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
     return Directionality(
       textDirection: TextDirection.ltr,
       child: SfDataPager(
-          delegate: contractDataGridSource,
+          delegate: mainInformDataGridSource,
           availableRowsPerPage: const <int>[15, 20, 25],
           pageCount: (rows.length / _rowsPerPage) + addMorePage,
           onRowsPerPageChanged: (int? rowsPerPage) {
@@ -458,7 +279,7 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
           columns: <GridSummaryColumn>[
             const GridSummaryColumn(
                 name: 'Count',
-                columnName: 'Id',
+                columnName: 'Localidad',
                 summaryType: GridSummaryType.count),
           ],
           position: GridTableSummaryRowPosition.bottom),
@@ -469,126 +290,39 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
     final selectedLocale = model.locale.toString();
     switch (selectedLocale) {
       case 'en_US':
-        _chefValidation = 'Chef validation';
-        _regionalValidation = 'Regional validation';
-        _id = 'Id';
-        _code = 'Code';
-        _fefa = 'FEFA';
-        _status = 'Status';
-        _armCircunference = 'Brachial circumference (cm)';
-        _armCircunferenceConfirmed = 'Confirmed brachial circumference (cm)';
-        _weight = 'Weight (kg)';
-        _height = 'Height (cm)';
-        _name = 'Name';
-        _surnames = 'Surnames';
-        _sex = 'Sex';
-        _childBirthdate = 'Birthdate';
-        _dni = 'Identification Code';
-        _tutor = 'Mother, Father or Guardian';
-        _tutorBirthdate = 'Tutor Birthdate';
-        _tutorDNI = 'Tutor Identification Code';
-        _tutorStatus = 'Tutor Status';
-        _weeks = 'Pregnancy Weeks';
-        _childMinor = 'Child under 6 months';
-        _contact = 'Contact';
-        _address = 'Address';
+        _place = 'Location';
+        _records = 'Records';
+        _childs = 'Childs';
+        _fefas = 'FEFAS';
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
         _total = 'Total Diagnosis';
         _contracts = 'Diagnosis';
-        _date = 'Date';
-        _point = 'Healthcare Position';
-        _agent = 'Healthcare Agent';
-        _medical = 'Healtcare Service';
-        _medicalDate = 'Medical Appointment Date';
-        _smsSent = 'SMS Sent';
-        _duration = 'Duration';
-        _desnutrition = 'Desnutrition';
-        _transactionHash = 'Transaction Hash';
-        _transactionValidateHash = 'Transaction validate Hash';
         break;
       case 'es_ES':
-        _chefValidation = 'Validación Médico Jefe';
-        _regionalValidation = 'Validación Dirección Regional';
-        _id = 'Id';
-        _code = 'Código';
-        _fefa = 'FEFA';
-        _status = 'Estado';
-        _armCircunference = 'Perímetro braquial (cm)';
-        _armCircunferenceConfirmed = 'Perímetro braquial confirmado (cm)';
-        _weight = 'Peso (kg)';
-        _height = 'Altura (cm)';
-        _name = 'Nombre';
-        _surnames = 'Apellidos';
-        _sex = 'Sexo';
-        _childBirthdate = 'Fecha nacimiento';
-        _dni = 'Código Identificación';
-        _tutor = 'Madre, Padre o Tutor';
-        _tutorBirthdate = 'Fecha nacimiento tutor';
-        _tutorDNI = 'Código Identificación tutor';
-        _tutorStatus = 'Estado tutor';
-        _weeks = 'Semanas embarazo';
-        _childMinor = 'Hijo/a menor a 6 meses';
-        _contact = 'Contacto';
-        _address = 'Lugar';
+        _place = 'Localidad';
+        _records = 'Registros';
+        _childs = 'Niños/as';
+        _fefas = 'FEFAS';
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
-        _total = 'Diagnósticos totale';
+        _total = 'Diagnósticos totales';
         _contracts = 'Diagnósticos';
-        _date = 'Fecha';
-        _point = 'Puesto Salud';
-        _agent = 'Agente Salud';
-        _medical = 'Servicio Salud';
-        _medicalDate = 'Fecha Atención Médica';
-        _smsSent = 'SMS Enviado';
-        _duration = 'Duración';
-        _desnutrition = 'Desnutrición';
-        _transactionHash = 'Hash transacción';
-        _transactionValidateHash = 'Hash transacción validada';
         break;
       case 'fr_FR':
-        _chefValidation = 'Validation du médecin-chef';
-        _regionalValidation = 'Validation direction régionale de la santé';
-        _id = 'Identifiant';
-        _code = 'Code';
-        _fefa = 'FEFA';
-        _status = 'Statut';
-        _armCircunference = 'Circonférence brachiale (cm)';
-        _armCircunferenceConfirmed = 'Circonférence brachiale confirme (cm)';
-        _weight = 'Poids (kg)';
-        _height = 'Taille (cm)';
-        _name = 'Nom';
-        _surnames = 'Nom de famille';
-        _sex = 'Sexe';
-        _childBirthdate = 'Date de naissance';
-        _dni = 'Code identification';
-        _tutor = 'Mère, père ou tuteur';
-        _tutorBirthdate = 'Date de naissance du tuteur';
-        _tutorDNI = 'Code d\'identification du tuteur';
-        _tutorStatus = 'Statut du tuteur';
-        _weeks = 'Semaines de grossesse';
-        _childMinor = 'Enfant de moins de 6 mois';
-        _contact = 'Contact';
-        _address = 'Adresse';
+        _place = 'Localité';
+        _records = 'Registres';
+        _childs = 'Enfants';
+        _fefas = 'FEFAS';
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
         _total = 'Total des diagnostics';
         _contracts = 'Diagnostics';
-        _date = 'Date';
-        _point = 'Poste de santé';
-        _agent = 'Agent de santé';
-        _medical = 'Servicio de santé';
-        _medicalDate = 'Date de consultation médicale';
-        _smsSent = 'SMS envoyé';
-        _duration = 'Durée';
-        _desnutrition = 'Désnutrition';
-        _transactionHash = 'Hachage de transaction';
-        _transactionValidateHash = 'Hachage de transaction validé';
         break;
     }
     return SfDataGrid(
       key: _key,
-      source: contractDataGridSource,
+      source: mainInformDataGridSource,
       rowsPerPage: _rowsPerPage,
       tableSummaryRows: _getTableSummaryRows(),
       allowColumnsResizing: true,
@@ -608,399 +342,48 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
       allowMultiColumnSorting: true,
       columns: <GridColumn>[
         GridColumn(
-            columnName: 'Validación Médico Jefe',
-            width: columnWidths['Validación Médico Jefe']!,
+            width: columnWidths['Localidad']!,
+            columnName: 'Localidad',
             label: Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _chefValidation,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-        ),
-        GridColumn(
-            columnName: 'Validación Dirección Regional',
-            width: columnWidths['Validación Dirección Regional']!,
-            label: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _regionalValidation,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-        ),
-        GridColumn(
-            width: columnWidths['Id']!,
-            columnName: 'Id',
-            visible: false,
-            label: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _id,
+                _place,
                 overflow: TextOverflow.ellipsis,
               ),
             )),
         GridColumn(
-          columnName: 'Código',
-            width: columnWidths['Código']!,
+          columnName: 'Registros',
+            width: columnWidths['Registros']!,
           label: Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              _code,
+              _records,
               overflow: TextOverflow.ellipsis,
             ),
           )
         ),
         GridColumn(
-            columnName: 'FEFA',
-            width: columnWidths['FEFA']!,
+            columnName: 'Niños/as',
+            width: columnWidths['Niños/as']!,
             label: Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _fefa,
+                _childs,
                 overflow: TextOverflow.ellipsis,
               ),
             )
         ),
         GridColumn(
-          columnName: 'Estado',
-          width: columnWidths['Estado']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _status,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-        GridColumn(
-          columnName: 'Desnutrición',
-          width: columnWidths['Desnutrición']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _desnutrition,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-        GridColumn(
-          columnName: 'Perímetro braquial (cm)',
-          width: columnWidths['Perímetro braquial (cm)']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _armCircunference.toString(),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-
-        GridColumn(
-          columnName: 'Perímetro braquial confirmado (cm)',
-          width: columnWidths['Perímetro braquial confirmado (cm)']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _armCircunferenceConfirmed.toString(),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-        GridColumn(
-          columnName: 'Peso (kg)',
-          width: columnWidths['Peso (kg)']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _weight.toString(),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-        GridColumn(
-          columnName: 'Altura (cm)',
-          width: columnWidths['Altura (cm)']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _height.toString(),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-
-        GridColumn(
-          columnName: 'Nombre',
-          width: columnWidths['Nombre']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _name.toString(),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-        GridColumn(
-          columnName: 'Apellidos',
-          width: columnWidths['Apellidos']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _surnames.toString(),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-        GridColumn(
-          columnName: 'Sexo',
-          width: columnWidths['Sexo']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _sex.toString(),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-        GridColumn(
-          columnName: 'Fecha nacimiento',
-          width: columnWidths['Fecha nacimiento']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _childBirthdate.toString(),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-        GridColumn(
-          columnName: 'Código Identificación',
-          width: columnWidths['Código Identificación']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _dni.toString(),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-        GridColumn(
-          columnName: 'Madre, Padre o Tutor',
-          width: columnWidths['Madre, Padre o Tutor']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _tutor.toString(),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-        GridColumn(
-          columnName: 'Fecha nacimiento tutor',
-          width: columnWidths['Fecha nacimiento tutor']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _tutorBirthdate.toString(),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-        GridColumn(
-          columnName: 'Código Identificación tutor',
-          width: columnWidths['Código Identificación tutor']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _tutorDNI.toString(),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-        GridColumn(
-          columnName: 'Estado tutor',
-          width: columnWidths['Estado tutor']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _tutorStatus.toString(),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-        GridColumn(
-          columnName: 'Semanas embarazo',
-          width: columnWidths['Semanas embarazo']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _weeks.toString(),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-        GridColumn(
-          columnName: 'Hijo/a menor a 6 meses',
-          width: columnWidths['Hijo/a menor a 6 meses']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _childMinor.toString(),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-        GridColumn(
-          columnName: 'Contacto',
-          width: columnWidths['Contacto']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _contact.toString(),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-        GridColumn(
-          columnName: 'Lugar',
-          width: columnWidths['Lugar']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _address.toString(),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-        GridColumn(
-          columnName: 'Fecha',
-          width: columnWidths['Fecha']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _date.toString(),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-        GridColumn(
-          columnName: 'Puesto Salud',
-          width: columnWidths['Puesto Salud']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _point.toString(),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-        GridColumn(
-          columnName: 'Agente Salud',
-          width: columnWidths['Agente Salud']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _agent.toString(),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-
-        GridColumn(
-          columnName: 'Servicio Salud',
-          width: columnWidths['Servicio Salud']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _medical.toString(),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-
-        GridColumn(
-          columnName: 'Fecha Atención Médica',
-          width: columnWidths['Fecha Atención Médica']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _medicalDate.toString(),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-        GridColumn(
-          columnName: 'SMS Enviado',
-          width: columnWidths['SMS Enviado']!,
-          label: Container(
-              padding: const EdgeInsets.all(8.0),
-              alignment: Alignment.center,
-              child: Text(
-                _smsSent,
-                overflow: TextOverflow.ellipsis,
-              )),
-        ),
-        GridColumn(
-          columnName: 'Duración',
-          width: columnWidths['Duración']!,
-          label: Container(
-              padding: const EdgeInsets.all(8.0),
-              alignment: Alignment.center,
-              child: Text(
-                _duration,
-                overflow: TextOverflow.ellipsis,
-              )),
-        ),
-        GridColumn(
-            columnName: 'Hash transacción',
-            width: columnWidths['Hash transacción']!,
+            columnName: 'FEFAS',
+            width: columnWidths['FEFAS']!,
             label: Container(
-              alignment: Alignment.center,
+              alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _transactionHash,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-        ),
-        GridColumn(
-            columnName: 'Hash transacción validada',
-            width: columnWidths['Hash transacción validada']!,
-            label: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _transactionValidateHash,
+                _fefas,
                 overflow: TextOverflow.ellipsis,
               ),
             )
@@ -1012,49 +395,19 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
   @override
   void initState() {
     super.initState();
-    contractDataGridSource = ContractDataGridSource(List.empty());
+    mainInformDataGridSource = MainInformDataGridSource(List.empty());
 
     selectedLocale = model.locale.toString();
 
-    _chefValidation = 'Validación Médico Jefe';
-    _regionalValidation = 'Validación Dirección Regional';
-    _id = 'Id';
-    _code = 'Código';
-    _fefa = 'FEFA';
-    _contracts = 'Diagnosis';
-    _status = 'Estado';
-    _armCircunference = 'Perímetro braquial (cm)';
-    _armCircunferenceConfirmed = 'Perímetro braquial confirmado (cm)';
-    _weight = 'Peso (kg)';
-    _height = 'Altura (cm)';
-    _name = 'Nombre';
-    _surnames = 'Apellidos';
-    _sex = 'Sexo';
-    _childBirthdate = 'Fecha nacimiento';
-    _dni = 'Código Identificación';
-    _tutor = 'Madre, Padre o Tutor';
-    _tutorBirthdate = 'Fecha nacimiento tutor';
-    _tutorDNI = 'Código Identificación tutor';
-    _tutorStatus = 'Estado tutor';
-    _weeks = 'Semanas embarazo';
-    _childMinor = 'Hijo/a menor a 6 meses';
-    _contact = 'Contacto';
-    _address = 'Lugar';
+    _place = 'Localidad';
+    _records = 'Registros';
+    _childs = 'Niños/as';
+    _fefas = 'FEFAS';
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';
     _total = 'Diagnósticos totales';
     _contracts = 'Diagnósticos';
-    _date = 'Fecha';
-    _point = 'Puesto Salud';
-    _agent = 'Agente Salud';
-    _medical = 'Servicio Salud';
-    _medicalDate = 'Fecha Atención Médica';
-    _smsSent = 'SMS Enviado';
-    _duration = 'Duración';
-    _desnutrition = 'Desnutrición';
-    _transactionHash = 'Hash transacción';
-    _transactionValidateHash = 'Hash transacción validada';
-    _validateData = 'VALIDAR DATOS';
+
   }
 
 
@@ -1068,33 +421,13 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
             },
           );
 
-          if (User.currentRole == 'medico-jefe') {
-            final pointsAsyncValue = ref.watch(pointsByProvinceStreamProvider);
-            if (pointsAsyncValue.value != null) {
-              final points = pointsAsyncValue.value!;
-              if (pointsIds.isEmpty) {
-                pointsIds = points.map((e) => e.pointId).toList();
-              }
-              contractsAsyncValue = ref.watch(contractsByPointsStreamProvider(pointsIds));
-            }
-          } else if (User.currentRole == 'direccion-regional-salud') {
-            final pointsAsyncValue = ref.watch(pointsByRegionStreamProvider);
-            if (pointsAsyncValue.value != null) {
-              final points = pointsAsyncValue.value!;
-              if (pointsIds.isEmpty) {
-                pointsIds = points.map((e) => e.pointId).toList();
-              }
-              contractsAsyncValue = ref.watch(contractsByPointsStreamProvider(pointsIds));
-            }
-          } else {
-            contractsAsyncValue = ref.watch(contractsStreamProvider);
+          mainInformsAsyncValue = ref.watch(mainInformMauritane2024StreamProvider);
+
+          if (mainInformsAsyncValue.value != null) {
+            _saveMainInforms(mainInformsAsyncValue);
           }
 
-          if (contractsAsyncValue.value != null) {
-            _saveContracts(contractsAsyncValue);
-          }
-
-          return _buildView(contractsAsyncValue);
+          return _buildView(mainInformsAsyncValue);
         });
   }
 
