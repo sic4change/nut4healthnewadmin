@@ -8,6 +8,9 @@ import '../../../common_data/firestore_data_source.dart';
 import '../domain/contract.dart';
 import '../domain/main_inform.dart';
 
+import 'package:tuple/tuple.dart';
+
+
 String documentIdFromCurrentDate() {
   final iso = DateTime.now().toIso8601String();
   return iso.replaceAll(':', '-').replaceAll('.', '-');
@@ -21,20 +24,22 @@ class FirestoreRepository {
   const FirestoreRepository(this._dataSource);
   final FirestoreDataSource _dataSource;
 
-  Stream<List<Contract>> watchContracts(int year) {
+  Stream<List<Contract>> watchContracts(int day, int month, int year) {
     Stream<List<Contract>> contracts = _dataSource.watchCollection(
       path: FirestorePath.contracts(),
       builder: (data, documentId) => Contract.fromMap(data, documentId),
       queryBuilder: (query) {
-        query = query.where('creationDateYear', isEqualTo: year);
+        query = query.where('creationDateYear', isEqualTo: year)
+            .where('creationDateMonth', isEqualTo: month)
+            .where('creationDateDay', isEqualTo: day);
         return query;
       },
     );
     return contracts;
   }
 
-  Stream<List<MainInform>> watchMainInform() {
-    return watchContracts(2024).map((contracts) {
+  Stream<List<MainInform>> watchMainInform(int day, int month, int year) {
+    return watchContracts(day, month, year).map((contracts) {
       Map<String, Map<String, int>> addressCount = {};
 
       for (var contract in contracts) {
@@ -179,14 +184,20 @@ final databaseProvider = Provider<FirestoreRepository>((ref) {
 });
 
 
-final mainInformMauritane2024StreamProvider = StreamProvider.autoDispose<List<MainInform>>((ref) {
+final mainInformMauritane2024StreamProvider = StreamProvider.family.autoDispose<List<MainInform>, Tuple3<int, int, int>>((ref, yearMonthDay) {
   final user = ref.watch(authStateChangesProvider).value;
   if (user == null) {
     throw AssertionError('User can\'t be null');
   }
+
   final database = ref.watch(databaseProvider);
-  return database.watchMainInform();
+  final day = yearMonthDay.item1;
+  final month = yearMonthDay.item2;
+  final year = yearMonthDay.item3;
+
+  return database.watchMainInform(day, month, year);
 });
+
 
 
 

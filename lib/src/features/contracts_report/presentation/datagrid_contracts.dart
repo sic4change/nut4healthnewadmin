@@ -15,6 +15,7 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
+import 'package:tuple/tuple.dart';
 
 import '../../../sample/model/sample_view.dart';
 /// Local import
@@ -708,7 +709,12 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
             },
           );
 
-          mainInformsAsyncValue = ref.watch(mainInformMauritane2024StreamProvider);
+          Tuple3<int, int, int> tuple3 = Tuple3(
+              int.parse(dayController.text),
+              int.parse(monthController.text),
+              int.parse(yearController.text));
+
+          mainInformsAsyncValue = ref.watch(mainInformMauritane2024StreamProvider(tuple3));
 
           if (mainInformsAsyncValue.value != null) {
             _saveMainInforms(mainInformsAsyncValue);
@@ -756,7 +762,9 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
                 labelText: _year,
               ),
               onChanged: (it) {
-                //_filterWomen();
+                setState(() {
+                  buildSample(context);
+                });
               },
             ),
           ),
@@ -774,7 +782,9 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
                 labelText: _month,
               ),
               onChanged: (it) {
-                //_filterWomen();
+                setState(() {
+                  buildSample(context);
+                });
               },
             ),
           ),
@@ -792,7 +802,9 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
                 labelText: _day,
               ),
               onChanged: (it) {
-                //_filterWomen();
+                setState(() {
+                  buildSample(context);
+                });
               },
             ),
           ),
