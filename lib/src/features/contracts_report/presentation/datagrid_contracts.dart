@@ -56,6 +56,7 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
 
   /// Translate names
   late String _place, _records, _childs, _childsSAM, _childsMAM, _childsPN,
+      _day, _month, _year,
       _fefas,
       _fefasfe, _fefasfemas, _fefasfemam, _fefasfepn,
       _fefasfa, _fefasfamas, _fefasfamam, _fefasfapn,
@@ -83,6 +84,8 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
     'FEFAS FEA MAM': 200,
     'FEFAS FEA PN': 200,
   };
+
+  late TextEditingController yearController, monthController, dayController;
 
   AsyncValue<List<MainInform>> mainInformsAsyncValue = AsyncValue.data(List.empty());
 
@@ -222,9 +225,18 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
     }
 
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
         _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
+        Expanded(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildFilterRow(),
+            ],
+          ),
+        ),
       ],
     );
 
@@ -328,6 +340,9 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
         _exportPDF = 'Export PDF';
         _total = 'Total Diagnosis';
         _contracts = 'Diagnosis';
+        _day = 'Day';
+        _month = 'Month';
+        _year = 'Year';
         break;
       case 'es_ES':
         _place = 'Localidad';
@@ -353,6 +368,9 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
         _exportPDF = 'Exportar PDF';
         _total = 'Diagnósticos totales';
         _contracts = 'Diagnósticos';
+        _day = 'Día';
+        _month = 'Mes';
+        _year = 'Año';
         break;
       case 'fr_FR':
         _place = 'Localité';
@@ -378,6 +396,9 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
         _exportPDF = 'Exporter PDF';
         _total = 'Total des diagnostics';
         _contracts = 'Diagnostics';
+        _day = 'Jour';
+        _month = 'Mois';
+        _year = 'Année';
         break;
     }
     return SfDataGrid(
@@ -662,6 +683,17 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
     _exportPDF = 'Exportar PDF';
     _total = 'Diagnósticos totales';
     _contracts = 'Diagnósticos';
+    _day = 'Día';
+    _month = 'Mes';
+    _year = 'Año';
+
+    yearController = TextEditingController();
+    monthController = TextEditingController();
+    dayController = TextEditingController();
+
+    yearController.text = DateTime.now().year.toString();
+    monthController.text = DateTime.now().month.toString();
+    dayController.text = DateTime.now().day.toString();
 
   }
 
@@ -684,6 +716,89 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
 
           return _buildView(mainInformsAsyncValue);
         });
+  }
+
+  Widget _buildFilterRow() {
+    final selectedLocale = model.locale.toString();
+    switch (selectedLocale) {
+      case 'en_US':
+        _day = 'Day';
+        _month = 'Month';
+        _year = 'Year';
+        break;
+      case 'es_ES':
+        _day = 'Día';
+        _month = 'Mes';
+        _year = 'Año';
+        break;
+      case 'fr_FR':
+        _day = 'Jour';
+        _month = 'Mois';
+        _year = 'Année';
+        break;
+    }
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 150,
+            child: TextField(
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly
+              ],
+              controller: yearController,
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                labelText: _year,
+              ),
+              onChanged: (it) {
+                //_filterWomen();
+              },
+            ),
+          ),
+          const SizedBox(width: 20),
+          SizedBox(
+            width: 150,
+            child: TextField(
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly
+              ],
+              controller: monthController,
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                labelText: _month,
+              ),
+              onChanged: (it) {
+                //_filterWomen();
+              },
+            ),
+          ),
+          const SizedBox(width: 20),
+          SizedBox(
+            width: 150,
+            child: TextField(
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly
+              ],
+              controller: dayController,
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                labelText: _day,
+              ),
+              onChanged: (it) {
+                //_filterWomen();
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
 }

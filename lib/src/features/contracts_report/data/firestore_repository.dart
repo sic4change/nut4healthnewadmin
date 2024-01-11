@@ -21,12 +21,12 @@ class FirestoreRepository {
   const FirestoreRepository(this._dataSource);
   final FirestoreDataSource _dataSource;
 
-  Stream<List<Contract>> watchContracts() {
+  Stream<List<Contract>> watchContracts(int year) {
     Stream<List<Contract>> contracts = _dataSource.watchCollection(
       path: FirestorePath.contracts(),
       builder: (data, documentId) => Contract.fromMap(data, documentId),
       queryBuilder: (query) {
-        query = query.where('creationDateYear', isEqualTo: 2024);
+        query = query.where('creationDateYear', isEqualTo: year);
         return query;
       },
     );
@@ -34,7 +34,7 @@ class FirestoreRepository {
   }
 
   Stream<List<MainInform>> watchMainInform() {
-    return watchContracts().map((contracts) {
+    return watchContracts(2024).map((contracts) {
       Map<String, Map<String, int>> addressCount = {};
 
       for (var contract in contracts) {
@@ -178,14 +178,6 @@ final databaseProvider = Provider<FirestoreRepository>((ref) {
   return FirestoreRepository(ref.watch(firestoreDataSourceProvider));
 });
 
-final contractsStreamProvider = StreamProvider.autoDispose<List<Contract>>((ref) {
-  final user = ref.watch(authStateChangesProvider).value;
-  if (user == null) {
-    throw AssertionError('User can\'t be null');
-  }
-  final database = ref.watch(databaseProvider);
-  return database.watchContracts();
-});
 
 final mainInformMauritane2024StreamProvider = StreamProvider.autoDispose<List<MainInform>>((ref) {
   final user = ref.watch(authStateChangesProvider).value;
