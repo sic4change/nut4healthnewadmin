@@ -56,7 +56,10 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
 
   /// Translate names
   late String _place, _records, _childs, _childsSAM, _childsMAM, _childsPN,
-      _fefas, _fefasfe, _fefasfa, _fefasfea,
+      _fefas,
+      _fefasfe, _fefasfemas, _fefasfemam, _fefasfepn,
+      _fefasfa, _fefasfamas, _fefasfamam, _fefasfapn,
+      _fefasfea, _fefasfeamas, _fefasfeamam, _fefasfeapn,
       _exportXLS, _exportPDF, _total, _contracts;
 
   late Map<String, double> columnWidths = {
@@ -68,8 +71,17 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
     'Niños/as PN': 200,
     'FEFAS': 200,
     'FEFAS FE': 200,
+    'FEFAS FE MAS': 200,
+    'FEFAS FE MAM': 200,
+    'FEFAS FE PN': 200,
     'FEFAS FA': 200,
+    'FEFAS FA MAS': 200,
+    'FEFAS FA MAM': 200,
+    'FEFAS FA PN': 200,
     'FEFAS FEA': 200,
+    'FEFAS FEA MAS': 200,
+    'FEFAS FEA MAM': 200,
+    'FEFAS FEA PN': 200,
   };
 
   AsyncValue<List<MainInform>> mainInformsAsyncValue = AsyncValue.data(List.empty());
@@ -184,7 +196,7 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
 
     Future<void> exportDataGridToPdf() async {
       final ByteData data = await rootBundle.load('images/nut_logo.jpg');
-      final PdfDocument document = _key.currentState!.exportToPdfDocument(
+      final PdfDocument document = _key.currentState!.exportToPdfDocumentLandscape(
           cellExport: (DataGridCellPdfExportDetails details) {},
           headerFooterExport: (DataGridPdfHeaderFooterExportDetails details) {
             final double width = details.pdfPage.getClientSize().width;
@@ -244,7 +256,6 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
     );
   }
 
-
   Widget _buildDataPager() {
     var rows = mainInformDataGridSource.rows;
     if (mainInformDataGridSource.effectiveRows.isNotEmpty ) {
@@ -302,8 +313,17 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
         _childsPN = 'Childs PN';
         _fefas = 'FEFAS';
         _fefasfe = 'FEFAS FE';
+        _fefasfemas = 'FEFAS FE MAS';
+        _fefasfemam = 'FEFAS FE MAM';
+        _fefasfepn = 'FEFAS FE PN';
         _fefasfa = 'FEFAS FA';
+        _fefasfamas = 'FEFAS FA MAS';
+        _fefasfamam = 'FEFAS FA MAM';
+        _fefasfapn = 'FEFAS FA PN';
         _fefasfea = 'FEFAS FEA';
+        _fefasfeamas = 'FEFAS FEA MAS';
+        _fefasfeamam = 'FEFAS FEA MAM';
+        _fefasfeapn = 'FEFAS FEA PN';
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
         _total = 'Total Diagnosis';
@@ -318,8 +338,17 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
         _childsPN = 'Niños/as PN';
         _fefas = 'FEFAS';
         _fefasfe = 'FEFAS FE';
+        _fefasfemas = 'FEFAS FE MAS';
+        _fefasfemam = 'FEFAS FE MAM';
+        _fefasfepn = 'FEFAS FE PN';
         _fefasfa = 'FEFAS FA';
+        _fefasfamas = 'FEFAS FA MAS';
+        _fefasfamam = 'FEFAS FA MAM';
+        _fefasfapn = 'FEFAS FA PN';
         _fefasfea = 'FEFAS FEA';
+        _fefasfeamas = 'FEFAS FEA MAS';
+        _fefasfeamam = 'FEFAS FEA MAM';
+        _fefasfeapn = 'FEFAS FEA PN';
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
         _total = 'Diagnósticos totales';
@@ -334,8 +363,17 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
         _childsPN = 'Enfants PN';
         _fefas = 'FEFAS';
         _fefasfe = 'FEFAS FE';
+        _fefasfemas = 'FEFAS FE MAS';
+        _fefasfemam = 'FEFAS FE MAM';
+        _fefasfepn = 'FEFAS FE PN';
         _fefasfa = 'FEFAS FA';
+        _fefasfamas = 'FEFAS FA MAS';
+        _fefasfamam = 'FEFAS FA MAM';
+        _fefasfapn = 'FEFAS FA PN';
         _fefasfea = 'FEFAS FEA';
+        _fefasfeamas = 'FEFAS FEA MAS';
+        _fefasfeamam = 'FEFAS FEA MAM';
+        _fefasfeapn = 'FEFAS FEA PN';
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
         _total = 'Total des diagnostics';
@@ -459,6 +497,42 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
             )
         ),
         GridColumn(
+            columnName: 'FEFAS FE MAS',
+            width: columnWidths['FEFAS FE MAS']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _fefasfemas,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'FEFAS FE MAM',
+            width: columnWidths['FEFAS FE MAM']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _fefasfemam,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'FEFAS FE PN',
+            width: columnWidths['FEFAS FE PN']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _fefasfepn,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
             columnName: 'FEFAS FA',
             width: columnWidths['FEFAS FA']!,
             label: Container(
@@ -471,6 +545,42 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
             )
         ),
         GridColumn(
+            columnName: 'FEFAS FA MAS',
+            width: columnWidths['FEFAS FA MAS']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _fefasfamas,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'FEFAS FA MAM',
+            width: columnWidths['FEFAS FA MAM']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _fefasfamam,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'FEFAS FA PN',
+            width: columnWidths['FEFAS FA PN']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _fefasfapn,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
             columnName: 'FEFAS FEA',
             width: columnWidths['FEFAS FEA']!,
             label: Container(
@@ -478,6 +588,42 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 _fefasfea,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'FEFAS FEA MAS',
+            width: columnWidths['FEFAS FEA MAS']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _fefasfeamas,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'FEFAS FEA MAM',
+            width: columnWidths['FEFAS FEA MAM']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _fefasfeamam,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'FEFAS FEA PN',
+            width: columnWidths['FEFAS FEA PN']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _fefasfeapn,
                 overflow: TextOverflow.ellipsis,
               ),
             )
@@ -501,8 +647,17 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
     _childsPN = 'Niños/as PN';
     _fefas = 'FEFAS';
     _fefasfe = 'FEFAS FE';
+    _fefasfemas = 'FEFAS FE MAS';
+    _fefasfemam = 'FEFAS FE MAM';
+    _fefasfepn = 'FEFAS FE PN';
     _fefasfa = 'FEFAS FA';
+    _fefasfamas = 'FEFAS FA MAS';
+    _fefasfamam = 'FEFAS FA MAM';
+    _fefasfapn = 'FEFAS FA PN';
     _fefasfea = 'FEFAS FEA';
+    _fefasfeamas = 'FEFAS FEA MAS';
+    _fefasfeamam = 'FEFAS FEA MAM';
+    _fefasfeapn = 'FEFAS FEA PN';
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';
     _total = 'Diagnósticos totales';

@@ -32,8 +32,17 @@ class MainInformDataGridSource extends DataGridSource {
           DataGridCell<int>(columnName: 'Niños/as PN', value: mainInform.childsPN),
           DataGridCell<int>(columnName: 'FEFAS', value: mainInform.fefas),
           DataGridCell<int>(columnName: 'FEFAS FE', value: mainInform.fefasfe),
+          DataGridCell<int>(columnName: 'FEFAS FE MAS', value: mainInform.fefasfemas),
+          DataGridCell<int>(columnName: 'FEFAS FE MAM', value: mainInform.fefasfemam),
+          DataGridCell<int>(columnName: 'FEFAS FE PN', value: mainInform.fefasfepn),
           DataGridCell<int>(columnName: 'FEFAS FA', value: mainInform.fefasfa),
+          DataGridCell<int>(columnName: 'FEFAS FA MAS', value: mainInform.fefasfamas),
+          DataGridCell<int>(columnName: 'FEFAS FA MAM', value: mainInform.fefasfamam),
+          DataGridCell<int>(columnName: 'FEFAS FA PN', value: mainInform.fefasfapn),
           DataGridCell<int>(columnName: 'FEFAS FEA', value: mainInform.fefasfea),
+          DataGridCell<int>(columnName: 'FEFAS FEA MAS', value: mainInform.fefasfeamas),
+          DataGridCell<int>(columnName: 'FEFAS FEA MAM', value: mainInform.fefasfeamam),
+          DataGridCell<int>(columnName: 'FEFAS FEA PN', value: mainInform.fefasfeapn),
         ]);
       }).toList();
     }
@@ -108,6 +117,51 @@ class MainInformDataGridSource extends DataGridSource {
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[9].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[10].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[11].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[12].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[13].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[14].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[15].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[16].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[17].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[18].value.toString()),
       ),
     ]);
   }

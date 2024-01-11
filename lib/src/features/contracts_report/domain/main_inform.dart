@@ -14,8 +14,17 @@ class MainInform extends Equatable {
     required this.childsMAM,
     required this.childsPN,
     required this.fefasfe,
+    required this.fefasfemas,
+    required this.fefasfemam,
+    required this.fefasfepn,
     required this.fefasfa,
+    required this.fefasfamas,
+    required this.fefasfamam,
+    required this.fefasfapn,
     required this.fefasfea,
+    required this.fefasfeamas,
+    required this.fefasfeamam,
+    required this.fefasfeapn,
   });
 
   final String place;
@@ -26,8 +35,17 @@ class MainInform extends Equatable {
   final int childsMAM;
   final int childsPN;
   final int fefasfe;
+  final int fefasfemas;
+  final int fefasfemam;
+  final int fefasfepn;
   final int fefasfa;
+  final int fefasfamas;
+  final int fefasfamam;
+  final int fefasfapn;
   final int fefasfea;
+  final int fefasfeamas;
+  final int fefasfeamam;
+  final int fefasfeapn;
 
   @override
   List<Object> get props => [
@@ -39,8 +57,18 @@ class MainInform extends Equatable {
     childsMAM ?? 0,
     childsPN ?? 0,
     fefasfe ?? 0,
+    fefasfemas ?? 0,
+    fefasfemam ?? 0,
+    fefasfepn ?? 0,
     fefasfa ?? 0,
+    fefasfamas ?? 0,
+    fefasfamam ?? 0,
+    fefasfapn ?? 0,
     fefasfea ?? 0,
+    fefasfeamas ?? 0,
+    fefasfeamam ?? 0,
+    fefasfeapn ?? 0,
+
   ];
 
   @override
@@ -59,8 +87,17 @@ class MainInform extends Equatable {
     final childsMAM = data['childsMAM'] ?? 0;
     final childsPN = data['childsPN'] ?? 0;
     final fefasfe = data['fefasfe'] ?? 0;
+    final fefasfemas = data['fefasfemas'] ?? 0;
+    final fefasfemam = data['fefasfemam'] ?? 0;
+    final fefasfepn = data['fefasfepn'] ?? 0;
     final fefasfa = data['fefasfa'] ?? 0;
+    final fefasfamas = data['fefasfamas'] ?? 0;
+    final fefasfamam = data['fefasfamam'] ?? 0;
+    final fefasfapn = data['fefasfapn'] ?? 0;
     final fefasfea = data['fefasfea'] ?? 0;
+    final fefasfeamas = data['fefasfeamas'] ?? 0;
+    final fefasfeamam = data['fefasfeamam'] ?? 0;
+    final fefasfeapn = data['fefasfeapn'] ?? 0;
 
     return MainInform(
       place: place,
@@ -71,8 +108,17 @@ class MainInform extends Equatable {
       childsMAM: childsMAM,
       childsPN: childsPN,
       fefasfe: fefasfe,
+      fefasfemas: fefasfemas,
+      fefasfemam: fefasfemam,
+      fefasfepn: fefasfepn,
       fefasfa: fefasfa,
+      fefasfamas: fefasfamas,
+      fefasfamam: fefasfamam,
+      fefasfapn: fefasfapn,
       fefasfea: fefasfea,
+      fefasfeamas: fefasfeamas,
+      fefasfeamam: fefasfeamam,
+      fefasfeapn: fefasfeapn,
     );
   }
 
@@ -86,8 +132,17 @@ class MainInform extends Equatable {
       'childsMAM': childsMAM,
       'childsPN': childsPN,
       'fefasfe': fefasfe,
+      'fefasfemas': fefasfemas,
+      'fefasfemam': fefasfemam,
+      'fefasfepn': fefasfepn,
       'fefasfa': fefasfa,
+      'fefasfamas': fefasfamas,
+      'fefasfamam': fefasfamam,
+      'fefasfapn': fefasfapn,
       'fefasfea': fefasfea,
+      'fefasfeamas': fefasfeamas,
+      'fefasfeamam': fefasfeamam,
+      'fefasfeapn': fefasfeapn,
     };
   }
 
