@@ -55,18 +55,19 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
   late String selectedLocale;
 
   /// Translate names
-  late String _place, _records, _childs, _fefas,
+  late String _place, _records, _childs, _childsSAM, _childsMAM, _childsPN,
+      _fefas,
       _exportXLS, _exportPDF, _total, _contracts;
 
   late Map<String, double> columnWidths = {
-    'Localidad': 150,
-    'Registros': 150,
-    'Niños/as': 150,
-    'FEFAS': 150,
+    'Localidad': 200,
+    'Registros': 200,
+    'Niños/as': 200,
+    'Niños/as SAM': 200,
+    'Niños/as MAM': 200,
+    'Niños/as PN': 200,
+    'FEFAS': 200,
   };
-
-  /// Used to validate the forms
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   AsyncValue<List<MainInform>> mainInformsAsyncValue = AsyncValue.data(List.empty());
 
@@ -293,6 +294,9 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
         _place = 'Location';
         _records = 'Records';
         _childs = 'Childs';
+        _childsSAM = 'Childs SAM';
+        _childsMAM = 'Childs MAM';
+        _childsPN = 'Childs PN';
         _fefas = 'FEFAS';
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
@@ -303,6 +307,9 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
         _place = 'Localidad';
         _records = 'Registros';
         _childs = 'Niños/as';
+        _childsSAM = 'Niños/as SAM';
+        _childsMAM = 'Niños/as MAM';
+        _childsPN = 'Niños/as PN';
         _fefas = 'FEFAS';
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
@@ -313,6 +320,9 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
         _place = 'Localité';
         _records = 'Registres';
         _childs = 'Enfants';
+        _childsSAM = 'Enfants SAM';
+        _childsMAM = 'Enfants MAM';
+        _childsPN = 'Enfants PN';
         _fefas = 'FEFAS';
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
@@ -377,6 +387,42 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
             )
         ),
         GridColumn(
+            columnName: 'Niños/as SAM',
+            width: columnWidths['Niños/as SAM']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _childsSAM,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Niños/as MAM',
+            width: columnWidths['Niños/as MAM']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _childsMAM,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Niños/as PN',
+            width: columnWidths['Niños/as PN']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _childsPN,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
             columnName: 'FEFAS',
             width: columnWidths['FEFAS']!,
             label: Container(
@@ -402,6 +448,9 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
     _place = 'Localidad';
     _records = 'Registros';
     _childs = 'Niños/as';
+    _childsSAM = 'Niños/as SAM';
+    _childsMAM = 'Niños/as MAM';
+    _childsPN = 'Niños/as PN';
     _fefas = 'FEFAS';
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';

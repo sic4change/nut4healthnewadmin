@@ -10,18 +10,18 @@ class MainInform extends Equatable {
     required this.records,
     required this.childs,
     required this.fefas,
-    // required this.childsMAS,
-    // required this.childsMAM,
-    // required this.childsPN,
+    required this.childsMAS,
+    required this.childsMAM,
+    required this.childsPN,
   });
 
   final String place;
   final int records;
   final int childs;
   final int fefas;
-  // final int childsMAS;
-  // final int childsMAM;
-  // final int childsPN;
+  final int childsMAS;
+  final int childsMAM;
+  final int childsPN;
 
   @override
   List<Object> get props => [
@@ -29,14 +29,13 @@ class MainInform extends Equatable {
     records ?? 0,
     childs ?? 0,
     fefas ?? 0,
-    // childsMAS ?? 0,
-    // childsMAM ?? 0,
-    // childsPN ?? 0,
+    childsMAS ?? 0,
+    childsMAM ?? 0,
+    childsPN ?? 0,
   ];
 
   @override
   bool get stringify => true;
-
 
   factory MainInform.fromMap(Map<String, dynamic>? data, String documentId) {
     if (data == null) {
@@ -47,18 +46,18 @@ class MainInform extends Equatable {
     final records = data['records'] ?? 0;
     final childs = data['childs'] ?? 0;
     final fefas = data['fefas'] ?? 0;
-    // final childsMAS = data['childsMAS'] ?? 0;
-    // final childsMAM = data['childsMAM'] ?? 0;
-    // final childsPN = data['childsPN'] ?? 0;
+    final childsMAS = data['childsMAS'] ?? 0;
+    final childsMAM = data['childsMAM'] ?? 0;
+    final childsPN = data['childsPN'] ?? 0;
 
     return MainInform(
       place: place,
       records: records,
       childs: childs,
       fefas: fefas,
-      // childsMAS: childsMAS,
-      // childsMAM: childsMAM,
-      // childsPN: childsPN,
+      childsMAS: childsMAS,
+      childsMAM: childsMAM,
+      childsPN: childsPN,
     );
   }
 
@@ -68,9 +67,9 @@ class MainInform extends Equatable {
       'records': records,
       'childs': childs,
       'fefas': fefas,
-      // 'childsMAS': childsMAS,
-      // 'childsMAM': childsMAM,
-      // 'childsPN': childsPN,
+      'childsMAS': childsMAS,
+      'childsMAM': childsMAM,
+      'childsPN': childsPN,
     };
   }
 

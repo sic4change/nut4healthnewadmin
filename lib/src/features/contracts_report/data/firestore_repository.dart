@@ -38,21 +38,33 @@ class FirestoreRepository {
       Map<String, Map<String, int>> addressCount = {};
 
       for (var contract in contracts) {
-        // Inicializa los contadores si es la primera vez que se encuentra esta dirección
-        addressCount.putIfAbsent(contract.childAddress!, () => {'records': 0, 'fefas': 0, 'childs': 0});
+        addressCount.putIfAbsent(contract.childAddress!, () => {'records': 0, 'fefas': 0, 'childs': 0, 'childsMAS': 0, 'childsMAM': 0, 'childsPN': 0});
 
-        // Incrementa el contador general
         int currentRecord = addressCount[contract.childAddress]!['records']!;
         addressCount[contract.childAddress]!['records'] = currentRecord + 1;
 
-        // Verifica si el código termina en -99 y actualiza los contadores correspondientes
         if (contract.code!.endsWith('-99')) {
           int currentFefas = addressCount[contract.childAddress]!['fefas']!;
           addressCount[contract.childAddress]!['fefas'] = currentFefas + 1;
         } else {
           int currentChilds = addressCount[contract.childAddress]!['childs']!;
+          int currentChildMAS = addressCount[contract.childAddress]!['childsMAS']!;
+          int currentChildMAM = addressCount[contract.childAddress]!['childsMAM']!;
+          int currentChildPN = addressCount[contract.childAddress]!['childsPN']!;
           addressCount[contract.childAddress]!['childs'] = currentChilds + 1;
-        }
+          if ((contract.armCircumferenceMedical!= 0 && contract.armCircumferenceMedical! >= 12.5) ||
+              (contract.armCircunference!= 0 && contract.armCircunference! >= 12.5)) {
+            addressCount[contract.childAddress]!['childsPN'] = currentChildPN + 1;
+          } else if ((contract.armCircumferenceMedical!= 0 && contract.armCircumferenceMedical! >= 11.5 && contract.armCircumferenceMedical! <= 12.4) ||
+              (contract.armCircunference!= 0 && contract.armCircunference! >= 11.5 && contract.armCircunference! <= 12.4)) {
+            addressCount[contract.childAddress]!['childMAM'] = currentChildMAM + 1;
+          } else if ((contract.armCircumferenceMedical!= 0 && contract.armCircumferenceMedical! <= 11.4) ||
+            (contract.armCircunference!= 0 && contract.armCircunference! <= 11.4)) {
+            addressCount[contract.childAddress]!['childsMAS'] = currentChildMAS + 1;
+          }
+
+      }
+
       }
 
       List<MainInform> mainInfoList = addressCount.entries.map((entry) {
@@ -61,11 +73,13 @@ class FirestoreRepository {
             place: entry.key,
             records: data['records']!,
             fefas: data['fefas']!,
-            childs: data['childs']!
+            childs: data['childs']!,
+            childsMAS: data['childsMAS']!,
+            childsMAM: data['childsMAM']!,
+            childsPN: data['childsPN']!
         );
       }).toList();
 
-      // Ordenar la lista por 'place'
       mainInfoList.sort((a, b) => a.place.compareTo(b.place));
 
       return mainInfoList;
