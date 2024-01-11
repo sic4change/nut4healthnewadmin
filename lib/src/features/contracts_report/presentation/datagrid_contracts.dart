@@ -701,6 +701,15 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
 
   @override
   Widget buildSample(BuildContext context) {
+    int day = 0;
+    int month = 0;
+    int year = 0;
+
+    if (dayController.text.isNotEmpty && monthController.text.isNotEmpty && yearController.text.isNotEmpty) {
+      day = int.parse(dayController.text);
+      month = int.parse(monthController.text);
+      year = int.parse(yearController.text);
+    }
     return Consumer(
         builder: (context, ref, child) {
           ref.listen<AsyncValue>(
@@ -709,10 +718,7 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
             },
           );
 
-          Tuple3<int, int, int> tuple3 = Tuple3(
-              int.parse(dayController.text),
-              int.parse(monthController.text),
-              int.parse(yearController.text));
+          Tuple3<int, int, int> tuple3 = Tuple3(day, month, year);
 
           mainInformsAsyncValue = ref.watch(mainInformMauritane2024StreamProvider(tuple3));
 
@@ -722,6 +728,7 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
 
           return _buildView(mainInformsAsyncValue);
         });
+
   }
 
   Widget _buildFilterRow() {
