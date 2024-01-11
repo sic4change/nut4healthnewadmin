@@ -56,7 +56,7 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
 
   /// Translate names
   late String _place, _records, _childs, _childsSAM, _childsMAM, _childsPN,
-      _fefas,
+      _fefas, _fefasfe, _fefasfa, _fefasfea,
       _exportXLS, _exportPDF, _total, _contracts;
 
   late Map<String, double> columnWidths = {
@@ -67,6 +67,9 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
     'Niños/as MAM': 200,
     'Niños/as PN': 200,
     'FEFAS': 200,
+    'FEFAS FE': 200,
+    'FEFAS FA': 200,
+    'FEFAS FEA': 200,
   };
 
   AsyncValue<List<MainInform>> mainInformsAsyncValue = AsyncValue.data(List.empty());
@@ -298,6 +301,9 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
         _childsMAM = 'Childs MAM';
         _childsPN = 'Childs PN';
         _fefas = 'FEFAS';
+        _fefasfe = 'FEFAS FE';
+        _fefasfa = 'FEFAS FA';
+        _fefasfea = 'FEFAS FEA';
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
         _total = 'Total Diagnosis';
@@ -311,6 +317,9 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
         _childsMAM = 'Niños/as MAM';
         _childsPN = 'Niños/as PN';
         _fefas = 'FEFAS';
+        _fefasfe = 'FEFAS FE';
+        _fefasfa = 'FEFAS FA';
+        _fefasfea = 'FEFAS FEA';
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
         _total = 'Diagnósticos totales';
@@ -324,6 +333,9 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
         _childsMAM = 'Enfants MAM';
         _childsPN = 'Enfants PN';
         _fefas = 'FEFAS';
+        _fefasfe = 'FEFAS FE';
+        _fefasfa = 'FEFAS FA';
+        _fefasfea = 'FEFAS FEA';
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
         _total = 'Total des diagnostics';
@@ -434,6 +446,42 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
               ),
             )
         ),
+        GridColumn(
+            columnName: 'FEFAS FE',
+            width: columnWidths['FEFAS FE']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _fefasfe,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'FEFAS FA',
+            width: columnWidths['FEFAS FA']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _fefasfa,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'FEFAS FEA',
+            width: columnWidths['FEFAS FEA']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _fefasfea,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
       ],
     );
   }
@@ -452,6 +500,9 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
     _childsMAM = 'Niños/as MAM';
     _childsPN = 'Niños/as PN';
     _fefas = 'FEFAS';
+    _fefasfe = 'FEFAS FE';
+    _fefasfa = 'FEFAS FA';
+    _fefasfea = 'FEFAS FEA';
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';
     _total = 'Diagnósticos totales';

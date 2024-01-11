@@ -38,14 +38,37 @@ class FirestoreRepository {
       Map<String, Map<String, int>> addressCount = {};
 
       for (var contract in contracts) {
-        addressCount.putIfAbsent(contract.childAddress!, () => {'records': 0, 'fefas': 0, 'childs': 0, 'childsMAS': 0, 'childsMAM': 0, 'childsPN': 0});
+        addressCount.putIfAbsent(contract.childAddress!, () => {
+          'records': 0,
+          'fefas': 0,
+          'childs': 0,
+          'childsMAS': 0,
+          'childsMAM': 0,
+          'childsPN': 0,
+          'fefasfe': 0,
+          'fefasfa': 0,
+          'fefasfea': 0,
+        });
 
         int currentRecord = addressCount[contract.childAddress]!['records']!;
         addressCount[contract.childAddress]!['records'] = currentRecord + 1;
 
         if (contract.code!.endsWith('-99')) {
           int currentFefas = addressCount[contract.childAddress]!['fefas']!;
+          int currentFe = addressCount[contract.childAddress]!['fefasfe']!;
+          int currentFa = addressCount[contract.childAddress]!['fefasfa']!;
+          int currentFea = addressCount[contract.childAddress]!['fefasfea']!;
           addressCount[contract.childAddress]!['fefas'] = currentFefas + 1;
+          if (contract.tutorStatus != null && contract.tutorStatus!.isNotEmpty &&
+              (contract.tutorStatus! == 'Embarazada' || contract.tutorStatus! == 'Enceinte' || contract.tutorStatus! == 'حامل')) {
+            addressCount[contract.childAddress]!['fefasfe'] = currentFe + 1;
+          } else if (contract.tutorStatus != null && contract.tutorStatus!.isNotEmpty &&
+              (contract.tutorStatus! == 'Lactante' || contract.tutorStatus! == 'Allaitante'  || contract.tutorStatus! == ' المرضعة')) {
+            addressCount[contract.childAddress]!['fefasfa'] = currentFa + 1;
+          } else if (contract.tutorStatus != null && contract.tutorStatus!.isNotEmpty &&
+              (contract.tutorStatus! == 'Embarazada y lactante' || contract.tutorStatus! == 'Enceinte et allaitante' || contract.tutorStatus! == 'الحامل و المرضعة ')){
+            addressCount[contract.childAddress]!['fefasfea'] = currentFea + 1;
+          }
         } else {
           int currentChilds = addressCount[contract.childAddress]!['childs']!;
           int currentChildMAS = addressCount[contract.childAddress]!['childsMAS']!;
@@ -76,7 +99,10 @@ class FirestoreRepository {
             childs: data['childs']!,
             childsMAS: data['childsMAS']!,
             childsMAM: data['childsMAM']!,
-            childsPN: data['childsPN']!
+            childsPN: data['childsPN']!,
+            fefasfe: data['fefasfe']!,
+            fefasfa: data['fefasfa']!,
+            fefasfea: data['fefasfea']!
         );
       }).toList();
 
