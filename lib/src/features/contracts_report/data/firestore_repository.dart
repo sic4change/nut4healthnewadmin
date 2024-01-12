@@ -242,7 +242,12 @@ class FirestoreRepository {
           addressAndAgeCount.putIfAbsent(
               key,
                   () => {
-                'records': 0, 'male': 0, 'female': 0,
+                    'records': 0,
+                    'male': 0,
+                    'female': 0,
+                    'malemas': 0,
+                    'malemam': 0,
+                    'malepn': 0,
               });
         }
       }
@@ -268,6 +273,27 @@ class FirestoreRepository {
           int currentFemale = addressAndAgeCount[key]!['female']!;
           if (contract.sex == 'M') {
             addressAndAgeCount[key]!['male'] = currentMale + 1;
+            int currentMaleMas = addressAndAgeCount[key]!['malemas']!;
+            int currentMaleMam = addressAndAgeCount[key]!['malemam']!;
+            int currentMalePn = addressAndAgeCount[key]!['malepn']!;
+            if ((contract.armCircumferenceMedical != 0 &&
+                contract.armCircumferenceMedical! >= 12.5) ||
+                (contract.armCircunference != 0 &&
+                    contract.armCircunference! >= 12.5)) {
+              addressAndAgeCount[key]!['malepn'] = currentMalePn + 1;
+            } else if ((contract.armCircumferenceMedical != 0 &&
+                contract.armCircumferenceMedical! >= 11.5 &&
+                contract.armCircumferenceMedical! <= 12.4) ||
+                (contract.armCircunference != 0 &&
+                    contract.armCircunference! >= 11.5 &&
+                    contract.armCircunference! <= 12.4)) {
+              addressAndAgeCount[key]!['malemam'] = currentMaleMam + 1;
+            } else if ((contract.armCircumferenceMedical != 0 &&
+                contract.armCircumferenceMedical! <= 11.4) ||
+                (contract.armCircunference != 0 &&
+                    contract.armCircunference! <= 11.4)) {
+              addressAndAgeCount[key]!['malemas'] = currentMaleMas + 1;
+            }
           } else if (contract.sex == 'F') {
             addressAndAgeCount[key]!['female'] = currentFemale + 1;
           }
@@ -281,7 +307,10 @@ class FirestoreRepository {
           ageGroup: entry.key.split('_')[1],
           records: data['records']!,
           male: data['male']!,
-          female: data['female']!
+          malemas: data['malemas']!,
+          malemam: data['malemam']!,
+          malepn: data['malepn']!,
+          female: data['female']!,
         );
       }).toList();
 

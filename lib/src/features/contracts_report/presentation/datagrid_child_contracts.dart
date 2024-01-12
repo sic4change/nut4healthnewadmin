@@ -56,7 +56,9 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
   late String selectedLocale;
 
   /// Translate names
-  late String _place, _records, _ageGroup, _male, _female,
+  late String _place, _records, _ageGroup,
+      _male, _malemas, _malemam, _malepn,
+      _female,
       _day, _month, _year,
       _exportXLS, _exportPDF, _total, _contracts;
 
@@ -64,8 +66,11 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
     'Localidad': 200,
     'Edad': 200,
     'Registros': 200,
-    'M': 100,
-    'F': 100,
+    'M': 150,
+    'M MAS': 150,
+    'M MAM': 150,
+    'M PN': 150,
+    'F': 150,
   };
 
   late TextEditingController yearController, monthController, dayController;
@@ -304,6 +309,9 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
         _ageGroup = 'Age';
         _records = 'Records';
         _male = 'M';
+        _malemas = 'M MAS';
+        _malemam = 'M MAM';
+        _malepn = 'M PN';
         _female = 'F';
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
@@ -318,6 +326,9 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
         _ageGroup = 'Edad';
         _records = 'Registros';
         _male = 'M';
+        _malemas = 'M MAS';
+        _malemam = 'M MAM';
+        _malepn = 'M PN';
         _female = 'F';
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
@@ -332,6 +343,9 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
         _ageGroup = 'Âge';
         _records = 'Registres';
         _male = 'M';
+        _malemas = 'M MAS';
+        _malemam = 'M MAM';
+        _malepn = 'M PN';
         _female = 'F';
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
@@ -410,6 +424,42 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
             )
         ),
         GridColumn(
+            columnName: 'M MAS',
+            width: columnWidths['M MAS']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _malemas,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'M MAM',
+            width: columnWidths['M MAM']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _malemam,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'M PN',
+            width: columnWidths['M PN']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _malepn,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
             columnName: 'F',
             width: columnWidths['F']!,
             label: Container(
@@ -436,6 +486,9 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
     _ageGroup = 'Edad';
     _records = 'Registros';
     _male = 'M';
+    _malemas = 'M MAS';
+    _malemam = 'M MAM';
+    _malepn = 'M PN';
     _female = 'F';
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';

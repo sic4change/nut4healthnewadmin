@@ -29,6 +29,9 @@ class ChildInformDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Edad', value: mainInform.ageGroup),
           DataGridCell<int>(columnName: 'Registros', value: mainInform.records),
           DataGridCell<int>(columnName: 'M', value: mainInform.male),
+          DataGridCell<int>(columnName: 'M MAS', value: mainInform.malemas),
+          DataGridCell<int>(columnName: 'M AM', value: mainInform.malemam),
+          DataGridCell<int>(columnName: 'M PN', value: mainInform.malepn),
           DataGridCell<int>(columnName: 'F', value: mainInform.female),
         ]);
       }).toList();
@@ -79,6 +82,21 @@ class ChildInformDataGridSource extends DataGridSource {
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[4].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[5].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[6].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[7].value.toString()),
       ),
     ]);
   }
