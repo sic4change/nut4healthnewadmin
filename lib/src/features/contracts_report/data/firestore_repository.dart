@@ -43,8 +43,6 @@ class FirestoreRepository {
     return watchContracts(day, month, year).map((contracts) {
       Map<String, Map<String, int>> addressCount = {};
 
-
-
       for (var contract in contracts) {
         String key = contract.childAddress!.toUpperCase().trim();
         addressCount.putIfAbsent(
@@ -244,7 +242,7 @@ class FirestoreRepository {
           addressAndAgeCount.putIfAbsent(
               key,
                   () => {
-                'records': 0,
+                'records': 0, 'male': 0, 'female': 0,
               });
         }
       }
@@ -266,6 +264,13 @@ class FirestoreRepository {
         if (!contract.code!.endsWith('-99')) {
           int currentRecord = addressAndAgeCount[key]!['records']!;
           addressAndAgeCount[key]!['records'] = currentRecord + 1;
+          int currentMale = addressAndAgeCount[key]!['male']!;
+          int currentFemale = addressAndAgeCount[key]!['female']!;
+          if (contract.sex == 'M') {
+            addressAndAgeCount[key]!['male'] = currentMale + 1;
+          } else {
+            addressAndAgeCount[key]!['female'] = currentFemale + 1;
+          }
         }
       }
 
@@ -275,6 +280,8 @@ class FirestoreRepository {
           place: entry.key.split('_')[0],
           ageGroup: entry.key.split('_')[1],
           records: data['records']!,
+          male: data['male']!,
+          female: data['female']!
         );
       }).toList();
 
