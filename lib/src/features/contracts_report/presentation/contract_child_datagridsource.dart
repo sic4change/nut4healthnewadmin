@@ -28,8 +28,8 @@ class ChildInformDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Localidad', value: mainInform.place),
           DataGridCell<String>(columnName: 'Edad', value: mainInform.ageGroup),
           DataGridCell<int>(columnName: 'Registros', value: mainInform.records),
-          DataGridCell<int>(columnName: 'M', value: mainInform.records),
-          DataGridCell<int>(columnName: 'F', value: mainInform.records),
+          DataGridCell<int>(columnName: 'M', value: mainInform.male),
+          DataGridCell<int>(columnName: 'F', value: mainInform.female),
         ]);
       }).toList();
     }

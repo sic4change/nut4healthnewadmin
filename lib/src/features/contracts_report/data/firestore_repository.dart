@@ -237,7 +237,7 @@ class FirestoreRepository {
       Map<String, Map<String, int>> addressAndAgeCount = {};
 
       for (var contract in contracts) {
-        for (String ageGroup in ['6 - 23', '24 - 59']) {
+        for (String ageGroup in ['6 - 23 (m)', '24 - 59 (m)']) {
           String key = '${contract.childAddress!.toUpperCase().trim()}_$ageGroup';
           addressAndAgeCount.putIfAbsent(
               key,
@@ -254,9 +254,9 @@ class FirestoreRepository {
         if (ageInMonths <= 2) {
           continue;
         } else if (ageInMonths <= 23) {
-          ageGroup = "6 - 23";
+          ageGroup = "6 - 23 (m)";
         } else {
-          ageGroup = "24 - 59";
+          ageGroup = "24 - 59 (m)";
         }
 
         String key = '${contract.childAddress!.toUpperCase().trim()}_$ageGroup';
@@ -268,7 +268,7 @@ class FirestoreRepository {
           int currentFemale = addressAndAgeCount[key]!['female']!;
           if (contract.sex == 'M') {
             addressAndAgeCount[key]!['male'] = currentMale + 1;
-          } else {
+          } else if (contract.sex == 'F') {
             addressAndAgeCount[key]!['female'] = currentFemale + 1;
           }
         }

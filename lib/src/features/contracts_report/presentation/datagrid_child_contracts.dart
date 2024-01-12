@@ -31,7 +31,7 @@ import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column, Row, Border;
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import 'contracts_screen_controller.dart';
+import 'contracts_child_screen_controller.dart';
 
 /// Render contract data grid
 class Mauritane2024DailyContractChildDataGrid extends LocalizationSampleView {
@@ -62,7 +62,7 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
 
   late Map<String, double> columnWidths = {
     'Localidad': 200,
-    'Edad(meses)': 200,
+    'Edad': 200,
     'Registros': 200,
     'M': 100,
     'F': 100,
@@ -83,7 +83,7 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
     );
   }
 
-  _saveMainInforms(AsyncValue<List<ChildInform>>? childInforms) {
+  _saveChildInforms(AsyncValue<List<ChildInform>>? childInforms) {
     if (childInforms == null) {
       childInformDataGridSource.setChildInforms(List.empty());
     } else {
@@ -301,7 +301,7 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
     switch (selectedLocale) {
       case 'en_US':
         _place = 'Location';
-        _ageGroup = 'Age(months)';
+        _ageGroup = 'Age';
         _records = 'Records';
         _male = 'M';
         _female = 'F';
@@ -315,7 +315,7 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
         break;
       case 'es_ES':
         _place = 'Localidad';
-        _ageGroup = 'Edad(meses)';
+        _ageGroup = 'Edad';
         _records = 'Registros';
         _male = 'M';
         _female = 'F';
@@ -329,7 +329,7 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
         break;
       case 'fr_FR':
         _place = 'Localité';
-        _ageGroup = 'Âge(mois)';
+        _ageGroup = 'Âge';
         _records = 'Registres';
         _male = 'M';
         _female = 'F';
@@ -375,8 +375,8 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
               ),
             )),
         GridColumn(
-            width: columnWidths['Edad(meses)']!,
-            columnName: 'Edad(meses)',
+            width: columnWidths['Edad']!,
+            columnName: 'Edad',
             label: Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(8.0),
@@ -433,7 +433,7 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
     selectedLocale = model.locale.toString();
 
     _place = 'Localidad';
-    _ageGroup = 'Edad(meses)';
+    _ageGroup = 'Edad';
     _records = 'Registros';
     _male = 'M';
     _female = 'F';
@@ -469,7 +469,7 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
     return Consumer(
         builder: (context, ref, child) {
           ref.listen<AsyncValue>(
-            contractsScreenControllerProvider,
+            contractschildScreenControllerProvider,
                 (_, state) => {
             },
           );
@@ -479,7 +479,7 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
           childInformsAsyncValue = ref.watch(childInformMauritane2024StreamProvider(tuple3));
 
           if (childInformsAsyncValue.value != null) {
-            _saveMainInforms(childInformsAsyncValue);
+            _saveChildInforms(childInformsAsyncValue);
           }
 
           return _buildView(childInformsAsyncValue);
