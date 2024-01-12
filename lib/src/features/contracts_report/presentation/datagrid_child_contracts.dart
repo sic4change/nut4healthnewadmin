@@ -58,7 +58,7 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
   /// Translate names
   late String _place, _records, _ageGroup,
       _male, _malemas, _malemam, _malepn,
-      _female,
+      _female, _femalemas, _femalemam, _femalepn,
       _day, _month, _year,
       _exportXLS, _exportPDF, _total, _contracts;
 
@@ -71,6 +71,9 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
     'M MAM': 150,
     'M PN': 150,
     'F': 150,
+    'F MAS': 150,
+    'F MAM': 150,
+    'F PN': 150,
   };
 
   late TextEditingController yearController, monthController, dayController;
@@ -187,7 +190,7 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
 
     Future<void> exportDataGridToPdf() async {
       final ByteData data = await rootBundle.load('images/nut_logo.jpg');
-      final PdfDocument document = _key.currentState!.exportToPdfDocumentLandscape(
+      final PdfDocument document = _key.currentState!.exportToPdfDocument(
           cellExport: (DataGridCellPdfExportDetails details) {},
           headerFooterExport: (DataGridPdfHeaderFooterExportDetails details) {
             final double width = details.pdfPage.getClientSize().width;
@@ -313,6 +316,9 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
         _malemam = 'M MAM';
         _malepn = 'M PN';
         _female = 'F';
+        _femalemas = 'F MAS';
+        _femalemam = 'F MAM';
+        _femalepn = 'F PN';
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
         _total = 'Total Diagnosis';
@@ -330,6 +336,9 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
         _malemam = 'M MAM';
         _malepn = 'M PN';
         _female = 'F';
+        _femalemas = 'F MAS';
+        _femalemam = 'F MAM';
+        _femalepn = 'F PN';
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
         _total = 'Diagnósticos totales';
@@ -347,6 +356,9 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
         _malemam = 'M MAM';
         _malepn = 'M PN';
         _female = 'F';
+        _femalemas = 'F MAS';
+        _femalemam = 'F MAM';
+        _femalepn = 'F PN';
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
         _total = 'Total des diagnostics';
@@ -471,6 +483,42 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
               ),
             )
         ),
+        GridColumn(
+            columnName: 'F MAS',
+            width: columnWidths['F MAS']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _femalemas,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'F MAM',
+            width: columnWidths['F MAM']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _femalemam,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'F PN',
+            width: columnWidths['F PN']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _femalepn,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
       ],
     );
   }
@@ -490,6 +538,9 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
     _malemam = 'M MAM';
     _malepn = 'M PN';
     _female = 'F';
+    _femalemas = 'F MAS';
+    _femalemam = 'F MAM';
+    _femalepn = 'F PN';
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';
     _total = 'Diagnósticos totales';

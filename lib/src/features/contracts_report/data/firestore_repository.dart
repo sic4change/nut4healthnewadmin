@@ -248,6 +248,9 @@ class FirestoreRepository {
                     'malemas': 0,
                     'malemam': 0,
                     'malepn': 0,
+                    'femalemas': 0,
+                    'femalemam': 0,
+                    'femalepn': 0,
               });
         }
       }
@@ -296,6 +299,27 @@ class FirestoreRepository {
             }
           } else if (contract.sex == 'F') {
             addressAndAgeCount[key]!['female'] = currentFemale + 1;
+            int currentFemaleMas = addressAndAgeCount[key]!['femalemas']!;
+            int currentFemaleMam = addressAndAgeCount[key]!['femalemam']!;
+            int currentFemalePn = addressAndAgeCount[key]!['femalepn']!;
+            if ((contract.armCircumferenceMedical != 0 &&
+                contract.armCircumferenceMedical! >= 12.5) ||
+                (contract.armCircunference != 0 &&
+                    contract.armCircunference! >= 12.5)) {
+              addressAndAgeCount[key]!['femalepn'] = currentFemalePn + 1;
+            } else if ((contract.armCircumferenceMedical != 0 &&
+                contract.armCircumferenceMedical! >= 11.5 &&
+                contract.armCircumferenceMedical! <= 12.4) ||
+                (contract.armCircunference != 0 &&
+                    contract.armCircunference! >= 11.5 &&
+                    contract.armCircunference! <= 12.4)) {
+              addressAndAgeCount[key]!['femalemam'] = currentFemaleMam + 1;
+            } else if ((contract.armCircumferenceMedical != 0 &&
+                contract.armCircumferenceMedical! <= 11.4) ||
+                (contract.armCircunference != 0 &&
+                    contract.armCircunference! <= 11.4)) {
+              addressAndAgeCount[key]!['femalemas'] = currentFemaleMas + 1;
+            }
           }
         }
       }
@@ -311,6 +335,9 @@ class FirestoreRepository {
           malemam: data['malemam']!,
           malepn: data['malepn']!,
           female: data['female']!,
+          femalemas: data['femalemas']!,
+          femalemam: data['femalemam']!,
+          femalepn: data['femalepn']!,
         );
       }).toList();
 

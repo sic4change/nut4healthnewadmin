@@ -14,6 +14,9 @@ class ChildInform extends Equatable {
     required this.malemam,
     required this.malepn,
     required this.female,
+    required this.femalemas,
+    required this.femalemam,
+    required this.femalepn,
   });
 
   final String place;
@@ -24,6 +27,9 @@ class ChildInform extends Equatable {
   final int malemam;
   final int malepn;
   final int female;
+  final int femalemas;
+  final int femalemam;
+  final int femalepn;
 
   @override
   List<Object> get props => [
@@ -35,6 +41,9 @@ class ChildInform extends Equatable {
     malemam ?? 0,
     malepn ?? 0,
     female ?? 0,
+    femalemas ?? 0,
+    femalemam ?? 0,
+    femalepn ?? 0,
   ];
 
   @override
@@ -53,6 +62,9 @@ class ChildInform extends Equatable {
     final malemam = data['malemam'] ?? 0;
     final malepn = data['malepn'] ?? 0;
     final female = data['female'] ?? 0;
+    final femalemas = data['femalemas'] ?? 0;
+    final femalemam = data['femalemam'] ?? 0;
+    final femalepn = data['femalepn'] ?? 0;
 
     return ChildInform(
       place: place,
@@ -63,6 +75,9 @@ class ChildInform extends Equatable {
       malemam: malemam,
       malepn: malepn,
       female: female,
+      femalemas: femalemas,
+      femalemam: femalemam,
+      femalepn: femalepn,
     );
   }
 
@@ -76,6 +91,9 @@ class ChildInform extends Equatable {
       'malemam' : malemam,
       'malepn': malepn,
       'female': female,
+      'femalemas' : femalemas,
+      'femalemam' : femalemam,
+      'femalepn': femalepn,
     };
   }
 

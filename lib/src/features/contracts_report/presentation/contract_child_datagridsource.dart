@@ -30,9 +30,12 @@ class ChildInformDataGridSource extends DataGridSource {
           DataGridCell<int>(columnName: 'Registros', value: mainInform.records),
           DataGridCell<int>(columnName: 'M', value: mainInform.male),
           DataGridCell<int>(columnName: 'M MAS', value: mainInform.malemas),
-          DataGridCell<int>(columnName: 'M AM', value: mainInform.malemam),
+          DataGridCell<int>(columnName: 'M MAM', value: mainInform.malemam),
           DataGridCell<int>(columnName: 'M PN', value: mainInform.malepn),
           DataGridCell<int>(columnName: 'F', value: mainInform.female),
+          DataGridCell<int>(columnName: 'F MAS', value: mainInform.femalemas),
+          DataGridCell<int>(columnName: 'F MAM', value: mainInform.femalemam),
+          DataGridCell<int>(columnName: 'F PN', value: mainInform.femalepn),
         ]);
       }).toList();
     }
@@ -97,6 +100,21 @@ class ChildInformDataGridSource extends DataGridSource {
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[7].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[8].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[9].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[10].value.toString()),
       ),
     ]);
   }
