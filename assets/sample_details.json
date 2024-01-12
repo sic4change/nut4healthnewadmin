@@ -313,8 +313,20 @@
               "codeLink": ""
             }
           ]
+        },
+        {
+          "type": "child",
+          "title": "Diagnósticos niños/as diarios Mauritania 2024",
+          "displayType": "tab",
+          "subItems": [
+            {
+              "type": "sample",
+              "title": "Diagnósticos niños/as diarios Mauritania 2024",
+              "key": "diagnosis_childs_mauritane_2024",
+              "codeLink": ""
+            }
+          ]
         }
-
       ]
     }
   ]
