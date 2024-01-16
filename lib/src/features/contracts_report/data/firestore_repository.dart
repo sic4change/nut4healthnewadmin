@@ -92,23 +92,12 @@ class FirestoreRepository {
                   contract.tutorStatus! == 'Enceinte' ||
                   contract.tutorStatus! == 'حامل')) {
             addressCount[key]!['fefasfe'] = currentFe + 1;
-            if ((contract.armCircumferenceMedical != 0 &&
-                    contract.armCircumferenceMedical! >= 21.0) ||
-                (contract.armCircunference != 0 &&
-                    contract.armCircunference! >= 21.0)) {
+            if (contract.percentage! < 50) {
               addressCount[key]!['fefasfepn'] = currentFePn + 1;
-            } else if ((contract.armCircumferenceMedical != 0 &&
-                    contract.armCircumferenceMedical! >= 18.0 &&
-                    contract.armCircumferenceMedical! <= 20.9) ||
-                (contract.armCircunference != 0 &&
-                    contract.armCircunference! >= 18.0 &&
-                    contract.armCircunference! <= 20.9)) {
+            } else if (contract.percentage! == 50) {
               addressCount[key]!['fefasfemam'] =
                   currentFeMam + 1;
-            } else if ((contract.armCircumferenceMedical != 0 &&
-                    contract.armCircumferenceMedical! <= 17.9) ||
-                (contract.armCircunference != 0 &&
-                    contract.armCircunference! <= 17.9)) {
+            } else if (contract.percentage! > 50) {
               addressCount[key]!['fefasfemas'] = currentFeMas + 1;
             }
           } else if (contract.tutorStatus != null &&
@@ -117,23 +106,12 @@ class FirestoreRepository {
                   contract.tutorStatus! == 'Allaitante' ||
                   contract.tutorStatus! == ' المرضعة')) {
             addressCount[key]!['fefasfa'] = currentFa + 1;
-            if ((contract.armCircumferenceMedical != 0 &&
-                    contract.armCircumferenceMedical! >= 21.0) ||
-                (contract.armCircunference != 0 &&
-                    contract.armCircunference! >= 21.0)) {
+            if (contract.percentage! < 50) {
               addressCount[key]!['fefasfapn'] = currentFaPn + 1;
-            } else if ((contract.armCircumferenceMedical != 0 &&
-                    contract.armCircumferenceMedical! >= 18.0 &&
-                    contract.armCircumferenceMedical! <= 20.9) ||
-                (contract.armCircunference != 0 &&
-                    contract.armCircunference! >= 18.0 &&
-                    contract.armCircunference! <= 20.9)) {
+            } else if (contract.percentage! == 50) {
               addressCount[key]!['fefasfamam'] =
                   currentFaMam + 1;
-            } else if ((contract.armCircumferenceMedical != 0 &&
-                    contract.armCircumferenceMedical! <= 17.9) ||
-                (contract.armCircunference != 0 &&
-                    contract.armCircunference! <= 17.9)) {
+            } else if (contract.percentage! > 50) {
               addressCount[key]!['fefasfamas'] = currentFaMas + 1;
             }
           } else if (contract.tutorStatus != null &&
@@ -142,22 +120,11 @@ class FirestoreRepository {
                   contract.tutorStatus! == 'Enceinte et allaitante' ||
                   contract.tutorStatus! == 'الحامل و المرضعة ')) {
             addressCount[key]!['fefasfea'] = currentFea + 1;
-            if ((contract.armCircumferenceMedical != 0 &&
-                    contract.armCircumferenceMedical! >= 21.0) ||
-                (contract.armCircunference != 0 &&
-                    contract.armCircunference! >= 21.0)) {
+            if (contract.percentage! < 50) {
               addressCount[key]!['fefasfeapn'] = currentFeaPn + 1;
-            } else if ((contract.armCircumferenceMedical != 0 &&
-                    contract.armCircumferenceMedical! >= 18.0 &&
-                    contract.armCircumferenceMedical! <= 20.9) ||
-                (contract.armCircunference != 0 &&
-                    contract.armCircunference! >= 18.0 &&
-                    contract.armCircunference! <= 20.9)) {
+            } else if (contract.percentage! == 50) {
               addressCount[key]!['fefasfeamam'] = currentFeaMam + 1;
-            } else if ((contract.armCircumferenceMedical != 0 &&
-                    contract.armCircumferenceMedical! <= 17.9) ||
-                (contract.armCircunference != 0 &&
-                    contract.armCircunference! <= 17.9)) {
+            } else if (contract.percentage! > 50) {
               addressCount[key]!['fefasfeamas'] = currentFeaMas + 1;
             }
           }
@@ -167,22 +134,11 @@ class FirestoreRepository {
           int currentChildMAM = addressCount[key]!['childsMAM']!;
           int currentChildPN = addressCount[key]!['childsPN']!;
           addressCount[key]!['childs'] = currentChilds + 1;
-          if ((contract.armCircumferenceMedical != 0 &&
-                  contract.armCircumferenceMedical! >= 12.5) ||
-              (contract.armCircunference != 0 &&
-                  contract.armCircunference! >= 12.5)) {
+          if (contract.percentage! < 50) {
             addressCount[key]!['childsPN'] = currentChildPN + 1;
-          } else if ((contract.armCircumferenceMedical != 0 &&
-                  contract.armCircumferenceMedical! >= 11.5 &&
-                  contract.armCircumferenceMedical! <= 12.4) ||
-              (contract.armCircunference != 0 &&
-                  contract.armCircunference! >= 11.5 &&
-                  contract.armCircunference! <= 12.4)) {
-            addressCount[key]!['childMAM'] = currentChildMAM + 1;
-          } else if ((contract.armCircumferenceMedical != 0 &&
-                  contract.armCircumferenceMedical! <= 11.4) ||
-              (contract.armCircunference != 0 &&
-                  contract.armCircunference! <= 11.4)) {
+          } else if (contract.percentage! == 50) {
+            addressCount[key]!['childsMAM'] = currentChildMAM + 1;
+          } else if (contract.percentage! > 50) {
             addressCount[key]!['childsMAS'] = currentChildMAS + 1;
           }
         }
@@ -279,22 +235,11 @@ class FirestoreRepository {
             int currentMaleMas = addressAndAgeCount[key]!['malemas']!;
             int currentMaleMam = addressAndAgeCount[key]!['malemam']!;
             int currentMalePn = addressAndAgeCount[key]!['malepn']!;
-            if ((contract.armCircumferenceMedical != 0 &&
-                contract.armCircumferenceMedical! >= 12.5) ||
-                (contract.armCircunference != 0 &&
-                    contract.armCircunference! >= 12.5)) {
+            if (contract.percentage! < 50) {
               addressAndAgeCount[key]!['malepn'] = currentMalePn + 1;
-            } else if ((contract.armCircumferenceMedical != 0 &&
-                contract.armCircumferenceMedical! >= 11.5 &&
-                contract.armCircumferenceMedical! <= 12.4) ||
-                (contract.armCircunference != 0 &&
-                    contract.armCircunference! >= 11.5 &&
-                    contract.armCircunference! <= 12.4)) {
+            } else if (contract.percentage! == 50) {
               addressAndAgeCount[key]!['malemam'] = currentMaleMam + 1;
-            } else if ((contract.armCircumferenceMedical != 0 &&
-                contract.armCircumferenceMedical! <= 11.4) ||
-                (contract.armCircunference != 0 &&
-                    contract.armCircunference! <= 11.4)) {
+            } else if (contract.percentage! > 50) {
               addressAndAgeCount[key]!['malemas'] = currentMaleMas + 1;
             }
           } else if (contract.sex == 'F') {
@@ -302,22 +247,11 @@ class FirestoreRepository {
             int currentFemaleMas = addressAndAgeCount[key]!['femalemas']!;
             int currentFemaleMam = addressAndAgeCount[key]!['femalemam']!;
             int currentFemalePn = addressAndAgeCount[key]!['femalepn']!;
-            if ((contract.armCircumferenceMedical != 0 &&
-                contract.armCircumferenceMedical! >= 12.5) ||
-                (contract.armCircunference != 0 &&
-                    contract.armCircunference! >= 12.5)) {
+            if (contract.percentage! < 50) {
               addressAndAgeCount[key]!['femalepn'] = currentFemalePn + 1;
-            } else if ((contract.armCircumferenceMedical != 0 &&
-                contract.armCircumferenceMedical! >= 11.5 &&
-                contract.armCircumferenceMedical! <= 12.4) ||
-                (contract.armCircunference != 0 &&
-                    contract.armCircunference! >= 11.5 &&
-                    contract.armCircunference! <= 12.4)) {
+            } else if (contract.percentage! == 50) {
               addressAndAgeCount[key]!['femalemam'] = currentFemaleMam + 1;
-            } else if ((contract.armCircumferenceMedical != 0 &&
-                contract.armCircumferenceMedical! <= 11.4) ||
-                (contract.armCircunference != 0 &&
-                    contract.armCircunference! <= 11.4)) {
+            } else if (contract.percentage! > 50) {
               addressAndAgeCount[key]!['femalemas'] = currentFemaleMas + 1;
             }
           }
