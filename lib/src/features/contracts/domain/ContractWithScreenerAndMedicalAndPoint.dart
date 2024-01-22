@@ -4,7 +4,7 @@ import '../../points/domain/point.dart';
 import 'contract.dart';
 
 class ContractWithScreenerAndMedicalAndPoint {
-  final Contract contract;
+  Contract contract;
   final User? screener;
   final User? medical;
   final Point? point;

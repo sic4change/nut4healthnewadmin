@@ -590,8 +590,11 @@ class _ContractDataGridState extends LocalizationSampleViewState {
       key: _key,
       source: contractDataGridSource,
       rowsPerPage: _rowsPerPage,
+      allowEditing: true,
       tableSummaryRows: _getTableSummaryRows(),
       allowColumnsResizing: true,
+      selectionMode: SelectionMode.single,
+      navigationMode: GridNavigationMode.cell,
       onColumnResizeUpdate: (ColumnResizeUpdateDetails details) {
         setState(() {
           columnWidths[details.column.columnName] = details.width;
@@ -888,6 +891,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         GridColumn(
           columnName: 'Lugar',
           width: columnWidths['Lugar']!,
+          allowEditing: true,
           label: Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.all(8.0),

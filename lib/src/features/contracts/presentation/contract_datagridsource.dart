@@ -1,8 +1,11 @@
 /// Dart import
 import 'dart:math' as math;
 
+import 'package:adminnut4health/src/features/contracts/domain/contract.dart';
+import 'package:adminnut4health/src/features/contracts/presentation/contracts_screen_controller.dart';
 /// Packages import
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// DataGrid import
 // ignore: depend_on_referenced_packages
@@ -11,6 +14,12 @@ import '../domain/ContractWithScreenerAndMedicalAndPoint.dart';
 
 /// Set contracts's data collection to data grid source.
 class ContractDataGridSource extends DataGridSource {
+
+  dynamic newCellValue;
+
+  /// Helps to control the editable text in the [TextField] widget.
+  TextEditingController editingController = TextEditingController();
+
   /// Creates the contract data source class with required details.
   ContractDataGridSource(List<ContractWithScreenerAndMedicalAndPoint> contractData) {
     _contracts = contractData;
@@ -32,7 +41,7 @@ class ContractDataGridSource extends DataGridSource {
                 } else if (contractWithScreenerAndMedicalAndPoint.contract.percentage == 50) {
                   desnutritionValue = 'Desnutrición Aguda Moderada (MAM)';
                 } else {
-                  desnutritionValue =  'Desnutrición Aguda Severa (SAM)';
+                  desnutritionValue = 'Desnutrición Aguda Severa (SAM)';
                 }
         return DataGridRow(cells: <DataGridCell>[
           DataGridCell<String>(columnName: 'Id', value: contractWithScreenerAndMedicalAndPoint.contract.contractId),
@@ -353,7 +362,23 @@ class ContractDataGridSource extends DataGridSource {
         child: Text(row.getCells()[19].value.toString()),
       ),
       _buildPhone(row.getCells()[20].value.toString()),
-      _buildPoint(row.getCells()[21].value.toString()),
+      //_buildPoint(row.getCells()[21].value.toString()),
+      if (row.getCells()[21].columnName == 'Lugar')
+        Consumer(
+          builder: (context, ref, _) {
+            final contractsController = ref.watch(contractsScreenControllerProvider.notifier);
+            return TextField(
+              controller: TextEditingController(text: row.getCells()[21].value.toString()),
+              onSubmitted: (newValue) async {
+                await contractsController.updateLocalizationContract(row.getCells()[0].value.toString(), newValue);
+              },
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                contentPadding: EdgeInsets.all(8.0),
+              ),
+            );
+          }
+        ),
       _buildDate(row.getCells()[22].value.toString()),
       _buildPoint(row.getCells()[23].value.toString()),
       Container(
@@ -381,6 +406,26 @@ class ContractDataGridSource extends DataGridSource {
       ),
     ]);
   }
+
+  @override
+  Future<void> onCellSubmit(DataGridRow row, RowColumnIndex rowColumnIndex, GridColumn column) async {
+    if (column.columnName == 'Lugar') {
+      final int rowIndex = rowColumnIndex.rowIndex - 1; // Ajusta el índice si es necesario
+      final String newValue = row.getCells()[23].value.toString(); // Obtiene el nuevo valor
+
+      var contract = _contracts![rowIndex];
+      var updatedContract = contract.contract.copyWith(childAddress: newValue);
+      contract.contract = updatedContract;
+
+      // Actualiza la lista de contratos
+      _contracts![rowIndex] = contract;
+
+      // Reconstruye las filas de datos para reflejar el cambio
+      buildDataGridRows();
+      notifyListeners();
+    }
+  }
+
 
   setContracts(List<ContractWithScreenerAndMedicalAndPoint>? contractData) {
     _contracts = contractData;

@@ -35,6 +35,12 @@ class FirestoreRepository {
   const FirestoreRepository(this._dataSource);
   final FirestoreDataSource _dataSource;
 
+  Future<Contract> fetchContract({required ContractID contractId}) =>
+      _dataSource.fetchDocument(
+        path: FirestorePath.contract(contractId),
+        builder: (data, documentId) => Contract.fromMap(data, documentId),
+      );
+
   Future<void> setContract({required Contract contract}) =>
       _dataSource.setData(
         path: FirestorePath.contracts(),
@@ -48,6 +54,12 @@ class FirestoreRepository {
   Future<void> updateContract({required Contract contract}) async {
     await _dataSource.updateData(path: FirestorePath.contract(contract.contractId), data: contract.toMap());
   }
+
+  Future<void> updateContractChildAddress({required String contractId, required String newChildAddress}) async {
+    String path = FirestorePath.contract(contractId);
+    await _dataSource.updateData(path: path, data: {'childAddress': newChildAddress});
+  }
+
 
   Future<void> addContract({required Contract contract}) async {
     await _dataSource.addData(path: FirestorePath.contracts(), data: contract.toMap());

@@ -186,5 +186,45 @@ class Contract extends Equatable {
     };
   }
 
+  Contract copyWith({
+    String? childAddress,
+  }) {
+    return Contract(
+      contractId: contractId,
+      status: status,
+      code: code,
+      isFEFA: isFEFA,
+      point: point,
+      screenerId: screenerId,
+      medicalId: medicalId,
+      armCircunference: armCircunference,
+      armCircumferenceMedical: armCircumferenceMedical,
+      weight: weight,
+      height: height,
+      childName: childName,
+      childSurname: childSurname,
+      sex: sex,
+      childBirthdate: childBirthdate,
+      childDNI: childDNI,
+      childTutor: childTutor,
+      tutorBirthdate: tutorBirthdate,
+      tutorDNI: tutorDNI,
+      tutorStatus: tutorStatus,
+      weeks: weeks,
+      childMinor: childMinor,
+      childPhoneContract: childPhoneContract,
+      childAddress: childAddress ?? this.childAddress,
+      creationDate: creationDate,
+      medicalDate: medicalDate,
+      smsSent: smsSent,
+      duration: duration,
+      percentage: percentage,
+      transactionHash: transactionHash,
+      transactionValidateHash: transactionValidateHash,
+      chefValidation: chefValidation,
+      regionalValidation: regionalValidation,
+    );
+  }
+
 }
 

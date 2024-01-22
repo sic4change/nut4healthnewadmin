@@ -28,6 +28,20 @@ class ContractsScreenController extends AutoDisposeAsyncNotifier<void> {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() => database.updateContract(contract: contract));
   }
+
+  Future<void> updateLocalizationContract(String contractId, String localization) async {
+    try {
+      final database = ref.read(databaseProvider);
+      state = const AsyncLoading();
+      var contract = await AsyncValue.guard(() => database.fetchContract(contractId: contractId));
+      if (contract.hasValue) {
+        state = await AsyncValue.guard(() => database.updateContractChildAddress(contractId: contractId, newChildAddress: localization));
+      }
+    } catch (e) {
+      print('Error updating localization: $e');
+    }
+
+  }
 }
 
 final contractsScreenControllerProvider =
