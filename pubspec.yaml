@@ -14,6 +14,7 @@ dependencies:
   firebase_storage: ^11.2.4
   flutter:
     sdk: flutter
+  tuple: ^2.0.0
   flutter_riverpod: ^2.3.6
   flutter_svg: ^2.0.7
   go_router: ^5.2.4

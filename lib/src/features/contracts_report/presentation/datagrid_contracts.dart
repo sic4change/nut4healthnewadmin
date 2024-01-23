@@ -14,6 +14,7 @@ import 'dart:html' show Blob, AnchorElement, Url;
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import 'package:syncfusion_flutter_core/theme.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:tuple/tuple.dart';
 
@@ -55,9 +56,15 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
   /// Selected locale
   late String selectedLocale;
 
+
+  int start = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day).millisecondsSinceEpoch;
+
+  int end = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 23, 59, 59).millisecondsSinceEpoch;
+
+
   /// Translate names
   late String _place, _records, _childs, _childsSAM, _childsMAM, _childsPN,
-      _day, _month, _year,
+      _start, _end,
       _fefas,
       _fefasfe, _fefasfemas, _fefasfemam, _fefasfepn,
       _fefasfa, _fefasfamas, _fefasfamam, _fefasfapn,
@@ -86,7 +93,6 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
     'FEFAS FEA PN': 200,
   };
 
-  late TextEditingController yearController, monthController, dayController;
 
   AsyncValue<List<MainInform>> mainInformsAsyncValue = AsyncValue.data(List.empty());
 
@@ -147,23 +153,19 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
           } else {
           return Column(
               children: <Widget>[
-                Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        _buildHeaderButtons(),
-                        SizedBox(
-                          height: constraint.maxHeight - (dataPagerHeight * 2),
-                          width: constraint.maxWidth,
-                          child: SfDataGridTheme(
-                              data: SfDataGridThemeData(headerColor: Colors.blueAccent),
-                              child: Directionality(
-                                textDirection: TextDirection.ltr,
-                                  child: _buildDataGrid()
-                              )
-                          ),
-                        ),
-                      ],
+                _buildHeaderButtons(),
+                Expanded(
+                  child: Directionality(
+                    textDirection: TextDirection.ltr,
+                    child: SfDataGridTheme(
+                        data: SfDataGridThemeData(headerColor: Colors.blueAccent),
+                        child: Directionality(
+                            textDirection: TextDirection.ltr,
+                            child: _buildDataGrid()
+                        )
                     ),
+                  ),
+                ),
                 Container(
                   height: dataPagerHeight,
                   decoration: BoxDecoration(
@@ -282,16 +284,17 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
     return Directionality(
       textDirection: TextDirection.ltr,
       child: SfDataPager(
-          delegate: mainInformDataGridSource,
-          availableRowsPerPage: const <int>[15, 20, 25],
-          pageCount: (rows.length / _rowsPerPage) + addMorePage,
-          onRowsPerPageChanged: (int? rowsPerPage) {
-            setState(() {
-              _rowsPerPage = rowsPerPage!;
-            });
-          },
+        delegate: mainInformDataGridSource,
+        availableRowsPerPage: const <int>[15, 20, 25],
+        pageCount: (rows.length / _rowsPerPage) + addMorePage,
+        onRowsPerPageChanged: (int? rowsPerPage) {
+          setState(() {
+            _rowsPerPage = rowsPerPage!;
+          });
+        },
       ),
     );
+
   }
 
   List<GridTableSummaryRow> _getTableSummaryRows() {
@@ -341,9 +344,8 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
         _exportPDF = 'Export PDF';
         _total = 'Total Diagnosis';
         _contracts = 'Diagnosis';
-        _day = 'Day';
-        _month = 'Month';
-        _year = 'Year';
+        _start = 'Start';
+        _end = 'End';
         break;
       case 'es_ES':
         _place = 'Localidad';
@@ -369,9 +371,8 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
         _exportPDF = 'Exportar PDF';
         _total = 'Diagnósticos totales';
         _contracts = 'Diagnósticos';
-        _day = 'Día';
-        _month = 'Mes';
-        _year = 'Año';
+        _start = 'Inicio';
+        _end = 'Fin';
         break;
       case 'fr_FR':
         _place = 'Localité';
@@ -397,9 +398,8 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
         _exportPDF = 'Exporter PDF';
         _total = 'Total des diagnostics';
         _contracts = 'Diagnostics';
-        _day = 'Jour';
-        _month = 'Mois';
-        _year = 'Année';
+        _start = 'Début';
+        _end = 'Fin';
         break;
     }
     return SfDataGrid(
@@ -684,32 +684,16 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
     _exportPDF = 'Exportar PDF';
     _total = 'Diagnósticos totales';
     _contracts = 'Diagnósticos';
-    _day = 'Día';
-    _month = 'Mes';
-    _year = 'Año';
+    _start = 'Inicio';
+    _end = 'Fin';
 
-    yearController = TextEditingController();
-    monthController = TextEditingController();
-    dayController = TextEditingController();
-
-    yearController.text = DateTime.now().year.toString();
-    monthController.text = DateTime.now().month.toString();
-    dayController.text = DateTime.now().day.toString();
 
   }
 
 
   @override
   Widget buildSample(BuildContext context) {
-    int day = 0;
-    int month = 0;
-    int year = 0;
 
-    if (dayController.text.isNotEmpty && monthController.text.isNotEmpty && yearController.text.isNotEmpty) {
-      day = int.parse(dayController.text);
-      month = int.parse(monthController.text);
-      year = int.parse(yearController.text);
-    }
     return Consumer(
         builder: (context, ref, child) {
           ref.listen<AsyncValue>(
@@ -718,9 +702,9 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
             },
           );
 
-          Tuple3<int, int, int> tuple3 = Tuple3(day, month, year);
+          Tuple2<int, int> tuple2 = Tuple2(start, end);
 
-          mainInformsAsyncValue = ref.watch(mainInformMauritane2024StreamProvider(tuple3));
+          mainInformsAsyncValue = ref.watch(mainInformMauritane2024StreamProvider(tuple2));
 
           if (mainInformsAsyncValue.value != null) {
             _saveMainInforms(mainInformsAsyncValue);
@@ -732,93 +716,47 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
   }
 
   Widget _buildFilterRow() {
-    final selectedLocale = model.locale.toString();
-    switch (selectedLocale) {
-      case 'en_US':
-        _day = 'Day';
-        _month = 'Month';
-        _year = 'Year';
-        break;
-      case 'es_ES':
-        _day = 'Día';
-        _month = 'Mes';
-        _year = 'Año';
-        break;
-      case 'fr_FR':
-        _day = 'Jour';
-        _month = 'Mois';
-        _year = 'Année';
-        break;
-    }
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
+    return Column(
         children: [
-          SizedBox(
-            width: 150,
-            child: TextField(
-              keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly
-              ],
-              controller: yearController,
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(),
-                labelText: _year,
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 400,
+                child: Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: SfDateRangePicker(
+                    initialSelectedRange: PickerDateRange(
+                      DateTime.fromMillisecondsSinceEpoch(start),
+                      DateTime.fromMillisecondsSinceEpoch(end),),
+                    onSelectionChanged: _onSelectionChanged,
+                    selectionMode: DateRangePickerSelectionMode.range,
+                  ),
+                ),
               ),
-              onChanged: (it) {
-                setState(() {
-                  buildSample(context);
-                });
-              },
-            ),
-          ),
-          const SizedBox(width: 20),
-          SizedBox(
-            width: 150,
-            child: TextField(
-              keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly
-              ],
-              controller: monthController,
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(),
-                labelText: _month,
-              ),
-              onChanged: (it) {
-                setState(() {
-                  buildSample(context);
-                });
-              },
-            ),
-          ),
-          const SizedBox(width: 20),
-          SizedBox(
-            width: 150,
-            child: TextField(
-              keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly
-              ],
-              controller: dayController,
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(),
-                labelText: _day,
-              ),
-              onChanged: (it) {
-                setState(() {
-                  buildSample(context);
-                });
-              },
-            ),
+            ],
           ),
         ],
-      ),
     );
   }
+
+  void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
+    if (args.value is PickerDateRange) {
+      final PickerDateRange range = args.value;
+      final DateTime? startDate = range.startDate;
+      final DateTime? endDate = range.endDate;
+
+      start = startDate!.millisecondsSinceEpoch;
+      if (endDate != null && endDate.millisecondsSinceEpoch > startDate.millisecondsSinceEpoch){
+        end = endDate.millisecondsSinceEpoch;
+        setState(() {
+          _buildLayoutBuilder();
+        });
+      }
+    }
+  }
+
 
 }
 

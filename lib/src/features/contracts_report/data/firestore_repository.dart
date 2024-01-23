@@ -25,22 +25,21 @@ class FirestoreRepository {
   const FirestoreRepository(this._dataSource);
   final FirestoreDataSource _dataSource;
 
-  Stream<List<Contract>> watchContracts(int day, int month, int year) {
+  Stream<List<Contract>> watchContracts(int start, int end) {
     Stream<List<Contract>> contracts = _dataSource.watchCollection(
       path: FirestorePath.contracts(),
       builder: (data, documentId) => Contract.fromMap(data, documentId),
       queryBuilder: (query) {
-        query = query.where('creationDateYear', isEqualTo: year)
-            .where('creationDateMonth', isEqualTo: month)
-            .where('creationDateDay', isEqualTo: day);
+        query = query.where('creationDateMiliseconds', isGreaterThanOrEqualTo: start)
+            .where('creationDateMiliseconds', isLessThanOrEqualTo: end);
         return query;
       },
     );
     return contracts;
   }
 
-  Stream<List<MainInform>> watchMainInform(int day, int month, int year) {
-    return watchContracts(day, month, year).map((contracts) {
+  Stream<List<MainInform>> watchMainInform(int start, int end) {
+    return watchContracts(start, end).map((contracts) {
       Map<String, Map<String, int>> addressCount = {};
 
       for (var contract in contracts) {
@@ -188,8 +187,8 @@ class FirestoreRepository {
   }
 
 
-  Stream<List<ChildInform>> watchChildInform(int day, int month, int year) {
-    return watchContracts(day, month, year).map((contracts) {
+  Stream<List<ChildInform>> watchChildInform(int start, int end) {
+    return watchContracts(start, end).map((contracts) {
       Map<String, Map<String, int>> addressAndAgeCount = {};
 
       for (var contract in contracts) {
@@ -296,32 +295,30 @@ final databaseProvider = Provider<FirestoreRepository>((ref) {
 });
 
 
-final mainInformMauritane2024StreamProvider = StreamProvider.family.autoDispose<List<MainInform>, Tuple3<int, int, int>>((ref, yearMonthDay) {
+final mainInformMauritane2024StreamProvider = StreamProvider.family.autoDispose<List<MainInform>, Tuple2<int, int>>((ref, rangeDate) {
   final user = ref.watch(authStateChangesProvider).value;
   if (user == null) {
     throw AssertionError('User can\'t be null');
   }
 
   final database = ref.watch(databaseProvider);
-  final day = yearMonthDay.item1;
-  final month = yearMonthDay.item2;
-  final year = yearMonthDay.item3;
+  final start = rangeDate.item1;
+  final end = rangeDate.item2;
 
-  return database.watchMainInform(day, month, year);
+  return database.watchMainInform(start, end);
 });
 
-final childInformMauritane2024StreamProvider = StreamProvider.family.autoDispose<List<ChildInform>, Tuple3<int, int, int>>((ref, yearMonthDay) {
+final childInformMauritane2024StreamProvider = StreamProvider.family.autoDispose<List<ChildInform>, Tuple2<int, int>>((ref, range) {
   final user = ref.watch(authStateChangesProvider).value;
   if (user == null) {
     throw AssertionError('User can\'t be null');
   }
 
   final database = ref.watch(databaseProvider);
-  final day = yearMonthDay.item1;
-  final month = yearMonthDay.item2;
-  final year = yearMonthDay.item3;
+  final start = range.item1;
+  final end = range.item2;
 
-  return database.watchChildInform(day, month, year);
+  return database.watchChildInform(start,end);
 });
 
 
