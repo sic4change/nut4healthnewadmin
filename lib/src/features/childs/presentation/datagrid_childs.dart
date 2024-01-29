@@ -171,6 +171,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
   Widget _buildHeaderButtons() {
     Future<void> exportDataGridToExcel() async {
       final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
+          excludeColumns: <String>['Nombre', 'Apellidos', 'Madre, padre o tutor' ],
           cellExport: (DataGridCellExcelExportDetails details) {
 
           });
@@ -182,6 +183,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
     Future<void> exportDataGridToPdf() async {
       final ByteData data = await rootBundle.load('images/nut_logo.jpg');
       final PdfDocument document = _key.currentState!.exportToPdfDocument(
+          excludeColumns: <String>['Nombre', 'Apellidos', 'Madre, padre o tutor' ],
           fitAllColumnsInOnePage: true,
           cellExport: (DataGridCellPdfExportDetails details) {
 
@@ -511,6 +513,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
+            visible: false,
             columnName: 'Nombre',
             width: columnWidths['Nombre']!,
             label: Container(
@@ -523,6 +526,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
+            visible: false,
             columnName: 'Apellidos',
             width: columnWidths['Apellidos']!,
             label: Container(
@@ -607,6 +611,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
+            visible: false,
             columnName: 'Madre, padre o tutor',
             width: columnWidths['Madre, padre o tutor']!,
             label: Container(

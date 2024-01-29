@@ -177,6 +177,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
   Widget _buildHeaderButtons() {
     Future<void> exportDataGridToExcel() async {
       final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
+          excludeColumns: <String>['Nombre', 'Apellidos', 'Vecindario', 'Teléfono', 'Fecha de nacimiento'],
           cellExport: (DataGridCellExcelExportDetails details) {
 
           });
@@ -192,6 +193,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
           cellExport: (DataGridCellPdfExportDetails details) {
 
           },
+          excludeColumns: <String>['Nombre', 'Apellidos', 'Vecindario', 'Teléfono', 'Fecha de nacimiento'],
           headerFooterExport: (DataGridPdfHeaderFooterExportDetails details) {
             final double width = details.pdfPage.getClientSize().width;
             final PdfPageTemplateElement header =
@@ -546,6 +548,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
+            visible: false,
             columnName: 'Nombre',
             width: columnWidths['Nombre']!,
             label: Container(
@@ -558,6 +561,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
+            visible: false,
             columnName: 'Apellidos',
             width: columnWidths['Apellidos']!,
             label: Container(
@@ -582,6 +586,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
+            visible: false,
             columnName: 'Teléfono',
             width: columnWidths['Teléfono']!,
             label: Container(
@@ -594,6 +599,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
+            visible: false,
             columnName: 'Fecha de nacimiento',
             width: columnWidths['Fecha de nacimiento']!,
             label: Container(

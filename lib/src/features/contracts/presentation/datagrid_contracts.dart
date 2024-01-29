@@ -217,7 +217,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
   Widget _buildHeaderButtons() {
     Future<void> exportDataGridToExcel() async {
       final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
-          excludeColumns: ['Id', 'Nombre', 'Apellidos', 'Lugar', 'Madre, Padre o Tutor', 'Contacto'],
+          excludeColumns: ['Id', 'Nombre', 'Apellidos', 'Lugar', 'Madre, Padre o Tutor', 'Contacto', 'FEFA'],
           cellExport: (DataGridCellExcelExportDetails details) {
 
           });
@@ -745,6 +745,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         ),
 
         GridColumn(
+          visible: false,
           columnName: 'Nombre',
           width: columnWidths['Nombre']!,
           label: Container(
@@ -757,6 +758,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
           ),
         ),
         GridColumn(
+          visible: false,
           columnName: 'Apellidos',
           width: columnWidths['Apellidos']!,
           label: Container(
@@ -805,6 +807,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
           ),
         ),
         GridColumn(
+          visible: false,
           columnName: 'Madre, Padre o Tutor',
           width: columnWidths['Madre, Padre o Tutor']!,
           label: Container(
