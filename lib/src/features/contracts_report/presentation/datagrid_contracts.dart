@@ -193,8 +193,12 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
 
   Widget _buildHeaderButtons() {
     Future<void> exportDataGridToExcel() async {
+      //CustomDataGridToExcelConverter excelConverter = CustomDataGridToExcelConverter();
+      //final Workbook workbook = _key.currentState!.exportToExcelWorkbook(converter: excelConverter);
       final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
-          cellExport: (DataGridCellExcelExportDetails details) {});
+        //exportTableSummaries: false,
+          cellExport: (DataGridCellExcelExportDetails details) {
+          });
       final List<int> bytes = workbook.saveAsStream();
       workbook.dispose();
       await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_contracts.xlsx');
@@ -342,7 +346,7 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
         _fefasfeapn = 'FEFAS FEA PN';
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
-        _total = 'Total Diagnosis';
+        _total = 'Total Locations';
         _contracts = 'Diagnosis';
         _start = 'Start';
         _end = 'End';
@@ -369,7 +373,7 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
         _fefasfeapn = 'FEFAS FEA PN';
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
-        _total = 'Diagnósticos totales';
+        _total = 'Localidades totales';
         _contracts = 'Diagnósticos';
         _start = 'Inicio';
         _end = 'Fin';
@@ -396,7 +400,7 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
         _fefasfeapn = 'FEFAS FEA PN';
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
-        _total = 'Total des diagnostics';
+        _total = 'Total des localités';
         _contracts = 'Diagnostics';
         _start = 'Début';
         _end = 'Fin';

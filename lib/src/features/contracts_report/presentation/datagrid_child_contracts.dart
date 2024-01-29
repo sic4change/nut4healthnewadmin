@@ -24,7 +24,7 @@ import '../data/firestore_repository.dart';
 import 'contract_child_datagridsource.dart';
 import 'dart:html' show FileReader;
 
-import '../../../common_widgets/export/save_file_mobile.dart'
+import '../../../common_widgets/export/save_file_moart'
   if (dart.library.html) '../../../common_widgets/export/save_file_web.dart' as helper;
 
 import 'package:syncfusion_flutter_datagrid_export/export.dart';
@@ -181,7 +181,10 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
   Widget _buildHeaderButtons() {
     Future<void> exportDataGridToExcel() async {
       final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
-          cellExport: (DataGridCellExcelExportDetails details) {});
+        //exportTableSummaries: false,
+          cellExport: (DataGridCellExcelExportDetails details) {
+
+          });
       final List<int> bytes = workbook.saveAsStream();
       workbook.dispose();
       await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_contracts.xlsx');
@@ -320,7 +323,7 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
         _femalepn = 'F PN';
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
-        _total = 'Total Diagnosis';
+        _total = 'Total Locations';
         _contracts = 'Diagnosis';
         _start = 'Start';
         _end = 'End';
@@ -339,7 +342,7 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
         _femalepn = 'F PN';
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
-        _total = 'Diagnósticos totales';
+        _total = 'Localidades totales';
         _contracts = 'Diagnósticos';
         _start = 'Inicio';
         _end = 'Fin';
@@ -358,7 +361,7 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
         _femalepn = 'F PN';
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
-        _total = 'Total des diagnostics';
+        _total = 'Total des localités';
         _contracts = 'Diagnostics';
         _start = 'Début';
         _end = 'Fin';
