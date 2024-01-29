@@ -303,12 +303,12 @@
       "subItems": [
         {
           "type": "child",
-          "title": "Diagnósticos diarios Mauritania 2024",
+          "title": "Resultados diagnósticos",
           "displayType": "tab",
           "subItems": [
             {
               "type": "sample",
-              "title": "Diagnósticos diarios Mauritania 2024",
+              "title": "Resultados diagnósticos",
               "key": "diagnosis_mauritane_2024",
               "codeLink": ""
             }
@@ -316,12 +316,12 @@
         },
         {
           "type": "child",
-          "title": "Diagnósticos niños/as diarios Mauritania 2024",
+          "title": "Resultados diagnósticos desagregados según sexo y edad",
           "displayType": "tab",
           "subItems": [
             {
               "type": "sample",
-              "title": "Diagnósticos niños/as diarios Mauritania 2024",
+              "title": "Resultados diagnósticos desagregados según sexo y edad",
               "key": "diagnosis_childs_mauritane_2024",
               "codeLink": ""
             }
