@@ -66,7 +66,7 @@ class FirestoreRepository {
         path: FirestorePath.visits(),
         builder: (data, documentId) => Visit.fromMap(data, documentId),
         queryBuilder: (query) {
-          if (User.currentRole != 'super-admin') {
+          if (User.currentRole != 'super-admin' && User.currentRole != 'donante') {
             query = query.where('chefValidation', isEqualTo: true).where('regionalValidation', isEqualTo: true);
           }
           return query;

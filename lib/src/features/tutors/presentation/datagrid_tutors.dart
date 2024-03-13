@@ -548,7 +548,6 @@ class _TutorDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
-            visible: false,
             columnName: 'Nombre',
             width: columnWidths['Nombre']!,
             label: Container(
@@ -561,7 +560,6 @@ class _TutorDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
-            visible: false,
             columnName: 'Apellidos',
             width: columnWidths['Apellidos']!,
             label: Container(
@@ -586,7 +584,6 @@ class _TutorDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
-            visible: false,
             columnName: 'Teléfono',
             width: columnWidths['Teléfono']!,
             label: Container(
@@ -599,7 +596,6 @@ class _TutorDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
-            visible: false,
             columnName: 'Fecha de nacimiento',
             width: columnWidths['Fecha de nacimiento']!,
             label: Container(

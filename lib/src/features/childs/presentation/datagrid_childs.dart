@@ -513,7 +513,6 @@ class _ChildDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
-            visible: false,
             columnName: 'Nombre',
             width: columnWidths['Nombre']!,
             label: Container(
@@ -526,7 +525,6 @@ class _ChildDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
-            visible: false,
             columnName: 'Apellidos',
             width: columnWidths['Apellidos']!,
             label: Container(
@@ -611,7 +609,6 @@ class _ChildDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
-            visible: false,
             columnName: 'Madre, padre o tutor',
             width: columnWidths['Madre, padre o tutor']!,
             label: Container(

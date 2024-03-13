@@ -745,7 +745,6 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         ),
 
         GridColumn(
-          visible: false,
           columnName: 'Nombre',
           width: columnWidths['Nombre']!,
           label: Container(
@@ -758,7 +757,6 @@ class _ContractDataGridState extends LocalizationSampleViewState {
           ),
         ),
         GridColumn(
-          visible: false,
           columnName: 'Apellidos',
           width: columnWidths['Apellidos']!,
           label: Container(
@@ -807,7 +805,6 @@ class _ContractDataGridState extends LocalizationSampleViewState {
           ),
         ),
         GridColumn(
-          visible: false,
           columnName: 'Madre, Padre o Tutor',
           width: columnWidths['Madre, Padre o Tutor']!,
           label: Container(
