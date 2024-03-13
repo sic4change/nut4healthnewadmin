@@ -2,6 +2,7 @@
 /// import 'package:flutter/foundation.dart';
 
 
+import 'package:adminnut4health/src/features/provinces/domain/province.dart';
 import 'package:adminnut4health/src/features/regions/domain/region.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
@@ -21,10 +22,11 @@ import '../../../sample/model/sample_view.dart';
 import '../../authentication/data/firebase_auth_repository.dart';
 import '../../countries/domain/country.dart';
 import '../data/firestore_repository.dart';
-import '../domain/region_full.dart';
+import '../domain/location.dart';
+import '../domain/locationWithRegionAndCountry.dart';
 /// Local import
-import 'regions_screen_controller.dart';
-import 'region_datagridsource.dart';
+import 'locations_screen_controller.dart';
+import 'location_datagridsource.dart';
 
 import 'package:file_picker/file_picker.dart';
 import 'dart:html' show FileReader;
@@ -37,21 +39,21 @@ import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column, Row, Border;
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-/// Render region data grid
-class RegionDataGrid extends LocalizationSampleView {
+/// Render province data grid
+class LocationDataGrid extends LocalizationSampleView {
   /// Creates getting started data grid
-  const RegionDataGrid({Key? key}) : super(key: key);
+  const LocationDataGrid({Key? key}) : super(key: key);
 
   @override
-  _RegionDataGridState createState() => _RegionDataGridState();
+  _LocationDataGridState createState() => _LocationDataGridState();
 }
 
-class _RegionDataGridState extends LocalizationSampleViewState {
+class _LocationDataGridState extends LocalizationSampleViewState {
 
   final GlobalKey<SfDataGridState> _key = GlobalKey<SfDataGridState>();
 
   /// DataGridSource required for SfDataGrid to obtain the row data.
-  late RegionDataGridSource regionDataGridSource;
+  late LocationDataGridSource locationDataGridSource;
 
   static const double dataPagerHeight = 60;
   int _rowsPerPage = 15;
@@ -62,14 +64,15 @@ class _RegionDataGridState extends LocalizationSampleViewState {
   var currentUserRole = "";
 
   /// Translate names
-  late String _id, _name, _country, _active,  _newRegion, _importCSV, _exportXLS,
-      _exportPDF, _total, _editRegion, _removeRegion, _save, _cancel,
-      _regions, _removedRegion;
+  late String _id, _name, _country, _region, _active,  _newLocation, _importCSV, _exportXLS,
+      _exportPDF, _total, _editLocation, _removeLocation, _save, _cancel,
+      _provinces, _removedLocation;
 
   late Map<String, double> columnWidths = {
     'Id': 150,
     'Nombre': 150,
     'País': 150,
+    'Región': 150,
     'Activo': 150,
   };
 
@@ -77,7 +80,6 @@ class _RegionDataGridState extends LocalizationSampleViewState {
   TextEditingController?
       idController,
       nameController,
-      countryController,
       activeController;
 
   /// Used to validate the forms
@@ -96,24 +98,32 @@ class _RegionDataGridState extends LocalizationSampleViewState {
 
   _saveCountries(AsyncValue<List<Country>>? countries) {
     if (countries == null) {
-      regionDataGridSource.setCountries(List.empty());
+      locationDataGridSource.setCountries(List.empty());
     } else {
-      regionDataGridSource.setCountries(countries.value!);
+      locationDataGridSource.setCountries(countries.value!);
     }
   }
 
-  _saveRegions(AsyncValue<List<RegionFull>>? regions) {
+  _saveRegions(AsyncValue<List<Region>>? regions) {
     if (regions == null) {
-      regionDataGridSource.setRegions(List.empty());
+      locationDataGridSource.setRegions(List.empty());
     } else {
-      regionDataGridSource.setRegions(regions.value);
+      locationDataGridSource.setRegions(regions.value!);
     }
   }
 
-  Widget _buildView(AsyncValue<List<RegionFull>> regions) {
-    if (regions.value != null && regions.value!.isNotEmpty) {
-      regionDataGridSource.buildDataGridRows();
-      regionDataGridSource.updateDataSource();
+  _saveLocations(AsyncValue<List<LocationWithRegionAndCountry>>? locations) {
+    if (locations == null) {
+      locationDataGridSource.setLocations(List.empty());
+    } else {
+      locationDataGridSource.setLocations(locations.value);
+    }
+  }
+
+  Widget _buildView(AsyncValue<List<LocationWithRegionAndCountry>> locations) {
+    if (locations.value != null && locations.value!.isNotEmpty) {
+      locationDataGridSource.buildDataGridRows();
+      locationDataGridSource.updateDataSource();
       selectedLocale = model.locale.toString();
       return _buildLayoutBuilder();
     } else {
@@ -167,7 +177,7 @@ class _RegionDataGridState extends LocalizationSampleViewState {
         });
   }
 
-  void _importRegions() async {
+  void _importLocations() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
       final myUint8List = Uint8List.fromList(result.files.single.bytes!);
@@ -177,16 +187,21 @@ class _RegionDataGridState extends LocalizationSampleViewState {
         const CsvToListConverter(fieldDelimiter: ';').convert(it);
         for (final row in rowsAsListOfValues) {
           if (row.isNotEmpty) {
-            ref.read(regionsScreenControllerProvider.notifier).addRegion(
-                Region(
-                  regionId: "",
+            ref.read(provincesScreenControllerProvider.notifier).addLocation(
+                Location(
+                  locationId: "",
                   name: row[0].toString(),
-                  countryId: regionDataGridSource
-                      .getCountries()
+                  country: locationDataGridSource
+                      .getCountries()!
                       .firstWhere(
                           (element) => element.name == row[1].toString())
                       .countryId,
-                  active: row[2].toString() == 'true' ? true : false,
+                  regionId: locationDataGridSource
+                      .getRegions()
+                      .firstWhere(
+                          (element) => element.name == row[2].toString())
+                      .regionId,
+                  active: row[3].toString() == 'true' ? true : false,
                 )
             );
           }
@@ -204,7 +219,7 @@ class _RegionDataGridState extends LocalizationSampleViewState {
     return reader.result as String;
   }
 
-  void _createRegion() {
+  void _createLocation() {
     _createTextFieldContext();
     showDialog<String>(
       context: context,
@@ -212,16 +227,20 @@ class _RegionDataGridState extends LocalizationSampleViewState {
         scrollable: true,
         titleTextStyle: TextStyle(
             color: model.textColor, fontWeight: FontWeight.bold, fontSize: 16),
-        title: Text(_newRegion),
+        title: Text(_newLocation),
         actions: _buildActionCreateButtons(context),
-        content: Scrollbar(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Form(
-              key: _formKey,
-              child: _buildAlertDialogCreateContent(),
-            ),
-          ),
+        content: StatefulBuilder(
+            builder: (context, setState) {
+            return Scrollbar(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Form(
+                  key: _formKey,
+                  child: _buildAlertDialogCreateContent(context, setState),
+                ),
+              ),
+            );
+          }
         ),
       ),
     );
@@ -235,7 +254,7 @@ class _RegionDataGridState extends LocalizationSampleViewState {
           });
       final List<int> bytes = workbook.saveAsStream();
       workbook.dispose();
-      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_regions.xlsx');
+      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_provinces.xlsx');
     }
 
     Future<void> exportDataGridToPdf() async {
@@ -256,7 +275,7 @@ class _RegionDataGridState extends LocalizationSampleViewState {
                 Rect.fromLTWH(width - 148, 0, 148, 60));
 
             header.graphics.drawString(
-              _regions,
+              _provinces,
               PdfStandardFont(PdfFontFamily.helvetica, 13,
                   style: PdfFontStyle.bold),
               bounds: const Rect.fromLTWH(0, 25, 200, 60),
@@ -265,7 +284,7 @@ class _RegionDataGridState extends LocalizationSampleViewState {
             details.pdfDocumentTemplate.top = header;
           });
       final List<int> bytes = document.saveSync();
-      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_regions.pdf');
+      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_provinces.pdf');
       document.dispose();
     }
 
@@ -275,7 +294,7 @@ class _RegionDataGridState extends LocalizationSampleViewState {
           _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
           _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
           _buildImportButton(_importCSV),
-          _buildCreatingButton(_newRegion),
+          _buildCreatingButton(_newLocation),
         ],
       );
     } else {
@@ -297,7 +316,7 @@ class _RegionDataGridState extends LocalizationSampleViewState {
             FontAwesomeIcons.fileCsv,
             color: Colors.blueAccent,
           ),
-          onPressed: _importRegions,)
+          onPressed: _importLocations,)
     );
   }
 
@@ -310,7 +329,7 @@ class _RegionDataGridState extends LocalizationSampleViewState {
             FontAwesomeIcons.plus,
             color: Colors.blueAccent,
           ),
-          onPressed: _createRegion,)
+          onPressed: _createLocation,)
     );
   }
 
@@ -342,9 +361,9 @@ class _RegionDataGridState extends LocalizationSampleViewState {
 
 
   Widget _buildDataPager() {
-    var rows = regionDataGridSource.rows;
-    if (regionDataGridSource.effectiveRows.isNotEmpty ) {
-      rows = regionDataGridSource.effectiveRows;
+    var rows = locationDataGridSource.rows;
+    if (locationDataGridSource.effectiveRows.isNotEmpty ) {
+      rows = locationDataGridSource.effectiveRows;
     }
     var addMorePage = 0;
     if ((rows.length / _rowsPerPage).remainder(1) != 0) {
@@ -354,7 +373,7 @@ class _RegionDataGridState extends LocalizationSampleViewState {
     return Directionality(
       textDirection: TextDirection.ltr,
       child: SfDataPager(
-        delegate: regionDataGridSource,
+        delegate: locationDataGridSource,
         availableRowsPerPage: const <int>[15, 20, 25],
         pageCount: (rows.length / _rowsPerPage) + addMorePage,
         onRowsPerPageChanged: (int? rowsPerPage) {
@@ -401,7 +420,7 @@ class _RegionDataGridState extends LocalizationSampleViewState {
     }
   }
 
-  Widget _buildRowComboSelection({required TextEditingController controller,
+  /*Widget _buildRowComboSelection({required TextEditingController controller,
     required String columnName, required List<String> dropDownMenuItems,
     required String text}) {
     String value = controller.text;
@@ -432,6 +451,74 @@ class _RegionDataGridState extends LocalizationSampleViewState {
                 return DropdownMenuItem<String>(
                   value: option,
                   child: Text(option.length > 12 ? option.substring(0, 12) + '...' : option),
+                );
+              }).toList()),
+        ),
+      ],
+    );
+  }
+  */
+
+  Widget _buildRowComboSelection(
+      {required BuildContext context,
+        required String optionSelected,
+        required String columnName,
+        required List<String> dropDownMenuItems,
+        required String text,
+        required void Function(void Function()) setState}) {
+    String value = optionSelected;
+    if (optionSelected.isEmpty) {
+      if (dropDownMenuItems.isNotEmpty) {
+        value = dropDownMenuItems[0];
+      } else {
+        value = "";
+      }
+    }
+    return Row(
+      children: <Widget>[
+        Container(
+            width: 150,
+            padding: const EdgeInsets.symmetric(vertical: 15),
+            child: Text(text)),
+        SizedBox(
+          width: 150,
+          child: DropdownButtonFormField<String>(
+              value: value,
+              autofocus: true,
+              focusColor: Colors.transparent,
+              icon: const Icon(Icons.arrow_drop_down_sharp),
+              isExpanded: false,
+              onChanged: (newValue) {
+                setState(() {
+                  value = newValue!;
+                  optionSelected = newValue!;
+                  if (columnName == 'País') {
+                    Country countrySelected = locationDataGridSource.getCountries()!.firstWhere((element) => element.name == newValue);
+                    ref.watch(provincesScreenControllerProvider.notifier).setCountrySelected(countrySelected);
+                    ref.watch(provincesScreenControllerProvider.notifier).
+                    setRegionOptions(locationDataGridSource.getRegions().where((element) => element.countryId == countrySelected.countryId).toList());
+                    try {
+                      ref.watch(provincesScreenControllerProvider.notifier).
+                      setRegionSelected(ref.watch(provincesScreenControllerProvider.notifier).getRegionOptions()[0]);
+                    } catch(e) {
+                      ref.watch(provincesScreenControllerProvider.notifier).
+                      setRegionSelected(const Region(regionId: '', name: '', countryId: '', active: false));
+                    }
+                  } else if (columnName == 'Región') {
+                    Region regionSelected = locationDataGridSource.getRegions()!.firstWhere((element) => element.name == newValue);
+                    ref.watch(provincesScreenControllerProvider.notifier).setRegionSelected(regionSelected);
+                  } else {
+                    activeController!.text = value;
+                  }
+
+                });
+              },
+              items: dropDownMenuItems.map((option) {
+                return DropdownMenuItem<String>(
+                  value: option,
+                  child: Text(option.length > 12
+                      ? option.substring(0, 12) + '...'
+                      : option),
                 );
               }).toList()),
         ),
@@ -473,33 +560,75 @@ class _RegionDataGridState extends LocalizationSampleViewState {
   }
 
   /// Building the forms to edit the data
-  Widget _buildAlertDialogContent() {
-    final countryOptions = regionDataGridSource.getCountries().map((e) => e.name).toList();
-    countryOptions.insert(0, "");
+  Widget _buildAlertDialogContent(BuildContext context, void Function(void Function()) setState) {
     final activeOptions = ["✔", "✘"];
+    final countryOptions = locationDataGridSource.getCountries()!.map((e) => e.name).toList();
+    countryOptions.insert(0, "");
     return Column(
       children: <Widget>[
         _buildRow(controller: nameController!, columnName: 'Nombre', text: _name),
-        _buildRowComboSelection(controller: countryController!, columnName: 'País',
-            dropDownMenuItems: countryOptions, text: _country),
-        _buildRowComboSelection(controller: activeController!, columnName: 'Activo',
-            dropDownMenuItems: activeOptions, text: _active),
+        _buildRowComboSelection(
+          context: context,
+          optionSelected: ref.watch(provincesScreenControllerProvider.notifier).getCountrySelected().name,
+          columnName: 'País',
+          dropDownMenuItems: locationDataGridSource.getCountries()!.map((e) => e.name).toList(),
+          text: _country,
+          setState: setState,
+        ),
+        _buildRowComboSelection(
+          context: context,
+          optionSelected: ref.watch(provincesScreenControllerProvider.notifier).getRegionSelected().name,
+          columnName: 'Región',
+          dropDownMenuItems: ref.watch(provincesScreenControllerProvider.notifier)
+              .getRegionOptions().map((e) => e.name).toList(),
+          text: _region,
+          setState: setState,
+        ),
+        _buildRowComboSelection(
+          context: context,
+          optionSelected: activeController!.text,
+          columnName: 'Activo',
+          dropDownMenuItems: activeOptions,
+          text: _active,
+          setState: setState,
+        ),
       ],
     );
   }
 
   /// Building the forms to create the data
-  Widget _buildAlertDialogCreateContent() {
+  Widget _buildAlertDialogCreateContent(BuildContext context, void Function(void Function()) setState) {
     final activeOptions = ["✔", "✘"];
-    final countryOptions = regionDataGridSource.getCountries().map((e) => e.name).toList();
+    final countryOptions = locationDataGridSource.getCountries()!.map((e) => e.name).toList();
     countryOptions.insert(0, "");
     return Column(
       children: <Widget>[
         _buildRow(controller: nameController!, columnName: 'Nombre', text: _name),
-        _buildRowComboSelection(controller: countryController!, columnName: 'País',
-            dropDownMenuItems: countryOptions, text: _country),
-        _buildRowComboSelection(controller: activeController!, columnName: 'Activo',
-            dropDownMenuItems: activeOptions, text: _active),
+        _buildRowComboSelection(
+          context: context,
+          optionSelected: ref.watch(provincesScreenControllerProvider.notifier).getCountrySelected().name,
+          columnName: 'País',
+          dropDownMenuItems: locationDataGridSource.getCountries()!.map((e) => e.name).toList(),
+          text: _country,
+          setState: setState,
+        ),
+        _buildRowComboSelection(
+          context: context,
+          optionSelected: ref.watch(provincesScreenControllerProvider.notifier).getRegionSelected().name,
+          columnName: 'Región',
+          dropDownMenuItems: ref.watch(provincesScreenControllerProvider.notifier)
+              .getRegionOptions().map((e) => e.name).toList(),
+          text: _region,
+          setState: setState,
+        ),
+        _buildRowComboSelection(
+          context: context,
+          optionSelected: activeController!.text,
+          columnName: 'Activo',
+          dropDownMenuItems: activeOptions,
+          text: _active,
+          setState: setState,
+        ),
       ],
     );
   }
@@ -507,7 +636,6 @@ class _RegionDataGridState extends LocalizationSampleViewState {
   void _createTextFieldContext() {
     idController!.text = '';
     nameController!.text = '';
-    countryController!.text = '';
     activeController!.text = '';
   }
 
@@ -531,14 +659,24 @@ class _RegionDataGridState extends LocalizationSampleViewState {
 
     nameController!.text = name ?? '';
 
-    final String? code = row
+    final String? countryString = row
         .getCells()
-        .firstWhere(
-            (DataGridCell element) => element.columnName == 'País')
+        .firstWhere((DataGridCell element) => element.columnName == 'País')
+        ?.value
+        .toString();
+    final country = locationDataGridSource.getCountries()!.firstWhere((element) => element.name == countryString);
+    ref.watch(provincesScreenControllerProvider.notifier).setCountrySelected(country);
+
+    final String? regionString = row
+        .getCells()
+        .firstWhere((DataGridCell element) => element.columnName == 'Región')
         ?.value
         .toString();
 
-    countryController!.text = code ?? '';
+    final region = locationDataGridSource.getRegions().firstWhere((element) => element.name == regionString);
+    ref.watch(provincesScreenControllerProvider.notifier).setRegionSelected(region);
+    ref.watch(provincesScreenControllerProvider.notifier).
+    setRegionOptions(locationDataGridSource.getRegions().where((element) => element.countryId == ref.watch(provincesScreenControllerProvider.notifier).getCountrySelected().countryId).toList());
 
 
     final String? active = row
@@ -562,16 +700,20 @@ class _RegionDataGridState extends LocalizationSampleViewState {
         scrollable: true,
         titleTextStyle: TextStyle(
             color: model.textColor, fontWeight: FontWeight.bold, fontSize: 16),
-        title: Text(_editRegion),
+        title: Text(_editLocation),
         actions: _buildActionButtons(row, context),
-        content: Scrollbar(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Form(
-              key: _formKey,
-              child: _buildAlertDialogContent(),
-            ),
-          ),
+        content: StatefulBuilder(
+            builder: (context, setState) {
+            return Scrollbar(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Form(
+                  key: _formKey,
+                  child: _buildAlertDialogContent(context, setState),
+                ),
+              ),
+            );
+          }
         ),
       ),
     );
@@ -579,11 +721,12 @@ class _RegionDataGridState extends LocalizationSampleViewState {
 
   void _processCellCreate(BuildContext buildContext) async {
     if (_formKey.currentState!.validate()) {
-      ref.read(regionsScreenControllerProvider.notifier).addRegion(
-          Region(
-              regionId: "",
+      ref.read(provincesScreenControllerProvider.notifier).addLocation(
+          Location(
+              locationId: "",
               name: nameController!.text,
-              countryId: regionDataGridSource.getCountries().firstWhere((element) => element.name == countryController!.text).countryId,
+              country: ref.watch(provincesScreenControllerProvider.notifier).getCountrySelected().countryId,
+              regionId: ref.watch(provincesScreenControllerProvider.notifier).getRegionSelected().regionId,
               active: activeController!.text == '✔' ? true : false)
       );
       Navigator.pop(buildContext);
@@ -593,12 +736,13 @@ class _RegionDataGridState extends LocalizationSampleViewState {
   /// Updating the DataGridRows after changing the value and notify the DataGrid
   /// to refresh the view
   void _processCellUpdate(DataGridRow row, BuildContext buildContext) {
-    final String? id = regionDataGridSource.getRegions()?.firstWhere((element) => element.region.regionId == row.getCells()[0].value).region.regionId;
+    final String? id = locationDataGridSource.getLocations()?.firstWhere((element) => element.location.locationId == row.getCells()[0].value).location.locationId;
     if (_formKey.currentState!.validate()) {
-      ref.read(regionsScreenControllerProvider.notifier).updateRegion(
-          Region(regionId: id!,
+      ref.read(provincesScreenControllerProvider.notifier).updateLocation(
+          Location(locationId: id!,
               name: nameController!.text,
-              countryId: regionDataGridSource.getCountries().firstWhere((element) => element.name == countryController!.text).countryId,
+              country: ref.watch(provincesScreenControllerProvider.notifier).getCountrySelected().countryId,
+              regionId: ref.watch(provincesScreenControllerProvider.notifier).getRegionSelected().regionId,
               active: activeController!.text == '✔' ? true : false
           )
       );
@@ -647,10 +791,10 @@ class _RegionDataGridState extends LocalizationSampleViewState {
 
   /// Deleting the DataGridRow
   void _handleDeleteWidgetTap(DataGridRow row) {
-    final region = regionDataGridSource.getRegions()?.
-      firstWhere((element) => element.region.regionId == row.getCells()[0].value).region;
-    if (region != null) {
-      ref.read(regionsScreenControllerProvider.notifier).deleteRegion(region);
+    final location = locationDataGridSource.getLocations()?.
+      firstWhere((element) => element.location.locationId == row.getCells()[0].value).location;
+    if (location != null) {
+      ref.read(provincesScreenControllerProvider.notifier).deleteLocation(location);
       _showDialogDeleteConfirmation();
     }
   }
@@ -668,7 +812,7 @@ class _RegionDataGridState extends LocalizationSampleViewState {
             ),
           ),
         ],
-        content: Text(_removedRegion),
+        content: Text(_removedLocation),
       ),
     );
   }
@@ -687,7 +831,7 @@ class _RegionDataGridState extends LocalizationSampleViewState {
             Icon(Icons.edit, color: Colors.white, size: 16),
             SizedBox(width: 8.0),
             Text(
-              _editRegion,
+              _editLocation,
               style: TextStyle(color: Colors.white, fontSize: 12),
             )
           ],
@@ -710,7 +854,7 @@ class _RegionDataGridState extends LocalizationSampleViewState {
             const Icon(Icons.delete, color: Colors.white, size: 16),
             const SizedBox(width: 8.0),
             Text(
-              _removeRegion,
+              _removeLocation,
               style: TextStyle(color: Colors.white, fontSize: 12),
             ),
           ],
@@ -726,57 +870,60 @@ class _RegionDataGridState extends LocalizationSampleViewState {
         _id = 'Id';
         _name = 'Name';
         _country = 'Country';
+        _region = 'Region';
         _active = 'Active';
-        _newRegion = 'New Region';
+        _newLocation = 'New Municipality';
         _importCSV = 'Import CSV';
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
-        _total = 'Total Regions';
-        _editRegion = 'Edit';
-        _removeRegion = 'Remove';
+        _total = 'Total Municipalities';
+        _editLocation = 'Edit';
+        _removeLocation = 'Remove';
         _cancel = 'Cancel';
         _save = 'Save';
-        _regions = 'Regions';
-        _removedRegion = 'Region deleted successfully.';
+        _provinces = 'Municipalities';
+        _removedLocation = 'Municipality deleted successfully.';
         break;
       case 'es_ES':
         _id = 'Id';
         _name = 'Nombre';
         _country = 'País';
+        _region = 'Región';
         _active = 'Activo';
-        _newRegion = 'Crear Región';
+        _newLocation = 'Crear Municipio';
         _importCSV = 'Importar CSV';
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
-        _total = 'Regiones totales';
-        _editRegion = 'Editar';
-        _removeRegion = 'Eliminar';
+        _total = 'Municipios totales';
+        _editLocation = 'Editar';
+        _removeLocation = 'Eliminar';
         _cancel = 'Cancelar';
         _save = 'Guardar';
-        _regions = 'Regiones';
-        _removedRegion = 'Región eliminada correctamente';
+        _provinces = 'Municipios';
+        _removedLocation = 'Municipio eliminado correctamente';
         break;
       case 'fr_FR':
         _id = 'Id';
         _name = 'Nom';
         _country = 'Code';
+        _region = 'Région';
         _active = 'Actif';
-        _newRegion = 'Créer une Région';
+        _newLocation = 'Créer un Municipalité';
         _importCSV = 'Importer CSV';
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
-        _total = 'Total des régions';
-        _editRegion = 'Modifier';
-        _removeRegion = 'Supprimer';
+        _total = 'Total des municipalités';
+        _editLocation = 'Modifier';
+        _removeLocation = 'Supprimer';
         _cancel = 'Annuler';
         _save = 'Enregistrer';
-        _regions = 'Les régions';
-        _removedRegion = 'Région supprimé avec succès.';
+        _provinces = 'Les municipalités';
+        _removedLocation = 'Municipalité supprimé avec succès.';
         break;
     }
     return SfDataGrid(
       key: _key,
-      source: regionDataGridSource,
+      source: locationDataGridSource,
       rowsPerPage: _rowsPerPage,
       tableSummaryRows: _getTableSummaryRows(),
       allowSwiping: currentUserRole == 'super-admin' ? true : false,
@@ -837,6 +984,18 @@ class _RegionDataGridState extends LocalizationSampleViewState {
           ),
         ),
         GridColumn(
+          columnName: 'Región',
+          width: columnWidths['Región']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _region,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+        GridColumn(
           columnName: 'Activo',
           width: columnWidths['Activo']!,
           label: Container(
@@ -854,28 +1013,28 @@ class _RegionDataGridState extends LocalizationSampleViewState {
   @override
   void initState() {
     super.initState();
-    regionDataGridSource = RegionDataGridSource(List.empty(), List.empty());
+    locationDataGridSource = LocationDataGridSource(List.empty(), List.empty(), List.empty());
     idController = TextEditingController();
     nameController = TextEditingController();
-    countryController = TextEditingController();
     activeController = TextEditingController();
     selectedLocale = model.locale.toString();
 
     _id = 'Id';
     _name = 'Nombre';
     _country = 'País';
+    _region = 'Región';
     _active = 'Activo';
-    _newRegion = 'Crear Región';
+    _newLocation = 'Crear Municipio';
     _importCSV = 'Importar CSV';
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';
-    _total = 'Regiones totales';
-    _editRegion = 'Editar';
-    _removeRegion = 'Eliminar';
+    _total = 'Usuarios totales';
+    _editLocation = 'Editar';
+    _removeLocation = 'Eliminar';
     _cancel = 'Cancelar';
     _save = 'Guardar';
-    _regions = 'Regiones';
-    _removedRegion = '';
+    _provinces = 'Municipios';
+    _removedLocation = '';
   }
 
 
@@ -884,7 +1043,7 @@ class _RegionDataGridState extends LocalizationSampleViewState {
     return Consumer(
         builder: (context, ref, child) {
           ref.listen<AsyncValue>(
-            regionsScreenControllerProvider,
+            provincesScreenControllerProvider,
                 (_, state) => {
             },
           );
@@ -904,14 +1063,22 @@ class _RegionDataGridState extends LocalizationSampleViewState {
             });
           }
           final countriesAsyncValue = ref.watch(countriesStreamProvider);
-          final provinciesAsyncValue = ref.watch(regionsStreamProvider);
+          final regionsAsyncValue = ref.watch(regionsStreamProvider);
+          final locationsAsyncValue = ref.watch(locationsStreamProvider);
+
           if (countriesAsyncValue.value != null) {
             _saveCountries(countriesAsyncValue);
           }
-          if (provinciesAsyncValue.value != null) {
-            _saveRegions(provinciesAsyncValue);
+
+          if (regionsAsyncValue.value != null) {
+            _saveRegions(regionsAsyncValue);
           }
-          return _buildView(provinciesAsyncValue);
+
+          if (locationsAsyncValue.value != null) {
+            _saveLocations(locationsAsyncValue);
+          }
+
+          return _buildView(locationsAsyncValue);
         });
   }
 

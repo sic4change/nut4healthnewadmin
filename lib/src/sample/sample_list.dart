@@ -20,6 +20,7 @@ import '../features/contracts_report/presentation/datagrid_child_contracts.dart'
 import '../features/contracts_report/presentation/datagrid_contracts.dart';
 import '../features/countries/presentation/datagrid_countries.dart';
 import '../features/countries/presentation/country_map.dart';
+import '../features/locations/presentation/datagrid_locations.dart';
 import '../features/payments/presentation/datagrid_payments.dart';
 import '../features/points/presentation/point_map.dart';
 import '../features/points/presentation/datagrid_points.dart';
@@ -938,6 +939,7 @@ Map<String, Function> getSampleWidget() {
     'country_datagrid': (Key key) => CountryDataGrid(key: key),
     'region_datagrid': (Key key) => RegionDataGrid(key: key),
     'province_datagrid': (Key key) => ProvinceDataGrid(key: key),
+    'location_datagrid': (Key key) => LocationDataGrid(key: key),
     'city_datagrid': (Key key) => CityDataGrid(key: key),
     'point_datagrid': (Key key) => PointDataGrid(key: key),
     'report_datagrid': (Key key) => ReportDataGrid(key: key),
