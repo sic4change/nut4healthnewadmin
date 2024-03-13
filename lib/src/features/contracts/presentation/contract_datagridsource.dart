@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// DataGrid import
 // ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+import '../../users/domain/user.dart';
 import '../domain/ContractWithScreenerAndMedicalAndPoint.dart';
 
 /// Set contracts's data collection to data grid source.
@@ -318,16 +319,22 @@ class ContractDataGridSource extends DataGridSource {
       _buildDouble(row.getCells()[6].value),
       _buildDouble(row.getCells()[7].value),
       _buildDouble(row.getCells()[8].value),
-      Container(
-        padding: const EdgeInsets.all(8.0),
+      User.currentRole != 'donante' ? Container(
+          padding: const EdgeInsets.all(8.0),
+          alignment: Alignment.centerLeft,
+          child: Text(row.getCells()[9].value.toString()),
+        ) : Container(padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[9].value.toString()),
+        child: const Text('---------'),
       ),
-      Container(
+    User.currentRole != 'donante' ? Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[10].value.toString()),
-      ),
+      ) : Container(padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: const Text('---------'),
+    ),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
@@ -339,10 +346,13 @@ class ContractDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[13].value.toString()),
       ),
-      Container(
+      User.currentRole != 'donante' ? Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[14].value.toString()),
+      ) : Container(padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: const Text('---------'),
       ),
       _buildBirthDate(row.getCells()[15].value),
       Container(
@@ -363,7 +373,12 @@ class ContractDataGridSource extends DataGridSource {
       ),
       _buildPhone(row.getCells()[20].value.toString()),
       //_buildPoint(row.getCells()[21].value.toString()),
-      if (row.getCells()[21].columnName == 'Lugar')
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[21].value.toString()),
+      ),
+      /*if (row.getCells()[21].columnName == 'Lugar')
         Consumer(
           builder: (context, ref, _) {
             final contractsController = ref.watch(contractsScreenControllerProvider.notifier);
@@ -378,7 +393,7 @@ class ContractDataGridSource extends DataGridSource {
               ),
             );
           }
-        ),
+        ),*/
       _buildDate(row.getCells()[22].value.toString()),
       _buildPoint(row.getCells()[23].value.toString()),
       Container(

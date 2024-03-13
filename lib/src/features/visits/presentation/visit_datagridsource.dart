@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+import '../../users/domain/user.dart';
+
 /// Set visit's data collection to data grid source.
 class VisitDataGridSource extends DataGridSource {
   /// Creates the visit data source class with required details.
@@ -105,8 +107,22 @@ class VisitDataGridSource extends DataGridSource {
       _buildBoolean(row.getCells()[33].value),
       _buildBoolean(row.getCells()[34].value),
       _buildStandardContainer(row.getCells()[1].value.toString()),
-      _buildStandardContainer(row.getCells()[2].value.toString()),
-      _buildStandardContainer(row.getCells()[3].value.toString()),
+      User.currentRole != 'donante' ? Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[2].value.toString()),
+      ) : Container(padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: const Text('---------'),
+      ),
+      User.currentRole != 'donante' ? Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[3].value.toString()),
+      ) : Container(padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: const Text('---------'),
+      ),
       _buildStandardContainer(row.getCells()[4].value.toString()),
       _buildStandardContainer(row.getCells()[5].value.toString()),
       _buildDate(row.getCells()[6].value),

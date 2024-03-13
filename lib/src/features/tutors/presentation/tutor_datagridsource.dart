@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+import '../../users/domain/user.dart';
+
 /// Set tutor's data collection to data grid source.
 class TutorDataGridSource extends DataGridSource {
   /// Creates the tutor data source class with required details.
@@ -88,10 +90,31 @@ class TutorDataGridSource extends DataGridSource {
       _buildBoolean(row.getCells()[17].value),
       _buildBoolean(row.getCells()[18].value),
       _buildStandardContainer(row.getCells()[1].value.toString()),
-      _buildStandardContainer(row.getCells()[2].value.toString()),
-      _buildStandardContainer(row.getCells()[3].value.toString()),
+      User.currentRole != 'donante' ? Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[2].value.toString()),
+      ) : Container(padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: const Text('---------'),
+      ),
+      User.currentRole != 'donante' ? Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[3].value.toString()),
+      ) : Container(padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: const Text('---------'),
+      ),
       _buildStandardContainer(row.getCells()[4].value.toString()),
-      _buildStandardContainer(row.getCells()[5].value.toString()),
+      User.currentRole != 'donante' ? Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[5].value.toString()),
+      ) : Container(padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: const Text('---------'),
+      ),
       _buildDate(row.getCells()[6].value),
       _buildDate(row.getCells()[7].value),
       _buildStandardContainer(row.getCells()[8].value.toString()),

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+import '../../users/domain/user.dart';
 import '../domain/PaymentWithScreenerAndContract.dart';
 
 /// Set payments's data collection to data grid source.
@@ -141,18 +142,28 @@ class PaymentDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[2].value.toString()),
       ),
-      Container(
+      User.currentRole != 'donante' ? Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[3].value.toString()),
+      ) : Container(padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: const Text('---------'),
       ),
-      Container(
+      User.currentRole != 'donante' ? Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[4].value.toString()),
+      ) : Container(padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: const Text('---------'),
       ),
       _buildEmail(row.getCells()[5].value.toString()),
-      _buildPhone(row.getCells()[6].value.toString()),
+      User.currentRole != 'donante' ? _buildPhone(row.getCells()[6].value.toString())
+          : Container(padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: const Text('---------'),
+      ),
       _buildDate(row.getCells()[7].value.toString()),
       Container(
         padding: const EdgeInsets.all(8.0),

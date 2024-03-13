@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+import '../../users/domain/user.dart';
+
 /// Set myCase's data collection to data grid source.
 class CaseDataGridSource extends DataGridSource {
   /// Creates the myCase data source class with required details.
@@ -81,8 +83,22 @@ class CaseDataGridSource extends DataGridSource {
       _buildBoolean(row.getCells()[10].value),
       _buildBoolean(row.getCells()[11].value),
       _buildStandardContainer(row.getCells()[1].value.toString()),
-      _buildStandardContainer(row.getCells()[2].value.toString()),
-      _buildStandardContainer(row.getCells()[3].value.toString()),
+      User.currentRole != 'donante' ? Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[2].value.toString()),
+      ) : Container(padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: const Text('---------'),
+      ),
+      User.currentRole != 'donante' ? Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[3].value.toString()),
+      ) : Container(padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: const Text('---------'),
+      ),
       _buildStandardContainer(row.getCells()[4].value.toString()),
       _buildDate(row.getCells()[5].value),
       _buildDate(row.getCells()[6].value),

@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+import '../../users/domain/user.dart';
+
 /// Set report's data collection to data grid source.
 class ReportDataGridSource extends DataGridSource {
   /// Creates the report data source class with required details.
@@ -76,15 +78,21 @@ class ReportDataGridSource extends DataGridSource {
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(cells: <Widget>[
       _buildDate(row.getCells()[1].value),
-      Container(
+      User.currentRole != 'donante' ? Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[2].value.toString()),
+      ) : Container(padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: const Text('---------'),
       ),
-      Container(
+      User.currentRole != 'donante' ? Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[3].value.toString()),
+      ) : Container(padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: const Text('---------'),
       ),
       _buildEmail(row.getCells()[4].value),
       Container(
