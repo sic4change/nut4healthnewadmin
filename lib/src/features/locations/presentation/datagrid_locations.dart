@@ -420,44 +420,6 @@ class _LocationDataGridState extends LocalizationSampleViewState {
     }
   }
 
-  /*Widget _buildRowComboSelection({required TextEditingController controller,
-    required String columnName, required List<String> dropDownMenuItems,
-    required String text}) {
-    String value = controller.text;
-    if (value.isEmpty) {
-      value = dropDownMenuItems[0];
-    }
-    return Row(
-      children: <Widget>[
-        Container(
-            width: 150,
-            padding: const EdgeInsets.symmetric(vertical: 15),
-            child: Text(text)),
-        SizedBox(
-          width: 150,
-          child: DropdownButtonFormField<String>(
-              value: value,
-              autofocus: true,
-              focusColor: Colors.transparent,
-              icon: const Icon(Icons.arrow_drop_down_sharp),
-              isExpanded: false,
-              onChanged: (newValue) {
-                setState(() {
-                  value = newValue!;
-                  controller.text = newValue!;
-                });
-              },
-              items: dropDownMenuItems.map((option) {
-                return DropdownMenuItem<String>(
-                  value: option,
-                  child: Text(option.length > 12 ? option.substring(0, 12) + '...' : option),
-                );
-              }).toList()),
-        ),
-      ],
-    );
-  }
-  */
 
   Widget _buildRowComboSelection(
       {required BuildContext context,
@@ -497,10 +459,10 @@ class _LocationDataGridState extends LocalizationSampleViewState {
                     ref.watch(locationsScreenControllerProvider.notifier).setCountrySelected(countrySelected);
                     ref.watch(locationsScreenControllerProvider.notifier).
                     setRegionOptions(locationDataGridSource.getRegions().where((element) => element.countryId == countrySelected.countryId).toList());
-                    try {
+                    if (ref.watch(locationsScreenControllerProvider.notifier).getRegionOptions().isNotEmpty) {
                       ref.watch(locationsScreenControllerProvider.notifier).
                       setRegionSelected(ref.watch(locationsScreenControllerProvider.notifier).getRegionOptions()[0]);
-                    } catch(e) {
+                    } else {
                       ref.watch(locationsScreenControllerProvider.notifier).
                       setRegionSelected(const Region(regionId: '', name: '', countryId: '', active: false));
                     }

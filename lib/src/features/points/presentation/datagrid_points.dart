@@ -534,10 +534,11 @@ class _PointDataGridState extends LocalizationSampleViewState {
 
                     ref.watch(pointsScreenControllerProvider.notifier).setProvinceSelected(const Province(provinceId: '', name: '', country: '', regionId: '', locationId: '', active: false));
                     ref.watch(pointsScreenControllerProvider.notifier).setProvinceOptions(List.empty());
-                    try {
+
+                    if (ref.watch(pointsScreenControllerProvider.notifier).getRegionOptions().isNotEmpty) {
                       ref.watch(pointsScreenControllerProvider.notifier).
-                        setRegionSelected(ref.watch(pointsScreenControllerProvider.notifier).getRegionOptions()[0]);
-                    } catch(e) {
+                      setRegionSelected(ref.watch(pointsScreenControllerProvider.notifier).getRegionOptions()[0]);
+                    } else {
                       ref.watch(pointsScreenControllerProvider.notifier).
                       setRegionSelected(const Region(regionId: '', name: '', countryId: '', active: false));
                     }
@@ -549,10 +550,10 @@ class _PointDataGridState extends LocalizationSampleViewState {
                     p.country == ref.watch(pointsScreenControllerProvider.notifier).getCountrySelected().countryId
                         && p.regionId == regionSelected.regionId
                     ).toList());
-                    try {
+                    if (ref.watch(pointsScreenControllerProvider.notifier).getProvinceOptions().isNotEmpty) {
                       ref.watch(pointsScreenControllerProvider.notifier).
                       setProvinceSelected(ref.watch(pointsScreenControllerProvider.notifier).getProvinceOptions()[0]);
-                    } catch(e) {
+                    } else {
                       ref.watch(pointsScreenControllerProvider.notifier).
                       setProvinceSelected(const Province(provinceId: '', country: "", regionId: '', locationId: '', name: "", active: false));
                     }

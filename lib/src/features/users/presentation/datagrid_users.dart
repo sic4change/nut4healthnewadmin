@@ -542,10 +542,10 @@ class _UserDataGridState extends LocalizationSampleViewState {
                       ref.watch(usersScreenControllerProvider.notifier).setRegionSelected(regionSelected);
                       ref.watch(usersScreenControllerProvider.notifier).
                       setProvinceOptions(userDataGridSource.getProvinces().where((p) => p.regionId == regionSelected.regionId).toList());
-                      try {
+                      if (ref.watch(usersScreenControllerProvider.notifier).getProvinceOptions().isNotEmpty) {
                         ref.watch(usersScreenControllerProvider.notifier).
                         setProvinceSelected(ref.watch(usersScreenControllerProvider.notifier).getProvinceOptions()[0]);
-                      } catch(e) {
+                      } else {
                         ref.watch(usersScreenControllerProvider.notifier).
                         setProvinceSelected(const Province(provinceId: '', country: "", regionId: '', locationId: '', name: "", active: false));
                       }

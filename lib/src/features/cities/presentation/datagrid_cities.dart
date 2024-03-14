@@ -474,10 +474,10 @@ class _CityDataGridState extends LocalizationSampleViewState {
 
                     ref.watch(citiesScreenControllerProvider.notifier).setProvinceSelected(const Province(provinceId: '', name: '', country: '', regionId: '', locationId: '',active: false));
                     ref.watch(citiesScreenControllerProvider.notifier).setProvinceOptions(List.empty());
-                    try {
+                    if (ref.watch(citiesScreenControllerProvider.notifier).getRegionOptions().isNotEmpty) {
                       ref.watch(citiesScreenControllerProvider.notifier).
-                        setRegionSelected(ref.watch(citiesScreenControllerProvider.notifier).getRegionOptions()[0]);
-                    } catch(e) {
+                      setRegionSelected(ref.watch(citiesScreenControllerProvider.notifier).getRegionOptions()[0]);
+                    } else {
                       ref.watch(citiesScreenControllerProvider.notifier).
                       setRegionSelected(const Region(regionId: '', name: '', countryId: '', active: false));
                     }
@@ -489,10 +489,10 @@ class _CityDataGridState extends LocalizationSampleViewState {
                       p.country == ref.watch(citiesScreenControllerProvider.notifier).getCountrySelected().countryId
                       && p.regionId == regionSelected.regionId
                     ).toList());
-                    try {
+                    if (ref.watch(citiesScreenControllerProvider.notifier).getProvinceOptions().isNotEmpty) {
                       ref.watch(citiesScreenControllerProvider.notifier).
                       setProvinceSelected(ref.watch(citiesScreenControllerProvider.notifier).getProvinceOptions()[0]);
-                    } catch(e) {
+                    } else {
                       ref.watch(citiesScreenControllerProvider.notifier).
                       setProvinceSelected(const Province(provinceId: '', country: "", regionId: '', locationId: '', name: "", active: false));
                     }

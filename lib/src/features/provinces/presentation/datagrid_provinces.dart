@@ -473,17 +473,18 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
                     ref.watch(provincesScreenControllerProvider.notifier).setCountrySelected(countrySelected);
                     ref.watch(provincesScreenControllerProvider.notifier).
                     setRegionOptions(provinceDataGridSource.getRegions().where((element) => element.countryId == countrySelected.countryId).toList());
-                    try {
+                    if (ref.watch(locationsScreenControllerProvider.notifier).getRegionOptions().isNotEmpty) {
                       ref.watch(provincesScreenControllerProvider.notifier).
                       setRegionSelected(ref.watch(provincesScreenControllerProvider.notifier).getRegionOptions()[0]);
-                    } catch(e) {
+                    } else {
                       ref.watch(provincesScreenControllerProvider.notifier).
                       setRegionSelected(const Region(regionId: '', name: '', countryId: '', active: false));
                     }
-                    try {
+                    if (ref.watch(provincesScreenControllerProvider.notifier).getLocationOptions().isNotEmpty) {
                       ref.watch(provincesScreenControllerProvider.notifier).
                       setLocationSelected(ref.watch(provincesScreenControllerProvider.notifier).getLocationOptions()[0]);
-                    } catch(e) {
+
+                    } else {
                       ref.watch(provincesScreenControllerProvider.notifier).
                       setLocationSelected(const Location(locationId: '', regionId: '', name: '', country: '', active: false));
                     }
@@ -491,10 +492,10 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
                     Region regionSelected = provinceDataGridSource.getRegions()!.firstWhere((element) => element.name == newValue);
                     ref.watch(provincesScreenControllerProvider.notifier).setRegionSelected(regionSelected);
                     ref.watch(provincesScreenControllerProvider.notifier).setLocationOptions(provinceDataGridSource.getLocations().where((element) => element.regionId == regionSelected.regionId).toList());
-                    try {
+                    if (ref.watch(provincesScreenControllerProvider.notifier).getLocationOptions().isNotEmpty) {
                       ref.watch(provincesScreenControllerProvider.notifier).
                       setLocationSelected(ref.watch(provincesScreenControllerProvider.notifier).getLocationOptions()[0]);
-                    } catch(e) {
+                    } else {
                       ref.watch(provincesScreenControllerProvider.notifier).
                       setLocationSelected(const Location(locationId: '', regionId: '', name: '', country: '', active: false));
                     }
