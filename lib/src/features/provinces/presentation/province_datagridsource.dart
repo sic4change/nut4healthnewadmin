@@ -8,36 +8,41 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../countries/domain/country.dart';
-import '../domain/ProvinceWithCountry.dart';
+import '../../locations/domain/location.dart';
+import '../domain/ProvinceWithCountryRegionAndLocation.dart';
 
 /// Set province's data collection to data grid source.
 class ProvinceDataGridSource extends DataGridSource {
   /// Creates the province data source class with required details.
   ProvinceDataGridSource(
-      List<ProvinceWithCountry> provinceData,
+      List<ProvinceWithCountryRegionAndLocation> provinceData,
       List<Country> countryData,
       List<Region> regionData,
+      List<Location> locationData,
       ) {
     _provinces = provinceData;
     _countries = countryData;
     _regions = regionData;
+    _locations = locationData;
     buildDataGridRows();
   }
 
   List<DataGridRow> _dataGridRows = <DataGridRow>[];
-  List<ProvinceWithCountry>? _provinces = <ProvinceWithCountry>[];
+  List<ProvinceWithCountryRegionAndLocation>? _provinces = <ProvinceWithCountryRegionAndLocation>[];
   List<Country> _countries = <Country>[];
   List<Region> _regions = <Region>[];
+  List<Location> _locations = <Location>[];
 
   /// Building DataGridRows
   void buildDataGridRows() {
     if (_provinces != null && _provinces!.isNotEmpty) {
-      _dataGridRows = _provinces!.map<DataGridRow>((ProvinceWithCountry provinceWithCountry) {
+      _dataGridRows = _provinces!.map<DataGridRow>((ProvinceWithCountryRegionAndLocation provinceWithCountry) {
         return DataGridRow(cells: <DataGridCell>[
           DataGridCell<String>(columnName: 'Id', value: provinceWithCountry.province.provinceId),
           DataGridCell<String>(columnName: 'Nombre', value: provinceWithCountry.province.name),
           DataGridCell<String>(columnName: 'País', value: provinceWithCountry.country?.name),
           DataGridCell<String>(columnName: 'Región', value: provinceWithCountry.region?.name),
+          DataGridCell<String>(columnName: 'Provincia', value: provinceWithCountry.location?.name),
           DataGridCell<bool>(columnName: 'Activo', value: provinceWithCountry.province.active),
         ]);
       }).toList();
@@ -99,7 +104,6 @@ class ProvinceDataGridSource extends DataGridSource {
     );
   }
 
-
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(cells: <Widget>[
@@ -123,15 +127,20 @@ class ProvinceDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[3].value.toString()),
       ),
-      _buildActive(row.getCells()[4].value)
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[4].value.toString()),
+      ),
+      _buildActive(row.getCells()[5].value)
     ]);
   }
 
-  setProvinces(List<ProvinceWithCountry>? provinceData) {
+  setProvinces(List<ProvinceWithCountryRegionAndLocation>? provinceData) {
     _provinces = provinceData;
   }
 
-  List<ProvinceWithCountry>? getProvinces() {
+  List<ProvinceWithCountryRegionAndLocation>? getProvinces() {
     return _provinces;
   }
 
@@ -149,6 +158,14 @@ class ProvinceDataGridSource extends DataGridSource {
 
   List<Region> getRegions() {
     return _regions;
+  }
+
+  setLocations(List<Location> locationData) {
+    _locations = locationData;
+  }
+
+  List<Location> getLocations() {
+    return _locations;
   }
 
   /// Update DataSource

@@ -2,12 +2,14 @@
 import 'package:adminnut4health/src/features/regions/domain/region.dart';
 
 import '../../countries/domain/country.dart';
+import '../../locations/domain/location.dart';
 import 'province.dart';
 
-class ProvinceWithCountry {
+class ProvinceWithCountryRegionAndLocation {
   final Province province;
   final Country? country;
   final Region? region;
+  final Location? location;
 
-  ProvinceWithCountry(this.province, this.country, this.region);
+  ProvinceWithCountryRegionAndLocation(this.province, this.country, this.region, this.location);
 }

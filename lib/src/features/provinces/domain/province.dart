@@ -8,16 +8,17 @@ typedef ProvinceID = String;
 class Province extends Equatable {
 
   const Province({required this.provinceId, required this.name,
-    required this.country, required this.regionId, required this.active});
+    required this.country, required this.regionId, required this.locationId, required this.active});
 
   final ProvinceID provinceId;
   final String name;
   final String country;
   final String regionId;
+  final String locationId;
   final bool active;
 
   @override
-  List<Object> get props => [provinceId, name, country, regionId, active];
+  List<Object> get props => [provinceId, name, country, regionId, locationId, active];
 
   @override
   bool get stringify => true;
@@ -30,12 +31,14 @@ class Province extends Equatable {
     final name = data['name'] as String;
     final country = data['country'] as String;
     final regionId = data['regionId']?? "";
+    final locationId = data['locationId']?? "";
     final active = data['active'] as bool;
     return Province(
         provinceId: documentId,
         name: name,
         country: country,
         regionId: regionId,
+        locationId: locationId,
         active: active);
   }
 
@@ -44,6 +47,7 @@ class Province extends Equatable {
       'name': name,
       'country': country,
       'regionId': regionId,
+      'locationId': locationId,
       'active': active,
     };
   }

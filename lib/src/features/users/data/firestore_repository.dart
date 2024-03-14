@@ -165,7 +165,7 @@ class FirestoreRepository {
                 const Region(regionId: '', name: '', countryId: '', active: false);
 
               final Province province = provinceMap[user.provinceId]??
-                const Province(provinceId: '', name: '', country: '', regionId: '', active: false);
+                const Province(provinceId: '', name: '', country: '', regionId: '', locationId: '', active: false);
 
               return UserWithConfigurationAndPoint(user, configuration, point, region, province);
               }).toList();

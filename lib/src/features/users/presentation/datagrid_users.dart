@@ -547,7 +547,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
                         setProvinceSelected(ref.watch(usersScreenControllerProvider.notifier).getProvinceOptions()[0]);
                       } catch(e) {
                         ref.watch(usersScreenControllerProvider.notifier).
-                        setProvinceSelected(const Province(provinceId: '', country: "", regionId: '', name: "", active: false));
+                        setProvinceSelected(const Province(provinceId: '', country: "", regionId: '', locationId: '', name: "", active: false));
                       }
                     } else if (columnName == 'Municipio') {
                       Province provinceSelected = userDataGridSource.getProvinces().firstWhere((element) => element.name == newValue);

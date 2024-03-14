@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:adminnut4health/src/features/locations/domain/location.dart';
+import 'package:adminnut4health/src/features/provinces/domain/ProvinceWithCountryRegionAndLocation.dart';
 import 'package:adminnut4health/src/features/regions/domain/region.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -9,7 +11,6 @@ import '../../countries/domain/country.dart';
 
 import 'package:rxdart/rxdart.dart';
 
-import '../domain/ProvinceWithCountry.dart';
 import '../domain/province.dart';
 
 String documentIdFromCurrentDate() {
@@ -23,6 +24,9 @@ class FirestorePath {
 
   static String region(String uid) => 'regions/$uid';
   static String regions() => 'regions';
+
+  static String location(String uid) => 'locations/$uid';
+  static String locations() => 'locations';
 
   static String province(String uid) => 'provinces/$uid';
   static String provinces() => 'provinces';
@@ -74,13 +78,20 @@ class FirestoreRepository {
         builder: (data, documentId) => Region.fromMap(data, documentId),
       );
 
+  Stream<List<Location>> watchLocations() =>
+      _dataSource.watchCollection(
+        path: FirestorePath.locations(),
+        builder: (data, documentId) => Location.fromMap(data, documentId),
+      );
 
-  Stream<List<ProvinceWithCountry>> watchProvinceWithCountries() {
-    return CombineLatestStream.combine3(
+
+  Stream<List<ProvinceWithCountryRegionAndLocation>> watchProvinceWithCountries() {
+    return CombineLatestStream.combine4(
         watchProvinces(),
         watchCountries(),
         watchRegions(),
-          (List<Province> provinces, List<Country> countries, List<Region> regions) {
+          watchLocations(),
+          (List<Province> provinces, List<Country> countries, List<Region> regions, List<Location> locations) {
             final Map<String, Country> countryMap = Map.fromEntries(
               countries.map((country) => MapEntry(country.countryId, country)),
             );
@@ -89,13 +100,19 @@ class FirestoreRepository {
               regions.map((region) => MapEntry(region.regionId, region)),
             );
 
+            final Map<String, Location> locationMap = Map.fromEntries(
+              locations.map((location) => MapEntry(location.locationId, location)),
+            );
+
             return provinces.map((province) {
               final Country country = countryMap[province.country] ?? const Country(countryId: '', name: '', code: '',
                   active: false, needValidation: false, cases: 0, casesnormopeso: 0, casesmoderada: 0, casessevera: 0);
 
               final Region region = regionMap[province.regionId] ?? const Region(regionId: '', name: '', countryId: '', active: false);
 
-              return ProvinceWithCountry(province, country, region);
+              final Location location = locationMap[province.locationId] ?? const Location(locationId: '', regionId: '', name: '', country: '', active: false);
+
+              return ProvinceWithCountryRegionAndLocation(province, country, region, location);
             }).toList();
           });
   }
@@ -118,7 +135,7 @@ final databaseProvider = Provider<FirestoreRepository>((ref) {
   return FirestoreRepository(ref.watch(firestoreDataSourceProvider));
 });
 
-final provincesStreamProvider = StreamProvider.autoDispose<List<ProvinceWithCountry>>((ref) {
+final provincesStreamProvider = StreamProvider.autoDispose<List<ProvinceWithCountryRegionAndLocation>>((ref) {
   final user = ref.watch(authStateChangesProvider).value;
   if (user == null) {
     throw AssertionError('Province can\'t be null');
@@ -143,6 +160,15 @@ final regionsStreamProvider = StreamProvider.autoDispose<List<Region>>((ref) {
   }
   final database = ref.watch(databaseProvider);
   return database.watchRegions();
+});
+
+final locationsStreamProvider = StreamProvider.autoDispose<List<Location>>((ref) {
+  final user = ref.watch(authStateChangesProvider).value;
+  if (user == null) {
+    throw AssertionError('Location can\'t be null');
+  }
+  final database = ref.watch(databaseProvider);
+  return database.watchLocations();
 });
 
 

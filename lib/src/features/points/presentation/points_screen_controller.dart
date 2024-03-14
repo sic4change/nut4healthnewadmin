@@ -15,7 +15,7 @@ class PointsScreenController extends AutoDisposeAsyncNotifier<void> {
       casesmoderada: 0, casessevera: 0);
   Region regionSelected = const Region(regionId: '', name: '', countryId: '', active: false);
   List<Region> regionOptions = List.empty();
-  Province provinceSelected = const Province(provinceId: '', country: "", regionId: '', name: "", active: false);
+  Province provinceSelected = const Province(provinceId: '', country: "", regionId: '', locationId: '', name: "", active: false);
   List<Province> provinceOptions = List.empty();
 
   @override

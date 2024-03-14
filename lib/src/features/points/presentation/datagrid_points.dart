@@ -532,7 +532,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
                     ref.watch(pointsScreenControllerProvider.notifier).
                     setRegionOptions(pointDataGridSource.getRegions()!.where((r) => r.countryId == countrySelected.countryId).toList());
 
-                    ref.watch(pointsScreenControllerProvider.notifier).setProvinceSelected(const Province(provinceId: '', name: '', country: '', regionId: '', active: false));
+                    ref.watch(pointsScreenControllerProvider.notifier).setProvinceSelected(const Province(provinceId: '', name: '', country: '', regionId: '', locationId: '', active: false));
                     ref.watch(pointsScreenControllerProvider.notifier).setProvinceOptions(List.empty());
                     try {
                       ref.watch(pointsScreenControllerProvider.notifier).
@@ -554,7 +554,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
                       setProvinceSelected(ref.watch(pointsScreenControllerProvider.notifier).getProvinceOptions()[0]);
                     } catch(e) {
                       ref.watch(pointsScreenControllerProvider.notifier).
-                      setProvinceSelected(const Province(provinceId: '', country: "", regionId: '', name: "", active: false));
+                      setProvinceSelected(const Province(provinceId: '', country: "", regionId: '', locationId: '', name: "", active: false));
                     }
                   } else if (columnName == 'Municipio') {
                     Province provinceSelected = pointDataGridSource.getProvinces()!.firstWhere((element) => element.name == newValue);

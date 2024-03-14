@@ -124,7 +124,7 @@ class FirestoreRepository {
                 const Region(regionId: '', name: '', countryId: '', active: false);
 
               final Province province = provinceMap[city.province]??
-                const Province(provinceId: '', name: '', country: '', regionId: '', active: false);
+                const Province(provinceId: '', name: '', country: '', regionId: '', locationId: '', active: false);
 
                 return CityWithProvinceAndCountry(city, province, country, region);
 

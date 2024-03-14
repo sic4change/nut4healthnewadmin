@@ -187,7 +187,7 @@ class _LocationDataGridState extends LocalizationSampleViewState {
         const CsvToListConverter(fieldDelimiter: ';').convert(it);
         for (final row in rowsAsListOfValues) {
           if (row.isNotEmpty) {
-            ref.read(provincesScreenControllerProvider.notifier).addLocation(
+            ref.read(locationsScreenControllerProvider.notifier).addLocation(
                 Location(
                   locationId: "",
                   name: row[0].toString(),
@@ -494,19 +494,19 @@ class _LocationDataGridState extends LocalizationSampleViewState {
                   optionSelected = newValue!;
                   if (columnName == 'País') {
                     Country countrySelected = locationDataGridSource.getCountries()!.firstWhere((element) => element.name == newValue);
-                    ref.watch(provincesScreenControllerProvider.notifier).setCountrySelected(countrySelected);
-                    ref.watch(provincesScreenControllerProvider.notifier).
+                    ref.watch(locationsScreenControllerProvider.notifier).setCountrySelected(countrySelected);
+                    ref.watch(locationsScreenControllerProvider.notifier).
                     setRegionOptions(locationDataGridSource.getRegions().where((element) => element.countryId == countrySelected.countryId).toList());
                     try {
-                      ref.watch(provincesScreenControllerProvider.notifier).
-                      setRegionSelected(ref.watch(provincesScreenControllerProvider.notifier).getRegionOptions()[0]);
+                      ref.watch(locationsScreenControllerProvider.notifier).
+                      setRegionSelected(ref.watch(locationsScreenControllerProvider.notifier).getRegionOptions()[0]);
                     } catch(e) {
-                      ref.watch(provincesScreenControllerProvider.notifier).
+                      ref.watch(locationsScreenControllerProvider.notifier).
                       setRegionSelected(const Region(regionId: '', name: '', countryId: '', active: false));
                     }
                   } else if (columnName == 'Región') {
                     Region regionSelected = locationDataGridSource.getRegions()!.firstWhere((element) => element.name == newValue);
-                    ref.watch(provincesScreenControllerProvider.notifier).setRegionSelected(regionSelected);
+                    ref.watch(locationsScreenControllerProvider.notifier).setRegionSelected(regionSelected);
                   } else {
                     activeController!.text = value;
                   }
@@ -569,7 +569,7 @@ class _LocationDataGridState extends LocalizationSampleViewState {
         _buildRow(controller: nameController!, columnName: 'Nombre', text: _name),
         _buildRowComboSelection(
           context: context,
-          optionSelected: ref.watch(provincesScreenControllerProvider.notifier).getCountrySelected().name,
+          optionSelected: ref.watch(locationsScreenControllerProvider.notifier).getCountrySelected().name,
           columnName: 'País',
           dropDownMenuItems: locationDataGridSource.getCountries()!.map((e) => e.name).toList(),
           text: _country,
@@ -577,9 +577,9 @@ class _LocationDataGridState extends LocalizationSampleViewState {
         ),
         _buildRowComboSelection(
           context: context,
-          optionSelected: ref.watch(provincesScreenControllerProvider.notifier).getRegionSelected().name,
+          optionSelected: ref.watch(locationsScreenControllerProvider.notifier).getRegionSelected().name,
           columnName: 'Región',
-          dropDownMenuItems: ref.watch(provincesScreenControllerProvider.notifier)
+          dropDownMenuItems: ref.watch(locationsScreenControllerProvider.notifier)
               .getRegionOptions().map((e) => e.name).toList(),
           text: _region,
           setState: setState,
@@ -606,7 +606,7 @@ class _LocationDataGridState extends LocalizationSampleViewState {
         _buildRow(controller: nameController!, columnName: 'Nombre', text: _name),
         _buildRowComboSelection(
           context: context,
-          optionSelected: ref.watch(provincesScreenControllerProvider.notifier).getCountrySelected().name,
+          optionSelected: ref.watch(locationsScreenControllerProvider.notifier).getCountrySelected().name,
           columnName: 'País',
           dropDownMenuItems: locationDataGridSource.getCountries()!.map((e) => e.name).toList(),
           text: _country,
@@ -614,9 +614,9 @@ class _LocationDataGridState extends LocalizationSampleViewState {
         ),
         _buildRowComboSelection(
           context: context,
-          optionSelected: ref.watch(provincesScreenControllerProvider.notifier).getRegionSelected().name,
+          optionSelected: ref.watch(locationsScreenControllerProvider.notifier).getRegionSelected().name,
           columnName: 'Región',
-          dropDownMenuItems: ref.watch(provincesScreenControllerProvider.notifier)
+          dropDownMenuItems: ref.watch(locationsScreenControllerProvider.notifier)
               .getRegionOptions().map((e) => e.name).toList(),
           text: _region,
           setState: setState,
@@ -665,7 +665,7 @@ class _LocationDataGridState extends LocalizationSampleViewState {
         ?.value
         .toString();
     final country = locationDataGridSource.getCountries()!.firstWhere((element) => element.name == countryString);
-    ref.watch(provincesScreenControllerProvider.notifier).setCountrySelected(country);
+    ref.watch(locationsScreenControllerProvider.notifier).setCountrySelected(country);
 
     final String? regionString = row
         .getCells()
@@ -674,9 +674,9 @@ class _LocationDataGridState extends LocalizationSampleViewState {
         .toString();
 
     final region = locationDataGridSource.getRegions().firstWhere((element) => element.name == regionString);
-    ref.watch(provincesScreenControllerProvider.notifier).setRegionSelected(region);
-    ref.watch(provincesScreenControllerProvider.notifier).
-    setRegionOptions(locationDataGridSource.getRegions().where((element) => element.countryId == ref.watch(provincesScreenControllerProvider.notifier).getCountrySelected().countryId).toList());
+    ref.watch(locationsScreenControllerProvider.notifier).setRegionSelected(region);
+    ref.watch(locationsScreenControllerProvider.notifier).
+    setRegionOptions(locationDataGridSource.getRegions().where((element) => element.countryId == ref.watch(locationsScreenControllerProvider.notifier).getCountrySelected().countryId).toList());
 
 
     final String? active = row
@@ -721,12 +721,12 @@ class _LocationDataGridState extends LocalizationSampleViewState {
 
   void _processCellCreate(BuildContext buildContext) async {
     if (_formKey.currentState!.validate()) {
-      ref.read(provincesScreenControllerProvider.notifier).addLocation(
+      ref.read(locationsScreenControllerProvider.notifier).addLocation(
           Location(
               locationId: "",
               name: nameController!.text,
-              country: ref.watch(provincesScreenControllerProvider.notifier).getCountrySelected().countryId,
-              regionId: ref.watch(provincesScreenControllerProvider.notifier).getRegionSelected().regionId,
+              country: ref.watch(locationsScreenControllerProvider.notifier).getCountrySelected().countryId,
+              regionId: ref.watch(locationsScreenControllerProvider.notifier).getRegionSelected().regionId,
               active: activeController!.text == '✔' ? true : false)
       );
       Navigator.pop(buildContext);
@@ -738,11 +738,11 @@ class _LocationDataGridState extends LocalizationSampleViewState {
   void _processCellUpdate(DataGridRow row, BuildContext buildContext) {
     final String? id = locationDataGridSource.getLocations()?.firstWhere((element) => element.location.locationId == row.getCells()[0].value).location.locationId;
     if (_formKey.currentState!.validate()) {
-      ref.read(provincesScreenControllerProvider.notifier).updateLocation(
+      ref.read(locationsScreenControllerProvider.notifier).updateLocation(
           Location(locationId: id!,
               name: nameController!.text,
-              country: ref.watch(provincesScreenControllerProvider.notifier).getCountrySelected().countryId,
-              regionId: ref.watch(provincesScreenControllerProvider.notifier).getRegionSelected().regionId,
+              country: ref.watch(locationsScreenControllerProvider.notifier).getCountrySelected().countryId,
+              regionId: ref.watch(locationsScreenControllerProvider.notifier).getRegionSelected().regionId,
               active: activeController!.text == '✔' ? true : false
           )
       );
@@ -794,7 +794,7 @@ class _LocationDataGridState extends LocalizationSampleViewState {
     final location = locationDataGridSource.getLocations()?.
       firstWhere((element) => element.location.locationId == row.getCells()[0].value).location;
     if (location != null) {
-      ref.read(provincesScreenControllerProvider.notifier).deleteLocation(location);
+      ref.read(locationsScreenControllerProvider.notifier).deleteLocation(location);
       _showDialogDeleteConfirmation();
     }
   }
@@ -1043,7 +1043,7 @@ class _LocationDataGridState extends LocalizationSampleViewState {
     return Consumer(
         builder: (context, ref, child) {
           ref.listen<AsyncValue>(
-            provincesScreenControllerProvider,
+            locationsScreenControllerProvider,
                 (_, state) => {
             },
           );

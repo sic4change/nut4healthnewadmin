@@ -62,6 +62,6 @@ class LocationsScreenController extends AutoDisposeAsyncNotifier<void> {
   }
 }
 
-final provincesScreenControllerProvider =
+final locationsScreenControllerProvider =
     AutoDisposeAsyncNotifierProvider<LocationsScreenController, void>(
         LocationsScreenController.new);
