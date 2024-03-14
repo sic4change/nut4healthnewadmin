@@ -9,6 +9,7 @@ import '../../countries/domain/country.dart';
 
 import 'package:rxdart/rxdart.dart';
 
+import '../../locations/domain/location.dart';
 import '../../provinces/domain/province.dart';
 import '../domain/CityWithProvinceAndCountry.dart';
 import '../domain/city.dart';
@@ -27,6 +28,9 @@ class FirestorePath {
 
   static String province(String uid) => 'provinces/$uid';
   static String provinces() => 'provinces';
+
+  static String location(String uid) => 'locations/$uid';
+  static String locations() => 'locations';
 
   static String city(String uid) => 'cities/$uid';
   static String cities() => 'cities';
@@ -85,6 +89,12 @@ class FirestoreRepository {
         builder: (data, documentId) => Region.fromMap(data, documentId),
       );
 
+  Stream<List<Location>> watchLocations() =>
+      _dataSource.watchCollection(
+        path: FirestorePath.locations(),
+        builder: (data, documentId) => Location.fromMap(data, documentId),
+      );
+
   Stream<List<Province>> watchProvinces() =>
       _dataSource.watchCollection(
         path: FirestorePath.provinces(),
@@ -93,18 +103,24 @@ class FirestoreRepository {
 
 
   Stream<List<CityWithProvinceAndCountry>> watchCitiesWithProvincesAndCountrys() {
-    return CombineLatestStream.combine4(
+    return CombineLatestStream.combine5(
         watchCities(),
         watchProvinces(),
+        watchLocations(),
         watchCountries(),
         watchRegions(),
             (List<City> cities,
             List<Province> provinces,
+            List<Location> locations,
             List<Country> countries,
             List<Region> regions,
             ) {
             final Map<String, Province> provinceMap = Map.fromEntries(
               provinces.map((province) => MapEntry(province.provinceId, province)),
+            );
+
+            final Map<String, Location> locationMap = Map.fromEntries(
+              locations.map((location) => MapEntry(location.locationId, location)),
             );
 
             final Map<String, Country> countryMap = Map.fromEntries(
@@ -115,6 +131,7 @@ class FirestoreRepository {
               regions.map((region) => MapEntry(region.regionId, region)),
             );
             return cities.map((city)  {
+
               final Country country = countryMap[city.country] ??
                 const Country(countryId: '', name: '', code: '', active: false,
                     needValidation: false, cases: 0,
@@ -123,10 +140,13 @@ class FirestoreRepository {
               final Region region = regionMap[city.regionId] ??
                 const Region(regionId: '', name: '', countryId: '', active: false);
 
+              final Location location = locationMap[city.locationId]??
+                  const Location(locationId: '',  name: '', country: '', regionId: '', active: false);
+
               final Province province = provinceMap[city.province]??
                 const Province(provinceId: '', name: '', country: '', regionId: '', locationId: '', active: false);
 
-                return CityWithProvinceAndCountry(city, province, country, region);
+                return CityWithProvinceAndCountry(city, province, country, region, location);
 
             }).toList();
           });
@@ -187,6 +207,14 @@ final regionsStreamProvider = StreamProvider.autoDispose<List<Region>>((ref) {
   return database.watchRegions();
 });
 
+final locationsStreamProvider = StreamProvider.autoDispose<List<Location>>((ref) {
+  final user = ref.watch(authStateChangesProvider).value;
+  if (user == null) {
+    throw AssertionError('User can\'t be null');
+  }
+  final database = ref.watch(databaseProvider);
+  return database.watchLocations();
+});
 
 final cityStreamProvider =
     StreamProvider.autoDispose.family<City, CityID>((ref, cityId) {

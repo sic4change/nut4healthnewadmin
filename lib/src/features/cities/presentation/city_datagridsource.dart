@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../countries/domain/country.dart';
+import '../../locations/domain/location.dart';
 import '../../provinces/domain/province.dart';
 import '../domain/CityWithProvinceAndCountry.dart';
 
@@ -16,11 +17,13 @@ class CityDataGridSource extends DataGridSource {
   /// Creates the city data source class with required details.
   CityDataGridSource(List<CityWithProvinceAndCountry> cityData,
       List<Province> provinceData,
+      List<Location> locationData,
       List<Country> countryData,
       List<Region> regionData,
       ) {
     _cities = cityData;
     _provinces = provinceData;
+    _locations = locationData;
     _countries = countryData;
     _regions = regionData;
     buildDataGridRows();
@@ -30,6 +33,7 @@ class CityDataGridSource extends DataGridSource {
   List<CityWithProvinceAndCountry>? _cities = <CityWithProvinceAndCountry>[];
   List<Country> _countries = <Country>[];
   List<Region> _regions = <Region>[];
+  List<Location> _locations = <Location>[];
   List<Province> _provinces = <Province>[];
 
 
@@ -42,6 +46,7 @@ class CityDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Nombre', value: cityWithProvinceAndCountry.city.name),
           DataGridCell<String>(columnName: 'País', value: cityWithProvinceAndCountry.country?.name),
           DataGridCell<String>(columnName: 'Región', value: cityWithProvinceAndCountry.region?.name),
+          DataGridCell<String>(columnName: 'Provincia', value: cityWithProvinceAndCountry.location?.name),
           DataGridCell<String>(columnName: 'Municipio', value: cityWithProvinceAndCountry.province?.name),
           DataGridCell<bool>(columnName: 'Activo', value: cityWithProvinceAndCountry.city.active),
         ]);
@@ -133,7 +138,12 @@ class CityDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[4].value.toString()),
       ),
-      _buildActive(row.getCells()[5].value)
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[5].value.toString()),
+      ),
+      _buildActive(row.getCells()[6].value)
     ]);
   }
 
@@ -159,6 +169,14 @@ class CityDataGridSource extends DataGridSource {
 
   List<Region> getRegions() {
     return _regions;
+  }
+
+  setLocations(List<Location> locationData) {
+    _locations = locationData;
+  }
+
+  List<Location> getLocations() {
+    return _locations;
   }
 
   setProvinces(List<Province> provinceData) {

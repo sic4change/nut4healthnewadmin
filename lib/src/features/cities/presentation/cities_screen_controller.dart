@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:adminnut4health/src/features/locations/domain/location.dart';
 import 'package:adminnut4health/src/features/regions/domain/region.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../countries/domain/country.dart';
@@ -14,10 +15,12 @@ class CitiesScreenController extends AutoDisposeAsyncNotifier<void> {
       active: false, needValidation: false, cases: 0, casesnormopeso: 0,
       casesmoderada: 0, casessevera: 0);
   Region regionSelected = const Region(regionId: '', name: '', countryId: '', active: false);
+  Location locationSelected = const Location(locationId: '', name: '', country: '', regionId: '', active: false);
   Province provinceSelected = const Province(provinceId: '', country: "", regionId: '',
       locationId: '', name: "", active: false);
   List<Region> regionOptions = List.empty();
   List<Province> provinceOptions = List.empty();
+  List<Location> locationOptions = List.empty();
 
   @override
   FutureOr<void> build() {
@@ -46,6 +49,22 @@ class CitiesScreenController extends AutoDisposeAsyncNotifier<void> {
 
   List<Region> getRegionOptions() {
     return regionOptions;
+  }
+
+  Location getLocationSelected() {
+    return locationSelected;
+  }
+
+  void setLocationSelected(Location locationSelected) {
+    this.locationSelected = locationSelected;
+  }
+
+  void setLocationOptions(List<Location> locationOptions) {
+    this.locationOptions = locationOptions;
+  }
+
+  List<Location> getLocationOptions() {
+    return locationOptions;
   }
 
   Province getProvinceSelected() {

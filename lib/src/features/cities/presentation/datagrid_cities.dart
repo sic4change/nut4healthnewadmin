@@ -20,6 +20,7 @@ import 'package:syncfusion_flutter_pdf/pdf.dart';
 import '../../../sample/model/sample_view.dart';
 import '../../authentication/data/firebase_auth_repository.dart';
 import '../../countries/domain/country.dart';
+import '../../locations/domain/location.dart';
 import '../data/firestore_repository.dart';
 import '../domain/CityWithProvinceAndCountry.dart';
 import '../domain/city.dart';
@@ -69,6 +70,7 @@ class _CityDataGridState extends LocalizationSampleViewState {
       _name,
       _country,
       _region,
+      _location,
       _province,
       _active,
       _newCity,
@@ -88,6 +90,7 @@ class _CityDataGridState extends LocalizationSampleViewState {
     'Nombre': 150,
     'País': 150,
     'Región': 150,
+    'Provincia': 150,
     'Municipio': 150,
     'Activo': 150,
   };
@@ -124,6 +127,14 @@ class _CityDataGridState extends LocalizationSampleViewState {
       cityDataGridSource.setRegions(List.empty());
     } else {
       cityDataGridSource.setRegions(regions.value!);
+    }
+  }
+
+  _saveLocations(AsyncValue<List<Location>>? locations) {
+    if (locations == null) {
+      cityDataGridSource.setLocations(List.empty());
+    } else {
+      cityDataGridSource.setLocations(locations.value!);
     }
   }
 
@@ -216,7 +227,9 @@ class _CityDataGridState extends LocalizationSampleViewState {
                     element.name == row[2].toString()).countryId,
                   regionId: cityDataGridSource.getRegions().firstWhere((r) =>
                     r.name == row[3].toString()).regionId,
-                  active: row[4].toString() == 'true' ? true : false,
+                  locationId: cityDataGridSource.getLocations().firstWhere((r) =>
+                  r.name == row[4].toString()).locationId,
+                  active: row[5].toString() == 'true' ? true : false,
                 ));
           }
         }
@@ -471,7 +484,8 @@ class _CityDataGridState extends LocalizationSampleViewState {
                     ref.watch(citiesScreenControllerProvider.notifier).setCountrySelected(countrySelected);
                     ref.watch(citiesScreenControllerProvider.notifier).
                       setRegionOptions(cityDataGridSource.getRegions().where((r) => r.countryId == countrySelected.countryId).toList());
-
+                    ref.watch(citiesScreenControllerProvider.notifier).setLocationSelected(const Location(locationId: '', name: '', country: '', regionId: '',active: false));
+                    ref.watch(citiesScreenControllerProvider.notifier).setLocationOptions(List.empty());
                     ref.watch(citiesScreenControllerProvider.notifier).setProvinceSelected(const Province(provinceId: '', name: '', country: '', regionId: '', locationId: '',active: false));
                     ref.watch(citiesScreenControllerProvider.notifier).setProvinceOptions(List.empty());
                     if (ref.watch(citiesScreenControllerProvider.notifier).getRegionOptions().isNotEmpty) {
@@ -485,16 +499,32 @@ class _CityDataGridState extends LocalizationSampleViewState {
                     Region regionSelected = cityDataGridSource.getRegions().firstWhere((r) => r.name == newValue);
                     ref.watch(citiesScreenControllerProvider.notifier).setRegionSelected(regionSelected);
                     ref.watch(citiesScreenControllerProvider.notifier).
-                    setProvinceOptions(cityDataGridSource.getProvinces().where((p) =>
+                    setLocationOptions(cityDataGridSource.getLocations().where((p) =>
                       p.country == ref.watch(citiesScreenControllerProvider.notifier).getCountrySelected().countryId
                       && p.regionId == regionSelected.regionId
+                    ).toList());
+                    ref.watch(citiesScreenControllerProvider.notifier).setProvinceSelected(const Province(provinceId: '', name: '', country: '', regionId: '', locationId: '',active: false));
+                    ref.watch(citiesScreenControllerProvider.notifier).setProvinceOptions(List.empty());
+                    if (ref.watch(citiesScreenControllerProvider.notifier).getLocationOptions().isNotEmpty) {
+                      ref.watch(citiesScreenControllerProvider.notifier).
+                      setLocationSelected(ref.watch(citiesScreenControllerProvider.notifier).getLocationOptions()[0]);
+                    } else {
+                      ref.watch(citiesScreenControllerProvider.notifier).
+                      setLocationSelected(const Location(country: "", regionId: '', locationId: '', name: "", active: false));
+                    }
+                  } else if (columnName == 'Provincia') {
+                    Location locationSelected = cityDataGridSource.getLocations().firstWhere((r) => r.name == newValue);
+                    ref.watch(citiesScreenControllerProvider.notifier).setLocationSelected(locationSelected);
+                    ref.watch(citiesScreenControllerProvider.notifier).
+                    setProvinceOptions(cityDataGridSource.getProvinces().where((p) =>
+                      p.locationId == locationSelected.locationId
                     ).toList());
                     if (ref.watch(citiesScreenControllerProvider.notifier).getProvinceOptions().isNotEmpty) {
                       ref.watch(citiesScreenControllerProvider.notifier).
                       setProvinceSelected(ref.watch(citiesScreenControllerProvider.notifier).getProvinceOptions()[0]);
                     } else {
                       ref.watch(citiesScreenControllerProvider.notifier).
-                      setProvinceSelected(const Province(provinceId: '', country: "", regionId: '', locationId: '', name: "", active: false));
+                      setProvinceSelected(const Province(provinceId: "", country: "", regionId: '', locationId: '', name: "", active: false));
                     }
                   } else if (columnName == 'Municipio') {
                     Province provinceSelected = cityDataGridSource.getProvinces().firstWhere((element) => element.name == newValue);
@@ -581,6 +611,16 @@ class _CityDataGridState extends LocalizationSampleViewState {
         ),
         const SizedBox(height: 20),
         _buildRowComboSelection(
+          context: context,
+          optionSelected: ref.watch(citiesScreenControllerProvider.notifier).getLocationSelected().name,
+          columnName: 'Provincia',
+          dropDownMenuItems: ref.watch(citiesScreenControllerProvider.notifier)
+              .getLocationOptions().map((e) => e.name).toList(),
+          text: _location,
+          setState: setState,
+        ),
+        const SizedBox(height: 20),
+        _buildRowComboSelection(
             context: context,
             optionSelected: ref.watch(citiesScreenControllerProvider.notifier).getProvinceSelected().name,
             columnName: 'Municipio',
@@ -625,6 +665,16 @@ class _CityDataGridState extends LocalizationSampleViewState {
                 .getRegionOptions().map((e) => e.name).toList(),
             text: _region,
             setState: setState,
+        ),
+        const SizedBox(height: 20),
+        _buildRowComboSelection(
+          context: context,
+          optionSelected: ref.watch(citiesScreenControllerProvider.notifier).getLocationSelected().name,
+          columnName: 'Provincia',
+          dropDownMenuItems: ref.watch(citiesScreenControllerProvider.notifier)
+              .getLocationOptions().map((e) => e.name).toList(),
+          text: _location,
+          setState: setState,
         ),
         const SizedBox(height: 20),
         _buildRowComboSelection(
@@ -686,11 +736,23 @@ class _CityDataGridState extends LocalizationSampleViewState {
         .firstWhere((DataGridCell element) => element.columnName == 'Región')
         ?.value
         .toString();
-
     final region = cityDataGridSource.getRegions().firstWhere((r) => r.name == regionString);
     ref.watch(citiesScreenControllerProvider.notifier).setRegionSelected(region);
+
     ref.watch(citiesScreenControllerProvider.notifier).
     setRegionOptions(cityDataGridSource.getRegions().where((r) => r.countryId == ref.watch(citiesScreenControllerProvider.notifier).getCountrySelected().countryId).toList());
+
+
+    final String? locationString = row
+        .getCells()
+        .firstWhere((DataGridCell element) => element.columnName == 'Provincia')
+        ?.value
+        .toString();
+    final location = cityDataGridSource.getLocations().firstWhere((r) => r.name == locationString);
+    ref.watch(citiesScreenControllerProvider.notifier).setLocationSelected(location);
+
+    ref.watch(citiesScreenControllerProvider.notifier).
+    setLocationOptions(cityDataGridSource.getLocations().where((r) => r.regionId == ref.watch(citiesScreenControllerProvider.notifier).getRegionSelected().regionId).toList());
 
     final String? provinceString = row
         .getCells()
@@ -700,10 +762,10 @@ class _CityDataGridState extends LocalizationSampleViewState {
 
     final province = cityDataGridSource.getProvinces().firstWhere((p) => p.name == provinceString);
     ref.watch(citiesScreenControllerProvider.notifier).setProvinceSelected(province);
+
     ref.watch(citiesScreenControllerProvider.notifier).
-      setProvinceOptions(cityDataGridSource.getProvinces().where((p) =>
-        p.country == ref.watch(citiesScreenControllerProvider.notifier).getCountrySelected().countryId
-        && p.regionId == ref.watch(citiesScreenControllerProvider.notifier).getRegionSelected().regionId).toList());
+    setProvinceOptions(cityDataGridSource.getProvinces().where((p) =>
+        p.locationId == ref.watch(citiesScreenControllerProvider.notifier).getLocationSelected().locationId).toList());
 
     final String? active = row
         .getCells()
@@ -752,6 +814,7 @@ class _CityDataGridState extends LocalizationSampleViewState {
           province: ref.watch(citiesScreenControllerProvider.notifier).getProvinceSelected().provinceId,
           country: ref.watch(citiesScreenControllerProvider.notifier).getCountrySelected().countryId,
           regionId: ref.watch(citiesScreenControllerProvider.notifier).getRegionSelected().regionId,
+          locationId: ref.watch(citiesScreenControllerProvider.notifier).getLocationSelected().locationId,
           active: activeController!.text == '✔' ? true : false));
       Navigator.pop(buildContext);
     }
@@ -772,6 +835,7 @@ class _CityDataGridState extends LocalizationSampleViewState {
           name: nameController!.text,
           country: ref.watch(citiesScreenControllerProvider.notifier).getCountrySelected().countryId,
           regionId: ref.watch(citiesScreenControllerProvider.notifier).getRegionSelected().regionId,
+          locationId: ref.watch(citiesScreenControllerProvider.notifier).getLocationSelected().locationId,
           province: ref.watch(citiesScreenControllerProvider.notifier).getProvinceSelected().provinceId,
           active: activeController!.text == '✔' ? true : false));
       Navigator.pop(buildContext);
@@ -859,11 +923,11 @@ class _CityDataGridState extends LocalizationSampleViewState {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(Icons.edit, color: Colors.white, size: 16),
-            SizedBox(width: 8.0),
+            const Icon(Icons.edit, color: Colors.white, size: 16),
+            const SizedBox(width: 8.0),
             Text(
               _editCity,
-              style: TextStyle(color: Colors.white, fontSize: 12),
+              style: const TextStyle(color: Colors.white, fontSize: 12),
             )
           ],
         ),
@@ -878,7 +942,7 @@ class _CityDataGridState extends LocalizationSampleViewState {
       onTap: () => _handleDeleteWidgetTap(row),
       child: Container(
         color: Colors.redAccent,
-        padding: EdgeInsets.only(left: 8.0, right: 8.0),
+        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -886,7 +950,7 @@ class _CityDataGridState extends LocalizationSampleViewState {
             const SizedBox(width: 8.0),
             Text(
               _removeCity,
-              style: TextStyle(color: Colors.white, fontSize: 12),
+              style: const TextStyle(color: Colors.white, fontSize: 12),
             ),
           ],
         ),
@@ -902,6 +966,7 @@ class _CityDataGridState extends LocalizationSampleViewState {
         _name = 'Name';
         _country = 'Country';
         _region = 'Region';
+        _location = 'Location';
         _province = 'Municipality';
         _active = 'Active';
         _newCity = 'New Community';
@@ -921,6 +986,7 @@ class _CityDataGridState extends LocalizationSampleViewState {
         _name = 'Nombre';
         _country = 'País';
         _region = 'Región';
+        _location = 'Provincia';
         _province = 'Municipio';
         _active = 'Activo';
         _newCity = 'Crear Comunidad';
@@ -941,6 +1007,7 @@ class _CityDataGridState extends LocalizationSampleViewState {
         _province = 'Municipalité';
         _country = 'Pays';
         _region = 'Région';
+        _location = 'Emplacement';
         _active = 'Actif';
         _newCity = 'Créer un Communauté';
         _importCSV = 'Importer CSV';
@@ -1028,6 +1095,18 @@ class _CityDataGridState extends LocalizationSampleViewState {
           ),
         ),
         GridColumn(
+          columnName: 'Provincia',
+          width: columnWidths['Provincia']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _location,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+        GridColumn(
           columnName: 'Municipio',
           width: columnWidths['Municipio']!,
           label: Container(
@@ -1058,7 +1137,7 @@ class _CityDataGridState extends LocalizationSampleViewState {
   void initState() {
     super.initState();
     cityDataGridSource =
-        CityDataGridSource(List.empty(), List.empty(), List.empty(), List.empty());
+        CityDataGridSource(List.empty(), List.empty(), List.empty(), List.empty(), List.empty());
     idController = TextEditingController();
     nameController = TextEditingController();
     activeController = TextEditingController();
@@ -1068,6 +1147,7 @@ class _CityDataGridState extends LocalizationSampleViewState {
     _name = 'Nombre';
     _country = 'País';
     _region = 'Región';
+    _location = 'Provincia';
     _province = 'Municipio';
     _active = 'Activo';
     _newCity = 'Crear Comunidad';
@@ -1107,6 +1187,7 @@ class _CityDataGridState extends LocalizationSampleViewState {
       }
       final countriesAsyncValue = ref.watch(countriesStreamProvider);
       final regionsAsyncValue = ref.watch(regionsStreamProvider);
+      final locationsAsynValue = ref.watch(locationsStreamProvider);
       final provinciesAsyncValue = ref.watch(provincesStreamProvider);
       final citiesAsyncValue = ref.watch(citiesStreamProvider);
 
@@ -1120,6 +1201,10 @@ class _CityDataGridState extends LocalizationSampleViewState {
 
       if (regionsAsyncValue.value != null) {
         _saveRegions(regionsAsyncValue);
+      }
+
+      if (locationsAsynValue.value != null) {
+        _saveLocations(locationsAsynValue);
       }
 
       if (provinciesAsyncValue.value != null) {

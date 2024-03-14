@@ -8,17 +8,19 @@ typedef CityID = String;
 class City extends Equatable {
 
   const City({required this.cityId, required this.name,
-    required this.province, required this.country, required this.regionId, required this.active});
+    required this.locationId, required this.province, required this.country,
+    required this.regionId, required this.active});
 
   final CityID cityId;
   final String name;
   final String country;
   final String regionId;
+  final String locationId;
   final String province;
   final bool active;
 
   @override
-  List<Object> get props => [cityId, name, country, regionId, province, active];
+  List<Object> get props => [cityId, name, country, regionId, locationId, province, active];
 
   @override
   bool get stringify => true;
@@ -31,6 +33,7 @@ class City extends Equatable {
     final name = data['name'] as String;
     final country = data['country'] as String;
     final regionId = data['regionId']?? "";
+    final locationId = data['locationId']?? "";
     final province = data['province'] as String;
     final active = data['active'] as bool;
     return City(
@@ -38,6 +41,7 @@ class City extends Equatable {
         name: name,
         country: country,
         regionId: regionId,
+        locationId: locationId,
         province: province,
         active: active);
   }
@@ -47,6 +51,7 @@ class City extends Equatable {
       'name': name,
       'country': country,
       'regionId': regionId,
+      'locationId': locationId,
       'province': province,
       'active': active,
     };
