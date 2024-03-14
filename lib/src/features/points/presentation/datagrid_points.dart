@@ -20,6 +20,7 @@ import 'package:syncfusion_flutter_pdf/pdf.dart';
 import '../../../sample/model/sample_view.dart';
 import '../../authentication/data/firebase_auth_repository.dart';
 import '../../countries/domain/country.dart';
+import '../../locations/domain/location.dart';
 import '../data/firestore_repository.dart';
 import '../domain/point.dart';
 
@@ -75,6 +76,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
       _phoneLength,
       _country,
       _region,
+      _location,
       _province,
       _active,
       _latitude,
@@ -107,6 +109,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
     'Nº dígitos teléfono': 150,
     'País': 150,
     'Región': 150,
+    'Provincia': 150,
     'Municipio': 150,
     'Activo': 150,
     'Latitud': 200,
@@ -164,6 +167,14 @@ class _PointDataGridState extends LocalizationSampleViewState {
       pointDataGridSource.setRegions(List.empty());
     } else {
       pointDataGridSource.setRegions(regions.value!);
+    }
+  }
+
+  _saveLocations(AsyncValue<List<Location>>? locations) {
+    if (locations == null) {
+      pointDataGridSource.setLocations(List.empty());
+    } else {
+      pointDataGridSource.setLocations(locations.value!);
     }
   }
 
@@ -271,14 +282,19 @@ class _PointDataGridState extends LocalizationSampleViewState {
                       .firstWhere(
                           (r) => r.name == row[8].toString())
                       .regionId,
-                  active: row[9].toString() == 'true' ? true : false,
-                  latitude: row[10] as double,
-                  longitude: row[11] as double,
-                  language: row[12] as String,
-                  cases: row[13] as int,
-                  casesnormopeso: row[14] as int,
-                  casesmoderada: row[15] as int,
-                  casessevera: row[16] as int,
+              location: pointDataGridSource
+                  .getLocations()!
+                  .firstWhere(
+                      (r) => r.name == row[9].toString())
+                  .locationId,
+                  active: row[10].toString() == 'true' ? true : false,
+                  latitude: row[11] as double,
+                  longitude: row[12] as double,
+                  language: row[13] as String,
+                  cases: row[14] as int,
+                  casesnormopeso: row[15] as int,
+                  casesmoderada: row[16] as int,
+                  casessevera: row[17] as int,
                   transactionHash: "",
                 ));
           }
@@ -532,6 +548,9 @@ class _PointDataGridState extends LocalizationSampleViewState {
                     ref.watch(pointsScreenControllerProvider.notifier).
                     setRegionOptions(pointDataGridSource.getRegions()!.where((r) => r.countryId == countrySelected.countryId).toList());
 
+                    ref.watch(pointsScreenControllerProvider.notifier).setLocationSelected(const Location(name: '', country: '', regionId: '', locationId: '', active: false));
+                    ref.watch(pointsScreenControllerProvider.notifier).setLocationOptions(List.empty());
+
                     ref.watch(pointsScreenControllerProvider.notifier).setProvinceSelected(const Province(provinceId: '', name: '', country: '', regionId: '', locationId: '', active: false));
                     ref.watch(pointsScreenControllerProvider.notifier).setProvinceOptions(List.empty());
 
@@ -545,17 +564,34 @@ class _PointDataGridState extends LocalizationSampleViewState {
                   } else if (columnName == 'Región') {
                     Region regionSelected = pointDataGridSource.getRegions()!.firstWhere((r) => r.name == newValue);
                     ref.watch(pointsScreenControllerProvider.notifier).setRegionSelected(regionSelected);
+
+                    ref.watch(pointsScreenControllerProvider.notifier).setProvinceSelected(const Province(provinceId: '', name: '', country: '', regionId: '', locationId: '', active: false));
+                    ref.watch(pointsScreenControllerProvider.notifier).setProvinceOptions(List.empty());
+
                     ref.watch(pointsScreenControllerProvider.notifier).
-                    setProvinceOptions(pointDataGridSource.getProvinces().where((p) =>
-                    p.country == ref.watch(pointsScreenControllerProvider.notifier).getCountrySelected().countryId
-                        && p.regionId == regionSelected.regionId
+                    setLocationOptions(pointDataGridSource.getLocations().where((p) => p.regionId == regionSelected.regionId
                     ).toList());
+                    if (ref.watch(pointsScreenControllerProvider.notifier).getLocationOptions().isNotEmpty) {
+                      ref.watch(pointsScreenControllerProvider.notifier).
+                      setLocationSelected(ref.watch(pointsScreenControllerProvider.notifier).getLocationOptions()[0]);
+                    } else {
+                      ref.watch(pointsScreenControllerProvider.notifier).
+                      setLocationSelected(const Location(country: "", regionId: '', locationId: '', name: "", active: false));
+                    }
+                  } else if (columnName == 'Provincia') {
+                    Location locationSelected = pointDataGridSource.getLocations()!.firstWhere((r) => r.name == newValue);
+                    ref.watch(pointsScreenControllerProvider.notifier).setLocationSelected(locationSelected);
+
+                    ref.watch(pointsScreenControllerProvider.notifier).
+                    setProvinceOptions(pointDataGridSource.getProvinces().where((p) => p.locationId == locationSelected.locationId
+                    ).toList());
+
                     if (ref.watch(pointsScreenControllerProvider.notifier).getProvinceOptions().isNotEmpty) {
                       ref.watch(pointsScreenControllerProvider.notifier).
                       setProvinceSelected(ref.watch(pointsScreenControllerProvider.notifier).getProvinceOptions()[0]);
                     } else {
                       ref.watch(pointsScreenControllerProvider.notifier).
-                      setProvinceSelected(const Province(provinceId: '', country: "", regionId: '', locationId: '', name: "", active: false));
+                      setLocationSelected(const Location(country: "", regionId: '', locationId: '', name: "", active: false));
                     }
                   } else if (columnName == 'Municipio') {
                     Province provinceSelected = pointDataGridSource.getProvinces()!.firstWhere((element) => element.name == newValue);
@@ -665,6 +701,15 @@ class _PointDataGridState extends LocalizationSampleViewState {
             text: _region,
             setState: setState,
         ),
+        _buildRowComboSelection(
+          context: context,
+          optionSelected: ref.watch(pointsScreenControllerProvider.notifier).getLocationSelected().name,
+          columnName: 'Provincia',
+          dropDownMenuItems: ref.watch(pointsScreenControllerProvider.notifier)
+              .getLocationOptions().map((e) => e.name).toList(),
+          text: _location,
+          setState: setState,
+        ),
         const SizedBox(height: 20),
         _buildRowComboSelection(
             context: context,
@@ -727,6 +772,15 @@ class _PointDataGridState extends LocalizationSampleViewState {
           columnName: 'Región',
           dropDownMenuItems: ref.watch(pointsScreenControllerProvider.notifier)
               .getRegionOptions().map((e) => e.name).toList(),
+          text: _region,
+          setState: setState,
+        ),
+        _buildRowComboSelection(
+          context: context,
+          optionSelected: ref.watch(pointsScreenControllerProvider.notifier).getLocationSelected().name,
+          columnName: 'Provincia',
+          dropDownMenuItems: ref.watch(pointsScreenControllerProvider.notifier)
+              .getLocationOptions().map((e) => e.name).toList(),
           text: _region,
           setState: setState,
         ),
@@ -852,6 +906,24 @@ class _PointDataGridState extends LocalizationSampleViewState {
     setRegionOptions(pointDataGridSource.getRegions()!
         .where((r) => r.countryId == ref.watch(pointsScreenControllerProvider.notifier).getCountrySelected().countryId).toList());
 
+    final String? locationString = row
+        .getCells()
+        .firstWhere((DataGridCell element) => element.columnName == 'Provincia')
+        ?.value
+        .toString();
+
+    if ((locationString != null && locationString.isNotEmpty) && (pointDataGridSource.getLocations() != null && pointDataGridSource.getLocations()!.isNotEmpty)) {
+      ref.watch(pointsScreenControllerProvider.notifier).
+      setLocationSelected(pointDataGridSource.getLocations()!.firstWhere((element) => element.name == locationString));
+    } else {
+      ref.watch(pointsScreenControllerProvider.notifier).
+      setLocationSelected(const Location(name: '', country: '', regionId: '', locationId: '', active: false));
+    }
+
+    ref.watch(pointsScreenControllerProvider.notifier).
+    setLocationOptions(pointDataGridSource.getLocations()
+        .where((p) =>  p.regionId == ref.watch(pointsScreenControllerProvider.notifier).getRegionSelected().regionId).toList());
+
     final String? provinceString = row
         .getCells()
         .firstWhere((DataGridCell element) => element.columnName == 'Municipio')
@@ -862,8 +934,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
     ref.watch(pointsScreenControllerProvider.notifier).setProvinceSelected(province);
     ref.watch(pointsScreenControllerProvider.notifier).
       setProvinceOptions(pointDataGridSource.getProvinces()
-        .where((p) =>  p.country == ref.watch(pointsScreenControllerProvider.notifier).getCountrySelected().countryId
-                    && p.regionId == ref.watch(pointsScreenControllerProvider.notifier).getRegionSelected().regionId).toList());
+        .where((p) =>  p.locationId == ref.watch(pointsScreenControllerProvider.notifier).getLocationSelected().locationId).toList());
 
     final String? active = row
         .getCells()
@@ -984,6 +1055,9 @@ class _PointDataGridState extends LocalizationSampleViewState {
                     .watch(pointsScreenControllerProvider.notifier)
                     .getRegionSelected()
                     .regionId,
+                location: ref.watch(pointsScreenControllerProvider.notifier)
+                    .getLocationSelected()
+                    .locationId,
                 active: activeController!.text == '✔' ? true : false,
                 latitude: double.parse(latitudeController!.text),
                 longitude: double.parse(longitudeController!.text),
@@ -1026,6 +1100,10 @@ class _PointDataGridState extends LocalizationSampleViewState {
                 .watch(pointsScreenControllerProvider.notifier)
                 .getRegionSelected()
                 .regionId,
+            location: ref
+                .watch(pointsScreenControllerProvider.notifier)
+                .getLocationSelected()
+                .locationId,
               province: ref
                   .watch(pointsScreenControllerProvider.notifier)
                   .getProvinceSelected()
@@ -1173,6 +1251,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
         _phoneLength = 'Number of phone digits';
         _country = 'Country';
         _region = 'Region';
+        _location = 'Location';
         _province = 'Municipality';
         _active = 'Active';
         _newPoint = 'New Point';
@@ -1205,6 +1284,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
         _phoneLength = 'Nº dígitos teléfono';
         _country = 'País';
         _region = 'Región';
+        _location = 'Provincia';
         _province = 'Municipio';
         _active = 'Activo';
         _newPoint = 'Crear Punto';
@@ -1238,6 +1318,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
         _province = 'Municipalité';
         _country = 'Pays';
         _region = 'Région';
+        _location = 'Emplacement';
         _active = 'Actif';
         _newPoint = 'Créer un Point';
         _importCSV = 'Importer CSV';
@@ -1388,6 +1469,18 @@ class _PointDataGridState extends LocalizationSampleViewState {
           ),
         ),
         GridColumn(
+          columnName: 'Provincia',
+          width: columnWidths['Provincia']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _location,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+        GridColumn(
           columnName: 'Municipio',
           width: columnWidths['Municipio']!,
           label: Container(
@@ -1505,7 +1598,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
   @override
   void initState() {
     super.initState();
-    pointDataGridSource = PointDataGridSource(List.empty(), List.empty(), List.empty(), List.empty());
+    pointDataGridSource = PointDataGridSource(List.empty(), List.empty(), List.empty(), List.empty(), List.empty());
     idController = TextEditingController();
     nameController = TextEditingController();
     pointNameController = TextEditingController();
@@ -1532,6 +1625,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
     _phoneLength = 'Nº dígitos teléfono';
     _country = 'País';
     _region = 'Región';
+    _location = 'Provincia';
     _province = 'Municipio';
     _active = 'Activo';
     _latitude = 'Latitud';
@@ -1580,6 +1674,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
       final countriesAsyncValue = ref.watch(countriesStreamProvider);
       final regionsAsyncValue = ref.watch(regionsStreamProvider);
       final provinciesAsyncValue = ref.watch(provincesStreamProvider);
+      final locationsAsyncValue = ref.watch(locationsStreamProvider);
       final pointsAsyncValue = ref.watch(pointsStreamProvider);
 
       if (countriesAsyncValue.value != null) {
@@ -1592,6 +1687,10 @@ class _PointDataGridState extends LocalizationSampleViewState {
 
       if (regionsAsyncValue.value != null) {
         _saveRegions(regionsAsyncValue);
+      }
+
+      if (locationsAsyncValue.value != null) {
+        _saveLocations(locationsAsyncValue);
       }
 
       if (provinciesAsyncValue.value != null) {

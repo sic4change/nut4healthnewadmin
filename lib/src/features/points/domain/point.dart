@@ -9,7 +9,7 @@ class Point extends Equatable {
 
   const Point({required this.pointId, required this.name, required this.fullName,
     required this.pointName, required this.pointCode, required this.type,
-    required this.country, required this.regionId, required this.province,
+    required this.country, required this.regionId, required this.location, required this.province,
     required this.phoneCode, required this.phoneLength, required this.active, required this.latitude,
     required this.longitude, required this.language, required this.cases, required this.casesnormopeso,
     required this.casesmoderada, required this.casessevera, required this.transactionHash});
@@ -22,6 +22,7 @@ class Point extends Equatable {
   final String type;
   final String country;
   final String regionId;
+  final String location;
   final String province;
   final String phoneCode;
   final int phoneLength;
@@ -37,7 +38,7 @@ class Point extends Equatable {
 
   @override
   List<Object> get props => [pointId, name, fullName, pointName, pointCode, type,
-    country, regionId, province, phoneCode, phoneLength, active, latitude, longitude,
+    country, regionId, location, province, phoneCode, phoneLength, active, latitude, longitude,
     language, cases, casesnormopeso, casesmoderada,
     casessevera, transactionHash];
 
@@ -56,7 +57,8 @@ class Point extends Equatable {
     final type = data['type']?? "";
     final country = data['country'];
     final regionId = data['regionId']?? "";
-    final province = data['province'];
+    final location = data['location']?? "";
+    final province = data['province']?? "";
     final phoneCode = data['phoneCode'];
     final phoneLength = data['phoneLength']??0;
     final active = data['active'] as bool;
@@ -78,6 +80,7 @@ class Point extends Equatable {
         type: type,
         country: country,
         regionId: regionId,
+        location: location,
         province: province,
         phoneCode: phoneCode,
         phoneLength: phoneLength,
@@ -102,6 +105,7 @@ class Point extends Equatable {
       'type': type,
       'country': country,
       'regionId': regionId,
+      'location': location,
       'province': province,
       'phoneCode': phoneCode,
       'phoneLength': phoneLength,
