@@ -82,6 +82,11 @@
               },
               {
                 "type": "sample",
+                "title": "Provincias",
+                "key": "location_datagrid"
+              },
+              {
+                "type": "sample",
                 "title": "Municipios",
                 "key": "province_datagrid"
               },

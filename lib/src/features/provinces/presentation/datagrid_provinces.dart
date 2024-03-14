@@ -183,7 +183,7 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
       final blob = Blob([myUint8List], 'text/plain');
       readBlob(blob).then((it) {
         List<List<dynamic>> rowsAsListOfValues =
-        const CsvToListConverter().convert(it);
+        const CsvToListConverter(fieldDelimiter: ';').convert(it);
         for (final row in rowsAsListOfValues) {
           if (row.isNotEmpty) {
             ref.read(provincesScreenControllerProvider.notifier).addProvince(
