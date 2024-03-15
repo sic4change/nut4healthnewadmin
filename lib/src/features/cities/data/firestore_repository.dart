@@ -68,12 +68,14 @@ class FirestoreRepository {
       _dataSource.watchCollection(
         path: FirestorePath.cities(),
         builder: (data, documentId) => City.fromMap(data, documentId),
+        sort: (a, b) => a.name.compareTo(b.name),
       );
 
   Stream<List<Province>> watchProvincesInCountry({required CountryID countryId}) {
     return _dataSource.watchCollection(
       path: FirestorePath.provinces(),
       builder: (data, documentId) => Province.fromMap(data, documentId),
+      sort: (a, b) => a.name.compareTo(b.name),
     ).map((event) => event.where((element) => element.country == countryId).toList());
   }
 
@@ -81,24 +83,28 @@ class FirestoreRepository {
       _dataSource.watchCollection(
         path: FirestorePath.countries(),
         builder: (data, documentId) => Country.fromMap(data, documentId),
+        sort: (a, b) => a.name.compareTo(b.name),
       );
 
   Stream<List<Region>> watchRegions() =>
       _dataSource.watchCollection(
         path: FirestorePath.regions(),
         builder: (data, documentId) => Region.fromMap(data, documentId),
+        sort: (a, b) => a.name.compareTo(b.name),
       );
 
   Stream<List<Location>> watchLocations() =>
       _dataSource.watchCollection(
         path: FirestorePath.locations(),
         builder: (data, documentId) => Location.fromMap(data, documentId),
+        sort: (a, b) => a.name.compareTo(b.name),
       );
 
   Stream<List<Province>> watchProvinces() =>
       _dataSource.watchCollection(
         path: FirestorePath.provinces(),
         builder: (data, documentId) => Province.fromMap(data, documentId),
+        sort: (a, b) => a.name.compareTo(b.name),
       );
 
 

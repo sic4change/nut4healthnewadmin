@@ -206,7 +206,7 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
 
     Future<void> exportDataGridToPdf() async {
       final ByteData data = await rootBundle.load('images/nut_logo.jpg');
-      final PdfDocument document = _key.currentState!.exportToPdfDocumentLandscape(
+      final PdfDocument document = _key.currentState!.exportToPdfDocument(
           cellExport: (DataGridCellPdfExportDetails details) {},
           headerFooterExport: (DataGridPdfHeaderFooterExportDetails details) {
             final double width = details.pdfPage.getClientSize().width;

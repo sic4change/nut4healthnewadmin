@@ -55,12 +55,14 @@ class FirestoreRepository {
       _dataSource.watchCollection(
         path: FirestorePath.regions(),
         builder: (data, documentId) => Region.fromMap(data, documentId),
+        sort: (a, b) => a.name.compareTo(b.name),
       );
 
   Stream<List<Country>> watchCountries() =>
       _dataSource.watchCollection(
         path: FirestorePath.countries(),
         builder: (data, documentId) => Country.fromMap(data, documentId),
+        sort: (a, b) => a.name.compareTo(b.name),
       );
 
 
