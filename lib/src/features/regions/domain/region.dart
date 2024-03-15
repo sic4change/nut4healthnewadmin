@@ -10,6 +10,12 @@ class Region extends Equatable {
   const Region({required this.regionId, required this.name,
     required this.countryId, required this.active});
 
+  const Region.empty():
+        regionId = '',
+        name = '',
+        countryId = '',
+        active = false;
+
   final RegionID regionId;
   final String name;
   final String countryId;

@@ -10,6 +10,13 @@ class Location extends Equatable {
   const Location({required this.locationId, required this.name,
     required this.country, required this.regionId, required this.active});
 
+  const Location.empty():
+        locationId = '',
+        regionId = '',
+        name = '',
+        country = '',
+        active = false;
+
   final LocationID locationId;
   final String name;
   final String country;

@@ -10,6 +10,14 @@ class Province extends Equatable {
   const Province({required this.provinceId, required this.name,
     required this.country, required this.regionId, required this.locationId, required this.active});
 
+  const Province.empty():
+        provinceId = '',
+        locationId = '',
+        regionId = '',
+        name = '',
+        country = '',
+        active = false;
+
   final ProvinceID provinceId;
   final String name;
   final String country;

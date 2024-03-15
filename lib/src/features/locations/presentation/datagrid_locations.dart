@@ -429,13 +429,6 @@ class _LocationDataGridState extends LocalizationSampleViewState {
         required String text,
         required void Function(void Function()) setState}) {
     String value = optionSelected;
-    if (optionSelected.isEmpty) {
-      if (dropDownMenuItems.isNotEmpty) {
-        value = dropDownMenuItems[0];
-      } else {
-        value = "";
-      }
-    }
     return Row(
       children: <Widget>[
         Container(
@@ -445,29 +438,29 @@ class _LocationDataGridState extends LocalizationSampleViewState {
         SizedBox(
           width: 150,
           child: DropdownButtonFormField<String>(
-              value: value,
+              value: value.isNotEmpty? value: null,
               autofocus: true,
               focusColor: Colors.transparent,
               icon: const Icon(Icons.arrow_drop_down_sharp),
               isExpanded: false,
+              validator: (String? value) {
+                if (value!.isEmpty) {
+                  return 'El campo no puede estar vacío';
+                }
+                return null;
+              },
               onChanged: (newValue) {
                 setState(() {
                   value = newValue!;
-                  optionSelected = newValue!;
+                  optionSelected = newValue;
                   if (columnName == 'País') {
                     Country countrySelected = locationDataGridSource.getCountries()!.firstWhere((element) => element.name == newValue);
                     ref.watch(locationsScreenControllerProvider.notifier).setCountrySelected(countrySelected);
                     ref.watch(locationsScreenControllerProvider.notifier).
                     setRegionOptions(locationDataGridSource.getRegions().where((element) => element.countryId == countrySelected.countryId).toList());
-                    if (ref.watch(locationsScreenControllerProvider.notifier).getRegionOptions().isNotEmpty) {
-                      ref.watch(locationsScreenControllerProvider.notifier).
-                      setRegionSelected(ref.watch(locationsScreenControllerProvider.notifier).getRegionOptions()[0]);
-                    } else {
-                      ref.watch(locationsScreenControllerProvider.notifier).
-                      setRegionSelected(const Region(regionId: '', name: '', countryId: '', active: false));
-                    }
+                    ref.watch(locationsScreenControllerProvider.notifier).setRegionSelected(const Region.empty());
                   } else if (columnName == 'Región') {
-                    Region regionSelected = locationDataGridSource.getRegions()!.firstWhere((element) => element.name == newValue);
+                    Region regionSelected = locationDataGridSource.getRegions().firstWhere((element) => element.name == newValue);
                     ref.watch(locationsScreenControllerProvider.notifier).setRegionSelected(regionSelected);
                   } else {
                     activeController!.text = value;
@@ -524,8 +517,6 @@ class _LocationDataGridState extends LocalizationSampleViewState {
   /// Building the forms to edit the data
   Widget _buildAlertDialogContent(BuildContext context, void Function(void Function()) setState) {
     final activeOptions = ["✔", "✘"];
-    final countryOptions = locationDataGridSource.getCountries()!.map((e) => e.name).toList();
-    countryOptions.insert(0, "");
     return Column(
       children: <Widget>[
         _buildRow(controller: nameController!, columnName: 'Nombre', text: _name),
@@ -561,8 +552,6 @@ class _LocationDataGridState extends LocalizationSampleViewState {
   /// Building the forms to create the data
   Widget _buildAlertDialogCreateContent(BuildContext context, void Function(void Function()) setState) {
     final activeOptions = ["✔", "✘"];
-    final countryOptions = locationDataGridSource.getCountries()!.map((e) => e.name).toList();
-    countryOptions.insert(0, "");
     return Column(
       children: <Widget>[
         _buildRow(controller: nameController!, columnName: 'Nombre', text: _name),
@@ -599,6 +588,7 @@ class _LocationDataGridState extends LocalizationSampleViewState {
     idController!.text = '';
     nameController!.text = '';
     activeController!.text = '';
+    _resetComboValues();
   }
 
   // Updating the data to the TextEditingController
@@ -1044,6 +1034,11 @@ class _LocationDataGridState extends LocalizationSampleViewState {
         });
   }
 
+  void _resetComboValues() {
+    ref.watch(locationsScreenControllerProvider.notifier).setCountrySelected(const Country.empty());
+    ref.watch(locationsScreenControllerProvider.notifier).setRegionOptions(List.empty());
+    ref.watch(locationsScreenControllerProvider.notifier).setRegionSelected(const Region.empty());
+  }
 }
 
 

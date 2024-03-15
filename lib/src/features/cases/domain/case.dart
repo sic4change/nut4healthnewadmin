@@ -55,7 +55,7 @@ class Case extends Equatable {
     final lastDate = lastDateFirebase.toDate();
     final observations = data['observations']?? "";
     final status = data['status']?? "";
-    final visits = data['visits']?? "";
+    final visits = data['visits']?? 0;
     final chefValidation = data['chefValidation']?? false;
     final regionalValidation = data['regionalValidation']?? false;
 

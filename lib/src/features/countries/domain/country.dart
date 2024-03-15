@@ -12,6 +12,17 @@ class Country extends Equatable {
     required this.cases, required this.casesnormopeso, required this.casesmoderada,
     required this.casessevera});
 
+  const Country.empty():
+        countryId = "",
+        name = "",
+        code = "",
+        active = false,
+        needValidation = false,
+        cases = 0,
+        casesnormopeso = 0,
+        casesmoderada = 0,
+        casessevera = 0;
+
   final CountryID countryId;
   final String name;
   final String code;

@@ -443,13 +443,6 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
         required String text,
         required void Function(void Function()) setState}) {
     String value = optionSelected;
-    if (optionSelected.isEmpty) {
-      if (dropDownMenuItems.isNotEmpty) {
-        value = dropDownMenuItems[0];
-      } else {
-        value = "";
-      }
-    }
     return Row(
       children: <Widget>[
         Container(
@@ -459,46 +452,34 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
         SizedBox(
           width: 150,
           child: DropdownButtonFormField<String>(
-              value: value,
+              value: value.isNotEmpty? value: null,
               autofocus: true,
               focusColor: Colors.transparent,
               icon: const Icon(Icons.arrow_drop_down_sharp),
               isExpanded: false,
+              validator: (String? value) {
+                if (value!.isEmpty) {
+                  return 'El campo no puede estar vacío';
+                }
+                return null;
+              },
               onChanged: (newValue) {
                 setState(() {
                   value = newValue!;
-                  optionSelected = newValue!;
+                  optionSelected = newValue;
                   if (columnName == 'País') {
-                    Country countrySelected = provinceDataGridSource.getCountries()!.firstWhere((element) => element.name == newValue);
+                    Country countrySelected = provinceDataGridSource.getCountries().firstWhere((element) => element.name == newValue);
                     ref.watch(provincesScreenControllerProvider.notifier).setCountrySelected(countrySelected);
                     ref.watch(provincesScreenControllerProvider.notifier).
                     setRegionOptions(provinceDataGridSource.getRegions().where((element) => element.countryId == countrySelected.countryId).toList());
-                    if (ref.watch(locationsScreenControllerProvider.notifier).getRegionOptions().isNotEmpty) {
-                      ref.watch(provincesScreenControllerProvider.notifier).
-                      setRegionSelected(ref.watch(provincesScreenControllerProvider.notifier).getRegionOptions()[0]);
-                    } else {
-                      ref.watch(provincesScreenControllerProvider.notifier).
-                      setRegionSelected(const Region(regionId: '', name: '', countryId: '', active: false));
-                    }
-                    if (ref.watch(provincesScreenControllerProvider.notifier).getLocationOptions().isNotEmpty) {
-                      ref.watch(provincesScreenControllerProvider.notifier).
-                      setLocationSelected(ref.watch(provincesScreenControllerProvider.notifier).getLocationOptions()[0]);
-
-                    } else {
-                      ref.watch(provincesScreenControllerProvider.notifier).
-                      setLocationSelected(const Location(locationId: '', regionId: '', name: '', country: '', active: false));
-                    }
+                    ref.watch(provincesScreenControllerProvider.notifier).setRegionSelected(const Region.empty());
+                    ref.watch(provincesScreenControllerProvider.notifier).setLocationOptions(List.empty());
+                    ref.watch(provincesScreenControllerProvider.notifier).setLocationSelected(const Location.empty());
                   } else if (columnName == 'Región') {
-                    Region regionSelected = provinceDataGridSource.getRegions()!.firstWhere((element) => element.name == newValue);
+                    Region regionSelected = provinceDataGridSource.getRegions().firstWhere((element) => element.name == newValue);
                     ref.watch(provincesScreenControllerProvider.notifier).setRegionSelected(regionSelected);
                     ref.watch(provincesScreenControllerProvider.notifier).setLocationOptions(provinceDataGridSource.getLocations().where((element) => element.regionId == regionSelected.regionId).toList());
-                    if (ref.watch(provincesScreenControllerProvider.notifier).getLocationOptions().isNotEmpty) {
-                      ref.watch(provincesScreenControllerProvider.notifier).
-                      setLocationSelected(ref.watch(provincesScreenControllerProvider.notifier).getLocationOptions()[0]);
-                    } else {
-                      ref.watch(provincesScreenControllerProvider.notifier).
-                      setLocationSelected(const Location(locationId: '', regionId: '', name: '', country: '', active: false));
-                    }
+                    ref.watch(provincesScreenControllerProvider.notifier).setLocationSelected(const Location.empty());
                   } else if (columnName == 'Provincia') {
                     Location locationSelected = provinceDataGridSource.getLocations()!.firstWhere((element) => element.name == newValue);
                     ref.watch(provincesScreenControllerProvider.notifier).setLocationSelected(locationSelected);
@@ -650,6 +631,7 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
     idController!.text = '';
     nameController!.text = '';
     activeController!.text = '';
+    _resetComboValues();
   }
 
   // Updating the data to the TextEditingController
@@ -1135,6 +1117,13 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
         });
   }
 
+  void _resetComboValues() {
+    ref.watch(provincesScreenControllerProvider.notifier).setCountrySelected(const Country.empty());
+    ref.watch(provincesScreenControllerProvider.notifier).setRegionOptions(List.empty());
+    ref.watch(provincesScreenControllerProvider.notifier).setRegionSelected(const Region.empty());
+    ref.watch(provincesScreenControllerProvider.notifier).setLocationOptions(List.empty());
+    ref.watch(provincesScreenControllerProvider.notifier).setLocationSelected(const Location.empty());
+  }
 }
 
 

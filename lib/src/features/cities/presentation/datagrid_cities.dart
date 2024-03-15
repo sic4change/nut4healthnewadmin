@@ -448,13 +448,6 @@ class _CityDataGridState extends LocalizationSampleViewState {
       required String text,
       required void Function(void Function()) setState}) {
     String value = optionSelected;
-    if (optionSelected.isEmpty) {
-      if (dropDownMenuItems.isNotEmpty) {
-        value = dropDownMenuItems[0];
-      } else {
-        value = "";
-      }
-    }
     return Row(
       children: <Widget>[
         Container(
@@ -464,7 +457,7 @@ class _CityDataGridState extends LocalizationSampleViewState {
         SizedBox(
           width: 150,
           child: DropdownButtonFormField<String>(
-              value: value,
+              value: value.isNotEmpty? value: null,
               validator: (String? value) {
                 if (value!.isEmpty) {
                   return 'El campo no puede estar vacío';
@@ -478,23 +471,17 @@ class _CityDataGridState extends LocalizationSampleViewState {
               onChanged: (newValue) {
                 setState(() {
                   value = newValue!;
-                  optionSelected = newValue!;
+                  optionSelected = newValue;
                   if (columnName == 'País') {
                     Country countrySelected = cityDataGridSource.getCountries()!.firstWhere((element) => element.name == newValue);
                     ref.watch(citiesScreenControllerProvider.notifier).setCountrySelected(countrySelected);
                     ref.watch(citiesScreenControllerProvider.notifier).
                       setRegionOptions(cityDataGridSource.getRegions().where((r) => r.countryId == countrySelected.countryId).toList());
-                    ref.watch(citiesScreenControllerProvider.notifier).setLocationSelected(const Location(locationId: '', name: '', country: '', regionId: '',active: false));
+                    ref.watch(citiesScreenControllerProvider.notifier).setRegionSelected(const Region.empty());
+                    ref.watch(citiesScreenControllerProvider.notifier).setLocationSelected(const Location.empty());
                     ref.watch(citiesScreenControllerProvider.notifier).setLocationOptions(List.empty());
-                    ref.watch(citiesScreenControllerProvider.notifier).setProvinceSelected(const Province(provinceId: '', name: '', country: '', regionId: '', locationId: '',active: false));
+                    ref.watch(citiesScreenControllerProvider.notifier).setProvinceSelected(const Province.empty());
                     ref.watch(citiesScreenControllerProvider.notifier).setProvinceOptions(List.empty());
-                    if (ref.watch(citiesScreenControllerProvider.notifier).getRegionOptions().isNotEmpty) {
-                      ref.watch(citiesScreenControllerProvider.notifier).
-                      setRegionSelected(ref.watch(citiesScreenControllerProvider.notifier).getRegionOptions()[0]);
-                    } else {
-                      ref.watch(citiesScreenControllerProvider.notifier).
-                      setRegionSelected(const Region(regionId: '', name: '', countryId: '', active: false));
-                    }
                   } else if (columnName == 'Región') {
                     Region regionSelected = cityDataGridSource.getRegions().firstWhere((r) => r.name == newValue);
                     ref.watch(citiesScreenControllerProvider.notifier).setRegionSelected(regionSelected);
@@ -503,15 +490,9 @@ class _CityDataGridState extends LocalizationSampleViewState {
                       p.country == ref.watch(citiesScreenControllerProvider.notifier).getCountrySelected().countryId
                       && p.regionId == regionSelected.regionId
                     ).toList());
-                    ref.watch(citiesScreenControllerProvider.notifier).setProvinceSelected(const Province(provinceId: '', name: '', country: '', regionId: '', locationId: '',active: false));
+                    ref.watch(citiesScreenControllerProvider.notifier).setLocationSelected(const Location.empty());
+                    ref.watch(citiesScreenControllerProvider.notifier).setProvinceSelected(const Province.empty());
                     ref.watch(citiesScreenControllerProvider.notifier).setProvinceOptions(List.empty());
-                    if (ref.watch(citiesScreenControllerProvider.notifier).getLocationOptions().isNotEmpty) {
-                      ref.watch(citiesScreenControllerProvider.notifier).
-                      setLocationSelected(ref.watch(citiesScreenControllerProvider.notifier).getLocationOptions()[0]);
-                    } else {
-                      ref.watch(citiesScreenControllerProvider.notifier).
-                      setLocationSelected(const Location(country: "", regionId: '', locationId: '', name: "", active: false));
-                    }
                   } else if (columnName == 'Provincia') {
                     Location locationSelected = cityDataGridSource.getLocations().firstWhere((r) => r.name == newValue);
                     ref.watch(citiesScreenControllerProvider.notifier).setLocationSelected(locationSelected);
@@ -519,13 +500,7 @@ class _CityDataGridState extends LocalizationSampleViewState {
                     setProvinceOptions(cityDataGridSource.getProvinces().where((p) =>
                       p.locationId == locationSelected.locationId
                     ).toList());
-                    if (ref.watch(citiesScreenControllerProvider.notifier).getProvinceOptions().isNotEmpty) {
-                      ref.watch(citiesScreenControllerProvider.notifier).
-                      setProvinceSelected(ref.watch(citiesScreenControllerProvider.notifier).getProvinceOptions()[0]);
-                    } else {
-                      ref.watch(citiesScreenControllerProvider.notifier).
-                      setProvinceSelected(const Province(provinceId: "", country: "", regionId: '', locationId: '', name: "", active: false));
-                    }
+                    ref.watch(citiesScreenControllerProvider.notifier).setProvinceSelected(const Province.empty());
                   } else if (columnName == 'Municipio') {
                     Province provinceSelected = cityDataGridSource.getProvinces().firstWhere((element) => element.name == newValue);
                     ref.watch(citiesScreenControllerProvider.notifier).setProvinceSelected(provinceSelected);
@@ -703,6 +678,7 @@ class _CityDataGridState extends LocalizationSampleViewState {
     idController!.text = '';
     nameController!.text = '';
     activeController!.text = '✔';
+    _resetComboValues();
   }
 
   // Updating the data to the TextEditingController
@@ -1217,5 +1193,15 @@ class _CityDataGridState extends LocalizationSampleViewState {
 
       return _buildView(citiesAsyncValue);
     });
+  }
+
+  void _resetComboValues() {
+    ref.watch(citiesScreenControllerProvider.notifier).setCountrySelected(const Country.empty());
+    ref.watch(citiesScreenControllerProvider.notifier).setRegionOptions(List.empty());
+    ref.watch(citiesScreenControllerProvider.notifier).setRegionSelected(const Region.empty());
+    ref.watch(citiesScreenControllerProvider.notifier).setLocationOptions(List.empty());
+    ref.watch(citiesScreenControllerProvider.notifier).setLocationSelected(const Location.empty());
+    ref.watch(citiesScreenControllerProvider.notifier).setProvinceOptions(List.empty());
+    ref.watch(citiesScreenControllerProvider.notifier).setProvinceSelected(const Province.empty());
   }
 }

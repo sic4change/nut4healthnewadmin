@@ -11,13 +11,10 @@ import '../domain/city.dart';
 
 class CitiesScreenController extends AutoDisposeAsyncNotifier<void> {
 
-  Country countrySelected = const Country(countryId: "", name: "", code: "",
-      active: false, needValidation: false, cases: 0, casesnormopeso: 0,
-      casesmoderada: 0, casessevera: 0);
-  Region regionSelected = const Region(regionId: '', name: '', countryId: '', active: false);
-  Location locationSelected = const Location(locationId: '', name: '', country: '', regionId: '', active: false);
-  Province provinceSelected = const Province(provinceId: '', country: "", regionId: '',
-      locationId: '', name: "", active: false);
+  Country countrySelected = const Country.empty();
+  Region regionSelected = const Region.empty();
+  Location locationSelected = const Location.empty();
+  Province provinceSelected = const Province.empty();
   List<Region> regionOptions = List.empty();
   List<Province> provinceOptions = List.empty();
   List<Location> locationOptions = List.empty();
