@@ -664,7 +664,6 @@ class _PointDataGridState extends LocalizationSampleViewState {
             text: _country,
             setState: setState,
         ),
-        const SizedBox(height: 20),
         _buildRowComboSelection(
             context: context,
             optionSelected: ref.watch(pointsScreenControllerProvider.notifier).getRegionSelected().name,
@@ -683,7 +682,6 @@ class _PointDataGridState extends LocalizationSampleViewState {
           text: _location,
           setState: setState,
         ),
-        const SizedBox(height: 20),
         _buildRowComboSelection(
             context: context,
             optionSelected: ref.watch(pointsScreenControllerProvider.notifier).getProvinceSelected().name,
@@ -738,7 +736,6 @@ class _PointDataGridState extends LocalizationSampleViewState {
             text: _country,
             setState: setState,
         ),
-        const SizedBox(height: 20),
         _buildRowComboSelection(
           context: context,
           optionSelected: ref.watch(pointsScreenControllerProvider.notifier).getRegionSelected().name,
@@ -754,10 +751,9 @@ class _PointDataGridState extends LocalizationSampleViewState {
           columnName: 'Provincia',
           dropDownMenuItems: ref.watch(pointsScreenControllerProvider.notifier)
               .getLocationOptions().map((e) => e.name).toList(),
-          text: _region,
+          text: _location,
           setState: setState,
         ),
-        const SizedBox(height: 20),
         _buildRowComboSelection(
             context: context,
             optionSelected: ref.watch(pointsScreenControllerProvider.notifier).getProvinceSelected().name,
@@ -767,7 +763,6 @@ class _PointDataGridState extends LocalizationSampleViewState {
             text: _province,
             setState: setState,
         ),
-        const SizedBox(height: 20),
         _buildRowComboSelection(
             context: context,
             optionSelected: activeController!.text,
