@@ -102,4 +102,22 @@ class Child extends Equatable {
       'regionalValidation': regionalValidation,
     };
   }
+  static Child getEmptyChild() {
+    return Child(
+      childId: '', // Suponiendo que ChildID es un tipo String
+      tutorId: '',
+      pointId: '',
+      name: '',
+      surnames: '',
+      birthdate: DateTime(1900, 1, 1), // Fecha muy antigua como valor por defecto para el nacimiento
+      code: '',
+      createDate: DateTime.now(), // Fecha actual como valor por defecto para createDate
+      lastDate: DateTime.now(), // Fecha actual como valor por defecto para lastDate
+      ethnicity: '',
+      sex: '',
+      observations: '',
+      chefValidation: false,
+      regionalValidation: false,
+    );
+  }
 }

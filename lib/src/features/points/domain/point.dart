@@ -120,5 +120,29 @@ class Point extends Equatable {
       'transactionHash': transactionHash,
     };
   }
+
+  static Point getEmptyPoint() {
+    return const Point(pointId: '',
+        name: '',
+        pointName: "",
+        pointCode: "",
+        fullName: '',
+        type: '',
+        country: '',
+        regionId: '',
+        location: '',
+        province: '',
+        phoneCode: '',
+        phoneLength: 0,
+        active: false,
+        latitude: 0.0,
+        longitude: 0.0,
+        language: "",
+        cases: 0,
+        casesnormopeso: 0,
+        casesmoderada: 0,
+        casessevera: 0,
+        transactionHash: "");
+  }
 }
 

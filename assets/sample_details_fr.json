@@ -326,6 +326,19 @@
               "codeLink": ""
             }
           ]
+        },
+        {
+          "type": "child",
+          "title": "Seguimiento de admisiones en los CRENAM Comunitarios",
+          "displayType": "tab",
+          "subItems": [
+            {
+              "type": "sample",
+              "title": "Seguimiento de admisiones en los CRENAM Comunitarios",
+              "key": "diagnosis_communitary_crenam_by_region_date",
+              "codeLink": ""
+            }
+          ]
         }
       ]
     }

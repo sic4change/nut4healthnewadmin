@@ -1,10 +1,16 @@
 import 'dart:async';
 
+import 'package:adminnut4health/src/features/contracts_report/domain/diagnosis_comunitary_crenam_by_region_and_date_inform.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../../authentication/data/firebase_auth_repository.dart';
 import '../../../common_data/firestore_data_source.dart';
 
+import '../../childs/domain/child.dart';
+import '../../points/domain/point.dart';
+import '../../visits/domain/visit.dart';
+import '../domain/PointWithVisitAndChild.dart';
 import '../domain/child_inform.dart';
 import '../domain/contract.dart';
 import '../domain/main_inform.dart';
@@ -19,6 +25,9 @@ String documentIdFromCurrentDate() {
 
 class FirestorePath {
   static String contracts() => 'contracts';
+  static String points() => 'points';
+  static String visits() => 'visits';
+  static String childs() => 'childs';
 }
 
 class FirestoreRepository {
@@ -37,6 +46,77 @@ class FirestoreRepository {
     );
     return contracts;
   }
+
+  Stream<List<Point>> watchComunitaryCrenamPoints() {
+    Stream<List<Point>> points =  _dataSource.watchCollection(
+      path: FirestorePath.points(),
+      builder: (data, documentId) => Point.fromMap(data, documentId),
+      queryBuilder: (query) => query
+          .where('type', isEqualTo: 'Otro')
+          .orderBy('fullName'),
+    );
+    return points;
+  }
+
+  Stream<List<Child>> watchChilds() {
+    Stream<List<Child>> childs =  _dataSource.watchCollection(
+      path: FirestorePath.childs(),
+      builder: (data, documentId) => Child.fromMap(data, documentId),
+      queryBuilder: (query) => query
+          .orderBy('name'),
+    );
+    return childs;
+  }
+
+  Stream<List<Visit>> watchVisits(int start, int end) {
+    Stream<List<Visit>> visits =  _dataSource.watchCollection(
+      path: FirestorePath.visits(),
+      builder: (data, documentId) => Visit.fromMap(data, documentId),
+      queryBuilder: (query) {
+        query = query.where('createdate', isGreaterThanOrEqualTo: DateTime.fromMillisecondsSinceEpoch(start))
+            .where('createdate', isLessThanOrEqualTo: DateTime.fromMillisecondsSinceEpoch(end));
+        return query;
+      },
+    );
+    return visits;
+  }
+
+  Stream<List<VisitWithChildAndPoint>> watchVisitWithChildAndCommunityCrenamPoint(int start, int end) {
+    final emptyPoint = Point.getEmptyPoint();
+    final emptyChild = Child.getEmptyChild();
+    return CombineLatestStream.combine3(
+        watchVisits(start, end), watchChilds(), watchComunitaryCrenamPoints(),
+            (List<Visit> visits, List<Child> childs, List<Point> points) {
+          var visitWithChildAndPointList = visits.map((visit) {
+            final Map<String, Child> childMap = Map.fromEntries(
+              childs.map((child) => MapEntry(child.childId, child)),
+            );
+            final child = childMap[visit.childId] ?? emptyChild;
+            final Map<String, Point> pointMap = Map.fromEntries(
+              points.map((point) => MapEntry(point.pointId, point)),
+            );
+            final point = pointMap[visit.pointId] ?? emptyPoint;
+            return VisitWithChildAndPoint(visit, child, point);
+          }).where((item) =>
+          item.point != emptyPoint
+          ).toList();
+
+          var groupedByCaseId = <String, List<VisitWithChildAndPoint>>{};
+          for (var visit in visitWithChildAndPointList) {
+            groupedByCaseId.putIfAbsent(visit.visit.caseId, () => []).add(visit);
+          }
+
+          List<VisitWithChildAndPoint> oldestVisits = [];
+          groupedByCaseId.forEach((caseId, visits) {
+            VisitWithChildAndPoint oldestVisit = visits.reduce((a, b) => a.visit.createDate.isBefore(b.visit.createDate) ? a : b);
+            oldestVisits.add(oldestVisit);
+          });
+
+          return oldestVisits;
+        });
+  }
+
+
 
   Stream<List<MainInform>> watchMainInform(int start, int end) {
     return watchContracts(start, end).map((contracts) {
@@ -319,6 +399,19 @@ final childInformMauritane2024StreamProvider = StreamProvider.family.autoDispose
   final end = range.item2;
 
   return database.watchChildInform(start,end);
+});
+
+final visitWithChildAndCommunityCrenamPoinStreamProvider = StreamProvider.family.autoDispose<List<VisitWithChildAndPoint>, Tuple2<int, int>>((ref, range) {
+  final user = ref.watch(authStateChangesProvider).value;
+  if (user == null) {
+    throw AssertionError('User can\'t be null');
+  }
+
+  final database = ref.watch(databaseProvider);
+  final start = range.item1;
+  final end = range.item2;
+
+  return database.watchVisitWithChildAndCommunityCrenamPoint(start, end);
 });
 
 

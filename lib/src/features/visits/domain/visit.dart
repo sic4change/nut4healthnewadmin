@@ -235,4 +235,43 @@ class Visit extends Equatable {
       'regionalValidation': regionalValidation,
     };
   }
+
+  static Visit getEmptVisit() {
+    return Visit(
+      visitId: '', // Suponiendo que VisitID es un tipo String
+      pointId: '',
+      childId: '',
+      tutorId: '',
+      caseId: '',
+      createDate: DateTime(1900, 1, 1), // Fecha muy antigua como valor por defecto
+      height: 0.0,
+      weight: 0.0,
+      imc: 0.0,
+      armCircunference: 0.0,
+      status: '',
+      edema: '',
+      respiratonStatus: '',
+      appetiteTest: '',
+      infection: '',
+      eyesDeficiency: '',
+      deshidratation: '',
+      vomiting: '',
+      diarrhea: '',
+      fever: '',
+      temperature: '',
+      cough: '',
+      vaccinationCard: '',
+      rubeolaVaccinated: '',
+      vitamineAVaccinated: '',
+      acidfolicAndFerroVaccinated: '',
+      complications: [], // Lista vacía como valor por defecto
+      observations: '',
+      admission: '',
+      amoxicilina: '',
+      otherTratments: '',
+      chefValidation: false,
+      regionalValidation: false,
+    );
+  }
+
 }

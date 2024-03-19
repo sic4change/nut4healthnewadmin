@@ -18,6 +18,7 @@ import '../features/contracts/presentation/contracts_by_screener_and_date_statis
 import '../features/contracts/presentation/datagrid_contracts.dart';
 import '../features/contracts_report/presentation/datagrid_child_contracts.dart';
 import '../features/contracts_report/presentation/datagrid_contracts.dart';
+import '../features/contracts_report/presentation/datagrid_diagnosis_communitary_crenam_by_region_and_date.dart';
 import '../features/countries/presentation/datagrid_countries.dart';
 import '../features/countries/presentation/country_map.dart';
 import '../features/locations/presentation/datagrid_locations.dart';
@@ -953,6 +954,7 @@ Map<String, Function> getSampleWidget() {
     //reports
     'diagnosis_mauritane_2024': (Key key) => Mauritane2024DailyContractDataGrid(key: key),
     'diagnosis_childs_mauritane_2024': (Key key) => Mauritane2024DailyContractChildDataGrid(key: key),
+    'diagnosis_communitary_crenam_by_region_date': (Key key) => DiagnosisCommunitaryCrenamByRegionAndDateDataGrid(key: key),
 
     //mapas
     'country_map': (Key key) => MapCountryPage(key),
