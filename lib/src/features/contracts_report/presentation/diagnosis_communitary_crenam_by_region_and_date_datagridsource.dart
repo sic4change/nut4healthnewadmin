@@ -30,7 +30,7 @@ import '../domain/diagnosis_comunitary_crenam_by_region_and_date_inform.dart';cl
           DataGridCell<String>(columnName: 'Categoría', value: mainInform.category),
           DataGridCell<int>(columnName: 'Rojo (<115mm)', value: mainInform.red),
           DataGridCell<int>(columnName: 'Amarillo (115-125mm)', value: mainInform.yellow),
-          DataGridCell<int>(columnName: 'Verde (≥ 125mm)', value: mainInform.green),
+          DataGridCell<int>(columnName: 'Verde (>= 125mm)', value: mainInform.green),
           DataGridCell<int>(columnName: 'Oedema', value: mainInform.oedema),
         ]);
       }).toList();

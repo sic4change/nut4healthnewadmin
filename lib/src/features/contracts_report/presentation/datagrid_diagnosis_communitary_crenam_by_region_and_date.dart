@@ -1,8 +1,7 @@
 /// Package imports
 /// import 'package:flutter/foundation.dart';
 
-import 'package:adminnut4health/src/features/contracts_report/domain/diagnosis_comunitary_crenam_by_region_and_date_inform.dart';
-import 'package:adminnut4health/src/features/contracts_report/domain/main_inform.dart';
+import 'package:adminnut4health/src/features/countries/domain/country.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,10 +19,10 @@ import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:tuple/tuple.dart';
 
 import '../../../sample/model/sample_view.dart';
+import '../../regions/domain/region.dart';
 /// Local import
 import '../data/firestore_repository.dart';
 import '../domain/PointWithVisitAndChild.dart';
-import 'contract_datagridsource.dart';
 import 'dart:html' show FileReader;
 
 import '../../../common_widgets/export/save_file_mobile.dart'
@@ -67,18 +66,25 @@ class _DiagnosisCommunitaryCrenamByRegionAndDateDataGridState extends Localizati
 
   /// Translate names
   late String _category, _red, _yellow, _green, _oedema,
-      _start, _end, _exportXLS, _exportPDF, _total, _contracts;
+      _start, _end, _exportXLS, _exportPDF, _total, _contracts, _selectCountry,
+      _selectRegion;
 
   late Map<String, double> columnWidths = {
     'Categoría': 200,
     'Rojo (<115mm)': 200,
     'Amarillo (115-125mm)': 200,
-    'Verde (≥ 125mm)': 200,
+    'Verde (>= 125mm)': 200,
     'Oedema': 200,
   };
 
 
   AsyncValue<List<VisitWithChildAndPoint>> mainInformsAsyncValue = AsyncValue.data(List.empty());
+
+  List<Country> countries = <Country>[];
+  Country? countrySelected;
+
+  List<Region> regions = <Region>[];
+  Region? regionSelected;
 
   Widget getLocationWidget(String location) {
     return Row(
@@ -87,6 +93,28 @@ class _DiagnosisCommunitaryCrenamByRegionAndDateDataGridState extends Localizati
         Text(' $location',)
       ],
     );
+  }
+
+  _saveCountries(AsyncValue<List<Country>>? countries) {
+    if (countries == null) {
+      return;
+    } else {
+      this.countries.clear();
+      this.countries.add(const Country(countryId: "", name: "TODOS", code: "",
+          active: false, needValidation: false, cases: 0, casesnormopeso: 0,
+          casesmoderada: 0, casessevera: 0));
+      this.countries.addAll(countries.value!);
+    }
+  }
+
+  _saveRegions(AsyncValue<List<Region>>? regions) {
+    if (regions == null) {
+      return;
+    } else {
+      this.regions.clear();
+      this.regions.add(const Region(regionId: '', name: 'TODAS', countryId: '', active: false));
+      this.regions.addAll(regions.value!);
+    }
   }
 
   _saveMainInforms(AsyncValue<List<VisitWithChildAndPoint>>? mainInforms) {
@@ -122,6 +150,7 @@ class _DiagnosisCommunitaryCrenamByRegionAndDateDataGridState extends Localizati
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 _buildHeaderButtons(),
+                const SizedBox(height: 20.0,),
                 const Expanded(
                   child: Center(
                       child: SizedBox(
@@ -136,6 +165,7 @@ class _DiagnosisCommunitaryCrenamByRegionAndDateDataGridState extends Localizati
           return Column(
               children: <Widget>[
                 _buildHeaderButtons(),
+                const SizedBox(height: 20.0,),
                 Expanded(
                   child: Directionality(
                     textDirection: TextDirection.ltr,
@@ -213,20 +243,17 @@ class _DiagnosisCommunitaryCrenamByRegionAndDateDataGridState extends Localizati
       document.dispose();
     }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
-        _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
-        Expanded(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildFilterRow(),
-            ],
-          ),
-        ),
-      ],
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Expanded(child: _buildFilterRow(),),
+          _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
+          _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
+        ],
+      ),
     );
 
   }
@@ -310,7 +337,7 @@ class _DiagnosisCommunitaryCrenamByRegionAndDateDataGridState extends Localizati
         _category = 'Category';
         _red = 'Red (<115mm)';
         _yellow = 'Yellow (115-125mm)';
-        _green = 'Green (≥ 125mm)';
+        _green = 'Green (>= 125mm)';
         _oedema = 'Oedema';
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
@@ -323,7 +350,7 @@ class _DiagnosisCommunitaryCrenamByRegionAndDateDataGridState extends Localizati
         _category = 'Categoría';
         _red = 'Rojo (<115mm)';
         _yellow = 'Amarillo (115-125mm)';
-        _green = 'Verde (≥ 125mm)';
+        _green = 'Verde (>= 125mm)';
         _oedema = 'Oedema';
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
@@ -336,7 +363,7 @@ class _DiagnosisCommunitaryCrenamByRegionAndDateDataGridState extends Localizati
         _category = 'Catégorie';
         _red = 'Rouge (<115mm)';
         _yellow = 'Jaune (115-125mm)';
-        _green = 'Vert (≥ 125mm)';
+        _green = 'Vert (>= 125mm)';
         _oedema = 'Oedème';
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
@@ -403,8 +430,8 @@ class _DiagnosisCommunitaryCrenamByRegionAndDateDataGridState extends Localizati
             )
         ),
         GridColumn(
-            columnName: 'Verde (≥ 125mm)',
-            width: columnWidths['Verde (≥ 125mm)']!,
+            columnName: 'Verde (>= 125mm)',
+            width: columnWidths['Verde (>= 125mm)']!,
             label: Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
@@ -441,7 +468,7 @@ class _DiagnosisCommunitaryCrenamByRegionAndDateDataGridState extends Localizati
     _category = 'Categoría';
     _red = 'Rojo (<115mm)';
     _yellow = 'Amarillo (115-125mm)';
-    _green = 'Verde (≥ 125mm)';
+    _green = 'Verde (>= 125mm)';
     _oedema = 'Oedema';
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';
@@ -449,8 +476,6 @@ class _DiagnosisCommunitaryCrenamByRegionAndDateDataGridState extends Localizati
     _contracts = 'Diagnósticos';
     _start = 'Inicio';
     _end = 'Fin';
-
-
   }
 
 
@@ -465,10 +490,18 @@ class _DiagnosisCommunitaryCrenamByRegionAndDateDataGridState extends Localizati
             },
           );
 
-          Tuple2<int, int> tuple2 = Tuple2(start, end);
+          final countriesAsyncValue = ref.watch(countriesStreamProvider);
+          if (countriesAsyncValue.value != null) {
+            _saveCountries(countriesAsyncValue);
+          }
 
-          mainInformsAsyncValue = ref.watch(visitWithChildAndCommunityCrenamPoinStreamProvider(tuple2));
+          final regionsAsyncValue = ref.watch(regionsByCountryStreamProvider(countrySelected?.countryId??""));
+          if (regionsAsyncValue.value != null) {
+            _saveRegions(regionsAsyncValue);
+          }
 
+          Tuple4<int, int, String, String> filters = Tuple4(start, end, countrySelected?.countryId??"", regionSelected?.regionId??"");
+          mainInformsAsyncValue = ref.watch(visitWithChildAndCommunityCrenamPoinStreamProvider(filters));
           if (mainInformsAsyncValue != null && mainInformsAsyncValue.value != null) {
             _saveMainInforms(mainInformsAsyncValue);
           }
@@ -479,28 +512,28 @@ class _DiagnosisCommunitaryCrenamByRegionAndDateDataGridState extends Localizati
   }
 
   Widget _buildFilterRow() {
-    return Column(
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 400,
-                child: Directionality(
-                  textDirection: TextDirection.ltr,
-                  child: SfDateRangePicker(
-                    initialSelectedRange: PickerDateRange(
-                      DateTime.fromMillisecondsSinceEpoch(start),
-                      DateTime.fromMillisecondsSinceEpoch(end),),
-                    onSelectionChanged: _onSelectionChanged,
-                    selectionMode: DateRangePickerSelectionMode.range,
-                  ),
-                ),
-              ),
-            ],
+    return Wrap(
+      alignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.start,
+      runSpacing: 20.0,
+      spacing: 20.0,
+      children: [
+        _buildCountryPicker(),
+        _buildRegionPicker(),
+        SizedBox(
+          width: 400,
+          child: Directionality(
+            textDirection: TextDirection.ltr,
+            child: SfDateRangePicker(
+              initialSelectedRange: PickerDateRange(
+                DateTime.fromMillisecondsSinceEpoch(start),
+                DateTime.fromMillisecondsSinceEpoch(end),),
+              onSelectionChanged: _onSelectionChanged,
+              selectionMode: DateRangePickerSelectionMode.range,
+            ),
           ),
-        ],
+        ),
+      ],
     );
   }
 
@@ -520,7 +553,116 @@ class _DiagnosisCommunitaryCrenamByRegionAndDateDataGridState extends Localizati
     }
   }
 
+  Widget _buildCountryPicker() {
+    switch (model.locale.toString()) {
+      case 'es_ES':
+        _selectCountry = 'Selecciona un país';
+        break;
+      case 'fr_FR':
+        _selectCountry = 'Sélectionnez un pays';
+        break;
+      default:
+        _selectCountry = 'Select country';
+        break;
+    }
 
+    return Column(children: <Widget>[
+      Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Card(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(3.0),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
+            child: SizedBox(
+              height: 50,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  DropdownButton<String>(
+                      focusColor: Colors.transparent,
+                      underline:
+                      Container(color: const Color(0xFFBDBDBD), height: 1),
+                      value: countrySelected?.name,
+                      hint: Text(_selectCountry),
+                      items: countries.map((Country c) {
+                        return DropdownMenuItem<String>(
+                            value: c.name,
+                            child: Text(c.name,
+                                style: TextStyle(color: model.textColor)));
+                      }).toList(),
+                      onChanged: (dynamic value) {
+                        setState(() {
+                          countrySelected = countries.firstWhere((c) => c.name == value);
+                          regionSelected = null;
+                        });
+                      }),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    ]);
+  }
+
+  Widget _buildRegionPicker() {
+    switch (model.locale.toString()) {
+      case 'es_ES':
+        _selectRegion = 'Selecciona una región';
+        break;
+      case 'fr_FR':
+        _selectRegion = 'Sélectionnez une région';
+        break;
+      default:
+        _selectRegion = 'Select region';
+        break;
+    }
+
+    return Column(children: <Widget>[
+      Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Card(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(3.0),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
+            child: SizedBox(
+              height: 50,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  DropdownButton<String>(
+                      focusColor: Colors.transparent,
+                      underline:
+                      Container(color: const Color(0xFFBDBDBD), height: 1),
+                      value: regionSelected?.name,
+                      hint: Text(_selectRegion),
+                      items: regions.map((Region r) {
+                        return DropdownMenuItem<String>(
+                            value: r.name,
+                            child: Text(r.name,
+                                style: TextStyle(color: model.textColor)));
+                      }).toList(),
+                      onChanged: (dynamic value) {
+                        setState(() {
+                          regionSelected = regions.firstWhere((r) => r.name == value);
+                        });
+                      }),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    ]);
+  }
 }
 
 
