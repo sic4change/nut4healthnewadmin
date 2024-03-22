@@ -54,7 +54,8 @@ class _CaseDataGridState extends LocalizationSampleViewState {
   late String selectedLocale;
 
   /// Translate names
-  late String _chefValidation, _regionalValidation, _point, _tutor, _child, _name, _createDate, _lastDate, _visits,
+  late String _chefValidation, _regionalValidation, _point, _tutor, _child, _name,
+      _admissionType, _admissionTypeServer, _closedReason, _createDate, _lastDate, _visits,
       _observations, _status, _exportXLS, _exportPDF, _total, _cases, _validateData;
 
   late Map<String, double> columnWidths = {
@@ -64,6 +65,9 @@ class _CaseDataGridState extends LocalizationSampleViewState {
     'Madre, padre o tutor': 150,
     'Niño/a': 150,
     'Nombre': 150,
+    'Tipo de admisión': 150,
+    'Servidor tipo de admisión': 150,
+    'Razón de cierre': 150,
     'Fecha de alta': 150,
     'Última visita': 150,
     'Nº visitas': 150,
@@ -278,6 +282,9 @@ class _CaseDataGridState extends LocalizationSampleViewState {
             childId: c.myCase.childId,
             tutorId: c.myCase.tutorId,
             name: c.myCase.name,
+            admissionType: c.myCase.admissionType,
+            admissionTypeServer: c.myCase.admissionTypeServer,
+            closedReason: c.myCase.closedReason,
             createDate: c.myCase.createDate,
             lastDate: c.myCase.lastDate,
             observations: c.myCase.observations,
@@ -298,6 +305,9 @@ class _CaseDataGridState extends LocalizationSampleViewState {
             childId: c.myCase.childId,
             tutorId: c.myCase.tutorId,
             name: c.myCase.name,
+            admissionType: c.myCase.admissionType,
+            admissionTypeServer: c.myCase.admissionTypeServer,
+            closedReason: c.myCase.closedReason,
             createDate: c.myCase.createDate,
             lastDate: c.myCase.lastDate,
             observations: c.myCase.observations,
@@ -390,6 +400,9 @@ class _CaseDataGridState extends LocalizationSampleViewState {
         _tutor = 'Mother, father or tutor';
         _child = 'Child';
         _name = 'Name';
+        _admissionType = 'Admission type';
+        _admissionTypeServer = 'Admission type server';
+        _closedReason = 'Closed reason';
         _createDate = 'Register date';
         _lastDate = 'Last date';
         _visits = 'Visits number';
@@ -406,6 +419,9 @@ class _CaseDataGridState extends LocalizationSampleViewState {
         _regionalValidation = 'Validación Dirección Regional';
         _point = 'Punto';
         _name = 'Nombre';
+        _admissionType = 'Tipo de admisión';
+        _admissionTypeServer = 'Servidor tipo de admisión';
+        _closedReason = 'Razón de cierre';
         _tutor = 'Madre, padre o tutor';
         _child = 'Niño/a';
         _createDate = 'Fecha de alta';
@@ -424,6 +440,9 @@ class _CaseDataGridState extends LocalizationSampleViewState {
         _regionalValidation = 'Validation direction régionale de la santé';
         _point = 'Place';
         _name = 'Nom';
+        _admissionType = 'Type d\'admission';
+        _admissionTypeServer = 'Serveur type d\'admission';
+        _closedReason = 'Motif fermé';
         _tutor = 'Mère, père ou tuteur';
         _child = 'Enfant';
         _createDate = 'Date d\'enregistrement';
@@ -533,6 +552,42 @@ class _CaseDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
+            columnName: 'Tipo de admisión',
+            width: columnWidths['Tipo de admisión']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _admissionType,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Servidor tipo de admisión',
+            width: columnWidths['Servidor tipo de admisión']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _admissionTypeServer,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Razón de cierre',
+            width: columnWidths['Razón de cierre']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _closedReason,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
             columnName: 'Fecha de alta',
             width: columnWidths['Fecha de alta']!,
             label: Container(
@@ -606,6 +661,9 @@ class _CaseDataGridState extends LocalizationSampleViewState {
     _regionalValidation = 'Validación Dirección Regional';
     _point = 'Punto';
     _name = 'Nombre';
+    _admissionType = 'Tipo de admisión';
+    _admissionTypeServer = 'Servidor tipo de admisión';
+    _closedReason = 'Razón de cierre';
     _tutor = 'Madre, padre o tutor';
     _child = 'Niño/a';
     _createDate = 'Fecha de alta';

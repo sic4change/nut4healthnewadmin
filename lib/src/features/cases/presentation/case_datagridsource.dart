@@ -37,6 +37,9 @@ class CaseDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Estado', value: myCaseWithPointChildAndTutor.myCase.status),
           DataGridCell<bool>(columnName: 'Validación Médico Jefe', value: myCaseWithPointChildAndTutor.myCase.chefValidation),
           DataGridCell<bool>(columnName: 'Validación Dirección Regional', value: myCaseWithPointChildAndTutor.myCase.regionalValidation),
+          DataGridCell<String>(columnName: 'Tipo de admisión', value: myCaseWithPointChildAndTutor.myCase.admissionType),
+          DataGridCell<String>(columnName: 'Servidor tipo de admisión', value: myCaseWithPointChildAndTutor.myCase.admissionTypeServer),
+          DataGridCell<String>(columnName: 'Razón de cierre', value: myCaseWithPointChildAndTutor.myCase.closedReason),
         ]);
       }).toList();
     }
@@ -100,6 +103,9 @@ class CaseDataGridSource extends DataGridSource {
         child: const Text('---------'),
       ),
       _buildStandardContainer(row.getCells()[4].value.toString()),
+      _buildStandardContainer(row.getCells()[12].value.toString()),
+      _buildStandardContainer(row.getCells()[13].value.toString()),
+      _buildStandardContainer(row.getCells()[14].value.toString()),
       _buildDate(row.getCells()[5].value),
       _buildDate(row.getCells()[6].value),
       _buildStandardContainer(row.getCells()[7].value.toString()),

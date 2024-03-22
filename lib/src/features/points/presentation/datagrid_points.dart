@@ -1287,7 +1287,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
         _province = 'Municipalité';
         _country = 'Pays';
         _region = 'Région';
-        _location = 'Emplacement';
+        _location = 'Province';
         _active = 'Actif';
         _newPoint = 'Créer un Point';
         _importCSV = 'Importer CSV';

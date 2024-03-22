@@ -983,7 +983,7 @@ class _CityDataGridState extends LocalizationSampleViewState {
         _province = 'Municipalité';
         _country = 'Pays';
         _region = 'Région';
-        _location = 'Emplacement';
+        _location = 'Province';
         _active = 'Actif';
         _newCity = 'Créer un Communauté';
         _importCSV = 'Importer CSV';

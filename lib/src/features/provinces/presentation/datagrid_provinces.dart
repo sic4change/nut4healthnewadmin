@@ -923,7 +923,7 @@ class _ProvinceDataGridState extends LocalizationSampleViewState {
         _name = 'Nom';
         _country = 'Code';
         _region = 'Région';
-        _location = 'Emplacement';
+        _location = 'Province';
         _active = 'Actif';
         _newProvince = 'Créer un Municipalité';
         _importCSV = 'Importer CSV';

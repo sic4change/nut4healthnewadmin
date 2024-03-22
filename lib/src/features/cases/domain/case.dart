@@ -19,6 +19,9 @@ class Case extends Equatable {
     required this.visits,
     required this.chefValidation,
     required this.regionalValidation,
+    required this.admissionType,
+    required this.admissionTypeServer,
+    required this.closedReason,
   });
 
   final CaseID caseId;
@@ -33,10 +36,14 @@ class Case extends Equatable {
   final int visits;
   final bool chefValidation;
   final bool regionalValidation;
+  final String admissionType;
+  final String admissionTypeServer;
+  final String closedReason;
 
   @override
   List<Object> get props => [caseId, pointId, childId, tutorId, name,
-    createDate, lastDate, observations, status, visits, chefValidation, regionalValidation];
+    createDate, lastDate, observations, status, visits, chefValidation, regionalValidation,
+    admissionType, admissionTypeServer, closedReason];
 
   @override
   bool get stringify => true;
@@ -58,6 +65,9 @@ class Case extends Equatable {
     final visits = data['visits']?? 0;
     final chefValidation = data['chefValidation']?? false;
     final regionalValidation = data['regionalValidation']?? false;
+    final admissionType = data['admissionType']?? "";
+    final admissionTypeServer = data['admissionTypeServer']?? "";
+    final closedReason = data['closedReason']?? "";
 
     return Case(
       caseId: documentId,
@@ -72,6 +82,9 @@ class Case extends Equatable {
       visits: visits,
       chefValidation: chefValidation,
       regionalValidation: regionalValidation,
+      admissionType: admissionType,
+      admissionTypeServer: admissionTypeServer,
+      closedReason: closedReason,
     );
   }
 
@@ -88,6 +101,9 @@ class Case extends Equatable {
       'visits': visits,
       'chefValidation': chefValidation,
       'regionalValidation': regionalValidation,
+      'admissionType': admissionType,
+      'admissionTypeServer': admissionTypeServer,
+      'closedReason': closedReason,
     };
   }
 }
