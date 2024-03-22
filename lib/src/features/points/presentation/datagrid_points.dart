@@ -638,7 +638,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
   /// Building the forms to edit the data
   Widget _buildAlertDialogContent(BuildContext context, void Function(void Function()) setState) {
     final activeOptions = ["✔", "✘"];
-    final typeOptions = ["CRENAM", "CRENAS", "Otro"];
+    final typeOptions = ["CRENAM", "CRENAS", "CRENI", "Otro"];
     return Column(
       children: <Widget>[
         _buildRow(controller: nameController!, columnName: 'Nombre', text: _name),
@@ -709,7 +709,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
   /// Building the forms to create the data
   Widget _buildAlertDialogCreateContent(BuildContext context, void Function(void Function()) setState) {
     final activeOptions = ["✔", "✘"];
-    final typeOptions = ["CRENAM", "CRENAS", "Otro"];
+    final typeOptions = ["CRENAM", "CRENAS", "CRENI", "Otro"];
 
     return Column(
       children: <Widget>[
