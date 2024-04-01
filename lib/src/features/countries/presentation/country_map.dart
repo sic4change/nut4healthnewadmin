@@ -254,6 +254,9 @@ class _MapCountryPageState extends LocalizationSampleViewState
         _title = 'Statistiques par pays';
         break;
     }
+
+    double iconSize = 120.0;
+
     return Stack(
       children: <Widget>[
         Padding(
@@ -329,12 +332,12 @@ class _MapCountryPageState extends LocalizationSampleViewState
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
+                  width: iconSize,
                   decoration: _casesseveraBoxDecoration,
                   child: ScaleTransition(
                     scale: _casesseveraAnimation,
                     child: IconButton(
                       icon: Image.asset('images/maps_severa.png'),
-                      iconSize: 50,
                       onPressed: () {
                         setState(() {
                           _mapSource = _casesseveraMapSource;
@@ -374,12 +377,12 @@ class _MapCountryPageState extends LocalizationSampleViewState
                   ),
                 ),
                 Container(
+                  width: iconSize,
                   decoration: _casesmoderadaBoxDecoration,
                   child: ScaleTransition(
                     scale: _casesmoderadaAnimation,
                     child: IconButton(
                       icon: Image.asset('images/maps_moderada.png'),
-                      iconSize: 50,
                       onPressed: () {
                         setState(() {
                           _mapSource = _casesmoderadaMapSource;
@@ -422,12 +425,12 @@ class _MapCountryPageState extends LocalizationSampleViewState
                   ),
                 ),
                 Container(
+                  width: iconSize,
                   decoration: _casesnormopesoBoxDecoration,
                   child: ScaleTransition(
                     scale: _casesnormopesoAnimation,
                     child: IconButton(
                       icon: Image.asset('images/maps_normopeso.png'),
-                      iconSize: 50,
                       onPressed: () {
                         setState(() {
                           _mapSource = _casesnormopesoMapSource;
@@ -467,12 +470,12 @@ class _MapCountryPageState extends LocalizationSampleViewState
                   ),
                 ),
                 Container(
+                  width: iconSize,
                   decoration: _casesBoxDecoration,
                   child: ScaleTransition(
                     scale: _casesAnimation,
                     child: IconButton(
                       icon: Image.asset('images/maps_cases.png'),
-                      iconSize: 50,
                       onPressed: () {
                         setState(() {
                           _mapSource = _casesMapSource;
