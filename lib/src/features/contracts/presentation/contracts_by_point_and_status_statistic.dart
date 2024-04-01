@@ -140,12 +140,15 @@ class _StatisticContractsByPointAndStatusPageState extends SampleViewState
           ],
           xValueMapper: (ChartSampleData data, _) => data.x as String,
           yValueMapper: (ChartSampleData data, _) => data.y,
-          dataLabelMapper: (ChartSampleData data, _) => data.x,
-          startAngle: 100,
-          endAngle: 100,
-          pointRadiusMapper: (ChartSampleData data, _) => data.text,
+          dataLabelMapper: (ChartSampleData data, _) => '${data.x}: ${data.y}',
+            //data.y == 1? '${data.y} diagnóstico': data.y != 0? '${data.y} diagnósticos': '',
+          enableTooltip: false,
+          explode: true,
+          explodeIndex: 0,
           dataLabelSettings: const DataLabelSettings(
-              isVisible: true, labelPosition: ChartDataLabelPosition.outside))
+              isVisible: true,
+              labelPosition: ChartDataLabelPosition.outside),
+      )
     ];
   }
 
