@@ -152,6 +152,7 @@ class _StatisticContractsByScreenerAndDatePageState extends SampleViewState
       series: <SplineAreaSeries<ChartSampleData, DateTime>>[
         SplineAreaSeries<ChartSampleData, DateTime>(
           dataSource: splineSeriesData,
+          splineType: SplineType.monotonic,
           borderColor: const Color.fromRGBO(0, 193, 187, 1),
           color: const Color.fromRGBO(163, 226, 224, 1),
           borderDrawMode: BorderDrawMode.excludeBottom,
@@ -178,7 +179,7 @@ class _StatisticContractsByScreenerAndDatePageState extends SampleViewState
           visibleMaximum: rangeController.end,
           rangeController: rangeController),
       primaryYAxis: NumericAxis(
-        labelPosition: ChartDataLabelPosition.inside,
+        labelPosition: ChartDataLabelPosition.outside,
         labelAlignment: LabelAlignment.end,
         majorTickLines: const MajorTickLines(size: 0),
         axisLine: const AxisLine(color: Colors.transparent),
@@ -188,6 +189,7 @@ class _StatisticContractsByScreenerAndDatePageState extends SampleViewState
         SplineSeries<ChartSampleData, DateTime>(
           name: '$_title',
           dataSource: splineSeriesData,
+          splineType: SplineType.monotonic,
           color: const Color.fromRGBO(0, 193, 187, 1),
           animationDuration: 0,
           xValueMapper: (ChartSampleData sales, _) =>

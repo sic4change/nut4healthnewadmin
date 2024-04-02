@@ -160,6 +160,7 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
           dataSource: splineSeriesData,
           borderColor: const Color.fromRGBO(0, 193, 187, 1),
           color: const Color.fromRGBO(163, 226, 224, 1),
+          splineType: SplineType.monotonic,
           borderDrawMode: BorderDrawMode.excludeBottom,
           borderWidth: 1,
           xValueMapper: (ChartSampleData sales, _) => sales.x as DateTime,
@@ -184,7 +185,7 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
           visibleMaximum: rangeController.end,
           rangeController: rangeController),
       primaryYAxis: NumericAxis(
-        labelPosition: ChartDataLabelPosition.inside,
+        labelPosition: ChartDataLabelPosition.outside,
         labelAlignment: LabelAlignment.end,
         majorTickLines: const MajorTickLines(size: 0),
         axisLine: const AxisLine(color: Colors.transparent),
@@ -196,6 +197,7 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
           dataSource: splineSeriesData,
           color: const Color.fromRGBO(0, 193, 187, 1),
           animationDuration: 0,
+          splineType: SplineType.monotonic,
           xValueMapper: (ChartSampleData sales, _) =>
             (sales.x as DateTime),
           yValueMapper: (ChartSampleData sales, _) => sales.y,
