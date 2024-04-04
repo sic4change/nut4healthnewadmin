@@ -103,3 +103,6 @@ flutter:
     - family: Roboto-Regular
       fonts:
         - asset: assets/fonts/Roboto-Regular.ttf
+    - family: NotoNaskhArabic-Regular
+      fonts:
+        - asset: assets/fonts/NotoNaskhArabic-Regular.ttf

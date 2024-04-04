@@ -4,6 +4,7 @@
 import 'package:adminnut4health/src/features/complications/domain/complication.dart';
 import 'package:adminnut4health/src/features/complications/presentation/complication_datagridsource.dart';
 import 'package:adminnut4health/src/features/complications/presentation/complications_screen_controller.dart';
+import 'package:adminnut4health/src/utils/functions.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -270,34 +271,11 @@ class _ComplicationDataGridState extends LocalizationSampleViewState {
     }
 
     Future<void> exportDataGridToPdf() async {
-      final ByteData data = await rootBundle.load('images/nut_logo.jpg');
-      final PdfDocument document = _key.currentState!.exportToPdfDocument(
-          fitAllColumnsInOnePage: true,
-          excludeColumns: ['Foto', 'ID'],
-          cellExport: (DataGridCellPdfExportDetails details) {},
-          headerFooterExport: (DataGridPdfHeaderFooterExportDetails details) {
-            final double width = details.pdfPage.getClientSize().width;
-            final PdfPageTemplateElement header =
-                PdfPageTemplateElement(Rect.fromLTWH(0, 0, width, 65));
-
-            header.graphics.drawImage(
-                PdfBitmap(data.buffer
-                    .asUint8List(data.offsetInBytes, data.lengthInBytes)),
-                Rect.fromLTWH(width - 148, 0, 148, 60));
-
-            header.graphics.drawString(
-              _complications,
-              PdfStandardFont(PdfFontFamily.helvetica, 13,
-                  style: PdfFontStyle.bold),
-              bounds: const Rect.fromLTWH(0, 25, 200, 60),
-            );
-
-            details.pdfDocumentTemplate.top = header;
-          });
-      final List<int> bytes = document.saveSync();
-      await helper.FileSaveHelper.saveAndLaunchFile(
-          bytes, '$_complications.pdf');
-      document.dispose();
+      exportDataGridToPdfStandard(
+        dataGridState: _key.currentState!,
+        title: _complications,
+        excludeColumns: ['Foto', 'ID'],
+      );
     }
 
     if (currentUserRole == 'super-admin') {

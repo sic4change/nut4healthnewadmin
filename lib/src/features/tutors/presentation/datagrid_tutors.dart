@@ -1,10 +1,13 @@
 /// Package imports
 /// import 'package:flutter/foundation.dart';
 
+import 'dart:io';
+
 import 'package:adminnut4health/src/features/tutors/domain/tutor.dart';
 import 'package:adminnut4health/src/features/tutors/domain/tutorWithPoint.dart';
 import 'package:adminnut4health/src/features/users/domain/user.dart';
 import 'package:adminnut4health/src/utils/alert_dialogs.dart';
+import 'package:adminnut4health/src/utils/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -189,35 +192,11 @@ class _TutorDataGridState extends LocalizationSampleViewState {
     }
 
     Future<void> exportDataGridToPdf() async {
-      final ByteData data = await rootBundle.load('images/nut_logo.jpg');
-      final PdfDocument document = _key.currentState!.exportToPdfDocument(
-          fitAllColumnsInOnePage: true,
-          cellExport: (DataGridCellPdfExportDetails details) {
-            //details.pdfCell.style.font = PdfStandardFont(PdfFontFamily.helvetica, 13);
-          },
-          excludeColumns: <String>['Nombre', 'Apellidos', 'Vecindario', 'Teléfono', 'Fecha de nacimiento', 'ID', 'Punto ID'],
-          headerFooterExport: (DataGridPdfHeaderFooterExportDetails details) {
-            final double width = details.pdfPage.getClientSize().width;
-            final PdfPageTemplateElement header =
-            PdfPageTemplateElement(Rect.fromLTWH(0, 0, width, 65));
-
-            header.graphics.drawImage(
-                PdfBitmap(data.buffer
-                    .asUint8List(data.offsetInBytes, data.lengthInBytes)),
-                Rect.fromLTWH(width - 148, 0, 148, 60));
-
-            header.graphics.drawString(
-              _tutors,
-              PdfStandardFont(PdfFontFamily.helvetica, 13,
-                  style: PdfFontStyle.bold),
-              bounds: const Rect.fromLTWH(0, 25, 200, 60),
-            );
-
-            details.pdfDocumentTemplate.top = header;
-          });
-      final List<int> bytes = document.saveSync();
-      await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_tutors.pdf');
-      document.dispose();
+      exportDataGridToPdfStandard(
+        dataGridState: _key.currentState!,
+        title: _tutors,
+        excludeColumns: ['Nombre', 'Apellidos', 'Vecindario', 'Teléfono', 'Fecha de nacimiento', 'ID', 'Punto ID']
+      );
     }
 
     if (User.currentRole == 'super-admin') {
