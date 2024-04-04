@@ -70,12 +70,12 @@ class _ContractDataGridState extends LocalizationSampleViewState {
       _tutorStatus, _weeks, _childMinor,
       _contact, _address, _date, _point, _agent,
       _medical, _medicalDate, _smsSent, _duration, _desnutrition, _transactionHash,
-      _transactionValidateHash, _validateData;
+      _transactionValidateHash, _validateData, _medicalId, _screenerId, _pointId;
 
   late Map<String, double> columnWidths = {
     'Validación Médico Jefe': 200,
     'Validación Dirección Regional': 200,
-    'Id': 150,
+    'ID': 200,
     'Código': 150,
     'FEFA': 150,
     'Estado': 150,
@@ -106,6 +106,9 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     'Duración': 150,
     'Hash transacción': 150,
     'Hash transacción validada': 150,
+    'Servicio Salud ID': 200,
+    'Agente Salud ID': 200,
+    'Punto ID': 200,
   };
 
   /// Used to validate the forms
@@ -217,7 +220,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
   Widget _buildHeaderButtons() {
     Future<void> exportDataGridToExcel() async {
       final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
-          excludeColumns: ['Id', 'Nombre', 'Apellidos', 'Lugar', 'Madre, Padre o Tutor', 'Contacto', 'FEFA'],
+          excludeColumns: ['Nombre', 'Apellidos', 'Lugar', 'Madre, Padre o Tutor', 'Contacto', 'FEFA'],
           cellExport: (DataGridCellExcelExportDetails details) {
 
           });
@@ -229,7 +232,8 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     Future<void> exportDataGridToPdf() async {
       final ByteData data = await rootBundle.load('images/nut_logo.jpg');
       final PdfDocument document = _key.currentState!.exportToPdfDocument(
-          excludeColumns: ['Id', 'Nombre', 'Apellidos', 'Lugar', 'Madre, Padre o Tutor', 'Contacto', 'FEFA'],
+          excludeColumns: ['Nombre', 'Apellidos', 'Lugar', 'Madre, Padre o Tutor',
+            'Contacto', 'FEFA', 'ID', 'Punto ID', 'Servicio Salud ID', 'Agente Salud ID'],
           cellExport: (DataGridCellPdfExportDetails details) {
 
           },
@@ -458,7 +462,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
           columns: <GridSummaryColumn>[
             const GridSummaryColumn(
                 name: 'Count',
-                columnName: 'Id',
+                columnName: 'ID',
                 summaryType: GridSummaryType.count),
           ],
           position: GridTableSummaryRowPosition.bottom),
@@ -471,7 +475,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
       case 'en_US':
         _chefValidation = 'Chef validation';
         _regionalValidation = 'Regional validation';
-        _id = 'Id';
+        _id = 'ID';
         _code = 'Code';
         _fefa = 'FEFA';
         _status = 'Status';
@@ -499,18 +503,21 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _date = 'Date';
         _point = 'Healthcare Position';
         _agent = 'Healthcare Agent';
-        _medical = 'Healtcare Service';
+        _medical = 'Healthcare Service';
         _medicalDate = 'Medical Appointment Date';
         _smsSent = 'SMS Sent';
         _duration = 'Duration';
         _desnutrition = 'Desnutrition';
         _transactionHash = 'Transaction Hash';
         _transactionValidateHash = 'Transaction validate Hash';
+        _pointId = 'Point ID';
+        _medicalId = 'Healthcare Service ID';
+        _screenerId = 'Healthcare Agent ID';
         break;
       case 'es_ES':
         _chefValidation = 'Validación Médico Jefe';
         _regionalValidation = 'Validación Dirección Regional';
-        _id = 'Id';
+        _id = 'ID';
         _code = 'Código';
         _fefa = 'FEFA';
         _status = 'Estado';
@@ -545,6 +552,9 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _desnutrition = 'Desnutrición';
         _transactionHash = 'Hash transacción';
         _transactionValidateHash = 'Hash transacción validada';
+        _pointId = 'Punto ID';
+        _medicalId = 'Servicio Salud ID';
+        _screenerId = 'Agente Salud ID';
         break;
       case 'fr_FR':
         _chefValidation = 'Validation du médecin-chef';
@@ -584,6 +594,9 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         _desnutrition = 'Désnutrition';
         _transactionHash = 'Hachage de transaction';
         _transactionValidateHash = 'Hachage de transaction validé';
+        _pointId = 'Place ID';
+        _medicalId = 'Servicio de santé ID';
+        _screenerId = 'Agent de santé ID';
         break;
     }
     return SfDataGrid(
@@ -634,18 +647,6 @@ class _ContractDataGridState extends LocalizationSampleViewState {
               ),
             )
         ),
-        GridColumn(
-            width: columnWidths['Id']!,
-            columnName: 'Id',
-            visible: false,
-            label: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _id,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )),
         GridColumn(
           columnName: 'Código',
             width: columnWidths['Código']!,
@@ -1009,6 +1010,54 @@ class _ContractDataGridState extends LocalizationSampleViewState {
               ),
             )
         ),
+        GridColumn(
+            width: columnWidths['ID']!,
+            columnName: 'ID',
+            visible: false,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _id,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )),
+        GridColumn(
+            width: columnWidths['Servicio Salud ID']!,
+            columnName: 'Servicio Salud ID',
+            visible: false,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _medicalId,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )),
+        GridColumn(
+            width: columnWidths['Agente Salud ID']!,
+            columnName: 'Agente Salud ID',
+            visible: false,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _screenerId,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )),
+        GridColumn(
+            width: columnWidths['Punto ID']!,
+            columnName: 'Punto ID',
+            visible: false,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _pointId,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )),
       ],
     );
   }
@@ -1022,7 +1071,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
 
     _chefValidation = 'Validación Médico Jefe';
     _regionalValidation = 'Validación Dirección Regional';
-    _id = 'Id';
+    _id = 'ID';
     _code = 'Código';
     _fefa = 'FEFA';
     _contracts = 'Diagnosis';
@@ -1059,6 +1108,9 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     _transactionHash = 'Hash transacción';
     _transactionValidateHash = 'Hash transacción validada';
     _validateData = 'VALIDAR DATOS';
+    _medicalId = 'Servicio Salud ID';
+    _screenerId = 'Agente Salud ID';
+    _pointId = 'Punto ID';
   }
 
 

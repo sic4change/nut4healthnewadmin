@@ -24,7 +24,7 @@ class CountryDataGridSource extends DataGridSource {
     if (_countries != null && _countries!.isNotEmpty) {
       _dataGridRows = _countries!.map<DataGridRow>((Country country) {
         return DataGridRow(cells: <DataGridCell>[
-          DataGridCell<String>(columnName: 'Id', value: country.countryId),
+          DataGridCell<String>(columnName: 'ID', value: country.countryId),
           DataGridCell<String>(columnName: 'Nombre', value: country.name),
           DataGridCell<String>(columnName: 'Código', value: country.code),
           DataGridCell<bool>(columnName: 'Activo', value: country.active),
@@ -98,11 +98,6 @@ class CountryDataGridSource extends DataGridSource {
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[0].value.toString()),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
         child: Text(row.getCells()[1].value.toString()),
       ),
       Container(
@@ -131,6 +126,11 @@ class CountryDataGridSource extends DataGridSource {
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[8].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[0].value.toString()),
       ),
     ]);
   }

@@ -24,12 +24,14 @@ class NotificationDataGridSource extends DataGridSource {
     if (_notifications != null && _notifications!.isNotEmpty) {
       _dataGridRows = _notifications!.map<DataGridRow>((NotificationWithPointAndChild notificationWithPointAndChild) {
         return DataGridRow(cells: <DataGridCell>[
-          DataGridCell<String>(columnName: 'Id', value: notificationWithPointAndChild.notification.notificationId),
+          DataGridCell<String>(columnName: 'ID', value: notificationWithPointAndChild.notification.notificationId),
           DataGridCell<String>(columnName: 'Punto', value: notificationWithPointAndChild.point?.name??""),
           DataGridCell<String>(columnName: 'Niño/a', value: notificationWithPointAndChild.child?.name?? ""),
           DataGridCell<String>(columnName: 'Texto', value: notificationWithPointAndChild.notification.text),
           DataGridCell<double>(columnName: 'Duración', value: notificationWithPointAndChild.notification.timeMillis),
           DataGridCell<bool>(columnName: 'Enviado', value: notificationWithPointAndChild.notification.sent),
+          DataGridCell<String>(columnName: 'Punto ID', value: notificationWithPointAndChild.notification.pointId),
+          DataGridCell<String>(columnName: 'Niño/a ID', value: notificationWithPointAndChild.notification.childId),
         ]);
       }).toList();
     }
@@ -77,7 +79,10 @@ class NotificationDataGridSource extends DataGridSource {
       _buildStandardContainer(row.getCells()[2].value.toString()),
       _buildStandardContainer(row.getCells()[3].value.toString()),
       _buildStandardContainer(row.getCells()[4].value.toString()),
-      _buildSent(row.getCells()[5].value)
+      _buildSent(row.getCells()[5].value),
+      _buildStandardContainer(row.getCells()[0].value),
+      _buildStandardContainer(row.getCells()[6].value),
+      _buildStandardContainer(row.getCells()[7].value),
     ]);
   }
 

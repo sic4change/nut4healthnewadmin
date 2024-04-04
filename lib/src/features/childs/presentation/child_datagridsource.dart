@@ -25,7 +25,7 @@ class ChildDataGridSource extends DataGridSource {
     if (_childs != null && _childs!.isNotEmpty) {
       _dataGridRows = _childs!.map<DataGridRow>((ChildWithPointAndTutor childWithPointAndTutor) {
         return DataGridRow(cells: <DataGridCell>[
-          DataGridCell<String>(columnName: 'Id', value: childWithPointAndTutor.child.childId),
+          DataGridCell<String>(columnName: 'ID', value: childWithPointAndTutor.child.childId),
           DataGridCell<String>(columnName: 'Punto', value: childWithPointAndTutor.point?.name??""),
           DataGridCell<String>(columnName: 'Nombre', value: childWithPointAndTutor.child.name),
           DataGridCell<String>(columnName: 'Apellidos', value: childWithPointAndTutor.child.surnames),
@@ -39,6 +39,8 @@ class ChildDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Observaciones', value: childWithPointAndTutor.child.observations),
           DataGridCell<bool>(columnName: 'Validación Médico Jefe', value: childWithPointAndTutor.child.chefValidation),
           DataGridCell<bool>(columnName: 'Validación Dirección Regional', value: childWithPointAndTutor.child.regionalValidation),
+          DataGridCell<String>(columnName: 'Punto ID', value: childWithPointAndTutor.child.pointId),
+          DataGridCell<String>(columnName: 'Padre, madre o tutor ID', value: childWithPointAndTutor.child.tutorId),
         ]);
       }).toList();
     }
@@ -109,6 +111,9 @@ class ChildDataGridSource extends DataGridSource {
       _buildStandardContainer(row.getCells()[9].value.toString()),
       _buildStandardContainer(row.getCells()[10].value.toString()),
       _buildStandardContainer(row.getCells()[11].value.toString()),
+      _buildStandardContainer(row.getCells()[0].value.toString()),
+      _buildStandardContainer(row.getCells()[14].value.toString()),
+      _buildStandardContainer(row.getCells()[15].value.toString()),
     ]);
   }
 

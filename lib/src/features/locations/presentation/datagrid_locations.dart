@@ -64,12 +64,14 @@ class _LocationDataGridState extends LocalizationSampleViewState {
   var currentUserRole = "";
 
   /// Translate names
-  late String _id, _name, _country, _region, _active,  _newLocation, _importCSV, _exportXLS,
+  late String _id, _countryId, _regionId, _name, _country, _region, _active,  _newLocation, _importCSV, _exportXLS,
       _exportPDF, _total, _editLocation, _removeLocation, _save, _cancel,
       _provinces, _removedLocation;
 
   late Map<String, double> columnWidths = {
-    'Id': 150,
+    'ID': 200,
+    'País ID': 200,
+    'Región ID': 200,
     'Nombre': 150,
     'País': 150,
     'Región': 150,
@@ -260,6 +262,7 @@ class _LocationDataGridState extends LocalizationSampleViewState {
     Future<void> exportDataGridToPdf() async {
       final ByteData data = await rootBundle.load('images/nut_logo.jpg');
       final PdfDocument document = _key.currentState!.exportToPdfDocument(
+          excludeColumns: ['ID', 'País ID', 'Región ID'],
           fitAllColumnsInOnePage: true,
           cellExport: (DataGridCellPdfExportDetails details) {
 
@@ -596,7 +599,7 @@ class _LocationDataGridState extends LocalizationSampleViewState {
     final String? id = row
         .getCells()
         .firstWhere(
-            (DataGridCell element) => element.columnName == 'Id')
+            (DataGridCell element) => element.columnName == 'ID')
         ?.value
         .toString();
 
@@ -819,7 +822,9 @@ class _LocationDataGridState extends LocalizationSampleViewState {
     final selectedLocale = model.locale.toString();
     switch (selectedLocale) {
       case 'en_US':
-        _id = 'Id';
+        _id = 'ID';
+        _countryId = 'Country ID';
+        _regionId = 'Region ID';
         _name = 'Name';
         _country = 'Country';
         _region = 'Region';
@@ -837,7 +842,9 @@ class _LocationDataGridState extends LocalizationSampleViewState {
         _removedLocation = 'Municipality deleted successfully.';
         break;
       case 'es_ES':
-        _id = 'Id';
+        _id = 'ID';
+        _countryId = 'País ID';
+        _regionId = 'Región ID';
         _name = 'Nombre';
         _country = 'País';
         _region = 'Región';
@@ -855,7 +862,9 @@ class _LocationDataGridState extends LocalizationSampleViewState {
         _removedLocation = 'Municipio eliminado correctamente';
         break;
       case 'fr_FR':
-        _id = 'Id';
+        _id = 'ID';
+        _countryId = 'Pays ID';
+        _regionId = 'Région ID';
         _name = 'Nom';
         _country = 'Code';
         _region = 'Région';
@@ -898,19 +907,6 @@ class _LocationDataGridState extends LocalizationSampleViewState {
       allowSorting: true,
       allowMultiColumnSorting: true,
       columns: <GridColumn>[
-        GridColumn(
-            columnName: 'Id',
-            visible: false,
-            width: columnWidths['Id']!,
-            label: Container(
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _id,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-        ),
         GridColumn(
             columnName: 'Nombre',
             width: columnWidths['Nombre']!,
@@ -958,6 +954,45 @@ class _LocationDataGridState extends LocalizationSampleViewState {
                 overflow: TextOverflow.ellipsis,
               )),
         ),
+        GridColumn(
+            columnName: 'ID',
+            width: columnWidths['ID']!,
+            visible: false,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _id,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'País ID',
+            width: columnWidths['País ID']!,
+            visible: false,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _countryId,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Región ID',
+            width: columnWidths['Región ID']!,
+            visible: false,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _regionId,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
       ],
     );
   }
@@ -971,7 +1006,10 @@ class _LocationDataGridState extends LocalizationSampleViewState {
     activeController = TextEditingController();
     selectedLocale = model.locale.toString();
 
-    _id = 'Id';
+    _id = 'ID';
+    _countryId = 'País ID';
+    _regionId = 'Región ID';
+    _regionId = 'Región ID';
     _name = 'Nombre';
     _country = 'País';
     _region = 'Región';

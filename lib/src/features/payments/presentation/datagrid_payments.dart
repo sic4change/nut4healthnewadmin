@@ -65,14 +65,13 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
   /// Translate names
   late String _id, _date, _screenerName, _screenerDPI, _screenerEmail, _screenerPhone,
       _quantity, _childName, _childAddress, _status, _type, _exportXLS, _exportPDF,
-      _total, _payments,  _save, _cancel, _editPayment;
+      _total, _payments,  _save, _cancel, _editPayment, _screenerId;
 
   /// Editing controller for forms to perform update the values.
   TextEditingController?
       statusController;
 
   late Map<String, double> columnWidths = {
-    'Id': 150,
     'Fecha': 150,
     'Nombre Agente Salud': 150,
     'DNI/DPI Agente Salud': 150,
@@ -83,6 +82,8 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
     'Dirección Menor': 150,
     'Estado': 150,
     'Tipo': 150,
+    'ID': 200,
+    'Agente Salud ID': 200,
   };
 
   /// Used to validate the forms
@@ -175,7 +176,7 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
   Widget _buildHeaderButtons() {
     Future<void> exportDataGridToExcel() async {
       final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
-          excludeColumns: ['Id', 'Nombre Menor', 'Dirección Menor'],
+          excludeColumns: ['Nombre Menor', 'Dirección Menor'],
           cellExport: (DataGridCellExcelExportDetails details) {
 
           });
@@ -188,7 +189,7 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
       final ByteData data = await rootBundle.load('images/nut_logo.jpg');
       final PdfDocument document = _key.currentState!.exportToPdfDocument(
           fitAllColumnsInOnePage: true,
-          excludeColumns: ['Id', 'Nombre Menor', 'Dirección Menor'],
+          excludeColumns: ['Nombre Menor', 'Dirección Menor', 'ID', 'Agente Salud ID'],
           cellExport: (DataGridCellPdfExportDetails details) {
 
           },
@@ -288,7 +289,7 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
           columns: <GridSummaryColumn>[
             const GridSummaryColumn(
                 name: 'Count',
-                columnName: 'Id',
+                columnName: 'ID',
                 summaryType: GridSummaryType.count),
           ],
           position: GridTableSummaryRowPosition.bottom),
@@ -299,7 +300,7 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
     final selectedLocale = model.locale.toString();
     switch (selectedLocale) {
       case 'en_US':
-        _id = 'Id';
+        _id = 'ID';
         _date = 'Date';
         _screenerName = 'Health Agent Name';
         _screenerDPI = 'Health Agent ID';
@@ -310,6 +311,8 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
         _childAddress = 'Child Address';
         _status = 'Status';
         _type = 'Type';
+        _screenerId = 'Screener ID';
+
         _payments = 'Payments';
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
@@ -319,7 +322,7 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
         _editPayment = 'Edit';
         break;
       case 'es_ES':
-        _id = 'Id';
+        _id = 'ID';
         _date = 'Fecha';
         _screenerName = 'Nombre Agente de Salud';
         _screenerDPI = 'DNI/DPI Agente Salud';
@@ -330,6 +333,8 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
         _childAddress = 'Dirección Menor';
         _status = 'Estado';
         _type = 'Tipo';
+        _screenerId = 'Agente Salud ID';
+
         _payments = 'Pagos';
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
@@ -350,6 +355,8 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
         _childAddress = 'Adresse de l\'enfant';
         _status = 'Statut';
         _type = 'Type';
+        _screenerId = 'Agent de santé ID';
+
         _payments = 'Paiements';
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
@@ -382,18 +389,6 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
       allowSorting: true,
       allowMultiColumnSorting: true,
       columns: <GridColumn>[
-        GridColumn(
-            width: columnWidths['Id']!,
-            columnName: 'Id',
-            visible: false,
-            label: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _id,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )),
         GridColumn(
           columnName: 'Estado',
           width: columnWidths['Estado']!,
@@ -491,6 +486,30 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
               ),
             )
         ),
+        GridColumn(
+            width: columnWidths['ID']!,
+            columnName: 'ID',
+            visible: false,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _id,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )),
+        GridColumn(
+            width: columnWidths['Agente Salud ID']!,
+            columnName: 'Agente Salud ID',
+            visible: false,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _screenerId,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )),
       ],
     );
   }
@@ -649,7 +668,7 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
     statusController = TextEditingController();
     paymentDataGridSource = PaymentDataGridSource(List.empty());
     selectedLocale = model.locale.toString();
-    _id = 'Id';
+    _id = 'ID';
     _date = 'Fecha';
     _screenerName = 'Nombre Agente de Salud';
     _screenerDPI = 'DNI/DPI Agente Salud';
@@ -660,6 +679,8 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
     _childAddress = 'Dirección Menor';
     _status = 'Estado';
     _type = 'Tipo';
+    _screenerId = 'Agente Salud ID';
+
     _payments = 'Pagos';
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';

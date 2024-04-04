@@ -42,7 +42,7 @@ class PointDataGridSource extends DataGridSource {
     if (_points != null && _points!.isNotEmpty) {
       _dataGridRows = _points!.map<DataGridRow>((PointWithProvinceAndCountry pointWithProvinceAndCountry) {
         return DataGridRow(cells: <DataGridCell>[
-          DataGridCell<String>(columnName: 'Id', value: pointWithProvinceAndCountry.point.pointId),
+          DataGridCell<String>(columnName: 'ID', value: pointWithProvinceAndCountry.point.pointId),
           DataGridCell<String>(columnName: 'Nombre', value: pointWithProvinceAndCountry.point.name),
           DataGridCell<String>(columnName: 'Nombre Punto', value: pointWithProvinceAndCountry.point.pointName),
           DataGridCell<String>(columnName: 'Código Punto', value: pointWithProvinceAndCountry.point.pointCode),
@@ -62,6 +62,10 @@ class PointDataGridSource extends DataGridSource {
           DataGridCell<int>(columnName: 'Casos Moderada', value: pointWithProvinceAndCountry.point.casesmoderada),
           DataGridCell<int>(columnName: 'Casos Severa', value: pointWithProvinceAndCountry.point.casessevera),
           DataGridCell<String>(columnName: 'Hash de transacción', value: pointWithProvinceAndCountry.point.transactionHash),
+          DataGridCell<String>(columnName: 'País ID', value: pointWithProvinceAndCountry.country?.countryId),
+          DataGridCell<String>(columnName: 'Región ID', value: pointWithProvinceAndCountry.region?.regionId),
+          DataGridCell<String>(columnName: 'Provincia ID', value: pointWithProvinceAndCountry.location?.locationId),
+          DataGridCell<String>(columnName: 'Municipio ID', value: pointWithProvinceAndCountry.province?.provinceId),
         ]);
       }).toList();
     }
@@ -126,11 +130,6 @@ class PointDataGridSource extends DataGridSource {
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(cells: <Widget>[
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[0].value.toString()),
-      ),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
@@ -221,6 +220,31 @@ class PointDataGridSource extends DataGridSource {
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[19].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[0].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[20].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[21].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[22].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[23].value.toString()),
       ),
     ]);
   }

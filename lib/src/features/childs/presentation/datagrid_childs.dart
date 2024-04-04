@@ -55,7 +55,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
   /// Translate names
   late String _chefValidation, _regionalValidation, _point, _name, _surnames, _birthdate, _code, _createDate, _lastDate,
       _ethnicity, _sex, _tutor, _observations, _exportXLS, _exportPDF, _total,
-      _childs, _validateData;
+      _childs, _validateData, _id, _pointId, _tutorId;
 
   late Map<String, double> columnWidths = {
     'Validación Médico Jefe': 200,
@@ -71,6 +71,9 @@ class _ChildDataGridState extends LocalizationSampleViewState {
     'Sexo': 150,
     'Madre, padre o tutor': 150,
     'Observaciones': 150,
+    'ID': 200,
+    'Punto ID': 200,
+    'Padre, madre o tutor ID': 200,
   };
 
   AsyncValue<List<ChildWithPointAndTutor>> childrenAsyncValue = AsyncValue.data(List.empty());
@@ -183,7 +186,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
     Future<void> exportDataGridToPdf() async {
       final ByteData data = await rootBundle.load('images/nut_logo.jpg');
       final PdfDocument document = _key.currentState!.exportToPdfDocument(
-          excludeColumns: <String>['Nombre', 'Apellidos', 'Madre, padre o tutor' ],
+          excludeColumns: <String>['Nombre', 'Apellidos', 'Madre, padre o tutor', 'ID', 'Punto ID', 'Padre, madre o tutor ID' ],
           fitAllColumnsInOnePage: true,
           cellExport: (DataGridCellPdfExportDetails details) {
 
@@ -407,6 +410,9 @@ class _ChildDataGridState extends LocalizationSampleViewState {
         _sex = 'Sex';
         _tutor = 'Mother, father or tutor';
         _observations = 'Observations';
+        _id = 'ID';
+        _pointId = 'Point ID';
+        _tutorId = 'Mother, father or tutor ID';
 
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
@@ -427,6 +433,9 @@ class _ChildDataGridState extends LocalizationSampleViewState {
         _sex = 'Sexo';
         _tutor = 'Madre, padre o tutor';
         _observations = 'Observaciones';
+        _id = 'ID';
+        _pointId = 'Punto ID';
+        _tutorId = 'Padre, madre o tutor ID';
 
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
@@ -447,6 +456,9 @@ class _ChildDataGridState extends LocalizationSampleViewState {
         _sex = 'Sexe';
         _tutor = 'Mère, père ou tuteur';
         _observations = 'Observations';
+        _id = 'ID';
+        _pointId = 'Place ID';
+        _tutorId = 'Mère, père ou tuteur ID';
 
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
@@ -632,6 +644,45 @@ class _ChildDataGridState extends LocalizationSampleViewState {
               ),
             )
         ),
+        GridColumn(
+            columnName: 'ID',
+            width: columnWidths['ID']!,
+            visible: false,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _id,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Punto ID',
+            width: columnWidths['Punto ID']!,
+            visible: false,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _pointId,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Padre, madre o tutor ID',
+            width: columnWidths['Padre, madre o tutor ID']!,
+            visible: false,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _tutorId,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
       ],
     );
   }
@@ -655,6 +706,7 @@ class _ChildDataGridState extends LocalizationSampleViewState {
     _sex = 'Sexo';
     _tutor = 'Madre, padre o tutor';
     _observations = 'Observaciones';
+    _id = 'ID';
 
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';

@@ -66,7 +66,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
       _editCountry, _removeCountry, _save, _cancel, _countries, _removedCountry;
 
   late Map<String, double> columnWidths = {
-    'Id': 150,
+    'ID': 200,
     'Nombre': 150,
     'Código': 150,
     'Activo': 150,
@@ -243,6 +243,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
     Future<void> exportDataGridToPdf() async {
       final ByteData data = await rootBundle.load('images/nut_logo.jpg');
       final PdfDocument document = _key.currentState!.exportToPdfDocument(
+          excludeColumns: ['ID'],
           fitAllColumnsInOnePage: true,
           cellExport: (DataGridCellPdfExportDetails details) {
 
@@ -527,7 +528,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
     final String? id = row
         .getCells()
         .firstWhere(
-            (DataGridCell element) => element.columnName == 'Id')
+            (DataGridCell element) => element.columnName == 'ID')
         ?.value
         .toString();
 
@@ -790,7 +791,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
     final selectedLocale = model.locale.toString();
     switch (selectedLocale) {
       case 'en_US':
-        _id = 'Id';
+        _id = 'ID';
         _name = 'Name';
         _code = 'Code';
         _active = 'Active';
@@ -811,7 +812,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
         _removedCountry = 'Country deleted successfully.';
         break;
       case 'es_ES':
-        _id = 'Id';
+        _id = 'ID';
         _name = 'Nombre';
         _code = 'Código';
         _active = 'Activo';
@@ -833,7 +834,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
         _removedCountry = 'País eliminado correctamente';
         break;
       case 'fr_FR':
-        _id = 'Id';
+        _id = 'ID';
         _name = 'Nom';
         _code = 'Code';
         _active = 'Actif';
@@ -880,19 +881,6 @@ class _CountryDataGridState extends LocalizationSampleViewState {
       allowSorting: true,
       allowMultiColumnSorting: true,
       columns: <GridColumn>[
-        GridColumn(
-            columnName: 'Id',
-            visible: false,
-            width: columnWidths['Id']!,
-            label: Container(
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _id,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-        ),
         GridColumn(
             columnName: 'Nombre',
             width: columnWidths['Nombre']!,
@@ -983,6 +971,19 @@ class _CountryDataGridState extends LocalizationSampleViewState {
                 overflow: TextOverflow.ellipsis,
               )),
         ),
+        GridColumn(
+            columnName: 'ID',
+            width: columnWidths['ID']!,
+            visible: false,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _id,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
       ],
     );
   }
@@ -1002,7 +1003,7 @@ class _CountryDataGridState extends LocalizationSampleViewState {
     casesSeveraController = TextEditingController();
     selectedLocale = model.locale.toString();
 
-    _id = 'Id';
+    _id = 'ID';
     _name = 'Nombre';
     _code = 'Código';
     _active = 'Activo';

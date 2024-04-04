@@ -68,6 +68,10 @@ class _PointDataGridState extends LocalizationSampleViewState {
 
   /// Translate names
   late String _id,
+      _countryId,
+      _regionId,
+      _locationId,
+      _provinceId,
       _name,
       _pointName,
       _pointCode,
@@ -100,7 +104,11 @@ class _PointDataGridState extends LocalizationSampleViewState {
       _removedPoint;
 
   late Map<String, double> columnWidths = {
-    'Id': 150,
+    'ID': 200,
+    'País ID': 200,
+    'Región ID': 200,
+    'Provincia ID': 200,
+    'Municipio ID': 200,
     'Nombre': 150,
     'Nombre Punto': 150,
     'Código Punto': 150,
@@ -351,6 +359,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
     Future<void> exportDataGridToPdf() async {
       final ByteData data = await rootBundle.load('images/nut_logo.jpg');
       final PdfDocument document = _key.currentState!.exportToPdfDocument(
+          excludeColumns: ['ID', 'País ID', 'Región ID', 'Provincia ID', 'Municipio ID'],
           fitAllColumnsInOnePage: true,
           cellExport: (DataGridCellPdfExportDetails details) {},
           headerFooterExport: (DataGridPdfHeaderFooterExportDetails details) {
@@ -797,7 +806,7 @@ class _PointDataGridState extends LocalizationSampleViewState {
   void _updateTextFieldContext(DataGridRow row) {
     final String? id = row
         .getCells()
-        .firstWhere((DataGridCell element) => element.columnName == 'Id')
+        .firstWhere((DataGridCell element) => element.columnName == 'ID')
         ?.value
         .toString();
 
@@ -1211,7 +1220,11 @@ class _PointDataGridState extends LocalizationSampleViewState {
     final selectedLocale = model.locale.toString();
     switch (selectedLocale) {
       case 'en_US':
-        _id = 'Id';
+        _id = 'ID';
+        _countryId = 'Country ID';
+        _regionId = 'Region ID';
+        _locationId = 'Province ID';
+        _provinceId = 'Municipality ID';
         _name = 'Name';
         _pointName = 'Point Name';
         _pointCode = 'Point Code';
@@ -1244,7 +1257,11 @@ class _PointDataGridState extends LocalizationSampleViewState {
         _transactionHash = 'Transaction hash';
         break;
       case 'es_ES':
-        _id = 'Id';
+        _id = 'ID';
+        _countryId = 'País ID';
+        _regionId = 'Región ID';
+        _locationId = 'Provincia ID';
+        _provinceId = 'Municipio ID';
         _name = 'Nombre';
         _pointName = 'Nombre Punto';
         _pointCode = 'Código Punto';
@@ -1277,7 +1294,11 @@ class _PointDataGridState extends LocalizationSampleViewState {
         _transactionHash = 'Hash de transacción';
         break;
       case 'fr_FR':
-        _id = 'Id';
+        _id = 'ID';
+        _countryId = 'Pays ID';
+        _regionId = 'Région ID';
+        _locationId = 'Province ID';
+        _provinceId = 'Municipalité ID';
         _name = 'Nom';
         _pointName = 'Nom du Point';
         _pointCode = 'Code du Point';
@@ -1335,18 +1356,6 @@ class _PointDataGridState extends LocalizationSampleViewState {
       allowSorting: true,
       allowMultiColumnSorting: true,
       columns: <GridColumn>[
-        GridColumn(
-            columnName: 'Id',
-            visible: false,
-            width: columnWidths['Id']!,
-            label: Container(
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _id,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )),
         GridColumn(
             columnName: 'Nombre',
             width: columnWidths['Nombre']!,
@@ -1560,6 +1569,66 @@ class _PointDataGridState extends LocalizationSampleViewState {
                 overflow: TextOverflow.ellipsis,
               ),
             )),
+        GridColumn(
+            columnName: 'ID',
+            width: columnWidths['ID']!,
+            visible: false,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _id,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )),
+        GridColumn(
+            columnName: 'País ID',
+            width: columnWidths['País ID']!,
+            visible: false,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _countryId,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )),
+        GridColumn(
+            columnName: 'Región ID',
+            width: columnWidths['Región ID']!,
+            visible: false,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _regionId,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )),
+        GridColumn(
+            columnName: 'Provincia ID',
+            width: columnWidths['Provincia ID']!,
+            visible: false,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _locationId,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )),
+        GridColumn(
+            columnName: 'Municipio ID',
+            width: columnWidths['Municipio ID']!,
+            visible: false,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _provinceId,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )),
       ],
     );
   }
@@ -1585,7 +1654,11 @@ class _PointDataGridState extends LocalizationSampleViewState {
     casesseveraController = TextEditingController();
     selectedLocale = model.locale.toString();
 
-    _id = 'Id';
+    _id = 'ID';
+    _countryId = 'País ID';
+    _regionId = 'Región ID';
+    _locationId = 'Provincia ID';
+    _provinceId = 'Municipio ID';
     _name = 'Nombre';
     _pointName = 'Nombre Punto';
     _pointCode = 'Código Punto';

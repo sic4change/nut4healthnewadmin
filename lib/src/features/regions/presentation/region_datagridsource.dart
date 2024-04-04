@@ -27,10 +27,11 @@ class RegionDataGridSource extends DataGridSource {
     if (_regions != null && _regions!.isNotEmpty) {
       _dataGridRows = _regions!.map<DataGridRow>((RegionFull regionWithCountry) {
         return DataGridRow(cells: <DataGridCell>[
-          DataGridCell<String>(columnName: 'Id', value: regionWithCountry.region.regionId),
+          DataGridCell<String>(columnName: 'ID', value: regionWithCountry.region.regionId),
           DataGridCell<String>(columnName: 'Nombre', value: regionWithCountry.region.name),
           DataGridCell<String>(columnName: 'País', value: regionWithCountry.country?.name),
           DataGridCell<bool>(columnName: 'Activo', value: regionWithCountry.region.active),
+          DataGridCell<String>(columnName: 'País ID', value: regionWithCountry.region.countryId),
         ]);
       }).toList();
     }
@@ -98,11 +99,6 @@ class RegionDataGridSource extends DataGridSource {
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[0].value.toString()),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
         child: Text(row.getCells()[1].value.toString()),
       ),
       Container(
@@ -110,7 +106,17 @@ class RegionDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[2].value.toString()),
       ),
-      _buildActive(row.getCells()[3].value)
+      _buildActive(row.getCells()[3].value),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[0].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[4].value.toString()),
+      ),
     ]);
   }
 

@@ -65,6 +65,7 @@ class _ComplicationDataGridState extends LocalizationSampleViewState {
   late String _name,
       _nameEn,
       _nameFr,
+      _id,
       _newComplication,
       _importCSV,
       _exportXLS,
@@ -81,6 +82,7 @@ class _ComplicationDataGridState extends LocalizationSampleViewState {
     'Complicación (ES)': 150,
     'Complicación (EN)': 150,
     'Complicación (FR)': 150,
+    'ID': 200,
   };
 
   /// Editing controller for forms to perform update the values.
@@ -271,7 +273,7 @@ class _ComplicationDataGridState extends LocalizationSampleViewState {
       final ByteData data = await rootBundle.load('images/nut_logo.jpg');
       final PdfDocument document = _key.currentState!.exportToPdfDocument(
           fitAllColumnsInOnePage: true,
-          excludeColumns: ['Foto'],
+          excludeColumns: ['Foto', 'ID'],
           cellExport: (DataGridCellPdfExportDetails details) {},
           headerFooterExport: (DataGridPdfHeaderFooterExportDetails details) {
             final double width = details.pdfPage.getClientSize().width;
@@ -727,6 +729,8 @@ class _ComplicationDataGridState extends LocalizationSampleViewState {
         _name = 'Complication (SP)';
         _nameEn = 'Complication (EN)';
         _nameFr = 'Complication (FR)';
+        _id = 'ID';
+
         _newComplication = 'Create Complication';
         _importCSV = 'Import CSV';
         _exportXLS = 'Export XLS';
@@ -743,6 +747,8 @@ class _ComplicationDataGridState extends LocalizationSampleViewState {
         _name = 'Complicación (ES)';
         _nameEn = 'Complicación (EN)';
         _nameFr = 'Complicación (FR)';
+        _id = 'ID';
+
         _newComplication = 'Crear complicación';
         _importCSV = 'Importar CSV';
         _exportXLS = 'Exportar XLS';
@@ -759,6 +765,8 @@ class _ComplicationDataGridState extends LocalizationSampleViewState {
         _name = 'Complication (ES)';
         _nameEn = 'Complication (EN)';
         _nameFr = 'Complication (FR)';
+        _id = 'ID';
+
         _newComplication = 'Créer complication';
         _importCSV = 'Importer CSV';
         _exportXLS = 'Exporter XLS';
@@ -830,6 +838,18 @@ class _ComplicationDataGridState extends LocalizationSampleViewState {
                 overflow: TextOverflow.ellipsis,
               ),
             )),
+        GridColumn(
+            columnName: 'ID',
+            width: columnWidths['ID']!,
+            visible: false,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _id,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )),
       ],
     );
   }
@@ -846,6 +866,8 @@ class _ComplicationDataGridState extends LocalizationSampleViewState {
     _name = 'Complicación (ES)';
     _nameEn = 'Complicación (EN)';
     _nameFr = 'Complicación (FR)';
+    _id = 'ID';
+
     _newComplication = 'Crear complicación';
     _importCSV = 'Importar CSV';
     _exportXLS = 'Exportar XLS';

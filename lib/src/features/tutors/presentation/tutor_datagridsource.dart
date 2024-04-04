@@ -25,7 +25,7 @@ class TutorDataGridSource extends DataGridSource {
     if (_tutors != null && _tutors!.isNotEmpty) {
       _dataGridRows = _tutors!.map<DataGridRow>((TutorWithPoint tutorWithUser) {
         return DataGridRow(cells: <DataGridCell>[
-          DataGridCell<String>(columnName: 'Id', value: tutorWithUser.tutor.tutorId),
+          DataGridCell<String>(columnName: 'ID', value: tutorWithUser.tutor.tutorId),
           DataGridCell<String>(columnName: 'Punto', value: tutorWithUser.point?.name??""),
           DataGridCell<String>(columnName: 'Nombre', value: tutorWithUser.tutor.name),
           DataGridCell<String>(columnName: 'Apellidos', value: tutorWithUser.tutor.surnames),
@@ -44,6 +44,7 @@ class TutorDataGridSource extends DataGridSource {
           DataGridCell<bool>(columnName: 'Activo', value: tutorWithUser.tutor.active),
           DataGridCell<bool>(columnName: 'Validación Médico Jefe', value: tutorWithUser.tutor.chefValidation),
           DataGridCell<bool>(columnName: 'Validación Dirección Regional', value: tutorWithUser.tutor.regionalValidation),
+          DataGridCell<String>(columnName: 'Punto ID', value: tutorWithUser.tutor.pointId),
         ]);
       }).toList();
     }
@@ -126,6 +127,8 @@ class TutorDataGridSource extends DataGridSource {
       _buildStandardContainer(row.getCells()[14].value.toString()),
       _buildStandardContainer(row.getCells()[15].value.toString()),
       _buildActive(row.getCells()[16].value),
+      _buildStandardContainer(row.getCells()[0].value.toString()),
+      _buildStandardContainer(row.getCells()[19].value.toString()),
     ]);
   }
 

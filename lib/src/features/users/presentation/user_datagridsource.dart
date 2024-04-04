@@ -59,6 +59,9 @@ class UserDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Hash transacción punto', value: userWithConfiguration.user.pointTransactionHash),
           DataGridCell<String>(columnName: 'Hash transacción rol', value: userWithConfiguration.user.roleTransactionHash),
           DataGridCell<String>(columnName: 'Hash transacción configuración', value: userWithConfiguration.user.configurationTransactionHash),
+          DataGridCell<String>(columnName: 'Usuario ID', value: userWithConfiguration.user.userId),
+          DataGridCell<String>(columnName: 'Región ID', value: userWithConfiguration.region?.regionId),
+          DataGridCell<String>(columnName: 'Municipio ID', value: userWithConfiguration.province?.provinceId),
         ]);
       }).toList();
     }
@@ -268,6 +271,21 @@ class UserDataGridSource extends DataGridSource {
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[17].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[18].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[19].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[20].value.toString()),
       ),
     ]);
   }

@@ -24,7 +24,7 @@ class ConfigurationDataGridSource extends DataGridSource {
     if (_configurations != null && _configurations!.isNotEmpty) {
       _dataGridRows = _configurations!.map<DataGridRow>((Configuration configuration) {
         return DataGridRow(cells: <DataGridCell>[
-          DataGridCell<String>(columnName: 'Id', value: configuration.id),
+          DataGridCell<String>(columnName: 'ID', value: configuration.id),
           DataGridCell<String>(columnName: 'Nombre', value: configuration.name),
           DataGridCell<String>(columnName: 'Moneda', value: configuration.money),
           DataGridCell<int>(columnName: 'Pago Confirmación', value: configuration.payByConfirmation),
@@ -58,11 +58,6 @@ class ConfigurationDataGridSource extends DataGridSource {
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(cells: <Widget>[
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[0].value.toString()),
-      ),
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
@@ -107,6 +102,11 @@ class ConfigurationDataGridSource extends DataGridSource {
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[9].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[0].value.toString()),
       ),
     ]);
   }

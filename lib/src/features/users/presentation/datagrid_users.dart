@@ -72,7 +72,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
       _configuration, _region, _province, _point, _points, _createDate, _address,_pointTransactionHash,
       _roleTransactionHash, _configurationTransactionHash, _newUser, _importCSV,
       _exportXLS, _exportPDF, _total, _editUser, _removeUser, _save, _cancel,
-      _users, _removedUser;
+      _users, _removedUser, _userId, _regionId, _provinceId;
 
   late Map<String, double> columnWidths = {
     'Foto': 150,
@@ -93,6 +93,9 @@ class _UserDataGridState extends LocalizationSampleViewState {
     'Hash transacción punto': 300,
     'Hash transacción rol': 300,
     'Hash transacción configuración': 300,
+    'Usuario ID': 200,
+    'Región ID': 200,
+    'Municipio ID': 200,
   };
 
   /// Editing controller for forms to perform update the values.
@@ -342,7 +345,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
       final ByteData data = await rootBundle.load('images/nut_logo.jpg');
       final PdfDocument document = _key.currentState!.exportToPdfDocument(
           fitAllColumnsInOnePage: true,
-          excludeColumns: ['Foto'],
+          excludeColumns: ['Foto', 'Usuario ID', 'Región ID', 'Municipio ID'],
           cellExport: (DataGridCellPdfExportDetails details) {
 
           },
@@ -1073,6 +1076,10 @@ class _UserDataGridState extends LocalizationSampleViewState {
         _pointTransactionHash = 'Point transaction hash';
         _roleTransactionHash = 'Role transaction hash';
         _configurationTransactionHash = 'Configuration transaction hash';
+        _userId = 'User ID';
+        _regionId = 'Region ID';
+        _provinceId = 'Municipality ID';
+
         _newUser = 'Create User';
         _importCSV = 'Import CSV';
         _exportXLS = 'Export XLS';
@@ -1104,6 +1111,10 @@ class _UserDataGridState extends LocalizationSampleViewState {
         _pointTransactionHash = 'Hash transacción punto';
         _roleTransactionHash = 'Hash transacción rol';
         _configurationTransactionHash = 'Hash transacción configuración';
+        _userId = 'Usuario ID';
+        _regionId = 'Región ID';
+        _provinceId = 'Municipio ID';
+
         _newUser = 'Crear Usuario';
         _importCSV = 'Importar CSV';
         _exportXLS = 'Exportar XLS';
@@ -1135,6 +1146,10 @@ class _UserDataGridState extends LocalizationSampleViewState {
         _pointTransactionHash = 'Hachage transaction point';
         _roleTransactionHash = 'Hachage transaction rôle';
         _configurationTransactionHash = 'Hachage transaction configuration';
+        _userId = 'Utilisateur ID';
+        _regionId = 'Région ID';
+        _provinceId = 'Municipalité ID';
+
         _newUser = 'Créer utilisateur';
         _importCSV = 'Importer CSV';
         _exportXLS = 'Exporter XLS';
@@ -1383,6 +1398,45 @@ class _UserDataGridState extends LocalizationSampleViewState {
                 overflow: TextOverflow.ellipsis,
               )),
         ),
+        GridColumn(
+          columnName: 'Usuario ID',
+          width: columnWidths['Usuario ID']!,
+          visible: false,
+          columnWidthMode: ColumnWidthMode.lastColumnFill,
+          label: Container(
+              padding: const EdgeInsets.all(8.0),
+              alignment: Alignment.center,
+              child: Text(
+                _userId,
+                overflow: TextOverflow.ellipsis,
+              )),
+        ),
+        GridColumn(
+          columnName: 'Región ID',
+          width: columnWidths['Región ID']!,
+          visible: false,
+          columnWidthMode: ColumnWidthMode.lastColumnFill,
+          label: Container(
+              padding: const EdgeInsets.all(8.0),
+              alignment: Alignment.center,
+              child: Text(
+                _regionId,
+                overflow: TextOverflow.ellipsis,
+              )),
+        ),
+        GridColumn(
+          columnName: 'Municipio ID',
+          width: columnWidths['Municipio ID']!,
+          visible: false,
+          columnWidthMode: ColumnWidthMode.lastColumnFill,
+          label: Container(
+              padding: const EdgeInsets.all(8.0),
+              alignment: Alignment.center,
+              child: Text(
+                _provinceId,
+                overflow: TextOverflow.ellipsis,
+              )),
+        ),
       ],
     );
   }
@@ -1422,6 +1476,10 @@ class _UserDataGridState extends LocalizationSampleViewState {
     _pointTransactionHash = 'Hash transacción punto';
     _roleTransactionHash = 'Hash transacción rol';
     _configurationTransactionHash = 'Hash transacción configuración';
+    _userId = 'Usuario ID';
+    _regionId = 'Región ID';
+    _provinceId = 'Municipio ID';
+
     _newUser = 'Crear Usuario';
     _importCSV = 'Importar CSV';
     _exportXLS = 'Exportar XLS';

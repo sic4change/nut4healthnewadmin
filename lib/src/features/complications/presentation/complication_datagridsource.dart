@@ -23,7 +23,7 @@ class ComplicationDataGridSource extends DataGridSource {
     if (_complications != null && _complications!.isNotEmpty) {
       _dataGridRows = _complications!.map<DataGridRow>((Complication complication) {
         return DataGridRow(cells: <DataGridCell>[
-          DataGridCell<String>(columnName: 'Id', value: complication.complicationId),
+          DataGridCell<String>(columnName: 'ID', value: complication.complicationId),
           DataGridCell<String>(columnName: 'Complicación (ES)', value: complication.name),
           DataGridCell<String>(columnName: 'Complicación (EN)', value: complication.nameEn),
           DataGridCell<String>(columnName: 'Complicación (FR)', value: complication.nameFr),
@@ -65,6 +65,11 @@ class ComplicationDataGridSource extends DataGridSource {
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[3].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[0].value.toString()),
       ),
     ]);
   }

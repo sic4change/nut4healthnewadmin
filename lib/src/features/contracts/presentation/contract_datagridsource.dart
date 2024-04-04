@@ -45,7 +45,7 @@ class ContractDataGridSource extends DataGridSource {
                   desnutritionValue = 'Desnutrición Aguda Severa (SAM)';
                 }
         return DataGridRow(cells: <DataGridCell>[
-          DataGridCell<String>(columnName: 'Id', value: contractWithScreenerAndMedicalAndPoint.contract.contractId),
+          DataGridCell<String>(columnName: 'ID', value: contractWithScreenerAndMedicalAndPoint.contract.contractId),
           DataGridCell<String>(columnName: 'Código', value: contractWithScreenerAndMedicalAndPoint.contract.code),
           DataGridCell<String>(columnName: 'FEFA', value: contractWithScreenerAndMedicalAndPoint.contract.isFEFA! ? '✔' : '✘'),
           DataGridCell<String>(columnName: 'Estado', value: contractWithScreenerAndMedicalAndPoint.contract.status),
@@ -82,6 +82,9 @@ class ContractDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Hash transacción validada', value: contractWithScreenerAndMedicalAndPoint.contract.transactionValidateHash),
           DataGridCell<bool>(columnName: 'Validación Médico Jefe', value: contractWithScreenerAndMedicalAndPoint.contract.chefValidation),
           DataGridCell<bool>(columnName: 'Validación Dirección Regional', value: contractWithScreenerAndMedicalAndPoint.contract.regionalValidation),
+          DataGridCell<String>(columnName: 'Servicio Salud ID', value: contractWithScreenerAndMedicalAndPoint.contract.medicalId),
+          DataGridCell<String>(columnName: 'Agente Salud ID', value: contractWithScreenerAndMedicalAndPoint.contract.screenerId),
+          DataGridCell<String>(columnName: 'Punto ID', value: contractWithScreenerAndMedicalAndPoint.point?.pointId),
         ]);
       }).toList();
     }
@@ -301,11 +304,6 @@ class ContractDataGridSource extends DataGridSource {
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[0].value.toString()),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
         child: Text(row.getCells()[1].value.toString()),
       ),
       Container(
@@ -419,7 +417,19 @@ class ContractDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[30].value.toString()),
       ),
+      _buildStandardContainer(row.getCells()[0].value),
+      _buildStandardContainer(row.getCells()[33].value),
+      _buildStandardContainer(row.getCells()[34].value),
+      _buildStandardContainer(row.getCells()[35].value),
     ]);
+  }
+
+  Widget _buildStandardContainer(String value) {
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      alignment: Alignment.centerLeft,
+      child: Text(value),
+    );
   }
 
   @override

@@ -67,7 +67,7 @@ class _ConfigurationDataGridState extends LocalizationSampleViewState {
       _removeConfiguration, _save, _cancel, _configurations, _removedConfiguration;
 
   late Map<String, double> columnWidths = {
-    'Id': 150,
+    'ID': 200,
     'Nombre': 200,
     'Moneda': 200,
     'Pago Confirmación': 200,
@@ -246,6 +246,7 @@ class _ConfigurationDataGridState extends LocalizationSampleViewState {
       final ByteData data = await rootBundle.load('images/nut_logo.jpg');
       final PdfDocument document = _key.currentState!.exportToPdfDocument(
           fitAllColumnsInOnePage: true,
+          excludeColumns: ['ID'],
           cellExport: (DataGridCellPdfExportDetails details) {
 
           },
@@ -494,7 +495,7 @@ class _ConfigurationDataGridState extends LocalizationSampleViewState {
     final String? id = row
         .getCells()
         .firstWhere(
-            (DataGridCell element) => element.columnName == 'Id')
+            (DataGridCell element) => element.columnName == 'ID')
         ?.value
         .toString();
 
@@ -749,7 +750,7 @@ class _ConfigurationDataGridState extends LocalizationSampleViewState {
     final selectedLocale = model.locale.toString();
     switch (selectedLocale) {
       case 'en_US':
-        _id = 'Id';
+        _id = 'ID';
         _name = 'Name';
         _money = 'Money';
         _payByConfirmation = 'Confirmation Pay';
@@ -772,7 +773,7 @@ class _ConfigurationDataGridState extends LocalizationSampleViewState {
         _removedConfiguration = 'Configuration deleted successfully.';
         break;
       case 'es_ES':
-        _id = 'Id';
+        _id = 'ID';
         _name = 'Nombre';
         _money = 'Moneda';
         _payByConfirmation = 'Pago Confirmación';
@@ -795,7 +796,7 @@ class _ConfigurationDataGridState extends LocalizationSampleViewState {
         _removedConfiguration = 'Configuración eliminada correctamente';
         break;
       case 'fr_FR':
-        _id = 'Id';
+        _id = 'ID';
         _name = 'Nom';
         _money = 'Monnaie';
         _payByConfirmation = 'Paiement de confirmation';
@@ -843,19 +844,6 @@ class _ConfigurationDataGridState extends LocalizationSampleViewState {
       allowSorting: true,
       allowMultiColumnSorting: true,
       columns: <GridColumn>[
-        GridColumn(
-            columnName: 'Id',
-            visible: false,
-            width: columnWidths['Id']!,
-            label: Container(
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _id,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-        ),
         GridColumn(
             columnName: 'Nombre',
             width: columnWidths['Nombre']!,
@@ -964,6 +952,19 @@ class _ConfigurationDataGridState extends LocalizationSampleViewState {
             ),
           ),
         ),
+        GridColumn(
+            columnName: 'ID',
+            width: columnWidths['ID']!,
+            visible: false,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _id,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
       ],
     );
   }
@@ -982,7 +983,7 @@ class _ConfigurationDataGridState extends LocalizationSampleViewState {
     payMonthlyController = TextEditingController();
     selectedLocale = model.locale.toString();
 
-    _id = 'Id';
+    _id = 'ID';
     _name = 'Nombre';
     _money = 'Moneda';
     _blockChainConfiguration = 'Configuración Blockchain';

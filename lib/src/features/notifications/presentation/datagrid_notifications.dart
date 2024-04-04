@@ -55,7 +55,7 @@ class _NotificationDataGridState extends LocalizationSampleViewState {
 
   /// Translate names
   late String _point, _child, _text, _timeMillis, _sent,
-      _exportXLS, _exportPDF, _total, _notifications;
+      _id, _pointId, _childId, _exportXLS, _exportPDF, _total, _notifications;
 
   late Map<String, double> columnWidths = {
     'Punto': 150,
@@ -63,6 +63,9 @@ class _NotificationDataGridState extends LocalizationSampleViewState {
     'Texto': 150,
     'Duración': 150,
     'Enviado': 150,
+    'ID': 200,
+    'Punto ID': 200,
+    'Niño/a ID': 200,
   };
 
   Widget getLocationWidget(String location) {
@@ -155,6 +158,7 @@ class _NotificationDataGridState extends LocalizationSampleViewState {
     Future<void> exportDataGridToPdf() async {
       final ByteData data = await rootBundle.load('images/nut_logo.jpg');
       final PdfDocument document = _key.currentState!.exportToPdfDocument(
+        excludeColumns: ['ID', 'Punto ID', 'Niño/a ID'],
           fitAllColumnsInOnePage: true,
           cellExport: (DataGridCellPdfExportDetails details) {
 
@@ -281,6 +285,9 @@ class _NotificationDataGridState extends LocalizationSampleViewState {
         _text = 'Text';
         _timeMillis = 'Duration';
         _sent = 'Sent';
+        _id = 'ID';
+        _pointId = 'Point ID';
+        _childId = 'Child ID';
 
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
@@ -293,6 +300,9 @@ class _NotificationDataGridState extends LocalizationSampleViewState {
         _text = 'Texto';
         _timeMillis = 'Duración';
         _sent = 'Enviado';
+        _id = 'ID';
+        _pointId = 'Punto ID';
+        _childId = 'Niño/a ID';
 
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
@@ -305,6 +315,9 @@ class _NotificationDataGridState extends LocalizationSampleViewState {
         _text = 'Texte';
         _timeMillis = 'Dureé';
         _sent = 'Envoyé';
+        _id = 'ID';
+        _pointId = 'Place ID';
+        _childId = 'Enfant ID';
 
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
@@ -394,6 +407,45 @@ class _NotificationDataGridState extends LocalizationSampleViewState {
               ),
             )
         ),
+        GridColumn(
+            columnName: 'ID',
+            width: columnWidths['ID']!,
+            visible: false,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _id,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Punto ID',
+            width: columnWidths['Punto ID']!,
+            visible: false,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _pointId,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Niño/a ID',
+            width: columnWidths['Niño/a ID']!,
+            visible: false,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _childId,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
       ],
     );
   }
@@ -409,6 +461,9 @@ class _NotificationDataGridState extends LocalizationSampleViewState {
     _text = 'Texto';
     _timeMillis = 'Duración';
     _sent = 'Enviado';
+    _id = 'ID';
+    _pointId = 'Punto ID';
+    _childId = 'Niño/a ID';
 
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';

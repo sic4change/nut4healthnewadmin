@@ -26,7 +26,7 @@ class PaymentDataGridSource extends DataGridSource {
     if (_payments != null && _payments!.isNotEmpty) {
       _dataGridRows = _payments!.map<DataGridRow>((PaymentWithScreener paymentWithScreenerAndContract) {
         return DataGridRow(cells: <DataGridCell>[
-          DataGridCell<String>(columnName: 'Id', value: paymentWithScreenerAndContract.payment.paymentId),
+          DataGridCell<String>(columnName: 'ID', value: paymentWithScreenerAndContract.payment.paymentId),
           DataGridCell<String>(columnName: 'Estado', value: paymentWithScreenerAndContract.payment.status),
           DataGridCell<String>(columnName: 'Tipo', value: paymentWithScreenerAndContract.payment.type),
           DataGridCell<String>(columnName: 'Nombre Agente Salud', value: "${paymentWithScreenerAndContract.screener.name} ${paymentWithScreenerAndContract.screener.surname}"),
@@ -35,6 +35,7 @@ class PaymentDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Teléfono Agente Salud', value: paymentWithScreenerAndContract.screener.phone),
           DataGridCell<DateTime>(columnName: 'Fecha', value: paymentWithScreenerAndContract.payment.creationDate),
           DataGridCell<double>(columnName: 'Cantidad', value: paymentWithScreenerAndContract.payment.quantity),
+          DataGridCell<String>(columnName: 'Agente Salud ID', value: paymentWithScreenerAndContract.payment.screenerId),
         ]);
       }).toList();
     }
@@ -131,11 +132,6 @@ class PaymentDataGridSource extends DataGridSource {
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(cells: <Widget>[
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[0].value.toString()),
-      ),
       _buildStatus(row.getCells()[1].value.toString()),
       Container(
         padding: const EdgeInsets.all(8.0),
@@ -169,6 +165,16 @@ class PaymentDataGridSource extends DataGridSource {
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[8].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[0].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[9].value.toString()),
       ),
     ]);
   }

@@ -59,7 +59,7 @@ class _VisitDataGridState extends LocalizationSampleViewState {
       _temperature, _cough, _vaccinationCard, _rubeolaVaccinated, _vitamineAVaccinated,
       _acidFolicAndFerroVaccinated, _amoxicilina, _otherTratments, _complicationsES,
       _complicationsEN, _complicationsFR, _observations, _exportXLS, _exportPDF,
-      _total, _visits, _validateData;
+      _total, _visits, _validateData, _pointId, _visitId, _caseId, _tutorId, _childId;
 
   late Map<String, double> columnWidths = {
     'Validación Médico Jefe': 200,
@@ -96,6 +96,11 @@ class _VisitDataGridState extends LocalizationSampleViewState {
     'Complicaciones (EN)': 200,
     'Complicaciones (FR)': 200,
     'Observaciones': 150,
+    'ID': 200,
+    'Caso ID': 200,
+    'Punto ID': 200,
+    'Madre, padre o tutor ID': 200,
+    'Niño/a ID': 200,
   };
 
   AsyncValue<List<VisitCombined>> visitsAsyncValue = AsyncValue.data(List.empty());
@@ -207,6 +212,7 @@ class _VisitDataGridState extends LocalizationSampleViewState {
     Future<void> exportDataGridToPdf() async {
       final ByteData data = await rootBundle.load('images/nut_logo.jpg');
       final PdfDocument document = _key.currentState!.exportToPdfDocument(
+          excludeColumns: ['ID', 'Caso ID', 'Punto ID', 'Madre, padre o tutor ID', 'Niño/a ID'],
           fitAllColumnsInOnePage: true,
           cellExport: (DataGridCellPdfExportDetails details) {
 
@@ -490,6 +496,11 @@ class _VisitDataGridState extends LocalizationSampleViewState {
         _complicationsEN = 'Complications (EN)';
         _complicationsFR = 'Complications (FR)';
         _observations = 'Observations';
+        _visitId = 'ID';
+        _caseId = 'Case ID';
+        _pointId = 'Point ID';
+        _tutorId = 'Mother, father or tutor ID';
+        _childId = 'Child ID:';
 
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
@@ -531,6 +542,11 @@ class _VisitDataGridState extends LocalizationSampleViewState {
         _complicationsEN = 'Complicaciones (EN)';
         _complicationsFR = 'Complicaciones (FR)';
         _observations = 'Observaciones';
+        _visitId = 'ID';
+        _caseId = 'Caso ID';
+        _pointId = 'Punto ID';
+        _tutorId = 'Madre, padre o tutor ID';
+        _childId = 'Niño/a ID';
 
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
@@ -572,6 +588,11 @@ class _VisitDataGridState extends LocalizationSampleViewState {
         _complicationsEN = 'Complications (EN)';
         _complicationsFR = 'Complications (FR)';
         _observations = 'Observations';
+        _visitId = 'ID';
+        _caseId = 'Cas ID';
+        _pointId = 'Place ID';
+        _tutorId = 'Mère, père ou tuteur ID';
+        _childId = 'Enfant ID:';
 
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
@@ -1008,6 +1029,71 @@ class _VisitDataGridState extends LocalizationSampleViewState {
               ),
             )
         ),
+        GridColumn(
+            columnName: 'ID',
+            width: columnWidths['ID']!,
+            visible: false,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _visitId,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Caso ID',
+            width: columnWidths['Caso ID']!,
+            visible: false,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _caseId,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Punto ID',
+            width: columnWidths['Punto ID']!,
+            visible: false,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _pointId,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Madre, padre o tutor ID',
+            width: columnWidths['Madre, padre o tutor ID']!,
+            visible: false,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _tutorId,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Niño/a ID',
+            width: columnWidths['Niño/a ID']!,
+            visible: false,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _childId,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
       ],
     );
   }
@@ -1052,6 +1138,11 @@ class _VisitDataGridState extends LocalizationSampleViewState {
     _complicationsEN = 'Complicaciones (EN)';
     _complicationsFR = 'Complicaciones (FR)';
     _observations = 'Observaciones';
+    _visitId = 'ID';
+    _caseId = 'Caso ID';
+    _pointId = 'Punto ID';
+    _tutorId = 'Madre, padre o tutor ID';
+    _childId = 'Niño/a ID';
 
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';

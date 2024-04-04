@@ -35,11 +35,13 @@ class LocationDataGridSource extends DataGridSource {
     if (_locations != null && _locations!.isNotEmpty) {
       _dataGridRows = _locations!.map<DataGridRow>((LocationWithRegionAndCountry locationWithRegionAndCountry) {
         return DataGridRow(cells: <DataGridCell>[
-          DataGridCell<String>(columnName: 'Id', value: locationWithRegionAndCountry.location.locationId),
+          DataGridCell<String>(columnName: 'ID', value: locationWithRegionAndCountry.location.locationId),
           DataGridCell<String>(columnName: 'Nombre', value: locationWithRegionAndCountry.location.name),
           DataGridCell<String>(columnName: 'País', value: locationWithRegionAndCountry.country?.name),
           DataGridCell<String>(columnName: 'Región', value: locationWithRegionAndCountry.region?.name),
           DataGridCell<bool>(columnName: 'Activo', value: locationWithRegionAndCountry.location.active),
+          DataGridCell<String>(columnName: 'País ID', value: locationWithRegionAndCountry.country?.countryId),
+          DataGridCell<String>(columnName: 'Región ID', value: locationWithRegionAndCountry.location.regionId),
         ]);
       }).toList();
     }
@@ -107,11 +109,6 @@ class LocationDataGridSource extends DataGridSource {
       Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[0].value.toString()),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
         child: Text(row.getCells()[1].value.toString()),
       ),
       Container(
@@ -124,7 +121,22 @@ class LocationDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[3].value.toString()),
       ),
-      _buildActive(row.getCells()[4].value)
+      _buildActive(row.getCells()[4].value),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[0].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[5].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[6].value.toString()),
+      ),
     ]);
   }
 

@@ -56,7 +56,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
   late String _chefValidation, _regionalValidation, _point, _name, _surnames, _address, _phone, _birthdate, _createDate,
       _ethnicity, _sex, _maleRelation, _womanStatus, _babyAge, _weeks,
       _childMinor, _observations, _active, _exportXLS, _exportPDF, _total, _tutors,
-      _validateData;
+      _validateData, _id, _pointId;
 
   late Map<String, double> columnWidths = {
     'Validación Médico Jefe': 200,
@@ -77,6 +77,8 @@ class _TutorDataGridState extends LocalizationSampleViewState {
     'Hijos/as menores a 6 meses': 150,
     'Observaciones': 150,
     'Activo': 150,
+    'ID': 200,
+    'Punto ID': 200,
   };
 
   AsyncValue<List<TutorWithPoint>> tutorsAsyncValue = AsyncValue.data(List.empty());
@@ -191,9 +193,9 @@ class _TutorDataGridState extends LocalizationSampleViewState {
       final PdfDocument document = _key.currentState!.exportToPdfDocument(
           fitAllColumnsInOnePage: true,
           cellExport: (DataGridCellPdfExportDetails details) {
-
+            //details.pdfCell.style.font = PdfStandardFont(PdfFontFamily.helvetica, 13);
           },
-          excludeColumns: <String>['Nombre', 'Apellidos', 'Vecindario', 'Teléfono', 'Fecha de nacimiento'],
+          excludeColumns: <String>['Nombre', 'Apellidos', 'Vecindario', 'Teléfono', 'Fecha de nacimiento', 'ID', 'Punto ID'],
           headerFooterExport: (DataGridPdfHeaderFooterExportDetails details) {
             final double width = details.pdfPage.getClientSize().width;
             final PdfPageTemplateElement header =
@@ -432,6 +434,8 @@ class _TutorDataGridState extends LocalizationSampleViewState {
         _childMinor = 'Children under 6 months';
         _observations = 'Observations';
         _active = 'Active';
+        _id = 'ID';
+        _pointId = 'Point ID';
 
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
@@ -457,6 +461,8 @@ class _TutorDataGridState extends LocalizationSampleViewState {
         _childMinor = 'Hijos/as menores a 6 meses';
         _observations = 'Observaciones';
         _active = 'Activo';
+        _id = 'ID';
+        _pointId = 'Punto ID';
 
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
@@ -482,6 +488,8 @@ class _TutorDataGridState extends LocalizationSampleViewState {
         _childMinor = 'Enfants de moins de 6 mois';
         _observations = 'Observations';
         _active = 'Actif';
+        _id = 'ID';
+        _pointId = 'Place ID';
 
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
@@ -727,6 +735,32 @@ class _TutorDataGridState extends LocalizationSampleViewState {
               ),
             )
         ),
+        GridColumn(
+            columnName: 'ID',
+            width: columnWidths['ID']!,
+            visible: false,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _id,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Punto ID',
+            width: columnWidths['Punto ID']!,
+            visible: false,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _pointId,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
       ],
     );
   }
@@ -755,6 +789,9 @@ class _TutorDataGridState extends LocalizationSampleViewState {
     _childMinor = 'Hijos/as menores a 6 meses';
     _observations = 'Observaciones';
     _active = 'Activo';
+    _id = 'ID';
+    _pointId = 'Punto ID';
+
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';
     _total = 'Usuarios totales';

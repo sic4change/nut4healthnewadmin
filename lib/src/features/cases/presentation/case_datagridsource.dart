@@ -25,7 +25,7 @@ class CaseDataGridSource extends DataGridSource {
     if (_myCases != null && _myCases!.isNotEmpty) {
       _dataGridRows = _myCases!.map<DataGridRow>((CaseWithPointChildAndTutor myCaseWithPointChildAndTutor) {
         return DataGridRow(cells: <DataGridCell>[
-          DataGridCell<String>(columnName: 'Id', value: myCaseWithPointChildAndTutor.myCase.caseId),
+          DataGridCell<String>(columnName: 'ID', value: myCaseWithPointChildAndTutor.myCase.caseId),
           DataGridCell<String>(columnName: 'Punto', value: myCaseWithPointChildAndTutor.point?.name??""),
           DataGridCell<String>(columnName: 'Madre, padre o tutor', value: myCaseWithPointChildAndTutor.tutor?.name?? ""),
           DataGridCell<String>(columnName: 'Niño/a', value: myCaseWithPointChildAndTutor.child?.name?? ""),
@@ -40,6 +40,10 @@ class CaseDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Tipo de admisión', value: myCaseWithPointChildAndTutor.myCase.admissionType),
           DataGridCell<String>(columnName: 'Servidor tipo de admisión', value: myCaseWithPointChildAndTutor.myCase.admissionTypeServer),
           DataGridCell<String>(columnName: 'Razón de cierre', value: myCaseWithPointChildAndTutor.myCase.closedReason),
+          DataGridCell<String>(columnName: 'Caso ID', value: myCaseWithPointChildAndTutor.myCase.caseId),
+          DataGridCell<String>(columnName: 'Punto ID', value: myCaseWithPointChildAndTutor.myCase.pointId),
+          DataGridCell<String>(columnName: 'Madre, padre o tutor ID', value: myCaseWithPointChildAndTutor.myCase.tutorId),
+          DataGridCell<String>(columnName: 'Niño/a ID', value: myCaseWithPointChildAndTutor.myCase.childId),
         ]);
       }).toList();
     }
@@ -111,6 +115,10 @@ class CaseDataGridSource extends DataGridSource {
       _buildStandardContainer(row.getCells()[7].value.toString()),
       _buildStandardContainer(row.getCells()[8].value.toString()),
       _buildStandardContainer(row.getCells()[9].value.toString()),
+      _buildStandardContainer(row.getCells()[15].value.toString()),
+      _buildStandardContainer(row.getCells()[16].value.toString()),
+      _buildStandardContainer(row.getCells()[17].value.toString()),
+      _buildStandardContainer(row.getCells()[18].value.toString()),
     ]);
   }
 

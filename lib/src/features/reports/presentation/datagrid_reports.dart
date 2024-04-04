@@ -58,7 +58,7 @@ class _ReportDataGridState extends LocalizationSampleViewState {
   /// Translate names
   late String _date, _name, _surnames, _email, _text, _response, _updatedby,
       _lastupdate,  _exportXLS, _exportPDF, _total, _editReport, _removeReport,
-      _save, _cancel, _reports, _removedReport;
+      _save, _cancel, _reports, _removedReport, _id, _userId;
 
   late Map<String, double> columnWidths = {
     'Fecha': 150,
@@ -69,6 +69,8 @@ class _ReportDataGridState extends LocalizationSampleViewState {
     'Respuesta': 150,
     'Respondido por': 150,
     'Fecha respuesta': 150,
+    'ID': 200,
+    'Usuario ID': 200,
   };
 
   /// Editing controller for forms to perform update the values.
@@ -167,6 +169,7 @@ class _ReportDataGridState extends LocalizationSampleViewState {
     Future<void> exportDataGridToPdf() async {
       final ByteData data = await rootBundle.load('images/nut_logo.jpg');
       final PdfDocument document = _key.currentState!.exportToPdfDocument(
+          excludeColumns: ['ID', 'Usuario ID'],
           fitAllColumnsInOnePage: true,
           cellExport: (DataGridCellPdfExportDetails details) {
 
@@ -513,6 +516,8 @@ class _ReportDataGridState extends LocalizationSampleViewState {
         _response = 'Response';
         _updatedby = 'Answered by';
         _lastupdate = 'Answer date';
+        _id = 'ID';
+        _userId = 'User ID';
 
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
@@ -533,6 +538,8 @@ class _ReportDataGridState extends LocalizationSampleViewState {
         _response = 'Respuesta';
         _updatedby = 'Respondido por';
         _lastupdate = 'Fecha respuesta';
+        _id = 'ID';
+        _userId = 'Usuario ID';
 
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
@@ -552,6 +559,8 @@ class _ReportDataGridState extends LocalizationSampleViewState {
         _text = 'Message';
         _response = 'Répondu par';
         _lastupdate = 'Date de réponse';
+        _id = 'ID';
+        _userId = 'Utilisateur ID';
 
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
@@ -686,6 +695,32 @@ class _ReportDataGridState extends LocalizationSampleViewState {
               ),
             )
         ),
+        GridColumn(
+            columnName: 'ID',
+            width: columnWidths['ID']!,
+            visible: false,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _id,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Usuario ID',
+            width: columnWidths['Usuario ID']!,
+            visible: false,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _userId,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
       ],
     );
   }
@@ -703,6 +738,9 @@ class _ReportDataGridState extends LocalizationSampleViewState {
     _email = 'Email';
     _text = 'Mensaje';
     _response = 'Respuesta';
+    _id = 'ID';
+    _userId = 'Usuario ID';
+
     _updatedby = 'Respondido por';
     _lastupdate = 'Fecha respuesta';
     _exportXLS = 'Exportar XLS';

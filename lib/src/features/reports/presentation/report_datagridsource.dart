@@ -25,7 +25,7 @@ class ReportDataGridSource extends DataGridSource {
     if (_reports != null && _reports!.isNotEmpty) {
       _dataGridRows = _reports!.map<DataGridRow>((ReportWithUser reportWithUser) {
         return DataGridRow(cells: <DataGridCell>[
-          DataGridCell<String>(columnName: 'Id', value: reportWithUser.report.reportId),
+          DataGridCell<String>(columnName: 'ID', value: reportWithUser.report.reportId),
           DataGridCell<DateTime>(columnName: 'Fecha', value: reportWithUser.report.date),
           DataGridCell<String>(columnName: 'Nombre', value: reportWithUser.user?.name??""),
           DataGridCell<String>(columnName: 'Apellidos', value: reportWithUser.user?.surname??""),
@@ -34,6 +34,7 @@ class ReportDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Respuesta', value: reportWithUser.report.response??""),
           DataGridCell<String>(columnName: 'Respondido por', value: reportWithUser.report.updatedby??""),
           DataGridCell<String>(columnName: 'Fecha respuesta', value: reportWithUser.report.lastupdate?.toString()??""),
+          DataGridCell<String>(columnName: 'Usuario ID', value: reportWithUser.user?.userId),
         ]);
       }).toList();
     }
@@ -114,6 +115,16 @@ class ReportDataGridSource extends DataGridSource {
         ),
       ),
       _buildDate(row.getCells()[8].value),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[0].value.toString()),
+      ),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[9].value.toString()),
+      ),
     ]);
   }
 
