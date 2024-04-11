@@ -73,24 +73,28 @@ class FirestoreRepository {
       _dataSource.watchCollection(
         path: FirestorePath.configurations(),
         builder: (data, documentId) => Configuration.fromMap(data, documentId),
+        sort: (a, b) => a.name.compareTo(b.name),
       );
 
   Stream<List<Point>> watchPoints() =>
       _dataSource.watchCollection(
         path: FirestorePath.points(),
         builder: (data, documentId) => Point.fromMap(data, documentId),
+        sort: (a, b) => a.name.compareTo(b.name),
       );
 
   Stream<List<Region>> watchRegions() =>
       _dataSource.watchCollection(
         path: FirestorePath.regions(),
         builder: (data, documentId) => Region.fromMap(data, documentId),
+        sort: (a, b) => a.name.compareTo(b.name),
       );
 
   Stream<List<Province>> watchProvinces() =>
       _dataSource.watchCollection(
         path: FirestorePath.provinces(),
         builder: (data, documentId) => Province.fromMap(data, documentId),
+        sort: (a, b) => a.name.compareTo(b.name),
       );
 
   Stream<List<UserWithConfigurationAndPoint>> watchUsersWithConfigurations() {
