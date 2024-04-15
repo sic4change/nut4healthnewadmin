@@ -67,7 +67,8 @@ class Case extends Equatable {
     final regionalValidation = data['regionalValidation']?? false;
     final admissionType = data['admissionType']?? "";
     final admissionTypeServer = data['admissionTypeServer']?? "";
-    final closedReason = data['closedReason']?? "";
+    // Si closedReason es NULL lo escribimos como null para distinguirlo de las que vienen cadenas vacías del servidor
+    final closedReason = data['closedReason']?? "null";
 
     return Case(
       caseId: documentId,

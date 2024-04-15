@@ -344,6 +344,19 @@
               "codeLink": ""
             }
           ]
+        },
+        {
+          "type": "child",
+          "title": "Admissions et Sorties",
+          "displayType": "tab",
+          "subItems": [
+            {
+              "type": "sample",
+              "title": "Admissions et Sorties",
+              "key": "admissions_and_discharges",
+              "codeLink": ""
+            }
+          ]
         }
       ]
     }

@@ -344,6 +344,19 @@
               "codeLink": ""
             }
           ]
+        },
+        {
+          "type": "child",
+          "title": "Admisiones y Altas",
+          "displayType": "tab",
+          "subItems": [
+            {
+              "type": "sample",
+              "title": "Admisiones y Altas",
+              "key": "admissions_and_discharges",
+              "codeLink": ""
+            }
+          ]
         }
       ]
     }

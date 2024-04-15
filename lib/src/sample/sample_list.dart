@@ -2,6 +2,7 @@ import 'package:adminnut4health/src/features/cases/presentation/datagrid_cases.d
 import 'package:adminnut4health/src/features/childs/presentation/datagrid_childs.dart';
 import 'package:adminnut4health/src/features/complications/presentation/datagrid_complications.dart';
 import 'package:adminnut4health/src/features/contracts/presentation/contracts_by_point_and_muac_statistic.dart';
+import 'package:adminnut4health/src/features/contracts_report/presentation/datagrid_admissions_and_discharges.dart';
 import 'package:adminnut4health/src/features/notifications/presentation/datagrid_notifications.dart';
 import 'package:adminnut4health/src/features/regions/presentation/datagrid_regions.dart';
 import 'package:adminnut4health/src/features/tutors/presentation/datagrid_tutors.dart';
@@ -955,6 +956,7 @@ Map<String, Function> getSampleWidget() {
     'diagnosis_mauritane_2024': (Key key) => Mauritane2024DailyContractDataGrid(key: key),
     'diagnosis_childs_mauritane_2024': (Key key) => Mauritane2024DailyContractChildDataGrid(key: key),
     'diagnosis_communitary_crenam_by_region_date': (Key key) => DiagnosisCommunitaryCrenamByRegionAndDateDataGrid(key: key),
+    'admissions_and_discharges': (Key key) => AdmissionsAndDischargesDataGrid(key: key),
 
     //mapas
     'country_map': (Key key) => MapCountryPage(key),

@@ -749,7 +749,7 @@ class _Mauritane2024DailyContractDataGridState extends LocalizationSampleViewSta
     if (args.value is PickerDateRange) {
       final PickerDateRange range = args.value;
       final DateTime? startDate = range.startDate;
-      final DateTime? endDate = range.endDate;
+      final DateTime? endDate = range.endDate?.copyWith(hour: 23, minute: 59, second: 59);
 
       start = startDate!.millisecondsSinceEpoch;
       if (endDate != null && endDate.millisecondsSinceEpoch > startDate.millisecondsSinceEpoch){

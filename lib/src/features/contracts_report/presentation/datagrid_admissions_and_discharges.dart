@@ -1,7 +1,9 @@
 /// Package imports
 /// import 'package:flutter/foundation.dart';
 
-import 'package:adminnut4health/src/features/contracts_report/domain/child_inform.dart';
+import 'package:adminnut4health/src/features/contracts_report/domain/case_full.dart';
+import 'package:adminnut4health/src/features/contracts_report/presentation/admissions_and_discharges_datagridsource.dart';
+import 'package:adminnut4health/src/features/countries/domain/country.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,9 +21,10 @@ import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:tuple/tuple.dart';
 
 import '../../../sample/model/sample_view.dart';
+import '../../regions/domain/region.dart';
 /// Local import
 import '../data/firestore_repository.dart';
-import 'contract_child_datagridsource.dart';
+import '../domain/PointWithVisitAndChild.dart';
 import 'dart:html' show FileReader;
 
 import '../../../common_widgets/export/save_file_mobile.dart'
@@ -32,80 +35,106 @@ import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column, Row, Border;
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import 'contracts_child_screen_controller.dart';
+import 'contracts_screen_controller.dart';
 
 /// Render contract data grid
-class Mauritane2024DailyContractChildDataGrid extends LocalizationSampleView {
+class AdmissionsAndDischargesDataGrid extends LocalizationSampleView {
   /// Creates getting started data grid
-  const Mauritane2024DailyContractChildDataGrid({Key? key}) : super(key: key);
+  const AdmissionsAndDischargesDataGrid({Key? key}) : super(key: key);
 
   @override
-  _Mauritane2024DailyContractChildDataGridState createState() => _Mauritane2024DailyContractChildDataGridState();
+  _AdmissionsAndDischargesDataGridState createState() => _AdmissionsAndDischargesDataGridState();
 }
 
-class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleViewState {
+class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState {
 
   final GlobalKey<SfDataGridState> _key = GlobalKey<SfDataGridState>();
 
   /// DataGridSource required for SfDataGrid to obtain the row data.
-  late ChildInformDataGridSource childInformDataGridSource;
+  late AdmissionsAndDischargesDataGridSource mainInformDataGridSource;
 
   static const double dataPagerHeight = 60;
   int _rowsPerPage = 15;
+
+  /// Selected locale
+  late String selectedLocale;
+
 
   int start = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day).millisecondsSinceEpoch;
 
   int end = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 23, 59, 59).millisecondsSinceEpoch;
 
-  /// Selected locale
-  late String selectedLocale;
 
   /// Translate names
-  late String _place, _records, _ageGroup,
-      _male, _malemas, _malemam, _malepn,
-      _female, _femalemas, _femalemam, _femalepn,
-      _start, _end,
-      _exportXLS, _exportPDF, _total, _contracts;
+  late String _category, _patientsAtBeginning, _newAdmissions, _reAdmissions, _referred,
+      _transfered, _totalAdmissions, _totalAttended,
+      _start, _end, _exportXLS, _exportPDF, _total, _contracts, _selectCountry,
+      _selectRegion;
 
   late Map<String, double> columnWidths = {
-    'Localidad': 200,
-    'Edad': 200,
-    'Registros': 200,
-    'M': 150,
-    'M MAS': 150,
-    'M MAM': 150,
-    'M PN': 150,
-    'F': 150,
-    'F MAS': 150,
-    'F MAM': 150,
-    'F PN': 150,
+    'Categoría': 200,
+    'Pacientes al inicio': 200,
+    'Nuevos casos': 200,
+    'Readmisiones': 200,
+    'Referidos': 200,
+    'Transferidos': 200,
+    'TOTAL ADMISIONES': 200,
+    'TOTAL ATENDIDOS/AS': 200,
   };
 
-  AsyncValue<List<ChildInform>> childInformsAsyncValue = AsyncValue.data(List.empty());
+
+  AsyncValue<List<CaseFull>> casesAsyncValue = AsyncValue.data(List.empty());
+  AsyncValue<List<CaseFull>> openCasesBeforeStartDateAsyncValue = AsyncValue.data(List.empty());
+
+  List<Country> countries = <Country>[];
+  Country? countrySelected;
+
+  List<Region> regions = <Region>[];
+  Region? regionSelected;
 
   Widget getLocationWidget(String location) {
     return Row(
       children: <Widget>[
         Image.asset('images/location.png'),
-        Text(
-          ' ' + location,
-        )
+        Text(' $location',)
       ],
     );
   }
 
-  _saveChildInforms(AsyncValue<List<ChildInform>>? childInforms) {
-    if (childInforms == null) {
-      childInformDataGridSource.setChildInforms(List.empty());
+  _saveCountries(AsyncValue<List<Country>>? countries) {
+    if (countries == null) {
+      return;
     } else {
-      childInformDataGridSource.setChildInforms(childInforms.value);
+      this.countries.clear();
+      this.countries.add(const Country(countryId: "", name: "TODOS", code: "",
+          active: false, needValidation: false, cases: 0, casesnormopeso: 0,
+          casesmoderada: 0, casessevera: 0));
+      this.countries.addAll(countries.value!);
     }
   }
 
-  Widget _buildView(AsyncValue<List<ChildInform>> childInforms) {
-    if (childInforms.value != null) {
-      childInformDataGridSource.buildDataGridRows();
-      childInformDataGridSource.updateDataSource();
+  _saveRegions(AsyncValue<List<Region>>? regions) {
+    if (regions == null) {
+      return;
+    } else {
+      this.regions.clear();
+      this.regions.add(const Region(regionId: '', name: 'TODAS', countryId: '', active: false));
+      this.regions.addAll(regions.value!);
+    }
+  }
+
+  _saveMainInforms(AsyncValue<List<CaseFull>>? casesByDate, AsyncValue<List<CaseFull>>? casesBeforeStartDate) {
+    if (casesByDate == null || casesBeforeStartDate == null) {
+      mainInformDataGridSource.setMainInforms(List.empty(), List.empty(), selectedLocale);
+    } else {
+      mainInformDataGridSource.setMainInforms(casesByDate.value, casesBeforeStartDate.value, selectedLocale);
+    }
+  }
+
+  Widget _buildView(AsyncValue<List<CaseFull>> cases, AsyncValue<List<CaseFull>> openCasesBeforeStartDate) {
+    if (cases.value != null && openCasesBeforeStartDate.value != null) {
+      mainInformDataGridSource.buildDataGridRows();
+      mainInformDataGridSource.updateDataSource();
       selectedLocale = model.locale.toString();
       return _buildLayoutBuilder();
     } else {
@@ -122,11 +151,12 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
   Widget _buildLayoutBuilder() {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraint) {
-          if (childInformDataGridSource.getChildInforms()!.isEmpty) {
+          if (mainInformDataGridSource.getMainInforms()!.isEmpty) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 _buildHeaderButtons(),
+                const SizedBox(height: 20.0,),
                 const Expanded(
                   child: Center(
                       child: SizedBox(
@@ -141,6 +171,7 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
           return Column(
               children: <Widget>[
                 _buildHeaderButtons(),
+                const SizedBox(height: 20.0,),
                 Expanded(
                   child: Directionality(
                     textDirection: TextDirection.ltr,
@@ -180,10 +211,11 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
 
   Widget _buildHeaderButtons() {
     Future<void> exportDataGridToExcel() async {
+      //CustomDataGridToExcelConverter excelConverter = CustomDataGridToExcelConverter();
+      //final Workbook workbook = _key.currentState!.exportToExcelWorkbook(converter: excelConverter);
       final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
         //exportTableSummaries: false,
           cellExport: (DataGridCellExcelExportDetails details) {
-
           });
       final List<int> bytes = workbook.saveAsStream();
       workbook.dispose();
@@ -217,20 +249,17 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
       document.dispose();
     }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
-        _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
-        Expanded(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildFilterRow(),
-            ],
-          ),
-        ),
-      ],
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Expanded(child: _buildFilterRow(),),
+          _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
+          _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
+        ],
+      ),
     );
 
   }
@@ -262,9 +291,9 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
   }
 
   Widget _buildDataPager() {
-    var rows = childInformDataGridSource.rows;
-    if (childInformDataGridSource.effectiveRows.isNotEmpty ) {
-      rows = childInformDataGridSource.effectiveRows;
+    var rows = mainInformDataGridSource.rows;
+    if (mainInformDataGridSource.effectiveRows.isNotEmpty ) {
+      rows = mainInformDataGridSource.effectiveRows;
     }
     var addMorePage = 0;
     if ((rows.length / _rowsPerPage).remainder(1) != 0) {
@@ -274,7 +303,7 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
     return Directionality(
       textDirection: TextDirection.ltr,
       child: SfDataPager(
-        delegate: childInformDataGridSource,
+        delegate: mainInformDataGridSource,
         availableRowsPerPage: const <int>[15, 20, 25],
         pageCount: (rows.length / _rowsPerPage) + addMorePage,
         onRowsPerPageChanged: (int? rowsPerPage) {
@@ -284,6 +313,7 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
         },
       ),
     );
+
   }
 
   List<GridTableSummaryRow> _getTableSummaryRows() {
@@ -299,7 +329,7 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
           columns: <GridSummaryColumn>[
             const GridSummaryColumn(
                 name: 'Count',
-                columnName: 'Localidad',
+                columnName: 'Categoría',
                 summaryType: GridSummaryType.count),
           ],
           position: GridTableSummaryRowPosition.bottom),
@@ -310,17 +340,8 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
     final selectedLocale = model.locale.toString();
     switch (selectedLocale) {
       case 'en_US':
-        _place = 'Location';
-        _ageGroup = 'Age';
-        _records = 'Records';
-        _male = 'M';
-        _malemas = 'M MAS';
-        _malemam = 'M MAM';
-        _malepn = 'M PN';
-        _female = 'F';
-        _femalemas = 'F MAS';
-        _femalemam = 'F MAM';
-        _femalepn = 'F PN';
+        _category = 'Category';
+        _patientsAtBeginning = 'Patients at beginning';
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
         _total = 'Total Locations';
@@ -329,39 +350,21 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
         _end = 'End';
         break;
       case 'es_ES':
-        _place = 'Localidad';
-        _ageGroup = 'Edad';
-        _records = 'Registros';
-        _male = 'M';
-        _malemas = 'M MAS';
-        _malemam = 'M MAM';
-        _malepn = 'M PN';
-        _female = 'F';
-        _femalemas = 'F MAS';
-        _femalemam = 'F MAM';
-        _femalepn = 'F PN';
+        _category = 'Categoría';
+        _patientsAtBeginning = 'Pacientes al comienzo';
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
-        _total = 'Localidades totales';
+        _total = 'Totales';
         _contracts = 'Diagnósticos';
         _start = 'Inicio';
         _end = 'Fin';
         break;
       case 'fr_FR':
-        _place = 'Localité';
-        _ageGroup = 'Âge';
-        _records = 'Registres';
-        _male = 'M';
-        _malemas = 'M MAS';
-        _malemam = 'M MAM';
-        _malepn = 'M PN';
-        _female = 'F';
-        _femalemas = 'F MAS';
-        _femalemam = 'F MAM';
-        _femalepn = 'F PN';
+        _category = 'Catégorie';
+        _patientsAtBeginning = 'Patients au début';
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
-        _total = 'Total des localités';
+        _total = 'Total';
         _contracts = 'Diagnostics';
         _start = 'Début';
         _end = 'Fin';
@@ -369,7 +372,7 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
     }
     return SfDataGrid(
       key: _key,
-      source: childInformDataGridSource,
+      source: mainInformDataGridSource,
       rowsPerPage: _rowsPerPage,
       tableSummaryRows: _getTableSummaryRows(),
       allowColumnsResizing: true,
@@ -389,131 +392,97 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
       allowMultiColumnSorting: true,
       columns: <GridColumn>[
         GridColumn(
-            width: columnWidths['Localidad']!,
-            columnName: 'Localidad',
-            label: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _place,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )),
-        GridColumn(
-            width: columnWidths['Edad']!,
-            columnName: 'Edad',
-            label: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _ageGroup,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )),
-        GridColumn(
-          columnName: 'Registros',
-            width: columnWidths['Registros']!,
-          label: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              _records,
-              overflow: TextOverflow.ellipsis,
-            ),
-          )
-        ),
-        GridColumn(
-            columnName: 'M',
-            width: columnWidths['M']!,
+            columnName: 'Categoría',
+            width: columnWidths['Categoría']!,
             label: Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _male,
+                _category,
                 overflow: TextOverflow.ellipsis,
               ),
             )
         ),
         GridColumn(
-            columnName: 'M MAS',
-            width: columnWidths['M MAS']!,
+            columnName: 'Pacientes al inicio',
+            width: columnWidths['Pacientes al inicio']!,
             label: Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _malemas,
+                _patientsAtBeginning,
                 overflow: TextOverflow.ellipsis,
               ),
             )
         ),
         GridColumn(
-            columnName: 'M MAM',
-            width: columnWidths['M MAM']!,
+            columnName: 'Nuevos casos',
+            width: columnWidths['Nuevos casos']!,
             label: Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _malemam,
+                _newAdmissions,
                 overflow: TextOverflow.ellipsis,
               ),
             )
         ),
         GridColumn(
-            columnName: 'M PN',
-            width: columnWidths['M PN']!,
+            columnName: 'Readmisiones',
+            width: columnWidths['Readmisiones']!,
             label: Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _malepn,
+                _reAdmissions,
                 overflow: TextOverflow.ellipsis,
               ),
             )
         ),
         GridColumn(
-            columnName: 'F',
-            width: columnWidths['F']!,
+            columnName: 'Referidos',
+            width: columnWidths['Referidos']!,
             label: Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _female,
+                _referred,
                 overflow: TextOverflow.ellipsis,
               ),
             )
         ),
         GridColumn(
-            columnName: 'F MAS',
-            width: columnWidths['F MAS']!,
+            columnName: 'Transferidos',
+            width: columnWidths['Transferidos']!,
             label: Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _femalemas,
+                _transfered,
                 overflow: TextOverflow.ellipsis,
               ),
             )
         ),
         GridColumn(
-            columnName: 'F MAM',
-            width: columnWidths['F MAM']!,
+            columnName: 'TOTAL ADMISIONES',
+            width: columnWidths['TOTAL ADMISIONES']!,
             label: Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _femalemam,
+                _totalAdmissions,
                 overflow: TextOverflow.ellipsis,
               ),
             )
         ),
         GridColumn(
-            columnName: 'F PN',
-            width: columnWidths['F PN']!,
+            columnName: 'TOTAL ATENDIDOS/AS',
+            width: columnWidths['TOTAL ATENDIDOS/AS']!,
             label: Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _femalepn,
+                _totalAttended,
                 overflow: TextOverflow.ellipsis,
               ),
             )
@@ -525,28 +494,24 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
   @override
   void initState() {
     super.initState();
-    childInformDataGridSource = ChildInformDataGridSource(List.empty());
+    mainInformDataGridSource = AdmissionsAndDischargesDataGridSource(List.empty());
 
     selectedLocale = model.locale.toString();
 
-    _place = 'Localidad';
-    _ageGroup = 'Edad';
-    _records = 'Registros';
-    _male = 'M';
-    _malemas = 'M MAS';
-    _malemam = 'M MAM';
-    _malepn = 'M PN';
-    _female = 'F';
-    _femalemas = 'F MAS';
-    _femalemam = 'F MAM';
-    _femalepn = 'F PN';
+    _category = 'Categoría';
+    _patientsAtBeginning = 'Pacientes al inicio';
+    _newAdmissions = 'Nuevos casos';
+    _reAdmissions = 'Readmisiones';
+    _referred = 'Referidos';
+    _transfered = 'Transferidos';
+    _totalAdmissions = 'TOTAL ADMISIONES';
+    _totalAttended = 'TOTAL ATENDIDOS/AS';
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';
     _total = 'Diagnósticos totales';
     _contracts = 'Diagnósticos';
     _start = 'Inicio';
     _end = 'Fin';
-
   }
 
 
@@ -556,47 +521,59 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
     return Consumer(
         builder: (context, ref, child) {
           ref.listen<AsyncValue>(
-            contractschildScreenControllerProvider,
+            contractsScreenControllerProvider,
                 (_, state) => {
             },
           );
 
-          Tuple2<int, int> tuple2 = Tuple2(start, end);
-
-          childInformsAsyncValue = ref.watch(childInformMauritane2024StreamProvider(tuple2));
-
-          if (childInformsAsyncValue.value != null) {
-            _saveChildInforms(childInformsAsyncValue);
+          final countriesAsyncValue = ref.watch(countriesStreamProvider);
+          if (countriesAsyncValue.value != null) {
+            _saveCountries(countriesAsyncValue);
           }
 
-          return _buildView(childInformsAsyncValue);
+          final regionsAsyncValue = ref.watch(regionsByCountryStreamProvider(countrySelected?.countryId??""));
+          if (regionsAsyncValue.value != null) {
+            _saveRegions(regionsAsyncValue);
+          }
+
+          Tuple4<int, int, String, String> filters = Tuple4(start, end, countrySelected?.countryId??"", regionSelected?.regionId??"");
+          casesAsyncValue = ref.watch(casesByDateAndRegionStreamProvider(filters));
+
+          Tuple3<int, String, String> filters2 = Tuple3(start,countrySelected?.countryId??"", regionSelected?.regionId??"");
+          openCasesBeforeStartDateAsyncValue = ref.watch(openCasesBeforeStartDateStreamProvider(filters2));
+
+          if (casesAsyncValue.value != null && openCasesBeforeStartDateAsyncValue.value != null) {
+            _saveMainInforms(casesAsyncValue, openCasesBeforeStartDateAsyncValue);
+          }
+
+          return _buildView(casesAsyncValue, openCasesBeforeStartDateAsyncValue);
         });
 
   }
 
   Widget _buildFilterRow() {
-    return Column(
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 400,
-                child: Directionality(
-                  textDirection: TextDirection.ltr,
-                  child: SfDateRangePicker(
-                    initialSelectedRange: PickerDateRange(
-                      DateTime.fromMillisecondsSinceEpoch(start),
-                      DateTime.fromMillisecondsSinceEpoch(end),),
-                    onSelectionChanged: _onSelectionChanged,
-                    selectionMode: DateRangePickerSelectionMode.range,
-                  ),
-                ),
-              ),
-            ],
+    return Wrap(
+      alignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.start,
+      runSpacing: 20.0,
+      spacing: 20.0,
+      children: [
+        _buildCountryPicker(),
+        _buildRegionPicker(),
+        SizedBox(
+          width: 400,
+          child: Directionality(
+            textDirection: TextDirection.ltr,
+            child: SfDateRangePicker(
+              initialSelectedRange: PickerDateRange(
+                DateTime.fromMillisecondsSinceEpoch(start),
+                DateTime.fromMillisecondsSinceEpoch(end),),
+              onSelectionChanged: _onSelectionChanged,
+              selectionMode: DateRangePickerSelectionMode.range,
+            ),
           ),
-        ],
+        ),
+      ],
     );
   }
 
@@ -616,6 +593,116 @@ class _Mauritane2024DailyContractChildDataGridState extends LocalizationSampleVi
     }
   }
 
+  Widget _buildCountryPicker() {
+    switch (model.locale.toString()) {
+      case 'es_ES':
+        _selectCountry = 'Selecciona un país';
+        break;
+      case 'fr_FR':
+        _selectCountry = 'Sélectionnez un pays';
+        break;
+      default:
+        _selectCountry = 'Select country';
+        break;
+    }
+
+    return Column(children: <Widget>[
+      Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Card(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(3.0),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
+            child: SizedBox(
+              height: 50,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  DropdownButton<String>(
+                      focusColor: Colors.transparent,
+                      underline:
+                      Container(color: const Color(0xFFBDBDBD), height: 1),
+                      value: countrySelected?.name,
+                      hint: Text(_selectCountry),
+                      items: countries.map((Country c) {
+                        return DropdownMenuItem<String>(
+                            value: c.name,
+                            child: Text(c.name,
+                                style: TextStyle(color: model.textColor)));
+                      }).toList(),
+                      onChanged: (dynamic value) {
+                        setState(() {
+                          countrySelected = countries.firstWhere((c) => c.name == value);
+                          regionSelected = null;
+                        });
+                      }),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    ]);
+  }
+
+  Widget _buildRegionPicker() {
+    switch (model.locale.toString()) {
+      case 'es_ES':
+        _selectRegion = 'Selecciona una región';
+        break;
+      case 'fr_FR':
+        _selectRegion = 'Sélectionnez une région';
+        break;
+      default:
+        _selectRegion = 'Select region';
+        break;
+    }
+
+    return Column(children: <Widget>[
+      Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Card(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(3.0),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
+            child: SizedBox(
+              height: 50,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  DropdownButton<String>(
+                      focusColor: Colors.transparent,
+                      underline:
+                      Container(color: const Color(0xFFBDBDBD), height: 1),
+                      value: regionSelected?.name,
+                      hint: Text(_selectRegion),
+                      items: regions.map((Region r) {
+                        return DropdownMenuItem<String>(
+                            value: r.name,
+                            child: Text(r.name,
+                                style: TextStyle(color: model.textColor)));
+                      }).toList(),
+                      onChanged: (dynamic value) {
+                        setState(() {
+                          regionSelected = regions.firstWhere((r) => r.name == value);
+                        });
+                      }),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    ]);
+  }
 }
 
 
