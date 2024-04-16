@@ -7,6 +7,7 @@ import 'package:adminnut4health/src/features/countries/domain/country.dart';
 import 'package:adminnut4health/src/features/locations/domain/location.dart';
 import 'package:adminnut4health/src/features/points/domain/point.dart';
 import 'package:adminnut4health/src/features/provinces/domain/province.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,7 +22,6 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
-import 'package:tuple/tuple.dart';
 
 import '../../../sample/model/sample_view.dart';
 import '../../regions/domain/region.dart';
@@ -72,7 +72,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
   late String _category, _patientsAtBeginning, _newAdmissions, _reAdmissions, _referred,
       _transfered, _totalAdmissions, _totalAttended,
       _start, _end, _exportXLS, _exportPDF, _total, _contracts, _selectCountry,
-      _selectRegion, _selectLocation, _selectProvince, _selectPoint;
+      _selectRegion, _selectLocation, _selectProvince, _selectPointType, _selectPoint;
 
   late Map<String, double> columnWidths = {
     'Categoría': 200,
@@ -100,6 +100,9 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
 
   List<Province> provinces = <Province>[];
   Province? provinceSelected;
+
+  final pointTypes =  ["CRENAM", "CRENAS", "CRENI", "Otro"];
+  String? pointTypeSelected;
 
   List<Point> points = <Point>[];
   Point? pointSelected;
@@ -594,34 +597,37 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
             _saveProvinces(provincesAsyncValue);
           }
 
-          final pointFilter = Tuple4(
+          final pointFilter = Tuple5(
               countrySelected?.countryId??"",
               regionSelected?.regionId??"",
               locationSelected?.locationId??"",
               provinceSelected?.provinceId??"",
+              pointTypeSelected??"",
           );
           final pointsAsyncValue = ref.watch(pointsByLocationStreamProvider(pointFilter));
           if (pointsAsyncValue.value != null) {
             _savePoints(pointsAsyncValue);
           }
 
-          final casesFilters = Tuple7(
+          final casesFilters = Tuple8(
               start,
               end,
               countrySelected?.countryId??"",
               regionSelected?.regionId??"",
               locationSelected?.locationId??"",
               provinceSelected?.provinceId??"",
+              pointTypeSelected??"",
               pointSelected?.pointId??"",
           );
           casesAsyncValue = ref.watch(casesByDateAndLocationStreamProvider(casesFilters));
 
-          final openCasesFilters = Tuple6(
+          final openCasesFilters = Tuple7(
             start,
             countrySelected?.countryId??"",
             regionSelected?.regionId??"",
             locationSelected?.locationId??"",
             provinceSelected?.provinceId??"",
+            pointTypeSelected??"",
             pointSelected?.pointId??"",
           );
           openCasesBeforeStartDateAsyncValue = ref.watch(openCasesBeforeStartDateStreamProvider(openCasesFilters));
@@ -646,6 +652,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
         _buildRegionPicker(),
         _buildLocationPicker(),
         _buildProvincePicker(),
+        _buildPointTypePicker(),
         _buildPointPicker(),
         SizedBox(
           width: 400,
@@ -726,6 +733,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
                           countrySelected = countries.firstWhere((c) => c.name == value);
                           regionSelected = null;
                           locationSelected = null;
+                          provinceSelected = null;
                           pointSelected = null;
                         });
                       }),
@@ -897,6 +905,62 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
                       onChanged: (dynamic value) {
                         setState(() {
                           provinceSelected = provinces.firstWhere((p) => p.name == value);
+                          pointSelected = null;
+                        });
+                      }),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    ]);
+  }
+
+  Widget _buildPointTypePicker() {
+    switch (model.locale.toString()) {
+      case 'es_ES':
+        _selectPointType = 'Selecciona un tipo de centro';
+        break;
+      case 'fr_FR':
+        _selectPointType = 'Sélectionnez un type de centre';
+        break;
+      default:
+        _selectPointType = 'Select type of centre';
+        break;
+    }
+
+    return Column(children: <Widget>[
+      Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Card(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(3.0),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
+            child: SizedBox(
+              height: 50,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  DropdownButton<String>(
+                      focusColor: Colors.transparent,
+                      underline:
+                      Container(color: const Color(0xFFBDBDBD), height: 1),
+                      value: pointTypeSelected,
+                      hint: Text(_selectPointType),
+                      items: pointTypes.map((String p) {
+                        return DropdownMenuItem<String>(
+                            value: p,
+                            child: Text(p,
+                                style: TextStyle(color: model.textColor)));
+                      }).toList(),
+                      onChanged: (dynamic value) {
+                        setState(() {
+                          pointTypeSelected = value;
                           pointSelected = null;
                         });
                       }),

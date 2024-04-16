@@ -7,6 +7,7 @@ import 'package:adminnut4health/src/features/countries/domain/country.dart';
 import 'package:adminnut4health/src/features/locations/domain/location.dart';
 import 'package:adminnut4health/src/features/provinces/domain/province.dart';
 import 'package:adminnut4health/src/features/regions/domain/region.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -20,9 +21,6 @@ import '../domain/PointWithVisitAndChild.dart';
 import '../domain/child_inform.dart';
 import '../domain/contract.dart';
 import '../domain/main_inform.dart';
-
-import 'package:tuple/tuple.dart';
-
 
 String documentIdFromCurrentDate() {
   final iso = DateTime.now().toIso8601String();
@@ -115,6 +113,7 @@ class FirestoreRepository {
     required String regionId,
     required String locationId,
     required String provinceId,
+    required String pointType,
   }) {
     return _dataSource.watchCollection(
       path: FirestorePath.points(),
@@ -132,6 +131,9 @@ class FirestoreRepository {
         if (provinceId.isNotEmpty) {
           query = query.where('province', isEqualTo: provinceId);
         }
+        if (pointType.isNotEmpty) {
+          query = query.where('type', isEqualTo: pointType);
+        }
         return query;
       },
       sort: (a, b) => a.name.compareTo(b.name),
@@ -143,6 +145,7 @@ class FirestoreRepository {
     required String regionId,
     required String locationId,
     required String provinceId,
+    required String pointType,
     required String pointId,
   }) {
     return _dataSource.watchCollection(
@@ -160,6 +163,9 @@ class FirestoreRepository {
         }
         if (provinceId.isNotEmpty) {
           query = query.where('province', isEqualTo: provinceId);
+        }
+        if (pointType.isNotEmpty) {
+          query = query.where('type', isEqualTo: pointType);
         }
         if (pointId.isNotEmpty) {
           query = query.where('pointId', isEqualTo: pointId);
@@ -302,14 +308,18 @@ class FirestoreRepository {
         });
   }
 
-  Stream<List<CaseFull>> watchCasesByDateAndLocation(int start, int end, String countryId, String regionId, String locationId, String provinceId, String pointId) {
+  Stream<List<CaseFull>> watchCasesByDateAndLocation(int start, int end,
+      String countryId, String regionId, String locationId, String provinceId,
+      String pointType, String pointId) {
     final emptyPoint = Point.getEmptyPoint();
     final emptyChild = Child.getEmptyChild();
 
     return CombineLatestStream.combine3(
         watchCasesByDate(start, end),
         watchChilds(),
-        watchPointsByLocationAndPoint(countryId: countryId, regionId: regionId, locationId: locationId, provinceId: provinceId, pointId: pointId),
+        watchPointsByLocationAndPoint(countryId: countryId, regionId: regionId,
+            locationId: locationId, provinceId: provinceId, pointType: pointType,
+            pointId: pointId),
             (List<Case> cases, List<Child> childs, List<Point> points) {
           var casesList = cases.map((myCase) {
             final Map<String, Child> childMap = Map.fromEntries(
@@ -329,14 +339,17 @@ class FirestoreRepository {
         });
   }
 
-  Stream<List<CaseFull>> watchOpenCasesByLocationBeforeDate(int start, String countryId, String regionId, String locationId, String provinceId, String pointId) {
+  Stream<List<CaseFull>> watchOpenCasesByLocationBeforeDate(int start, String countryId,
+      String regionId, String locationId, String provinceId, String pointType, String pointId) {
     final emptyPoint = Point.getEmptyPoint();
     final emptyChild = Child.getEmptyChild();
 
     return CombineLatestStream.combine3(
         _watchOpenCasesBeforeDate(start),
         watchChilds(),
-        watchPointsByLocationAndPoint(countryId: countryId, regionId: regionId, locationId: locationId, provinceId: provinceId, pointId: pointId),
+        watchPointsByLocationAndPoint(countryId: countryId, regionId: regionId,
+            locationId: locationId, provinceId: provinceId, pointType: pointType,
+            pointId: pointId),
             (List<Case> cases, List<Child> childs, List<Point> points) {
           var casesList = cases.map((myCase) {
             final Map<String, Child> childMap = Map.fromEntries(
@@ -620,8 +633,8 @@ final mainInformMauritane2024StreamProvider = StreamProvider.family.autoDispose<
   }
 
   final database = ref.watch(databaseProvider);
-  final start = rangeDate.item1;
-  final end = rangeDate.item2;
+  final start = rangeDate.value1;
+  final end = rangeDate.value2;
 
   return database.watchMainInform(start, end);
 });
@@ -633,8 +646,8 @@ final childInformMauritane2024StreamProvider = StreamProvider.family.autoDispose
   }
 
   final database = ref.watch(databaseProvider);
-  final start = range.item1;
-  final end = range.item2;
+  final start = range.value1;
+  final end = range.value2;
 
   return database.watchChildInform(start,end);
 });
@@ -646,48 +659,51 @@ final visitWithChildAndCommunityCrenamPoinStreamProvider = StreamProvider.family
   }
 
   final database = ref.watch(databaseProvider);
-  final start = range.item1;
-  final end = range.item2;
-  final countryId = range.item3;
-  final regionId = range.item4;
+  final start = range.value1;
+  final end = range.value2;
+  final countryId = range.value3;
+  final regionId = range.value4;
 
   return database.watchVisitWithChildAndCommunityCrenamPoint(start, end, countryId, regionId);
 });
 
 final casesByDateAndLocationStreamProvider = StreamProvider.family.autoDispose<List<CaseFull>,
-    Tuple7<int, int, String, String, String, String, String>>((ref, range) {
+    Tuple8<int, int, String, String, String, String, String, String>>((ref, range) {
   final user = ref.watch(authStateChangesProvider).value;
   if (user == null) {
     throw AssertionError('User can\'t be null');
   }
 
   final database = ref.watch(databaseProvider);
-  final start = range.item1;
-  final end = range.item2;
-  final countryId = range.item3;
-  final regionId = range.item4;
-  final locationId = range.item5;
-  final provinceId = range.item6;
-  final pointId = range.item7;
+  final start = range.value1;
+  final end = range.value2;
+  final countryId = range.value3;
+  final regionId = range.value4;
+  final locationId = range.value5;
+  final provinceId = range.value6;
+  final pointType = range.value7;
+  final pointId = range.value8;
 
-  return database.watchCasesByDateAndLocation(start, end, countryId, regionId, locationId, provinceId, pointId);
+  return database.watchCasesByDateAndLocation(start, end, countryId, regionId, locationId, provinceId, pointType, pointId);
 });
 
-final openCasesBeforeStartDateStreamProvider = StreamProvider.family.autoDispose<List<CaseFull>, Tuple6<int, String, String, String, String, String>>((ref, range) {
+final openCasesBeforeStartDateStreamProvider = StreamProvider.family.autoDispose<List<CaseFull>,
+    Tuple7<int, String, String, String, String, String, String>>((ref, range) {
   final user = ref.watch(authStateChangesProvider).value;
   if (user == null) {
     throw AssertionError('User can\'t be null');
   }
 
   final database = ref.watch(databaseProvider);
-  final start = range.item1;
-  final countryId = range.item2;
-  final regionId = range.item3;
-  final locationId = range.item4;
-  final provinceId = range.item5;
-  final pointId = range.item6;
+  final start = range.value1;
+  final countryId = range.value2;
+  final regionId = range.value3;
+  final locationId = range.value4;
+  final provinceId = range.value5;
+  final pointType = range.value6;
+  final pointId = range.value7;
 
-  return database.watchOpenCasesByLocationBeforeDate(start, countryId, regionId, locationId, provinceId, pointId);
+  return database.watchOpenCasesByLocationBeforeDate(start, countryId, regionId, locationId, provinceId, pointType, pointId);
 });
 
 final countriesStreamProvider = StreamProvider.autoDispose<List<Country>>((ref) {
@@ -723,8 +739,8 @@ final locationsByCountryAndRegionStreamProvider = StreamProvider.family.autoDisp
     throw AssertionError('User can\'t be null');
   }
   final database = ref.watch(databaseProvider);
-  final countryId = locationFilter.item1;
-  final regionId = locationFilter.item2;
+  final countryId = locationFilter.value1;
+  final regionId = locationFilter.value2;
 
   return database.watchLocationsByCountryAndRegion(countryId: countryId, regionId: regionId);
 });
@@ -735,25 +751,26 @@ final provincesByLocationStreamProvider = StreamProvider.family.autoDispose<List
     throw AssertionError('User can\'t be null');
   }
   final database = ref.watch(databaseProvider);
-  final countryId = provinceFilter.item1;
-  final regionId = provinceFilter.item2;
-  final locationId = provinceFilter.item3;
+  final countryId = provinceFilter.value1;
+  final regionId = provinceFilter.value2;
+  final locationId = provinceFilter.value3;
 
   return database.watchProvincesByLocation(countryId: countryId, regionId: regionId, locationId: locationId);
 });
 
-final pointsByLocationStreamProvider = StreamProvider.family.autoDispose<List<Point>, Tuple4<String, String, String, String>>((ref, pointFilter) {
+final pointsByLocationStreamProvider = StreamProvider.family.autoDispose<List<Point>, Tuple5<String, String, String, String, String>>((ref, pointFilter) {
   final user = ref.watch(authStateChangesProvider).value;
   if (user == null) {
     throw AssertionError('User can\'t be null');
   }
   final database = ref.watch(databaseProvider);
-  final countryId = pointFilter.item1;
-  final regionId = pointFilter.item2;
-  final locationId = pointFilter.item3;
-  final provinceId = pointFilter.item4;
+  final countryId = pointFilter.value1;
+  final regionId = pointFilter.value2;
+  final locationId = pointFilter.value3;
+  final provinceId = pointFilter.value4;
+  final pointType = pointFilter.value5;
 
-  return database.watchPointsByLocation(countryId: countryId, regionId: regionId, locationId: locationId, provinceId: provinceId);
+  return database.watchPointsByLocation(countryId: countryId, regionId: regionId, locationId: locationId, provinceId: provinceId, pointType: pointType);
 });
 
 
