@@ -18,6 +18,14 @@ class Province extends Equatable {
         country = '',
         active = false;
 
+  const Province.all():
+        provinceId = '',
+        locationId = '',
+        regionId = '',
+        name = 'TODAS',
+        country = '',
+        active = false;
+
   final ProvinceID provinceId;
   final String name;
   final String country;
