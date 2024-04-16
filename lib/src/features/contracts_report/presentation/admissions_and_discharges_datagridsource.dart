@@ -7,8 +7,8 @@ import '../domain/PointWithVisitAndChild.dart';
 
 
 class AdmissionsAndDischargesDataGridSource extends DataGridSource {
-  AdmissionsAndDischargesDataGridSource(List<AdmissionsAndDischargesInform> admissionsAndDischargesInformData) {
-    _mainInforms = admissionsAndDischargesInformData;
+  AdmissionsAndDischargesDataGridSource(List<AdmissionsAndDischargesInform> informData) {
+    _mainInforms = informData;
     buildDataGridRows();
   }
 
@@ -74,26 +74,32 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
   }
 
   setMainInforms(List<CaseFull>? cases, List<CaseFull>? openCasesBeforeStartDate, String selectedLocale) {
-    List<AdmissionsAndDischargesInform> admissionsAndDischargesInform = [];
-    late String boy, girl, fefa;
+    List<AdmissionsAndDischargesInform> inform = [];
+    late String boy, girl, subtotalChildren, fefa, total;
+
+    total = "Total";
     switch (selectedLocale) {
       case 'en_US':
         boy = 'Boys <5 years';
         girl = 'Girls <5 years';
+        subtotalChildren = 'Subtotal children <5 years';
         fefa = 'Pregnant and lactating women';
         break;
       case 'es_ES':
         boy = 'Niños <5 años';
         girl = 'Niñas <5 años';
+        subtotalChildren = 'Subtotal niñas/os <5 años';
         fefa = 'Mujeres embarazadas y lactantes';
         break;
       case 'fr_FR':
         boy = 'Garcons <5 años';
         girl = 'Filles <5 años';
+        subtotalChildren = 'Sous-total filles et garçons <5 ans';
         fefa = 'FEFA';
         break;
     }
-    admissionsAndDischargesInform.add(
+
+    inform.add(
         AdmissionsAndDischargesInform(
           category: boy,
           patientsAtBeginning: 0,
@@ -103,7 +109,7 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
           transfered: 0,
         )
     );
-    admissionsAndDischargesInform.add(
+    inform.add(
         AdmissionsAndDischargesInform(
           category: girl,
           patientsAtBeginning: 0,
@@ -113,9 +119,29 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
           transfered: 0,
         )
     );
-    admissionsAndDischargesInform.add(
+    inform.add(
+        AdmissionsAndDischargesInform(
+          category: subtotalChildren,
+          patientsAtBeginning: 0,
+          newAdmissions: 0,
+          reAdmissions: 0,
+          referred: 0,
+          transfered: 0,
+        )
+    );
+    inform.add(
         AdmissionsAndDischargesInform(
           category: fefa,
+          patientsAtBeginning: 0,
+          newAdmissions: 0,
+          reAdmissions: 0,
+          referred: 0,
+          transfered: 0,
+        )
+    );
+    inform.add(
+        AdmissionsAndDischargesInform(
+          category: total,
           patientsAtBeginning: 0,
           newAdmissions: 0,
           reAdmissions: 0,
@@ -129,14 +155,14 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
         // Pacientes al comienzo
         //if (element.myCase.closedReason.isEmpty) {
           if (element.child == null || element.child!.childId == '') {
-            admissionsAndDischargesInform[2].patientsAtBeginning++;
+            inform[3].patientsAtBeginning++;
           } else {
             if (element.child?.sex == "Masculino" ||
                 element.child?.sex == "Homme" ||
                 element.child?.sex == "ذكر") {
-              admissionsAndDischargesInform[0].patientsAtBeginning++;
+              inform[0].patientsAtBeginning++;
             } else {
-              admissionsAndDischargesInform[1].patientsAtBeginning++;
+              inform[1].patientsAtBeginning++;
             }
           }
         //}
@@ -150,14 +176,14 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
             element.myCase.admissionType == "Nueva admisión" ||
             element.myCase.admissionType == "قبول جديد") {
           if (element.child == null || element.child!.childId == '') {
-            admissionsAndDischargesInform[2].newAdmissions++;
+            inform[3].newAdmissions++;
           } else {
             if (element.child?.sex == "Masculino" ||
                 element.child?.sex == "Homme" ||
                 element.child?.sex == "ذكر") {
-              admissionsAndDischargesInform[0].newAdmissions++;
+              inform[0].newAdmissions++;
             } else {
-              admissionsAndDischargesInform[1].newAdmissions++;
+              inform[1].newAdmissions++;
             }
           }
         }
@@ -167,14 +193,14 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
             element.myCase.admissionType == "Readmisión" ||
             element.myCase.admissionType == "إعادة القبو") {
           if (element.child == null || element.child!.childId == '') {
-            admissionsAndDischargesInform[2].reAdmissions++;
+            inform[3].reAdmissions++;
           } else {
             if (element.child?.sex == "Masculino" ||
                 element.child?.sex == "Homme" ||
                 element.child?.sex == "ذكر") {
-              admissionsAndDischargesInform[0].reAdmissions++;
+              inform[0].reAdmissions++;
             } else {
-              admissionsAndDischargesInform[1].reAdmissions++;
+              inform[1].reAdmissions++;
             }
           }
         }
@@ -184,14 +210,14 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
             element.myCase.admissionType == "Referencia" ||
             element.myCase.admissionType == "الإحالة") {
           if (element.child == null || element.child!.childId == '') {
-            admissionsAndDischargesInform[2].referred++;
+            inform[3].referred++;
           } else {
             if (element.child?.sex == "Masculino" ||
                 element.child?.sex == "Homme" ||
                 element.child?.sex == "ذكر") {
-              admissionsAndDischargesInform[0].referred++;
+              inform[0].referred++;
             } else {
-              admissionsAndDischargesInform[1].referred++;
+              inform[1].referred++;
             }
           }
         }
@@ -201,21 +227,37 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
             element.myCase.admissionType == "Transferencia" ||
             element.myCase.admissionType == "التحويل") {
           if (element.child == null || element.child!.childId == '') {
-            admissionsAndDischargesInform[2].transfered++;
+            inform[3].transfered++;
           } else {
             if (element.child?.sex == "Masculino" ||
                 element.child?.sex == "Homme" ||
                 element.child?.sex == "ذكر") {
-              admissionsAndDischargesInform[0].transfered++;
+              inform[0].transfered++;
             } else {
-              admissionsAndDischargesInform[1].transfered++;
+              inform[1].transfered++;
             }
           }
         }
       }
     }
 
-    _mainInforms = admissionsAndDischargesInform;
+    // Subtotal children
+    inform[2].patientsAtBeginning = inform[0].patientsAtBeginning + inform[1].patientsAtBeginning;
+    inform[2].newAdmissions = inform[0].newAdmissions + inform[1].newAdmissions;
+    inform[2].reAdmissions = inform[0].reAdmissions + inform[1].reAdmissions;
+    inform[2].referred = inform[0].referred + inform[1].referred;
+    inform[2].transfered = inform[0].transfered + inform[1].transfered;
+    inform[2].transfered = inform[0].transfered + inform[1].transfered;
+
+    // Total
+    inform[4].patientsAtBeginning = inform[2].patientsAtBeginning + inform[3].patientsAtBeginning;
+    inform[4].newAdmissions = inform[2].newAdmissions + inform[3].newAdmissions;
+    inform[4].reAdmissions = inform[2].reAdmissions + inform[3].reAdmissions;
+    inform[4].referred = inform[2].referred + inform[3].referred;
+    inform[4].transfered = inform[2].transfered + inform[3].transfered;
+    inform[4].transfered = inform[2].transfered + inform[3].transfered;
+
+    _mainInforms = inform;
   }
 
   List<AdmissionsAndDischargesInform>? getMainInforms() {

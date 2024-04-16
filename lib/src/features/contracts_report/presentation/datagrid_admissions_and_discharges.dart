@@ -213,12 +213,12 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
               ],
             );
           } else {
-          return Column(
-              children: <Widget>[
-                _buildHeaderButtons(),
-                const SizedBox(height: 20.0,),
-                Expanded(
-                  child: Directionality(
+          return SingleChildScrollView(
+            child: Column(
+                children: <Widget>[
+                  _buildHeaderButtons(),
+                  const SizedBox(height: 20.0,),
+                  Directionality(
                     textDirection: TextDirection.ltr,
                     child: SfDataGridTheme(
                         data: SfDataGridThemeData(headerColor: Colors.blueAccent),
@@ -228,21 +228,21 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
                         )
                     ),
                   ),
-                ),
-                Container(
-                  height: dataPagerHeight,
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface.withOpacity(0.12),
-                      border: Border(
-                          top: BorderSide(
-                              width: .5,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurface
-                                  .withOpacity(0.12)))),
-                  child: Align(child: _buildDataPager()),
-                )
-              ],
+                  Container(
+                    height: dataPagerHeight,
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface.withOpacity(0.12),
+                        border: Border(
+                            top: BorderSide(
+                                width: .5,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurface
+                                    .withOpacity(0.12)))),
+                    child: Align(child: _buildDataPager()),
+                  )
+                ],
+            ),
           );
         }});
   }
