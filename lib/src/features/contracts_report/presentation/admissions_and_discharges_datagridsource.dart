@@ -1,3 +1,4 @@
+import 'package:adminnut4health/src/features/cases/domain/case.dart';
 import 'package:adminnut4health/src/features/contracts_report/domain/admissions_and_discharges_inform.dart';
 import 'package:adminnut4health/src/features/contracts_report/domain/case_full.dart';
 import 'package:flutter/material.dart';
@@ -212,9 +213,7 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
       for (var element in cases) {
         // ADMISIONES
         // Nuevos casos
-        if (element.myCase.admissionType == "Nouvelle admission" ||
-            element.myCase.admissionType == "Nueva admisión" ||
-            element.myCase.admissionType == "قبول جديد") {
+        if (element.myCase.admissionTypeServer == CaseType.newAdmission) {
           if (element.child == null || element.child!.childId == '') {
             inform[3].newAdmissions++;
           } else {
@@ -229,9 +228,7 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
         }
 
         // Readmisiones
-        if (element.myCase.admissionType == "Réadmission" ||
-            element.myCase.admissionType == "Readmisión" ||
-            element.myCase.admissionType == "إعادة القبو") {
+        if (element.myCase.admissionTypeServer == CaseType.reAdmission) {
           if (element.child == null || element.child!.childId == '') {
             inform[3].reAdmissions++;
           } else {
@@ -246,9 +243,7 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
         }
 
         // Referidos
-        if (element.myCase.admissionType == "Réferencement" ||
-            element.myCase.admissionType == "Referencia" ||
-            element.myCase.admissionType == "الإحالة") {
+        if (element.myCase.admissionTypeServer == CaseType.referred) {
           if (element.child == null || element.child!.childId == '') {
             inform[3].referredIn++;
           } else {
@@ -263,9 +258,7 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
         }
 
         // Transferidos
-        if (element.myCase.admissionType == "Transfer" ||
-            element.myCase.admissionType == "Transferencia" ||
-            element.myCase.admissionType == "التحويل") {
+        if (element.myCase.admissionTypeServer == CaseType.transfered) {
           if (element.child == null || element.child!.childId == '') {
             inform[3].transferedIn++;
           } else {
@@ -281,7 +274,7 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
 
         // ALTAS
         // Recuperados
-        if (element.myCase.closedReason == "Recovered"){
+        if (element.myCase.closedReason == CaseType.recovered){
           if (element.child == null || element.child!.childId == '') {
             inform[3].recovered++;
           } else {
@@ -296,7 +289,7 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
         }
 
         // Sin respuesta
-        if (element.myCase.closedReason == "Unresponsive"){
+        if (element.myCase.closedReason == CaseType.unresponsive){
           if (element.child == null || element.child!.childId == '') {
             inform[3].unresponsive++;
           } else {
@@ -311,7 +304,7 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
         }
 
         // Abandono
-        if (element.myCase.closedReason == "Abandonment"){
+        if (element.myCase.closedReason == CaseType.abandonment){
           if (element.child == null || element.child!.childId == '') {
             inform[3].abandonment++;
           } else {
@@ -326,7 +319,7 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
         }
 
         // Referidos
-        if (element.myCase.closedReason == "Referred"){
+        if (element.myCase.closedReason == CaseType.referred){
           if (element.child == null || element.child!.childId == '') {
             inform[3].referredOut++;
           } else {
@@ -341,7 +334,7 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
         }
 
         // Abandono
-        if (element.myCase.closedReason == "Transfered"){
+        if (element.myCase.closedReason == CaseType.transfered){
           if (element.child == null || element.child!.childId == '') {
             inform[3].transferedOut++;
           } else {

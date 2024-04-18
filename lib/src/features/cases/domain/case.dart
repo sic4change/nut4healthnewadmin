@@ -108,3 +108,17 @@ class Case extends Equatable {
     };
   }
 }
+
+class CaseType {
+  // admissionTypeServer
+  static String newAdmission = 'New Admission';
+  static String relapse = 'Relapse'; // TODO: Not using for now
+  static String reAdmission = 'Readmission';
+  // closedReason
+  static String recovered = 'Recovered';
+  static String unresponsive = 'Unresponsive';
+  static String abandonment = 'Abandonment';
+  // Both
+  static String referred = 'Referred';
+  static String transfered = 'Transfered';
+}
