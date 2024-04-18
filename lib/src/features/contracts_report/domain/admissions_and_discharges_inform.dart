@@ -33,6 +33,7 @@ class AdmissionsAndDischargesInform extends Equatable {
   int referredOut;
   int transferedOut;
   int totalDischarges() => recovered + unresponsive + abandonment + referredOut + transferedOut;
+  int totalAtTheEnd() => totalAttended() - totalDischarges();
 
   @override
   List<Object> get props => [

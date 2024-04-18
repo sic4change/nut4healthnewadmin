@@ -71,9 +71,9 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
   /// Translate names
   late String _category, _patientsAtBeginning, _newAdmissions, _reAdmissions, _referredIn,
       _transferedIn, _totalAdmissions, _totalAttended, _recovered, _unresponsive, _abandonment,
-      _referredOut, _transferedOut, _totalDischarges, _start, _end, _exportXLS, _exportPDF,
-      _total, _contracts, _selectCountry, _selectRegion, _selectLocation, _selectProvince,
-      _selectPointType, _selectPoint;
+      _referredOut, _transferedOut, _totalDischarges, _totalAtTheEnd, _start, _end,
+      _exportXLS, _exportPDF, _total, _contracts, _selectCountry, _selectRegion,
+      _selectLocation, _selectProvince, _selectPointType, _selectPoint;
 
   late Map<String, double> columnWidths = {
     'Categoría': 200,
@@ -90,6 +90,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
     'Referidos (Alta)': 200,
     'Transferidos (Alta)': 200,
     'TOTAL ALTAS': 200,
+    'TOTAL AL FINAL': 200,
   };
 
 
@@ -423,6 +424,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
         break;
     }
     return SfDataGrid(
+      frozenColumnsCount: 1,
       key: _key,
       source: mainInformDataGridSource,
       rowsPerPage: _rowsPerPage,
@@ -611,6 +613,18 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
               ),
             )
         ),
+        GridColumn(
+            columnName: 'TOTAL AL FINAL',
+            width: columnWidths['TOTAL AL FINAL']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _totalAtTheEnd,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
       ],
     );
   }
@@ -636,6 +650,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
     _referredOut = 'Referidos (Alta)';
     _transferedOut = 'Transferidos (Alta)';
     _totalDischarges = 'TOTAL ALTAS';
+    _totalAtTheEnd = 'TOTAL AL FINAL';
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';
     _total = 'Diagnósticos totales';

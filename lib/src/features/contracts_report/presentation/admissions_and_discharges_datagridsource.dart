@@ -36,6 +36,7 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
           DataGridCell<int>(columnName: 'Referidos (Alta)', value: mainInform.referredOut),
           DataGridCell<int>(columnName: 'Transferidos (Alta)', value: mainInform.transferedOut),
           DataGridCell<int>(columnName: 'TOTAL ALTAS', value: mainInform.totalDischarges()),
+          DataGridCell<int>(columnName: 'TOTAL AL FINAL', value: mainInform.totalAtTheEnd()),
         ]);
       }).toList();
     }
@@ -58,6 +59,7 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
       _buildStandardContainer(row.getCells()[11].value.toString()),
       _buildStandardContainer(row.getCells()[12].value.toString()),
       _buildStandardContainer(row.getCells()[13].value.toString()),
+      _buildStandardContainer(row.getCells()[14].value.toString()),
     ]);
   }
 
