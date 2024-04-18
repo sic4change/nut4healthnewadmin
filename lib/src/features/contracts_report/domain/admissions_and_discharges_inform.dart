@@ -10,18 +10,29 @@ class AdmissionsAndDischargesInform extends Equatable {
     required this.patientsAtBeginning,
     required this.newAdmissions,
     required this.reAdmissions,
-    required this.referred,
-    required this.transfered,
+    required this.referredIn,
+    required this.transferedIn,
+    required this.recovered,
+    required this.unresponsive,
+    required this.abandonment,
+    required this.referredOut,
+    required this.transferedOut,
   });
 
   final String category;
   int patientsAtBeginning;
   int newAdmissions;
   int reAdmissions;
-  int referred;
-  int transfered;
-  int totalAdmissions() => newAdmissions + reAdmissions + referred + transfered;
+  int referredIn;
+  int transferedIn;
+  int totalAdmissions() => newAdmissions + reAdmissions + referredIn + transferedIn;
   int totalAttended() => totalAdmissions() + patientsAtBeginning;
+  int recovered;
+  int unresponsive;
+  int abandonment;
+  int referredOut;
+  int transferedOut;
+  int totalDischarges() => recovered + unresponsive + abandonment + referredOut + transferedOut;
 
   @override
   List<Object> get props => [
@@ -29,8 +40,13 @@ class AdmissionsAndDischargesInform extends Equatable {
     patientsAtBeginning,
     newAdmissions,
     reAdmissions,
-    referred,
-    transfered,
+    referredIn,
+    transferedIn,
+    recovered,
+    unresponsive,
+    abandonment,
+    referredOut,
+    transferedOut,
   ];
 
   @override

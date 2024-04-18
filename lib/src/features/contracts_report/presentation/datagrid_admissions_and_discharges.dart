@@ -69,20 +69,27 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
 
 
   /// Translate names
-  late String _category, _patientsAtBeginning, _newAdmissions, _reAdmissions, _referred,
-      _transfered, _totalAdmissions, _totalAttended,
-      _start, _end, _exportXLS, _exportPDF, _total, _contracts, _selectCountry,
-      _selectRegion, _selectLocation, _selectProvince, _selectPointType, _selectPoint;
+  late String _category, _patientsAtBeginning, _newAdmissions, _reAdmissions, _referredIn,
+      _transferedIn, _totalAdmissions, _totalAttended, _recovered, _unresponsive, _abandonment,
+      _referredOut, _transferedOut, _totalDischarges, _start, _end, _exportXLS, _exportPDF,
+      _total, _contracts, _selectCountry, _selectRegion, _selectLocation, _selectProvince,
+      _selectPointType, _selectPoint;
 
   late Map<String, double> columnWidths = {
     'Categoría': 200,
     'Pacientes al inicio': 200,
     'Nuevos casos': 200,
     'Readmisiones': 200,
-    'Referidos': 200,
-    'Transferidos': 200,
+    'Referidos (Admisión)': 200,
+    'Transferidos (Admisión)': 200,
     'TOTAL ADMISIONES': 200,
     'TOTAL ATENDIDOS/AS': 200,
+    'Recuperados': 200,
+    'Sin respuesta': 200,
+    'Abandonos': 200,
+    'Referidos (Alta)': 200,
+    'Transferidos (Alta)': 200,
+    'TOTAL ALTAS': 200,
   };
 
 
@@ -485,25 +492,25 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
             )
         ),
         GridColumn(
-            columnName: 'Referidos',
-            width: columnWidths['Referidos']!,
+            columnName: 'Referidos (Admisión)',
+            width: columnWidths['Referidos (Admisión)']!,
             label: Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _referred,
+                _referredIn,
                 overflow: TextOverflow.ellipsis,
               ),
             )
         ),
         GridColumn(
-            columnName: 'Transferidos',
-            width: columnWidths['Transferidos']!,
+            columnName: 'Transferidos (Admisión)',
+            width: columnWidths['Transferidos (Admisión)']!,
             label: Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _transfered,
+                _transferedIn,
                 overflow: TextOverflow.ellipsis,
               ),
             )
@@ -532,6 +539,78 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
               ),
             )
         ),
+        GridColumn(
+            columnName: 'Recuperados',
+            width: columnWidths['Recuperados']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _recovered,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Sin respuesta',
+            width: columnWidths['Sin respuesta']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _unresponsive,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Abandonos',
+            width: columnWidths['Abandonos']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _abandonment,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Referidos (Alta)',
+            width: columnWidths['Referidos (Alta)']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _referredOut,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Transferidos (Alta)',
+            width: columnWidths['Transferidos (Alta)']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _transferedOut,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'TOTAL ALTAS',
+            width: columnWidths['TOTAL ALTAS']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _totalDischarges,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
       ],
     );
   }
@@ -547,10 +626,16 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
     _patientsAtBeginning = 'Pacientes al inicio';
     _newAdmissions = 'Nuevos casos';
     _reAdmissions = 'Readmisiones';
-    _referred = 'Referidos';
-    _transfered = 'Transferidos';
+    _referredIn = 'Referidos (Admisión)';
+    _transferedIn = 'Transferidos (Admisión)';
     _totalAdmissions = 'TOTAL ADMISIONES';
     _totalAttended = 'TOTAL ATENDIDOS/AS';
+    _recovered = 'Recuperados';
+    _unresponsive = 'Sin respuesta';
+    _abandonment = 'Abandonos';
+    _referredOut = 'Referidos (Alta)';
+    _transferedOut = 'Transferidos (Alta)';
+    _totalDischarges = 'TOTAL ALTAS';
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';
     _total = 'Diagnósticos totales';

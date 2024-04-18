@@ -26,10 +26,16 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
           DataGridCell<int>(columnName: 'Pacientes al inicio', value: mainInform.patientsAtBeginning),
           DataGridCell<int>(columnName: 'Nuevos casos', value: mainInform.newAdmissions),
           DataGridCell<int>(columnName: 'Readmisiones', value: mainInform.reAdmissions),
-          DataGridCell<int>(columnName: 'Referidos', value: mainInform.referred),
-          DataGridCell<int>(columnName: 'Transferidos', value: mainInform.transfered),
+          DataGridCell<int>(columnName: 'Referidos (Admisión)', value: mainInform.referredIn),
+          DataGridCell<int>(columnName: 'Transferidos (Admisión)', value: mainInform.transferedIn),
           DataGridCell<int>(columnName: 'TOTAL ADMISIONES', value: mainInform.totalAdmissions()),
           DataGridCell<int>(columnName: 'TOTAL ATENDIDOS/AS', value: mainInform.totalAttended()),
+          DataGridCell<int>(columnName: 'Recuperados', value: mainInform.recovered),
+          DataGridCell<int>(columnName: 'Sin respuesta', value: mainInform.unresponsive),
+          DataGridCell<int>(columnName: 'Abandono', value: mainInform.abandonment),
+          DataGridCell<int>(columnName: 'Referidos (Alta)', value: mainInform.referredOut),
+          DataGridCell<int>(columnName: 'Transferidos (Alta)', value: mainInform.transferedOut),
+          DataGridCell<int>(columnName: 'TOTAL ALTAS', value: mainInform.totalDischarges()),
         ]);
       }).toList();
     }
@@ -46,6 +52,12 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
       _buildStandardContainer(row.getCells()[5].value.toString()),
       _buildStandardContainer(row.getCells()[6].value.toString()),
       _buildStandardContainer(row.getCells()[7].value.toString()),
+      _buildStandardContainer(row.getCells()[8].value.toString()),
+      _buildStandardContainer(row.getCells()[9].value.toString()),
+      _buildStandardContainer(row.getCells()[10].value.toString()),
+      _buildStandardContainer(row.getCells()[11].value.toString()),
+      _buildStandardContainer(row.getCells()[12].value.toString()),
+      _buildStandardContainer(row.getCells()[13].value.toString()),
     ]);
   }
 
@@ -105,8 +117,13 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
           patientsAtBeginning: 0,
           newAdmissions: 0,
           reAdmissions: 0,
-          referred: 0,
-          transfered: 0,
+          referredIn: 0,
+          transferedIn: 0,
+          recovered: 0,
+          unresponsive: 0,
+          abandonment: 0,
+          referredOut: 0,
+          transferedOut: 0,
         )
     );
     inform.add(
@@ -115,8 +132,13 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
           patientsAtBeginning: 0,
           newAdmissions: 0,
           reAdmissions: 0,
-          referred: 0,
-          transfered: 0,
+          referredIn: 0,
+          transferedIn: 0,
+          recovered: 0,
+          unresponsive: 0,
+          abandonment: 0,
+          referredOut: 0,
+          transferedOut: 0,
         )
     );
     inform.add(
@@ -125,8 +147,13 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
           patientsAtBeginning: 0,
           newAdmissions: 0,
           reAdmissions: 0,
-          referred: 0,
-          transfered: 0,
+          referredIn: 0,
+          transferedIn: 0,
+          recovered: 0,
+          unresponsive: 0,
+          abandonment: 0,
+          referredOut: 0,
+          transferedOut: 0,
         )
     );
     inform.add(
@@ -135,8 +162,13 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
           patientsAtBeginning: 0,
           newAdmissions: 0,
           reAdmissions: 0,
-          referred: 0,
-          transfered: 0,
+          referredIn: 0,
+          transferedIn: 0,
+          recovered: 0,
+          unresponsive: 0,
+          abandonment: 0,
+          referredOut: 0,
+          transferedOut: 0,
         )
     );
     inform.add(
@@ -145,8 +177,13 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
           patientsAtBeginning: 0,
           newAdmissions: 0,
           reAdmissions: 0,
-          referred: 0,
-          transfered: 0,
+          referredIn: 0,
+          transferedIn: 0,
+          recovered: 0,
+          unresponsive: 0,
+          abandonment: 0,
+          referredOut: 0,
+          transferedOut: 0,
         )
     );
 
@@ -171,6 +208,7 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
 
     if (cases != null) {
       for (var element in cases) {
+        // ADMISIONES
         // Nuevos casos
         if (element.myCase.admissionType == "Nouvelle admission" ||
             element.myCase.admissionType == "Nueva admisión" ||
@@ -210,14 +248,14 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
             element.myCase.admissionType == "Referencia" ||
             element.myCase.admissionType == "الإحالة") {
           if (element.child == null || element.child!.childId == '') {
-            inform[3].referred++;
+            inform[3].referredIn++;
           } else {
             if (element.child?.sex == "Masculino" ||
                 element.child?.sex == "Homme" ||
                 element.child?.sex == "ذكر") {
-              inform[0].referred++;
+              inform[0].referredIn++;
             } else {
-              inform[1].referred++;
+              inform[1].referredIn++;
             }
           }
         }
@@ -227,17 +265,94 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
             element.myCase.admissionType == "Transferencia" ||
             element.myCase.admissionType == "التحويل") {
           if (element.child == null || element.child!.childId == '') {
-            inform[3].transfered++;
+            inform[3].transferedIn++;
           } else {
             if (element.child?.sex == "Masculino" ||
                 element.child?.sex == "Homme" ||
                 element.child?.sex == "ذكر") {
-              inform[0].transfered++;
+              inform[0].transferedIn++;
             } else {
-              inform[1].transfered++;
+              inform[1].transferedIn++;
             }
           }
         }
+
+        // ALTAS
+        // Recuperados
+        if (element.myCase.closedReason == "Recovered"){
+          if (element.child == null || element.child!.childId == '') {
+            inform[3].recovered++;
+          } else {
+            if (element.child?.sex == "Masculino" ||
+                element.child?.sex == "Homme" ||
+                element.child?.sex == "ذكر") {
+              inform[0].recovered++;
+            } else {
+              inform[1].recovered++;
+            }
+          }
+        }
+
+        // Sin respuesta
+        if (element.myCase.closedReason == "Unresponsive"){
+          if (element.child == null || element.child!.childId == '') {
+            inform[3].unresponsive++;
+          } else {
+            if (element.child?.sex == "Masculino" ||
+                element.child?.sex == "Homme" ||
+                element.child?.sex == "ذكر") {
+              inform[0].unresponsive++;
+            } else {
+              inform[1].unresponsive++;
+            }
+          }
+        }
+
+        // Abandono
+        if (element.myCase.closedReason == "Abandonment"){
+          if (element.child == null || element.child!.childId == '') {
+            inform[3].abandonment++;
+          } else {
+            if (element.child?.sex == "Masculino" ||
+                element.child?.sex == "Homme" ||
+                element.child?.sex == "ذكر") {
+              inform[0].abandonment++;
+            } else {
+              inform[1].abandonment++;
+            }
+          }
+        }
+
+        // Referidos
+        if (element.myCase.closedReason == "Referred"){
+          if (element.child == null || element.child!.childId == '') {
+            inform[3].referredOut++;
+          } else {
+            if (element.child?.sex == "Masculino" ||
+                element.child?.sex == "Homme" ||
+                element.child?.sex == "ذكر") {
+              inform[0].referredOut++;
+            } else {
+              inform[1].referredOut++;
+            }
+          }
+        }
+
+        // Abandono
+        if (element.myCase.closedReason == "Transfered"){
+          if (element.child == null || element.child!.childId == '') {
+            inform[3].transferedOut++;
+          } else {
+            if (element.child?.sex == "Masculino" ||
+                element.child?.sex == "Homme" ||
+                element.child?.sex == "ذكر") {
+              inform[0].transferedOut++;
+            } else {
+              inform[1].transferedOut++;
+            }
+          }
+        }
+
       }
     }
 
@@ -245,17 +360,25 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
     inform[2].patientsAtBeginning = inform[0].patientsAtBeginning + inform[1].patientsAtBeginning;
     inform[2].newAdmissions = inform[0].newAdmissions + inform[1].newAdmissions;
     inform[2].reAdmissions = inform[0].reAdmissions + inform[1].reAdmissions;
-    inform[2].referred = inform[0].referred + inform[1].referred;
-    inform[2].transfered = inform[0].transfered + inform[1].transfered;
-    inform[2].transfered = inform[0].transfered + inform[1].transfered;
+    inform[2].referredIn = inform[0].referredIn + inform[1].referredIn;
+    inform[2].transferedIn = inform[0].transferedIn + inform[1].transferedIn;
+    inform[2].recovered = inform[0].recovered + inform[1].recovered;
+    inform[2].unresponsive = inform[0].unresponsive + inform[1].unresponsive;
+    inform[2].abandonment = inform[0].abandonment + inform[1].abandonment;
+    inform[2].referredOut = inform[0].referredOut + inform[1].referredOut;
+    inform[2].transferedOut = inform[0].transferedOut + inform[1].transferedOut;
 
     // Total
     inform[4].patientsAtBeginning = inform[2].patientsAtBeginning + inform[3].patientsAtBeginning;
     inform[4].newAdmissions = inform[2].newAdmissions + inform[3].newAdmissions;
     inform[4].reAdmissions = inform[2].reAdmissions + inform[3].reAdmissions;
-    inform[4].referred = inform[2].referred + inform[3].referred;
-    inform[4].transfered = inform[2].transfered + inform[3].transfered;
-    inform[4].transfered = inform[2].transfered + inform[3].transfered;
+    inform[4].referredIn = inform[2].referredIn + inform[3].referredIn;
+    inform[4].transferedIn = inform[2].transferedIn + inform[3].transferedIn;
+    inform[4].recovered = inform[2].recovered + inform[3].recovered;
+    inform[4].unresponsive = inform[2].unresponsive + inform[3].unresponsive;
+    inform[4].abandonment = inform[2].abandonment + inform[3].abandonment;
+    inform[4].referredOut = inform[2].referredOut + inform[3].referredOut;
+    inform[4].transferedOut = inform[2].transferedOut + inform[3].transferedOut;
 
     _mainInforms = inform;
   }
