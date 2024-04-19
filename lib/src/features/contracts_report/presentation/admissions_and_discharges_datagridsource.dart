@@ -213,7 +213,7 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
       for (var element in cases) {
         // ADMISIONES
         // Nuevos casos
-        if (element.myCase.admissionTypeServer == CaseType.newAdmission) {
+        if (element.myCase.admissionTypeServer == CaseType.newAdmission || element.myCase.admissionTypeServer.isEmpty) {
           if (element.child == null || element.child!.childId == '') {
             inform[3].newAdmissions++;
           } else {

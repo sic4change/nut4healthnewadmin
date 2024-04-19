@@ -66,7 +66,7 @@ class Case extends Equatable {
     final chefValidation = data['chefValidation']?? false;
     final regionalValidation = data['regionalValidation']?? false;
     final admissionType = data['admissionType']?? "";
-    final admissionTypeServer = data['admissionTypeServer']?? "";
+    final admissionTypeServer = data['admissionTypeServer']?? "null";
     // Si closedReason es NULL lo escribimos como null para distinguirlo de las que vienen cadenas vacías del servidor
     final closedReason = data['closedReason']?? "null";
 
