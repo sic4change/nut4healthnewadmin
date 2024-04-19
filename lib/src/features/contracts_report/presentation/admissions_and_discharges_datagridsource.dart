@@ -45,23 +45,17 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
-    return DataGridRowAdapter(cells: <Widget>[
-      _buildStandardContainer(row.getCells()[0].value.toString()),
-      _buildStandardContainer(row.getCells()[1].value.toString()),
-      _buildStandardContainer(row.getCells()[2].value.toString()),
-      _buildStandardContainer(row.getCells()[3].value.toString()),
-      _buildStandardContainer(row.getCells()[4].value.toString()),
-      _buildStandardContainer(row.getCells()[5].value.toString()),
-      _buildStandardContainer(row.getCells()[6].value.toString()),
-      _buildStandardContainer(row.getCells()[7].value.toString()),
-      _buildStandardContainer(row.getCells()[8].value.toString()),
-      _buildStandardContainer(row.getCells()[9].value.toString()),
-      _buildStandardContainer(row.getCells()[10].value.toString()),
-      _buildStandardContainer(row.getCells()[11].value.toString()),
-      _buildStandardContainer(row.getCells()[12].value.toString()),
-      _buildStandardContainer(row.getCells()[13].value.toString()),
-      _buildStandardContainer(row.getCells()[14].value.toString()),
-    ]);
+    final rowColor = row.getCells()[0].value.toString().contains("Total")? Colors.grey.withOpacity(0.3):
+        row.getCells()[0].value.toString().contains("Subtotal")? Colors.grey.withOpacity(0.15): Colors.white;
+    final textStyle = row.getCells()[0].value.toString().contains("Total")? const TextStyle(fontWeight: FontWeight.bold):
+    row.getCells()[0].value.toString().contains("Subtotal")? const TextStyle(fontWeight: FontWeight.w600): const TextStyle();
+    
+    return DataGridRowAdapter(
+        cells: row.getCells().map((c) =>
+            _buildStandardContainer(c.value.toString(), textStyle)
+        ).toList(),
+        color: rowColor
+    );
   }
 
   // Overrides
@@ -80,11 +74,11 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
     );
   }
 
-  Widget _buildStandardContainer(String value) {
+  Widget _buildStandardContainer(String value, TextStyle textStyle) {
     return Container(
       padding: const EdgeInsets.all(8.0),
       alignment: Alignment.centerLeft,
-      child: Text(value),
+      child: Text(value, style: textStyle),
     );
   }
 

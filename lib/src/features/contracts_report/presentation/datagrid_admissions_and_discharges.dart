@@ -248,7 +248,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
                                     .onSurface
                                     .withOpacity(0.12)))),
                     child: Align(child: _buildDataPager()),
-                  )
+                  ),
                 ],
             ),
           );
@@ -428,8 +428,9 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
       key: _key,
       source: mainInformDataGridSource,
       rowsPerPage: _rowsPerPage,
-      tableSummaryRows: _getTableSummaryRows(),
+      //tableSummaryRows: _getTableSummaryRows(),
       allowColumnsResizing: true,
+      shrinkWrapRows: true,
       onColumnResizeUpdate: (ColumnResizeUpdateDetails details) {
         setState(() {
           columnWidths[details.column.columnName] = details.width;
@@ -625,6 +626,20 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
               ),
             )
         ),
+      ],
+      stackedHeaderRows: <StackedHeaderRow>[
+        StackedHeaderRow(cells: [
+          StackedHeaderCell(
+              columnNames: ['Nuevos casos', 'Readmisiones', 'Referidos (Admisión)', 'Transferidos (Admisión)', 'TOTAL ADMISIONES'],
+              child: Container(
+                  //color: const Color(0xFFF1F1F1),
+                  child: Center(child: Text('ADMISIONES', style: TextStyle(fontWeight: FontWeight.bold),)))),
+          StackedHeaderCell(
+              columnNames: ['Recuperados', 'Sin respuesta', 'Abandonos', 'Referidos (Alta)', 'Transferidos (Alta)', 'TOTAL ALTAS'],
+              child: Container(
+                  //color: const Color(0xFFF1F1F1),
+                  child: Center(child: Text('ALTAS', style: TextStyle(fontWeight: FontWeight.bold),)))),
+        ]),
       ],
     );
   }
