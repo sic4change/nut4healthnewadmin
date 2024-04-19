@@ -109,7 +109,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
   List<Province> provinces = <Province>[];
   Province? provinceSelected;
 
-  final pointTypes =  ["CRENAM", "CRENAS", "CRENI", "Otro"];
+  final pointTypes =  ["TODOS", "CRENAM", "CRENAS", "CRENI", "Otro"];
   String? pointTypeSelected;
 
   List<Point> points = <Point>[];
@@ -702,7 +702,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
               regionSelected?.regionId??"",
               locationSelected?.locationId??"",
               provinceSelected?.provinceId??"",
-              pointTypeSelected??"",
+              pointTypeSelected == "TODOS"?"": (pointTypeSelected??""),
           );
           final pointsAsyncValue = ref.watch(pointsByLocationStreamProvider(pointFilter));
           if (pointsAsyncValue.value != null) {
@@ -716,7 +716,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
               regionSelected?.regionId??"",
               locationSelected?.locationId??"",
               provinceSelected?.provinceId??"",
-              pointTypeSelected??"",
+              pointTypeSelected == "TODOS"?"": (pointTypeSelected??""),
               pointSelected?.pointId??"",
           );
           casesAsyncValue = ref.watch(casesByDateAndLocationStreamProvider(casesFilters));
@@ -727,7 +727,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
             regionSelected?.regionId??"",
             locationSelected?.locationId??"",
             provinceSelected?.provinceId??"",
-            pointTypeSelected??"",
+            pointTypeSelected == "TODOS"?"": (pointTypeSelected??""),
             pointSelected?.pointId??"",
           );
           openCasesBeforeStartDateAsyncValue = ref.watch(openCasesBeforeStartDateStreamProvider(openCasesFilters));
@@ -1076,13 +1076,13 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
   Widget _buildPointPicker() {
     switch (model.locale.toString()) {
       case 'es_ES':
-        _selectPoint = 'Selecciona un punto';
+        _selectPoint = 'Selecciona un centro';
         break;
       case 'fr_FR':
-        _selectPoint = 'Sélectionnez un place';
+        _selectPoint = 'Sélectionnez un centre';
         break;
       default:
-        _selectPoint = 'Select point';
+        _selectPoint = 'Select centre';
         break;
     }
 
