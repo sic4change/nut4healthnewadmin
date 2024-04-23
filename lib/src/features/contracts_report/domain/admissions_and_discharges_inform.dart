@@ -10,6 +10,7 @@ class AdmissionsAndDischargesInform extends Equatable {
     required this.patientsAtBeginning,
     required this.newAdmissions,
     required this.reAdmissions,
+    required this.relapses,
     required this.referredIn,
     required this.transferedIn,
     required this.recovered,
@@ -23,9 +24,10 @@ class AdmissionsAndDischargesInform extends Equatable {
   int patientsAtBeginning;
   int newAdmissions;
   int reAdmissions;
+  int relapses;
   int referredIn;
   int transferedIn;
-  int totalAdmissions() => newAdmissions + reAdmissions + referredIn + transferedIn;
+  int totalAdmissions() => newAdmissions + reAdmissions + relapses + referredIn + transferedIn;
   int totalAttended() => totalAdmissions() + patientsAtBeginning;
   int recovered;
   int unresponsive;
@@ -41,6 +43,7 @@ class AdmissionsAndDischargesInform extends Equatable {
     patientsAtBeginning,
     newAdmissions,
     reAdmissions,
+    relapses,
     referredIn,
     transferedIn,
     recovered,

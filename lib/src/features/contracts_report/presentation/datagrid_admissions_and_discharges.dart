@@ -69,17 +69,19 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
 
 
   /// Translate names
-  late String _category, _patientsAtBeginning, _newAdmissions, _reAdmissions, _referredIn,
-      _transferedIn, _totalAdmissions, _totalAttended, _recovered, _unresponsive, _abandonment,
-      _referredOut, _transferedOut, _totalDischarges, _totalAtTheEnd, _start, _end,
-      _exportXLS, _exportPDF, _total, _contracts, _selectCountry, _selectRegion,
-      _selectLocation, _selectProvince, _selectPointType, _selectPoint;
+  late String _category, _patientsAtBeginning, _newAdmissions, _reAdmissions,
+      _relapses, _referredIn, _transferedIn, _totalAdmissions, _totalAttended,
+      _recovered, _unresponsive, _abandonment, _referredOut, _transferedOut,
+      _totalDischarges, _totalAtTheEnd, _start, _end, _exportXLS, _exportPDF,
+      _total, _contracts, _selectCountry, _selectRegion, _selectLocation,
+      _selectProvince, _selectPointType, _selectPoint;
 
   late Map<String, double> columnWidths = {
     'Categoría': 200,
     'Pacientes al inicio': 200,
     'Nuevos casos': 200,
     'Readmisiones': 200,
+    'Recaídas': 200,
     'Referidos (Admisión)': 200,
     'Transferidos (Admisión)': 200,
     'TOTAL ADMISIONES': 200,
@@ -499,6 +501,18 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
             )
         ),
         GridColumn(
+            columnName: 'Recaídas',
+            width: columnWidths['Recaídas']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _relapses,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
             columnName: 'Referidos (Admisión)',
             width: columnWidths['Referidos (Admisión)']!,
             label: Container(
@@ -634,7 +648,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
       stackedHeaderRows: <StackedHeaderRow>[
         StackedHeaderRow(cells: [
           StackedHeaderCell(
-              columnNames: ['Nuevos casos', 'Readmisiones', 'Referidos (Admisión)', 'Transferidos (Admisión)', 'TOTAL ADMISIONES'],
+              columnNames: ['Nuevos casos', 'Readmisiones', 'Referidos (Admisión)', 'Recaídas', 'Transferidos (Admisión)', 'TOTAL ADMISIONES'],
               child: Container(
                   //color: const Color(0xFFF1F1F1),
                   child: Center(child: Text('ADMISIONES', style: TextStyle(fontWeight: FontWeight.bold),)))),
@@ -659,6 +673,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
     _patientsAtBeginning = 'Pacientes al inicio';
     _newAdmissions = 'Nuevos casos';
     _reAdmissions = 'Readmisiones';
+    _relapses = 'Recaídas';
     _referredIn = 'Referidos (Admisión)';
     _transferedIn = 'Transferidos (Admisión)';
     _totalAdmissions = 'TOTAL ADMISIONES';

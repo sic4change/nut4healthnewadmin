@@ -27,6 +27,7 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
           DataGridCell<int>(columnName: 'Pacientes al inicio', value: mainInform.patientsAtBeginning),
           DataGridCell<int>(columnName: 'Nuevos casos', value: mainInform.newAdmissions),
           DataGridCell<int>(columnName: 'Readmisiones', value: mainInform.reAdmissions),
+          DataGridCell<int>(columnName: 'Recaídas', value: mainInform.relapses),
           DataGridCell<int>(columnName: 'Referidos (Admisión)', value: mainInform.referredIn),
           DataGridCell<int>(columnName: 'Transferidos (Admisión)', value: mainInform.transferedIn),
           DataGridCell<int>(columnName: 'TOTAL ADMISIONES', value: mainInform.totalAdmissions()),
@@ -114,6 +115,7 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
           patientsAtBeginning: 0,
           newAdmissions: 0,
           reAdmissions: 0,
+          relapses: 0,
           referredIn: 0,
           transferedIn: 0,
           recovered: 0,
@@ -129,6 +131,7 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
           patientsAtBeginning: 0,
           newAdmissions: 0,
           reAdmissions: 0,
+          relapses: 0,
           referredIn: 0,
           transferedIn: 0,
           recovered: 0,
@@ -144,6 +147,7 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
           patientsAtBeginning: 0,
           newAdmissions: 0,
           reAdmissions: 0,
+          relapses: 0,
           referredIn: 0,
           transferedIn: 0,
           recovered: 0,
@@ -159,6 +163,7 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
           patientsAtBeginning: 0,
           newAdmissions: 0,
           reAdmissions: 0,
+          relapses: 0,
           referredIn: 0,
           transferedIn: 0,
           recovered: 0,
@@ -174,6 +179,7 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
           patientsAtBeginning: 0,
           newAdmissions: 0,
           reAdmissions: 0,
+          relapses: 0,
           referredIn: 0,
           transferedIn: 0,
           recovered: 0,
@@ -232,6 +238,21 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
               inform[0].reAdmissions++;
             } else {
               inform[1].reAdmissions++;
+            }
+          }
+        }
+
+        // Recaídas
+        if (element.myCase.admissionTypeServer == CaseType.relapse) {
+          if (element.child == null || element.child!.childId == '') {
+            inform[3].relapses++;
+          } else {
+            if (element.child?.sex == "Masculino" ||
+                element.child?.sex == "Homme" ||
+                element.child?.sex == "ذكر") {
+              inform[0].relapses++;
+            } else {
+              inform[1].relapses++;
             }
           }
         }
@@ -349,6 +370,7 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
     inform[2].patientsAtBeginning = inform[0].patientsAtBeginning + inform[1].patientsAtBeginning;
     inform[2].newAdmissions = inform[0].newAdmissions + inform[1].newAdmissions;
     inform[2].reAdmissions = inform[0].reAdmissions + inform[1].reAdmissions;
+    inform[2].relapses = inform[0].relapses + inform[1].relapses;
     inform[2].referredIn = inform[0].referredIn + inform[1].referredIn;
     inform[2].transferedIn = inform[0].transferedIn + inform[1].transferedIn;
     inform[2].recovered = inform[0].recovered + inform[1].recovered;
@@ -361,6 +383,7 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
     inform[4].patientsAtBeginning = inform[2].patientsAtBeginning + inform[3].patientsAtBeginning;
     inform[4].newAdmissions = inform[2].newAdmissions + inform[3].newAdmissions;
     inform[4].reAdmissions = inform[2].reAdmissions + inform[3].reAdmissions;
+    inform[4].relapses = inform[2].relapses + inform[3].relapses;
     inform[4].referredIn = inform[2].referredIn + inform[3].referredIn;
     inform[4].transferedIn = inform[2].transferedIn + inform[3].transferedIn;
     inform[4].recovered = inform[2].recovered + inform[3].recovered;
