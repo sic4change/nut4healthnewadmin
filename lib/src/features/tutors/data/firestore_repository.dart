@@ -110,13 +110,7 @@ class FirestoreRepository {
             points.map((point) => MapEntry(point.pointId, point)),
           );
           return tutors.map((tutor) {
-              final Point point = pointMap[tutor.pointId] ??
-                  const Point(pointId: "", name: "",  pointName: "", pointCode: "",
-                      fullName: "", type: "", country: "", regionId: '', location: "",
-                      active: false, province: "",  phoneCode: "", phoneLength: 0,
-                      latitude: 0.0, longitude: 0.0, language: "", cases: 0,
-                      casesnormopeso: 0, casesmoderada: 0, casessevera: 0,
-                      transactionHash: "");
+              final Point point = pointMap[tutor.pointId] ?? Point.getEmptyPoint();
               return TutorWithPoint(tutor, point);
             }).toList();
         });
@@ -131,13 +125,7 @@ class FirestoreRepository {
             points.map((point) => MapEntry(point.pointId, point)),
           );
           return tutors.map((tutor) {
-              final Point point = pointMap[tutor.pointId] ??
-                  const Point(pointId: "", name: "", pointName: "", pointCode: "",
-                      fullName: "", type: "", country: "", regionId: '', location: "",
-                      active: false, province: "",  phoneCode: "", phoneLength: 0,
-                      latitude: 0.0, longitude: 0.0, language: "", cases: 0,
-                      casesnormopeso: 0, casesmoderada: 0, casessevera: 0,
-                      transactionHash: "");
+              final Point point = pointMap[tutor.pointId] ?? Point.getEmptyPoint();
               return TutorWithPoint(tutor, point);
             }).toList();
         });

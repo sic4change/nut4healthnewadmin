@@ -113,7 +113,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
   String? pointTypeSelected;
 
   List<Point> points = <Point>[];
-  Point? pointSelected;
+  List<Point> pointsSelected = [];
 
   Widget getLocationWidget(String location) {
     return Row(
@@ -171,7 +171,11 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
       return;
     } else {
       this.points.clear();
-      this.points.add(Point.getPointAll());
+      var pointAll = Point.getPointAll();
+      if (pointsSelected.where((element) => element.name == "TODOS").isNotEmpty) {
+        pointAll.isSelected = true;
+      }
+      this.points.add(pointAll);
       this.points.addAll(points.value!);
     }
   }
@@ -732,7 +736,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
               locationSelected?.locationId??"",
               provinceSelected?.provinceId??"",
               pointTypeSelected == "TODOS"?"": (pointTypeSelected??""),
-              pointSelected?.pointId??"",
+              pointsSelected,
           );
           casesAsyncValue = ref.watch(casesByDateAndLocationStreamProvider(casesFilters));
 
@@ -743,7 +747,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
             locationSelected?.locationId??"",
             provinceSelected?.provinceId??"",
             pointTypeSelected == "TODOS"?"": (pointTypeSelected??""),
-            pointSelected?.pointId??"",
+            pointsSelected,
           );
           openCasesBeforeStartDateAsyncValue = ref.watch(openCasesBeforeStartDateStreamProvider(openCasesFilters));
 
@@ -849,7 +853,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
                           regionSelected = null;
                           locationSelected = null;
                           provinceSelected = null;
-                          pointSelected = null;
+                          pointsSelected.clear();
                         });
                       }),
                 ],
@@ -907,7 +911,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
                           regionSelected = regions.firstWhere((r) => r.name == value);
                           locationSelected = null;
                           provinceSelected = null;
-                          pointSelected = null;
+                          pointsSelected.clear();
                         });
                       }),
                 ],
@@ -964,7 +968,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
                         setState(() {
                           locationSelected = locations.firstWhere((l) => l.name == value);
                           provinceSelected = null;
-                          pointSelected = null;
+                          pointsSelected.clear();
                         });
                       }),
                 ],
@@ -1020,7 +1024,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
                       onChanged: (dynamic value) {
                         setState(() {
                           provinceSelected = provinces.firstWhere((p) => p.name == value);
-                          pointSelected = null;
+                          pointsSelected.clear();
                         });
                       }),
                 ],
@@ -1076,7 +1080,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
                       onChanged: (dynamic value) {
                         setState(() {
                           pointTypeSelected = value;
-                          pointSelected = null;
+                          pointsSelected.clear();
                         });
                       }),
                 ],
@@ -1091,56 +1095,58 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
   Widget _buildPointPicker() {
     switch (model.locale.toString()) {
       case 'es_ES':
-        _selectPoint = 'Selecciona un centro';
+        _selectPoint = 'Selecciona centro/s';
         break;
       case 'fr_FR':
-        _selectPoint = 'Sélectionnez un centre';
+        _selectPoint = 'Sélectionnez le(s) centre(s)';
         break;
       default:
-        _selectPoint = 'Select centre';
+        _selectPoint = 'Select center/s';
         break;
     }
 
-    return Column(children: <Widget>[
-      Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: Card(
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(3.0),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
-            child: SizedBox(
-              height: 50,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  DropdownButton<String>(
-                      focusColor: Colors.transparent,
-                      underline:
-                      Container(color: const Color(0xFFBDBDBD), height: 1),
-                      value: pointSelected?.name,
-                      hint: Text(_selectPoint),
-                      items: points.map((Point p) {
-                        return DropdownMenuItem<String>(
-                            value: p.name,
-                            child: Text(p.name,
-                                style: TextStyle(color: model.textColor)));
-                      }).toList(),
-                      onChanged: (dynamic value) {
-                        setState(() {
-                          pointSelected = points.firstWhere((p) => p.name == value);
-                        });
-                      }),
-                ],
+    return MenuAnchor(
+      menuChildren: points.map((p) =>
+          CheckboxMenuButton(
+            value: p.isSelected,
+            onChanged: (bool? value) {
+              setState(() {
+                p.isSelected = value?? false;
+                if (p.name == 'TODOS') {
+                  for (var element in points) {element.isSelected = value??false;}
+                }
+                pointsSelected = points.where((element) => element.isSelected).toList();
+              });
+            },
+            child: Text(p.name, style: TextStyle(color: model.textColor)),
+          )).toList(),
+      builder: (BuildContext context, MenuController controller,
+          Widget? child) {
+        return Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Card(
+            elevation: 2,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(3.0),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
+              child: SizedBox(
+                height: 50,
+                child: TextButton(
+                  onPressed: () {
+                    if (!controller.isOpen) {
+                      controller.open();
+                    }
+                  },
+                  child: Text(_selectPoint, style: TextStyle(color: model.textColor)),
+                ),
               ),
             ),
           ),
-        ),
-      ),
-    ]);
+        );
+      },
+    );
   }
 }
 

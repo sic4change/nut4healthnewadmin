@@ -310,17 +310,14 @@ class FirestoreRepository {
 
   Stream<List<CaseFull>> watchCasesByDateAndLocation(int start, int end,
       String countryId, String regionId, String locationId, String provinceId,
-      String pointType, String pointId) {
+      String pointType, List<Point> points) {
     final emptyPoint = Point.getEmptyPoint();
     final emptyChild = Child.getEmptyChild();
 
-    return CombineLatestStream.combine3(
+    return CombineLatestStream.combine2(
         watchCasesByDate(start, end),
         watchChilds(),
-        watchPointsByLocationAndPoint(countryId: countryId, regionId: regionId,
-            locationId: locationId, provinceId: provinceId, pointType: pointType,
-            pointId: pointId),
-            (List<Case> cases, List<Child> childs, List<Point> points) {
+            (List<Case> cases, List<Child> childs) {
           var casesList = cases.map((myCase) {
             final Map<String, Child> childMap = Map.fromEntries(
               childs.map((child) => MapEntry(child.childId, child)),
@@ -340,17 +337,14 @@ class FirestoreRepository {
   }
 
   Stream<List<CaseFull>> watchOpenCasesByLocationBeforeDate(int start, String countryId,
-      String regionId, String locationId, String provinceId, String pointType, String pointId) {
+      String regionId, String locationId, String provinceId, String pointType, List<Point> points) {
     final emptyPoint = Point.getEmptyPoint();
     final emptyChild = Child.getEmptyChild();
 
-    return CombineLatestStream.combine3(
+    return CombineLatestStream.combine2(
         _watchOpenCasesBeforeDate(start),
         watchChilds(),
-        watchPointsByLocationAndPoint(countryId: countryId, regionId: regionId,
-            locationId: locationId, provinceId: provinceId, pointType: pointType,
-            pointId: pointId),
-            (List<Case> cases, List<Child> childs, List<Point> points) {
+            (List<Case> cases, List<Child> childs) {
           var casesList = cases.map((myCase) {
             final Map<String, Child> childMap = Map.fromEntries(
               childs.map((child) => MapEntry(child.childId, child)),
@@ -668,7 +662,7 @@ final visitWithChildAndCommunityCrenamPoinStreamProvider = StreamProvider.family
 });
 
 final casesByDateAndLocationStreamProvider = StreamProvider.family.autoDispose<List<CaseFull>,
-    Tuple8<int, int, String, String, String, String, String, String>>((ref, range) {
+    Tuple8<int, int, String, String, String, String, String, List<Point>>>((ref, range) {
   final user = ref.watch(authStateChangesProvider).value;
   if (user == null) {
     throw AssertionError('User can\'t be null');
@@ -682,13 +676,13 @@ final casesByDateAndLocationStreamProvider = StreamProvider.family.autoDispose<L
   final locationId = range.value5;
   final provinceId = range.value6;
   final pointType = range.value7;
-  final pointId = range.value8;
+  final points = range.value8;
 
-  return database.watchCasesByDateAndLocation(start, end, countryId, regionId, locationId, provinceId, pointType, pointId);
+  return database.watchCasesByDateAndLocation(start, end, countryId, regionId, locationId, provinceId, pointType, points);
 });
 
 final openCasesBeforeStartDateStreamProvider = StreamProvider.family.autoDispose<List<CaseFull>,
-    Tuple7<int, String, String, String, String, String, String>>((ref, range) {
+    Tuple7<int, String, String, String, String, String, List<Point>>>((ref, range) {
   final user = ref.watch(authStateChangesProvider).value;
   if (user == null) {
     throw AssertionError('User can\'t be null');
@@ -701,9 +695,9 @@ final openCasesBeforeStartDateStreamProvider = StreamProvider.family.autoDispose
   final locationId = range.value4;
   final provinceId = range.value5;
   final pointType = range.value6;
-  final pointId = range.value7;
+  final points = range.value7;
 
-  return database.watchOpenCasesByLocationBeforeDate(start, countryId, regionId, locationId, provinceId, pointType, pointId);
+  return database.watchOpenCasesByLocationBeforeDate(start, countryId, regionId, locationId, provinceId, pointType, points);
 });
 
 final countriesStreamProvider = StreamProvider.autoDispose<List<Country>>((ref) {

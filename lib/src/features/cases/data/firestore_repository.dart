@@ -140,29 +140,7 @@ class FirestoreRepository {
             );
 
             return myCases.map((myCase) {
-                final point = pointMap[myCase.pointId] ?? const Point(
-                    pointId: "",
-                    name: "",
-                    pointName: "",
-                    pointCode: "",
-                    fullName: "",
-                    type: "",
-                    active: false,
-                    country: "",
-                    regionId: '',
-                    location: "",
-                    province: "",
-                    phoneCode: "",
-                    phoneLength: 0,
-                    latitude: 0.0,
-                    longitude: 0.0,
-                    language: "",
-                    cases: 0,
-                    casesnormopeso: 0,
-                    casesmoderada: 0,
-                    casessevera: 0,
-                    transactionHash: "",
-                );
+                final point = pointMap[myCase.pointId] ?? Point.getEmptyPoint();
 
                 final child = childMap[myCase.childId] ?? Child(
                   childId: "",
@@ -230,29 +208,7 @@ class FirestoreRepository {
             );
 
             return myCases.map((myCase) {
-                final point = pointMap[myCase.pointId] ?? const Point(
-                    pointId: "",
-                    name: "",
-                    fullName: "",
-                    pointName: "",
-                    pointCode: "",
-                    type: "",
-                    active: false,
-                    country: "",
-                    regionId: '',
-                    location: "",
-                    province: "",
-                    phoneCode: "",
-                    phoneLength: 0,
-                    latitude: 0.0,
-                    longitude: 0.0,
-                    language: "",
-                    cases: 0,
-                    casesnormopeso: 0,
-                    casesmoderada: 0,
-                    casessevera: 0,
-                    transactionHash: "",
-                );
+                final point = pointMap[myCase.pointId] ?? Point.getEmptyPoint();
 
                 final child = childMap[myCase.childId] ?? Child(
                   childId: "",

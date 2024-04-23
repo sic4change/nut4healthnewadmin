@@ -141,30 +141,7 @@ class FirestoreRepository {
                     hash: "",
                   );
 
-              final Point point = pointMap[user.point]??
-                  const Point(
-                    pointId: "",
-                    name: "",
-                    pointName: "",
-                    pointCode: "",
-                    fullName: "",
-                    type: "",
-                    active: false,
-                    country: "",
-                    regionId: '',
-                    location: "",
-                    province: "",
-                    phoneCode: "",
-                    phoneLength: 0,
-                    latitude: 0.0,
-                    longitude: 0.0,
-                    language: "",
-                    cases: 0,
-                    casesnormopeso: 0,
-                    casesmoderada: 0,
-                    casessevera: 0,
-                    transactionHash: "",
-                  );
+              final Point point = pointMap[user.point]?? Point.getEmptyPoint();
 
               final Region region = regionMap[user.regionId]??
                 const Region(regionId: '', name: '', countryId: '', active: false);

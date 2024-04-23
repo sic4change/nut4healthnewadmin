@@ -47,11 +47,7 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
   late SfCartesianChart columnChart, splineChart;
   late List<ChartSampleData>  splineSeriesData;
   List<Point> points = <Point>[];
-  Point pointSelected = const Point(pointId: '', name: '', pointName: "", pointCode: "",
-      fullName: '', type: '', country: '', regionId: '', location: '', province: '', phoneCode: '',
-      phoneLength: 0, active: false, latitude: 0.0, longitude: 0.0,
-      language: "", cases: 0, casesnormopeso: 0, casesmoderada: 0,
-      casessevera: 0, transactionHash: "");
+  Point pointSelected = Point.getEmptyPoint();
   bool enableDeferredUpdate = true;
 
   var currentUserRole = "";

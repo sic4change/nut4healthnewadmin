@@ -7,7 +7,7 @@ typedef PointID = String;
 @immutable
 class Point extends Equatable {
 
-  const Point({required this.pointId, required this.name, required this.fullName,
+  Point({required this.pointId, required this.name, required this.fullName,
     required this.pointName, required this.pointCode, required this.type,
     required this.country, required this.regionId, required this.location, required this.province,
     required this.phoneCode, required this.phoneLength, required this.active, required this.latitude,
@@ -35,6 +35,7 @@ class Point extends Equatable {
   final int casesmoderada;
   final int casessevera;
   final String transactionHash;
+  bool isSelected = false;
 
   @override
   List<Object> get props => [pointId, name, fullName, pointName, pointCode, type,
@@ -122,7 +123,7 @@ class Point extends Equatable {
   }
 
   static Point getEmptyPoint() {
-    return const Point(pointId: '',
+    return Point(pointId: '',
         name: '',
         pointName: "",
         pointCode: "",
@@ -146,7 +147,7 @@ class Point extends Equatable {
   }
 
   static Point getPointAll() {
-    return const Point(pointId: '',
+    return Point(pointId: '',
         name: 'TODOS',
         pointName: "",
         pointCode: "",
