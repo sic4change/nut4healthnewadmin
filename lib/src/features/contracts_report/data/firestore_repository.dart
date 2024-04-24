@@ -247,30 +247,39 @@ class FirestoreRepository {
     return visits;
   }
 
-  Stream<List<Case>> watchCasesByDate(int start, int end) {
+  Stream<List<Case>> watchCases() {
     Stream<List<Case>> cases =  _dataSource.watchCollection(
       path: FirestorePath.cases(),
       builder: (data, documentId) => Case.fromMap(data, documentId),
-      queryBuilder: (query) {
-        query = query.where('createdate', isGreaterThanOrEqualTo: DateTime.fromMillisecondsSinceEpoch(start))
-            .where('createdate', isLessThanOrEqualTo: DateTime.fromMillisecondsSinceEpoch(end));
-        return query;
-      },
     );
     return cases;
   }
 
-  Stream<List<Case>> _watchOpenCasesBeforeDate(int start) {
-    Stream<List<Case>> cases =  _dataSource.watchCollection(
-      path: FirestorePath.cases(),
-      builder: (data, documentId) => Case.fromMap(data, documentId),
-      queryBuilder: (query) {
-        query = query.where('createdate', isLessThanOrEqualTo: DateTime.fromMillisecondsSinceEpoch(start))
-            .where('closedReason', isEqualTo: "");
-        return query;
-      },
-    );
-    return cases;
+  Stream<List<CaseFull>> watchCasesByLocation(String countryId, String regionId, String locationId, String provinceId,
+      String pointType, List<Point> points) {
+    final emptyPoint = Point.getEmptyPoint();
+    final emptyChild = Child.getEmptyChild();
+
+    return CombineLatestStream.combine2(
+        watchCases(),
+        watchChilds(),
+            (List<Case> cases, List<Child> childs) {
+          var casesList = cases.map((myCase) {
+            final Map<String, Child> childMap = Map.fromEntries(
+              childs.map((child) => MapEntry(child.childId, child)),
+            );
+            final child = childMap[myCase.childId] ?? emptyChild;
+            final Map<String, Point> pointMap = Map.fromEntries(
+              points.map((point) => MapEntry(point.pointId, point)),
+            );
+            final point = pointMap[myCase.pointId] ?? emptyPoint;
+            return CaseFull(myCase, point, child);
+          }).where((item) =>
+          item.point != emptyPoint
+          ).toList();
+
+          return casesList;
+        });
   }
 
   Stream<List<VisitWithChildAndPoint>> watchVisitWithChildAndCommunityCrenamPoint(int start, int end, String countryId, String regionId) {
@@ -305,61 +314,6 @@ class FirestoreRepository {
           });
 
           return oldestVisits;
-        });
-  }
-
-  Stream<List<CaseFull>> watchCasesByDateAndLocation(int start, int end,
-      String countryId, String regionId, String locationId, String provinceId,
-      String pointType, List<Point> points) {
-    final emptyPoint = Point.getEmptyPoint();
-    final emptyChild = Child.getEmptyChild();
-
-    return CombineLatestStream.combine2(
-        watchCasesByDate(start, end),
-        watchChilds(),
-            (List<Case> cases, List<Child> childs) {
-          var casesList = cases.map((myCase) {
-            final Map<String, Child> childMap = Map.fromEntries(
-              childs.map((child) => MapEntry(child.childId, child)),
-            );
-            final child = childMap[myCase.childId] ?? emptyChild;
-            final Map<String, Point> pointMap = Map.fromEntries(
-              points.map((point) => MapEntry(point.pointId, point)),
-            );
-            final point = pointMap[myCase.pointId] ?? emptyPoint;
-            return CaseFull(myCase, point, child);
-          }).where((item) =>
-          item.point != emptyPoint
-          ).toList();
-
-          return casesList;
-        });
-  }
-
-  Stream<List<CaseFull>> watchOpenCasesByLocationBeforeDate(int start, String countryId,
-      String regionId, String locationId, String provinceId, String pointType, List<Point> points) {
-    final emptyPoint = Point.getEmptyPoint();
-    final emptyChild = Child.getEmptyChild();
-
-    return CombineLatestStream.combine2(
-        _watchOpenCasesBeforeDate(start),
-        watchChilds(),
-            (List<Case> cases, List<Child> childs) {
-          var casesList = cases.map((myCase) {
-            final Map<String, Child> childMap = Map.fromEntries(
-              childs.map((child) => MapEntry(child.childId, child)),
-            );
-            final child = childMap[myCase.childId] ?? emptyChild;
-            final Map<String, Point> pointMap = Map.fromEntries(
-              points.map((point) => MapEntry(point.pointId, point)),
-            );
-            final point = pointMap[myCase.pointId] ?? emptyPoint;
-            return CaseFull(myCase, point, child);
-          }).where((item) =>
-          item.point != emptyPoint
-          ).toList();
-
-          return casesList;
         });
   }
 
@@ -661,43 +615,22 @@ final visitWithChildAndCommunityCrenamPoinStreamProvider = StreamProvider.family
   return database.watchVisitWithChildAndCommunityCrenamPoint(start, end, countryId, regionId);
 });
 
-final casesByDateAndLocationStreamProvider = StreamProvider.family.autoDispose<List<CaseFull>,
-    Tuple8<int, int, String, String, String, String, String, List<Point>>>((ref, range) {
+final casesByLocationStreamProvider = StreamProvider.family.autoDispose<List<CaseFull>,
+    Tuple6<String, String, String, String, String, List<Point>>>((ref, range) {
   final user = ref.watch(authStateChangesProvider).value;
   if (user == null) {
     throw AssertionError('User can\'t be null');
   }
 
   final database = ref.watch(databaseProvider);
-  final start = range.value1;
-  final end = range.value2;
-  final countryId = range.value3;
-  final regionId = range.value4;
-  final locationId = range.value5;
-  final provinceId = range.value6;
-  final pointType = range.value7;
-  final points = range.value8;
+  final countryId = range.value1;
+  final regionId = range.value2;
+  final locationId = range.value3;
+  final provinceId = range.value4;
+  final pointType = range.value5;
+  final points = range.value6;
 
-  return database.watchCasesByDateAndLocation(start, end, countryId, regionId, locationId, provinceId, pointType, points);
-});
-
-final openCasesBeforeStartDateStreamProvider = StreamProvider.family.autoDispose<List<CaseFull>,
-    Tuple7<int, String, String, String, String, String, List<Point>>>((ref, range) {
-  final user = ref.watch(authStateChangesProvider).value;
-  if (user == null) {
-    throw AssertionError('User can\'t be null');
-  }
-
-  final database = ref.watch(databaseProvider);
-  final start = range.value1;
-  final countryId = range.value2;
-  final regionId = range.value3;
-  final locationId = range.value4;
-  final provinceId = range.value5;
-  final pointType = range.value6;
-  final points = range.value7;
-
-  return database.watchOpenCasesByLocationBeforeDate(start, countryId, regionId, locationId, provinceId, pointType, points);
+  return database.watchCasesByLocation(countryId, regionId, locationId, provinceId, pointType, points);
 });
 
 final countriesStreamProvider = StreamProvider.autoDispose<List<Country>>((ref) {

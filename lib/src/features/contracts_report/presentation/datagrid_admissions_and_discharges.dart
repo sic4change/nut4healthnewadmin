@@ -182,16 +182,16 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
     }
   }
 
-  _saveMainInforms(AsyncValue<List<CaseFull>>? casesByDate, AsyncValue<List<CaseFull>>? casesBeforeStartDate) {
-    if (casesByDate == null || casesBeforeStartDate == null) {
-      mainInformDataGridSource.setMainInforms(List.empty(), List.empty(), selectedLocale);
+  _saveMainInforms(AsyncValue<List<CaseFull>>? casesByDate) {
+    if (casesByDate == null) {
+      mainInformDataGridSource.setMainInforms(List.empty(),selectedLocale, start, end);
     } else {
-      mainInformDataGridSource.setMainInforms(casesByDate.value, casesBeforeStartDate.value, selectedLocale);
+      mainInformDataGridSource.setMainInforms(casesByDate.value, selectedLocale, start, end);
     }
   }
 
-  Widget _buildView(AsyncValue<List<CaseFull>> cases, AsyncValue<List<CaseFull>> openCasesBeforeStartDate) {
-    if (cases.value != null && openCasesBeforeStartDate.value != null) {
+  Widget _buildView(AsyncValue<List<CaseFull>> cases) {
+    if (cases.value != null) {
       mainInformDataGridSource.buildDataGridRows();
       mainInformDataGridSource.updateDataSource();
       selectedLocale = model.locale.toString();
@@ -743,9 +743,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
             _savePoints(pointsAsyncValue);
           }
 
-          final casesFilters = Tuple8(
-              start,
-              end,
+          final casesFilters = Tuple6(
               countrySelected?.countryId??"",
               regionSelected?.regionId??"",
               locationSelected?.locationId??"",
@@ -753,24 +751,13 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
               pointTypeSelected == "TODOS"?"": (pointTypeSelected??""),
               pointsSelected,
           );
-          casesAsyncValue = ref.watch(casesByDateAndLocationStreamProvider(casesFilters));
+          casesAsyncValue = ref.watch(casesByLocationStreamProvider(casesFilters));
 
-          final openCasesFilters = Tuple7(
-            start,
-            countrySelected?.countryId??"",
-            regionSelected?.regionId??"",
-            locationSelected?.locationId??"",
-            provinceSelected?.provinceId??"",
-            pointTypeSelected == "TODOS"?"": (pointTypeSelected??""),
-            pointsSelected,
-          );
-          openCasesBeforeStartDateAsyncValue = ref.watch(openCasesBeforeStartDateStreamProvider(openCasesFilters));
-
-          if (casesAsyncValue.value != null && openCasesBeforeStartDateAsyncValue.value != null) {
-            _saveMainInforms(casesAsyncValue, openCasesBeforeStartDateAsyncValue);
+          if (casesAsyncValue.value != null) {
+            _saveMainInforms(casesAsyncValue);
           }
 
-          return _buildView(casesAsyncValue, openCasesBeforeStartDateAsyncValue);
+          return _buildView(casesAsyncValue);
         });
 
   }

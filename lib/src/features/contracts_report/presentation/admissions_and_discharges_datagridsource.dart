@@ -83,7 +83,7 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
     );
   }
 
-  setMainInforms(List<CaseFull>? cases, List<CaseFull>? openCasesBeforeStartDate, String selectedLocale) {
+  setMainInforms(List<CaseFull>? cases, String selectedLocale, int start, int end) {
     List<AdmissionsAndDischargesInform> inform = [];
     late String boy, girl, subtotalChildren, fefa, total;
 
@@ -190,28 +190,30 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
         )
     );
 
-    if (openCasesBeforeStartDate != null) {
-      for (var element in openCasesBeforeStartDate) {
-        // Pacientes al comienzo
-        //if (element.myCase.closedReason.isEmpty) {
-          if (element.child == null || element.child!.childId == '') {
-            inform[3].patientsAtBeginning++;
-          } else {
-            if (element.child?.sex == "Masculino" ||
-                element.child?.sex == "Homme" ||
-                element.child?.sex == "ذكر") {
-              inform[0].patientsAtBeginning++;
-            } else {
-              inform[1].patientsAtBeginning++;
-            }
-          }
-        //}
-      }
-    }
-
     if (cases != null) {
-      for (var element in cases) {
-        // ADMISIONES
+      // PATIENTS AT BEGINNING
+      final openCasesBeforeStartDate = cases.where((caseFull) =>
+          caseFull.myCase.createDate.isBefore(DateTime.fromMillisecondsSinceEpoch(start))
+          && caseFull.myCase.closedReason.isEmpty);
+      for (var element in openCasesBeforeStartDate) {
+        if (element.child == null || element.child!.childId == '') {
+          inform[3].patientsAtBeginning++;
+        } else {
+          if (element.child?.sex == "Masculino" ||
+              element.child?.sex == "Homme" ||
+              element.child?.sex == "ذكر") {
+            inform[0].patientsAtBeginning++;
+          } else {
+            inform[1].patientsAtBeginning++;
+          }
+        }
+      }
+
+      // ADMISSIONS
+      final newCasesByDate = cases.where((myCase) =>
+          myCase.myCase.createDate.isAfter(DateTime.fromMillisecondsSinceEpoch(start))
+          && myCase.myCase.createDate.isBefore(DateTime.fromMillisecondsSinceEpoch(end)));
+      for (var element in newCasesByDate) {
         // Nuevos casos
         if (element.myCase.admissionTypeServer == CaseType.newAdmission || element.myCase.admissionTypeServer.isEmpty) {
           if (element.child == null || element.child!.childId == '') {
@@ -286,8 +288,14 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
             }
           }
         }
+      }
 
-        // ALTAS
+      // DISCHARGES
+      final closedCasesByDate = cases.where((caseFull) =>
+      caseFull.myCase.lastDate.isAfter(DateTime.fromMillisecondsSinceEpoch(start))
+          && caseFull.myCase.lastDate.isBefore(DateTime.fromMillisecondsSinceEpoch(end))
+          && caseFull.myCase.closedReason != "null" && caseFull.myCase.closedReason.isNotEmpty);
+      for (var element in closedCasesByDate) {
         // Recuperados
         if (element.myCase.closedReason == CaseType.recovered){
           if (element.child == null || element.child!.childId == '') {
@@ -362,7 +370,6 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
             }
           }
         }
-
       }
     }
 
