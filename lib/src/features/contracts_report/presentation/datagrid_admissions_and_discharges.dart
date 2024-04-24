@@ -1,6 +1,8 @@
 /// Package imports
 /// import 'package:flutter/foundation.dart';
 
+import 'package:adminnut4health/src/features/cases/domain/case.dart';
+import 'package:adminnut4health/src/features/contracts_report/domain/admissions_and_discharges_inform.dart';
 import 'package:adminnut4health/src/features/contracts_report/domain/case_full.dart';
 import 'package:adminnut4health/src/features/contracts_report/presentation/admissions_and_discharges_datagridsource.dart';
 import 'package:adminnut4health/src/features/countries/domain/country.dart';
@@ -117,6 +119,8 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
   List<Point> points = <Point>[];
   List<Point> pointsSelected = [];
 
+  List<CaseFull> cases = <CaseFull>[];
+
   Widget getLocationWidget(String location) {
     return Row(
       children: <Widget>[
@@ -173,21 +177,360 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
       return;
     } else {
       this.points.clear();
-      var pointAll = Point.getPointAll();
-      if (pointsSelected.where((element) => element.name == "TODOS").isNotEmpty) {
-        pointAll.isSelected = true;
-      }
-      this.points.add(pointAll);
       this.points.addAll(points.value!);
+      _refreshPointsSelected();
     }
   }
 
-  _saveMainInforms(AsyncValue<List<CaseFull>>? casesByDate) {
-    if (casesByDate == null) {
-      mainInformDataGridSource.setMainInforms(List.empty(),selectedLocale, start, end);
+  _saveMainInforms(AsyncValue<List<CaseFull>>? casesFull) {
+    if (casesFull == null) {
+      mainInformDataGridSource.setMainInforms(List.empty());
     } else {
-      mainInformDataGridSource.setMainInforms(casesByDate.value, selectedLocale, start, end);
+      cases = casesFull.value!;
+      _updateInformData();
     }
+  }
+
+  _updateInformData() {
+    List<CaseFull> filteredCases = List.from(cases);
+
+    if (countrySelected != null && countrySelected!.name != 'TODOS') {
+      filteredCases = filteredCases.where((c) =>  c.point?.country == countrySelected?.countryId).toList();
+    }
+
+    if (regionSelected != null && regionSelected!.name != 'TODAS') {
+      filteredCases = filteredCases.where((c) =>  c.point?.regionId == regionSelected?.regionId).toList();
+    }
+
+    if (locationSelected != null && locationSelected!.name != 'TODAS') {
+      filteredCases = filteredCases.where((c) =>  c.point?.location == locationSelected?.locationId).toList();
+    }
+
+    if (provinceSelected != null && provinceSelected!.name != 'TODAS') {
+      filteredCases = filteredCases.where((c) =>  c.point?.province == provinceSelected?.provinceId).toList();
+    }
+
+    if (pointTypeSelected != null && pointTypeSelected != 'TODOS') {
+      filteredCases = filteredCases.where((c) =>  c.point?.type == pointTypeSelected).toList();
+    }
+
+    final pointsIds = pointsSelected.map((point) => point.pointId).toList();
+    filteredCases = filteredCases.where((c) => pointsIds.contains(c.point?.pointId)).toList();
+
+    List<AdmissionsAndDischargesInform> informs = [];
+    late String boy, girl, subtotalChildren, fefa, total;
+
+    total = "Total";
+    switch (selectedLocale) {
+      case 'en_US':
+        boy = 'Boys <5 years';
+        girl = 'Girls <5 years';
+        subtotalChildren = 'Subtotal children <5 years';
+        fefa = 'Pregnant and lactating women';
+        break;
+      case 'es_ES':
+        boy = 'Niños <5 años';
+        girl = 'Niñas <5 años';
+        subtotalChildren = 'Subtotal niñas/os <5 años';
+        fefa = 'Mujeres embarazadas y lactantes';
+        break;
+      case 'fr_FR':
+        boy = 'Garcons <5 años';
+        girl = 'Filles <5 años';
+        subtotalChildren = 'Sous-total filles et garçons <5 ans';
+        fefa = 'FEFA';
+        break;
+    }
+
+    informs.add(AdmissionsAndDischargesInform(
+      category: boy,
+      patientsAtBeginning: 0,
+      newAdmissions: 0,
+      reAdmissions: 0,
+      relapses: 0,
+      referredIn: 0,
+      transferedIn: 0,
+      recovered: 0,
+      unresponsive: 0,
+      abandonment: 0,
+      referredOut: 0,
+      transferedOut: 0,
+    ));
+
+    informs.add(AdmissionsAndDischargesInform(
+      category: girl,
+      patientsAtBeginning: 0,
+      newAdmissions: 0,
+      reAdmissions: 0,
+      relapses: 0,
+      referredIn: 0,
+      transferedIn: 0,
+      recovered: 0,
+      unresponsive: 0,
+      abandonment: 0,
+      referredOut: 0,
+      transferedOut: 0,
+    ));
+
+    informs.add(AdmissionsAndDischargesInform(
+      category: subtotalChildren,
+      patientsAtBeginning: 0,
+      newAdmissions: 0,
+      reAdmissions: 0,
+      relapses: 0,
+      referredIn: 0,
+      transferedIn: 0,
+      recovered: 0,
+      unresponsive: 0,
+      abandonment: 0,
+      referredOut: 0,
+      transferedOut: 0,
+    ));
+
+    informs.add(AdmissionsAndDischargesInform(
+      category: fefa,
+      patientsAtBeginning: 0,
+      newAdmissions: 0,
+      reAdmissions: 0,
+      relapses: 0,
+      referredIn: 0,
+      transferedIn: 0,
+      recovered: 0,
+      unresponsive: 0,
+      abandonment: 0,
+      referredOut: 0,
+      transferedOut: 0,
+    ));
+
+    informs.add(AdmissionsAndDischargesInform(
+      category: total,
+      patientsAtBeginning: 0,
+      newAdmissions: 0,
+      reAdmissions: 0,
+      relapses: 0,
+      referredIn: 0,
+      transferedIn: 0,
+      recovered: 0,
+      unresponsive: 0,
+      abandonment: 0,
+      referredOut: 0,
+      transferedOut: 0,
+    ));
+
+    if (filteredCases.isNotEmpty) {
+      // PATIENTS AT BEGINNING
+      final openCasesBeforeStartDate = filteredCases.where((caseFull) =>
+          caseFull.myCase.createDate.isBefore(DateTime.fromMillisecondsSinceEpoch(start)) &&
+          caseFull.myCase.closedReason.isEmpty);
+      for (var element in openCasesBeforeStartDate) {
+        if (element.child == null || element.child!.childId == '') {
+          informs[3].patientsAtBeginning++;
+        } else {
+          if (element.child?.sex == "Masculino" ||
+              element.child?.sex == "Homme" ||
+              element.child?.sex == "ذكر") {
+            informs[0].patientsAtBeginning++;
+          } else {
+            informs[1].patientsAtBeginning++;
+          }
+        }
+      }
+
+      // ADMISSIONS
+      final newCasesByDate = filteredCases.where((myCase) =>
+          myCase.myCase.createDate.isAfter(DateTime.fromMillisecondsSinceEpoch(start)) &&
+          myCase.myCase.createDate.isBefore(DateTime.fromMillisecondsSinceEpoch(end)));
+      for (var element in newCasesByDate) {
+        // Nuevos casos
+        if (element.myCase.admissionTypeServer == CaseType.newAdmission ||
+            element.myCase.admissionTypeServer.isEmpty) {
+          if (element.child == null || element.child!.childId == '') {
+            informs[3].newAdmissions++;
+          } else {
+            if (element.child?.sex == "Masculino" ||
+                element.child?.sex == "Homme" ||
+                element.child?.sex == "ذكر") {
+              informs[0].newAdmissions++;
+            } else {
+              informs[1].newAdmissions++;
+            }
+          }
+        }
+
+        // Readmisiones
+        if (element.myCase.admissionTypeServer == CaseType.reAdmission) {
+          if (element.child == null || element.child!.childId == '') {
+            informs[3].reAdmissions++;
+          } else {
+            if (element.child?.sex == "Masculino" ||
+                element.child?.sex == "Homme" ||
+                element.child?.sex == "ذكر") {
+              informs[0].reAdmissions++;
+            } else {
+              informs[1].reAdmissions++;
+            }
+          }
+        }
+
+        // Recaídas
+        if (element.myCase.admissionTypeServer == CaseType.relapse) {
+          if (element.child == null || element.child!.childId == '') {
+            informs[3].relapses++;
+          } else {
+            if (element.child?.sex == "Masculino" ||
+                element.child?.sex == "Homme" ||
+                element.child?.sex == "ذكر") {
+              informs[0].relapses++;
+            } else {
+              informs[1].relapses++;
+            }
+          }
+        }
+
+        // Referidos
+        if (element.myCase.admissionTypeServer == CaseType.referred) {
+          if (element.child == null || element.child!.childId == '') {
+            informs[3].referredIn++;
+          } else {
+            if (element.child?.sex == "Masculino" ||
+                element.child?.sex == "Homme" ||
+                element.child?.sex == "ذكر") {
+              informs[0].referredIn++;
+            } else {
+              informs[1].referredIn++;
+            }
+          }
+        }
+
+        // Transferidos
+        if (element.myCase.admissionTypeServer == CaseType.transfered) {
+          if (element.child == null || element.child!.childId == '') {
+            informs[3].transferedIn++;
+          } else {
+            if (element.child?.sex == "Masculino" ||
+                element.child?.sex == "Homme" ||
+                element.child?.sex == "ذكر") {
+              informs[0].transferedIn++;
+            } else {
+              informs[1].transferedIn++;
+            }
+          }
+        }
+      }
+
+      // DISCHARGES
+      final closedCasesByDate = filteredCases.where((caseFull) =>
+          caseFull.myCase.lastDate.isAfter(DateTime.fromMillisecondsSinceEpoch(start)) &&
+          caseFull.myCase.lastDate.isBefore(DateTime.fromMillisecondsSinceEpoch(end)) &&
+          caseFull.myCase.closedReason != "null" && caseFull.myCase.closedReason.isNotEmpty);
+      for (var element in closedCasesByDate) {
+        // Recuperados
+        if (element.myCase.closedReason == CaseType.recovered) {
+          if (element.child == null || element.child!.childId == '') {
+            informs[3].recovered++;
+          } else {
+            if (element.child?.sex == "Masculino" ||
+                element.child?.sex == "Homme" ||
+                element.child?.sex == "ذكر") {
+              informs[0].recovered++;
+            } else {
+              informs[1].recovered++;
+            }
+          }
+        }
+
+        // Sin respuesta
+        if (element.myCase.closedReason == CaseType.unresponsive) {
+          if (element.child == null || element.child!.childId == '') {
+            informs[3].unresponsive++;
+          } else {
+            if (element.child?.sex == "Masculino" ||
+                element.child?.sex == "Homme" ||
+                element.child?.sex == "ذكر") {
+              informs[0].unresponsive++;
+            } else {
+              informs[1].unresponsive++;
+            }
+          }
+        }
+
+        // Abandono
+        if (element.myCase.closedReason == CaseType.abandonment) {
+          if (element.child == null || element.child!.childId == '') {
+            informs[3].abandonment++;
+          } else {
+            if (element.child?.sex == "Masculino" ||
+                element.child?.sex == "Homme" ||
+                element.child?.sex == "ذكر") {
+              informs[0].abandonment++;
+            } else {
+              informs[1].abandonment++;
+            }
+          }
+        }
+
+        // Referidos
+        if (element.myCase.closedReason == CaseType.referred) {
+          if (element.child == null || element.child!.childId == '') {
+            informs[3].referredOut++;
+          } else {
+            if (element.child?.sex == "Masculino" ||
+                element.child?.sex == "Homme" ||
+                element.child?.sex == "ذكر") {
+              informs[0].referredOut++;
+            } else {
+              informs[1].referredOut++;
+            }
+          }
+        }
+
+        // Abandono
+        if (element.myCase.closedReason == CaseType.transfered) {
+          if (element.child == null || element.child!.childId == '') {
+            informs[3].transferedOut++;
+          } else {
+            if (element.child?.sex == "Masculino" ||
+                element.child?.sex == "Homme" ||
+                element.child?.sex == "ذكر") {
+              informs[0].transferedOut++;
+            } else {
+              informs[1].transferedOut++;
+            }
+          }
+        }
+      }
+    }
+
+    // Subtotal children
+    informs[2].patientsAtBeginning = informs[0].patientsAtBeginning + informs[1].patientsAtBeginning;
+    informs[2].newAdmissions = informs[0].newAdmissions + informs[1].newAdmissions;
+    informs[2].reAdmissions = informs[0].reAdmissions + informs[1].reAdmissions;
+    informs[2].relapses = informs[0].relapses + informs[1].relapses;
+    informs[2].referredIn = informs[0].referredIn + informs[1].referredIn;
+    informs[2].transferedIn = informs[0].transferedIn + informs[1].transferedIn;
+    informs[2].recovered = informs[0].recovered + informs[1].recovered;
+    informs[2].unresponsive = informs[0].unresponsive + informs[1].unresponsive;
+    informs[2].abandonment = informs[0].abandonment + informs[1].abandonment;
+    informs[2].referredOut = informs[0].referredOut + informs[1].referredOut;
+    informs[2].transferedOut = informs[0].transferedOut + informs[1].transferedOut;
+
+    // Total
+    informs[4].patientsAtBeginning = informs[2].patientsAtBeginning + informs[3].patientsAtBeginning;
+    informs[4].newAdmissions = informs[2].newAdmissions + informs[3].newAdmissions;
+    informs[4].reAdmissions = informs[2].reAdmissions + informs[3].reAdmissions;
+    informs[4].relapses = informs[2].relapses + informs[3].relapses;
+    informs[4].referredIn = informs[2].referredIn + informs[3].referredIn;
+    informs[4].transferedIn = informs[2].transferedIn + informs[3].transferedIn;
+    informs[4].recovered = informs[2].recovered + informs[3].recovered;
+    informs[4].unresponsive = informs[2].unresponsive + informs[3].unresponsive;
+    informs[4].abandonment = informs[2].abandonment + informs[3].abandonment;
+    informs[4].referredOut = informs[2].referredOut + informs[3].referredOut;
+    informs[4].transferedOut = informs[2].transferedOut + informs[3].transferedOut;
+
+    mainInformDataGridSource.setMainInforms(informs);
+
+    mainInformDataGridSource.buildDataGridRows(/*enableFiltering: true, showByWomenOrigin: true*/);
+    mainInformDataGridSource.updateDataSource();
   }
 
   Widget _buildView(AsyncValue<List<CaseFull>> cases) {
@@ -743,15 +1086,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
             _savePoints(pointsAsyncValue);
           }
 
-          final casesFilters = Tuple6(
-              countrySelected?.countryId??"",
-              regionSelected?.regionId??"",
-              locationSelected?.locationId??"",
-              provinceSelected?.provinceId??"",
-              pointTypeSelected == "TODOS"?"": (pointTypeSelected??""),
-              pointsSelected,
-          );
-          casesAsyncValue = ref.watch(casesByLocationStreamProvider(casesFilters));
+          casesAsyncValue = ref.watch(casesFullStreamProvider);
 
           if (casesAsyncValue.value != null) {
             _saveMainInforms(casesAsyncValue);
@@ -855,7 +1190,6 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
                           regionSelected = null;
                           locationSelected = null;
                           provinceSelected = null;
-                          pointsSelected.clear();
                         });
                       }),
                 ],
@@ -913,7 +1247,6 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
                           regionSelected = regions.firstWhere((r) => r.name == value);
                           locationSelected = null;
                           provinceSelected = null;
-                          pointsSelected.clear();
                         });
                       }),
                 ],
@@ -970,7 +1303,6 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
                         setState(() {
                           locationSelected = locations.firstWhere((l) => l.name == value);
                           provinceSelected = null;
-                          pointsSelected.clear();
                         });
                       }),
                 ],
@@ -1026,7 +1358,6 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
                       onChanged: (dynamic value) {
                         setState(() {
                           provinceSelected = provinces.firstWhere((p) => p.name == value);
-                          pointsSelected.clear();
                         });
                       }),
                 ],
@@ -1082,7 +1413,6 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
                       onChanged: (dynamic value) {
                         setState(() {
                           pointTypeSelected = value;
-                          pointsSelected.clear();
                         });
                       }),
                 ],
@@ -1107,48 +1437,76 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
         break;
     }
 
-    return MenuAnchor(
-      menuChildren: points.map((p) =>
-          CheckboxMenuButton(
-            value: p.isSelected,
-            onChanged: (bool? value) {
-              setState(() {
-                p.isSelected = value?? false;
-                if (p.name == 'TODOS') {
-                  for (var element in points) {element.isSelected = value??false;}
-                }
-                pointsSelected = points.where((element) => element.isSelected).toList();
-              });
-            },
-            child: Text(p.name, style: TextStyle(color: model.textColor)),
-          )).toList(),
-      builder: (BuildContext context, MenuController controller,
-          Widget? child) {
-        return Padding(
-          padding: const EdgeInsets.all(5.0),
-          child: Card(
-            elevation: 2,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(3.0),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
-              child: SizedBox(
-                height: 50,
-                child: TextButton(
-                  onPressed: () {
-                    if (!controller.isOpen) {
-                      controller.open();
-                    }
-                  },
-                  child: Text(_selectPoint, style: TextStyle(color: model.textColor)),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        MenuAnchor(
+          menuChildren: points.map((p) =>
+              CheckboxMenuButton(
+                value: p.isSelected,
+                onChanged: (bool? value) {
+                  setState(() {
+                    p.isSelected = value?? false;
+                    _refreshPointsSelected();
+                  });
+                },
+                child: Text(p.name, style: TextStyle(color: model.textColor)),
+              )).toList(),
+          builder: (BuildContext context, MenuController controller,
+              Widget? child) {
+            return Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(3.0),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
+                  child: SizedBox(
+                    height: 50,
+                    child: TextButton(
+                      onPressed: () {
+                        if (!controller.isOpen) {
+                          controller.open();
+                        }
+                      },
+                      child: Text(_selectPoint, style: TextStyle(color: model.textColor)),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-        );
-      },
+            );
+          },
+        ),
+        CheckboxMenuButton(
+          value: !points.any((p) => !p.isSelected),
+          onChanged: (bool? value) {
+            setState(() {
+              if (value??false) {
+                _selectAllPoints();
+              } else {
+                _unselectAllPoints();
+              }
+              _refreshPointsSelected();
+            });
+          },
+          child: Text("TODOS", style: TextStyle(color: model.textColor)),
+        )
+      ],
     );
+  }
+
+  _selectAllPoints(){
+    for (var element in points) {element.isSelected = true;}
+  }
+
+  _unselectAllPoints(){
+    for (var element in points) {element.isSelected = false;}
+  }
+
+  _refreshPointsSelected() {
+    pointsSelected = points.where((element) => element.isSelected).toList();
   }
 }
 

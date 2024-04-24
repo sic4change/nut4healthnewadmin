@@ -35,7 +35,7 @@ class Point extends Equatable {
   final int casesmoderada;
   final int casessevera;
   final String transactionHash;
-  bool isSelected = false;
+  bool isSelected = true;
 
   @override
   List<Object> get props => [pointId, name, fullName, pointName, pointCode, type,

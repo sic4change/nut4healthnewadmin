@@ -107,6 +107,14 @@ class FirestoreRepository {
       sort: (a, b) => a.name.compareTo(b.name),
     );
   }
+  Stream<List<Point>> watchPoints() {
+    return _dataSource.watchCollection(
+      path: FirestorePath.points(),
+      builder: (data, documentId) => Point.fromMap(data, documentId),
+      sort: (a, b) => a.name.compareTo(b.name),
+    );
+  }
+
 
   Stream<List<Point>> watchPointsByLocation({
     required CountryID countryId,
@@ -255,15 +263,15 @@ class FirestoreRepository {
     return cases;
   }
 
-  Stream<List<CaseFull>> watchCasesByLocation(String countryId, String regionId, String locationId, String provinceId,
-      String pointType, List<Point> points) {
+  Stream<List<CaseFull>> watchCasesFull() {
     final emptyPoint = Point.getEmptyPoint();
     final emptyChild = Child.getEmptyChild();
 
-    return CombineLatestStream.combine2(
+    return CombineLatestStream.combine3(
         watchCases(),
         watchChilds(),
-            (List<Case> cases, List<Child> childs) {
+        watchPoints(),
+            (List<Case> cases, List<Child> childs, List<Point> points) {
           var casesList = cases.map((myCase) {
             final Map<String, Child> childMap = Map.fromEntries(
               childs.map((child) => MapEntry(child.childId, child)),
@@ -274,9 +282,7 @@ class FirestoreRepository {
             );
             final point = pointMap[myCase.pointId] ?? emptyPoint;
             return CaseFull(myCase, point, child);
-          }).where((item) =>
-          item.point != emptyPoint
-          ).toList();
+          }).toList();
 
           return casesList;
         });
@@ -615,22 +621,13 @@ final visitWithChildAndCommunityCrenamPoinStreamProvider = StreamProvider.family
   return database.watchVisitWithChildAndCommunityCrenamPoint(start, end, countryId, regionId);
 });
 
-final casesByLocationStreamProvider = StreamProvider.family.autoDispose<List<CaseFull>,
-    Tuple6<String, String, String, String, String, List<Point>>>((ref, range) {
+final casesFullStreamProvider = StreamProvider.autoDispose<List<CaseFull>>((ref) {
   final user = ref.watch(authStateChangesProvider).value;
   if (user == null) {
     throw AssertionError('User can\'t be null');
   }
-
   final database = ref.watch(databaseProvider);
-  final countryId = range.value1;
-  final regionId = range.value2;
-  final locationId = range.value3;
-  final provinceId = range.value4;
-  final pointType = range.value5;
-  final points = range.value6;
-
-  return database.watchCasesByLocation(countryId, regionId, locationId, provinceId, pointType, points);
+  return database.watchCasesFull();
 });
 
 final countriesStreamProvider = StreamProvider.autoDispose<List<Country>>((ref) {
