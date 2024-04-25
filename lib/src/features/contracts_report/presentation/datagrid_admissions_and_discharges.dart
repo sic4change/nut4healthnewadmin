@@ -13,7 +13,6 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:multi_dropdown/multiselect_dropdown.dart';
 
 import 'dart:typed_data';
 import 'dart:html' show Blob, AnchorElement, Url;
