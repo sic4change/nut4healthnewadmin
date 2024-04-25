@@ -13,6 +13,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:multi_dropdown/multiselect_dropdown.dart';
 
 import 'dart:typed_data';
 import 'dart:html' show Blob, AnchorElement, Url;
@@ -1098,32 +1099,35 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
   }
 
   Widget _buildFilterRow() {
-    return Wrap(
-      alignment: WrapAlignment.center,
-      crossAxisAlignment: WrapCrossAlignment.start,
-      runSpacing: 20.0,
-      spacing: 20.0,
-      children: [
-        _buildCountryPicker(),
-        _buildRegionPicker(),
-        _buildLocationPicker(),
-        _buildProvincePicker(),
-        _buildPointTypePicker(),
-        _buildPointPicker(),
-        SizedBox(
-          width: 400,
-          child: Directionality(
-            textDirection: TextDirection.ltr,
-            child: SfDateRangePicker(
-              initialSelectedRange: PickerDateRange(
-                DateTime.fromMillisecondsSinceEpoch(start),
-                DateTime.fromMillisecondsSinceEpoch(end),),
-              onSelectionChanged: _onSelectionChanged,
-              selectionMode: DateRangePickerSelectionMode.range,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.start,
+        runSpacing: 20.0,
+        spacing: 20.0,
+        children: [
+          _buildCountryPicker(),
+          _buildRegionPicker(),
+          _buildLocationPicker(),
+          _buildProvincePicker(),
+          _buildPointTypePicker(),
+          _buildPointPicker(),
+          SizedBox(
+            width: 400,
+            child: Directionality(
+              textDirection: TextDirection.ltr,
+              child: SfDateRangePicker(
+                initialSelectedRange: PickerDateRange(
+                  DateTime.fromMillisecondsSinceEpoch(start),
+                  DateTime.fromMillisecondsSinceEpoch(end),),
+                onSelectionChanged: _onSelectionChanged,
+                selectionMode: DateRangePickerSelectionMode.range,
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -1156,49 +1160,44 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
         break;
     }
 
-    return Column(children: <Widget>[
-      Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: Card(
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(3.0),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
-            child: SizedBox(
-              height: 50,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  DropdownButton<String>(
-                      focusColor: Colors.transparent,
-                      underline:
-                      Container(color: const Color(0xFFBDBDBD), height: 1),
-                      value: countrySelected?.name,
-                      hint: Text(_selectCountry),
-                      items: countries.map((Country c) {
-                        return DropdownMenuItem<String>(
-                            value: c.name,
-                            child: Text(c.name,
-                                style: TextStyle(color: model.textColor)));
-                      }).toList(),
-                      onChanged: (dynamic value) {
-                        setState(() {
-                          countrySelected = countries.firstWhere((c) => c.name == value);
-                          regionSelected = null;
-                          locationSelected = null;
-                          provinceSelected = null;
-                        });
-                      }),
-                ],
-              ),
-            ),
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(3.0),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
+        child: SizedBox(
+          height: 50,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              DropdownButton<String>(
+                  focusColor: Colors.transparent,
+                  underline:
+                  Container(color: const Color(0xFFBDBDBD), height: 1),
+                  value: countrySelected?.name,
+                  hint: Text(_selectCountry),
+                  items: countries.map((Country c) {
+                    return DropdownMenuItem<String>(
+                        value: c.name,
+                        child: Text(c.name,
+                            style: TextStyle(color: model.textColor)));
+                  }).toList(),
+                  onChanged: (dynamic value) {
+                    setState(() {
+                      countrySelected = countries.firstWhere((c) => c.name == value);
+                      regionSelected = null;
+                      locationSelected = null;
+                      provinceSelected = null;
+                    });
+                  }),
+            ],
           ),
         ),
       ),
-    ]);
+    );
   }
 
   Widget _buildRegionPicker() {
@@ -1214,48 +1213,43 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
         break;
     }
 
-    return Column(children: <Widget>[
-      Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: Card(
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(3.0),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
-            child: SizedBox(
-              height: 50,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  DropdownButton<String>(
-                      focusColor: Colors.transparent,
-                      underline:
-                      Container(color: const Color(0xFFBDBDBD), height: 1),
-                      value: regionSelected?.name,
-                      hint: Text(_selectRegion),
-                      items: regions.map((Region r) {
-                        return DropdownMenuItem<String>(
-                            value: r.name,
-                            child: Text(r.name,
-                                style: TextStyle(color: model.textColor)));
-                      }).toList(),
-                      onChanged: (dynamic value) {
-                        setState(() {
-                          regionSelected = regions.firstWhere((r) => r.name == value);
-                          locationSelected = null;
-                          provinceSelected = null;
-                        });
-                      }),
-                ],
-              ),
-            ),
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(3.0),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
+        child: SizedBox(
+          height: 50,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              DropdownButton<String>(
+                  focusColor: Colors.transparent,
+                  underline:
+                  Container(color: const Color(0xFFBDBDBD), height: 1),
+                  value: regionSelected?.name,
+                  hint: Text(_selectRegion),
+                  items: regions.map((Region r) {
+                    return DropdownMenuItem<String>(
+                        value: r.name,
+                        child: Text(r.name,
+                            style: TextStyle(color: model.textColor)));
+                  }).toList(),
+                  onChanged: (dynamic value) {
+                    setState(() {
+                      regionSelected = regions.firstWhere((r) => r.name == value);
+                      locationSelected = null;
+                      provinceSelected = null;
+                    });
+                  }),
+            ],
           ),
         ),
       ),
-    ]);
+    );
   }
 
   Widget _buildLocationPicker() {
@@ -1271,47 +1265,42 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
         break;
     }
 
-    return Column(children: <Widget>[
-      Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: Card(
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(3.0),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
-            child: SizedBox(
-              height: 50,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  DropdownButton<String>(
-                      focusColor: Colors.transparent,
-                      underline:
-                      Container(color: const Color(0xFFBDBDBD), height: 1),
-                      value: locationSelected?.name,
-                      hint: Text(_selectLocation),
-                      items: locations.map((Location l) {
-                        return DropdownMenuItem<String>(
-                            value: l.name,
-                            child: Text(l.name,
-                                style: TextStyle(color: model.textColor)));
-                      }).toList(),
-                      onChanged: (dynamic value) {
-                        setState(() {
-                          locationSelected = locations.firstWhere((l) => l.name == value);
-                          provinceSelected = null;
-                        });
-                      }),
-                ],
-              ),
-            ),
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(3.0),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
+        child: SizedBox(
+          height: 50,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              DropdownButton<String>(
+                  focusColor: Colors.transparent,
+                  underline:
+                  Container(color: const Color(0xFFBDBDBD), height: 1),
+                  value: locationSelected?.name,
+                  hint: Text(_selectLocation),
+                  items: locations.map((Location l) {
+                    return DropdownMenuItem<String>(
+                        value: l.name,
+                        child: Text(l.name,
+                            style: TextStyle(color: model.textColor)));
+                  }).toList(),
+                  onChanged: (dynamic value) {
+                    setState(() {
+                      locationSelected = locations.firstWhere((l) => l.name == value);
+                      provinceSelected = null;
+                    });
+                  }),
+            ],
           ),
         ),
       ),
-    ]);
+    );
   }
 
   Widget _buildProvincePicker() {
@@ -1327,46 +1316,41 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
         break;
     }
 
-    return Column(children: <Widget>[
-      Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: Card(
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(3.0),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
-            child: SizedBox(
-              height: 50,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  DropdownButton<String>(
-                      focusColor: Colors.transparent,
-                      underline:
-                      Container(color: const Color(0xFFBDBDBD), height: 1),
-                      value: provinceSelected?.name,
-                      hint: Text(_selectProvince),
-                      items: provinces.map((Province p) {
-                        return DropdownMenuItem<String>(
-                            value: p.name,
-                            child: Text(p.name,
-                                style: TextStyle(color: model.textColor)));
-                      }).toList(),
-                      onChanged: (dynamic value) {
-                        setState(() {
-                          provinceSelected = provinces.firstWhere((p) => p.name == value);
-                        });
-                      }),
-                ],
-              ),
-            ),
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(3.0),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
+        child: SizedBox(
+          height: 50,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              DropdownButton<String>(
+                  focusColor: Colors.transparent,
+                  underline:
+                  Container(color: const Color(0xFFBDBDBD), height: 1),
+                  value: provinceSelected?.name,
+                  hint: Text(_selectProvince),
+                  items: provinces.map((Province p) {
+                    return DropdownMenuItem<String>(
+                        value: p.name,
+                        child: Text(p.name,
+                            style: TextStyle(color: model.textColor)));
+                  }).toList(),
+                  onChanged: (dynamic value) {
+                    setState(() {
+                      provinceSelected = provinces.firstWhere((p) => p.name == value);
+                    });
+                  }),
+            ],
           ),
         ),
       ),
-    ]);
+    );
   }
 
   Widget _buildPointTypePicker() {
@@ -1383,40 +1367,37 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
     }
 
     return Column(children: <Widget>[
-      Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: Card(
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(3.0),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
-            child: SizedBox(
-              height: 50,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  DropdownButton<String>(
-                      focusColor: Colors.transparent,
-                      underline:
-                      Container(color: const Color(0xFFBDBDBD), height: 1),
-                      value: pointTypeSelected,
-                      hint: Text(_selectPointType),
-                      items: pointTypes.map((String p) {
-                        return DropdownMenuItem<String>(
-                            value: p,
-                            child: Text(p,
-                                style: TextStyle(color: model.textColor)));
-                      }).toList(),
-                      onChanged: (dynamic value) {
-                        setState(() {
-                          pointTypeSelected = value;
-                        });
-                      }),
-                ],
-              ),
+      Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(3.0),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
+          child: SizedBox(
+            height: 50,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                DropdownButton<String>(
+                    focusColor: Colors.transparent,
+                    underline:
+                    Container(color: const Color(0xFFBDBDBD), height: 1),
+                    value: pointTypeSelected,
+                    hint: Text(_selectPointType),
+                    items: pointTypes.map((String p) {
+                      return DropdownMenuItem<String>(
+                          value: p,
+                          child: Text(p,
+                              style: TextStyle(color: model.textColor)));
+                    }).toList(),
+                    onChanged: (dynamic value) {
+                      setState(() {
+                        pointTypeSelected = value;
+                      });
+                    }),
+              ],
             ),
           ),
         ),
@@ -1437,64 +1418,124 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
         break;
     }
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        MenuAnchor(
-          menuChildren: points.map((p) =>
-              CheckboxMenuButton(
-                value: p.isSelected,
-                onChanged: (bool? value) {
-                  setState(() {
-                    p.isSelected = value?? false;
-                    _refreshPointsSelected();
-                  });
-                },
-                child: Text(p.name, style: TextStyle(color: model.textColor)),
-              )).toList(),
-          builder: (BuildContext context, MenuController controller,
-              Widget? child) {
-            return Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Card(
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(3.0),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
-                  child: SizedBox(
-                    height: 50,
-                    child: TextButton(
-                      onPressed: () {
-                        if (!controller.isOpen) {
-                          controller.open();
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(3.0),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
+        child: SizedBox(
+          height: 50.0,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              PopupMenuButton<Point>(
+                //offset: const Offset(0, -380),
+                itemBuilder: (context) => points.map((p) => PopupMenuItem<Point>(
+                    value: p,
+                    child: StatefulBuilder(
+                        builder: (context, setStateSB) {
+                          return CheckboxMenuButton(
+                            value: p.isSelected,
+                            onChanged: (bool? value) {
+                              setStateSB(() {
+                                p.isSelected = value?? false;
+                                _refreshPointsSelected();
+                              });
+                              setState(() {
+
+                              });
+                            },
+                            child: Text(p.name, style: TextStyle(color: model.textColor)),
+                          );
                         }
-                      },
-                      child: Text(_selectPoint, style: TextStyle(color: model.textColor)),
-                    ),
+                    ))).toList(),
+                child: Container(
+                  padding: const EdgeInsets.only(bottom: 5,),
+                  decoration: const BoxDecoration(
+                      border: Border(bottom: BorderSide(
+                        color: Colors.grey,
+                        width: 1.0, // Underline thickness
+                      ))
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                          _selectPoint,
+                          style: TextStyle(
+                            color: model.textColor,
+                            fontSize: 14.0,
+                          )
+                      ),
+                      const SizedBox(width: 4.0,),
+                      const Icon(Icons.arrow_drop_down),
+                    ],
                   ),
                 ),
               ),
-            );
-          },
+              const SizedBox(width: 20.0,),
+              CheckboxMenuButton(
+                value: !points.any((p) => !p.isSelected),
+                onChanged: (bool? value) {
+                  setState(() {
+                    if (value??false) {
+                      _selectAllPoints();
+                    } else {
+                      _unselectAllPoints();
+                    }
+                    _refreshPointsSelected();
+                  });
+                },
+                child: Text("TODOS", style: TextStyle(color: model.textColor)),
+              )
+            ],
+          ),
         ),
-        CheckboxMenuButton(
-          value: !points.any((p) => !p.isSelected),
-          onChanged: (bool? value) {
-            setState(() {
-              if (value??false) {
-                _selectAllPoints();
-              } else {
-                _unselectAllPoints();
-              }
-              _refreshPointsSelected();
-            });
-          },
-          child: Text("TODOS", style: TextStyle(color: model.textColor)),
-        )
-      ],
+      ),
     );
+    return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          PopupMenuButton<Point>(
+            offset: const Offset(0, -380),
+            itemBuilder: (context) => points.map((p) => PopupMenuItem<Point>(
+                value: p,
+                child: StatefulBuilder(
+                    builder: (context, setStateSB) {
+                    return CheckboxMenuButton(
+                      value: p.isSelected,
+                      onChanged: (bool? value) {
+                        setStateSB(() {
+                          p.isSelected = value?? false;
+                          _refreshPointsSelected();
+                        });
+                        setState(() {
+
+                        });
+                      },
+                      child: Text(p.name, style: TextStyle(color: model.textColor)),
+                    );
+                  }
+                ))).toList(),
+            child: Text(_selectPoint),
+          ),
+          CheckboxMenuButton(
+            value: !points.any((p) => !p.isSelected),
+            onChanged: (bool? value) {
+              setState(() {
+                if (value??false) {
+                  _selectAllPoints();
+                } else {
+                  _unselectAllPoints();
+                }
+                _refreshPointsSelected();
+              });
+            },
+            child: Text("TODOS", style: TextStyle(color: model.textColor)),
+          )
+        ],
+      );
   }
 
   _selectAllPoints(){
