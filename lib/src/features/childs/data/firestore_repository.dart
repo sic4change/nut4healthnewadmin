@@ -126,29 +126,7 @@ class FirestoreRepository {
             );
 
             return childs.map((child) {
-              final Point point = pointMap[child.pointId] ?? const Point(
-                pointId: "",
-                name: "",
-                pointName: "",
-                pointCode: "",
-                fullName: "",
-                type: "",
-                active: false,
-                country: "",
-                regionId: '',
-                location: "",
-                province: "",
-                phoneCode: "",
-                phoneLength: 0,
-                latitude: 0.0,
-                longitude: 0.0,
-                language: "",
-                cases: 0,
-                casesnormopeso: 0,
-                casesmoderada: 0,
-                casessevera: 0,
-                transactionHash: "",
-              );
+              final Point point = pointMap[child.pointId] ?? Point.getEmptyPoint();
 
               final Tutor tutor = tutorMap[child.tutorId] ?? Tutor(
                 tutorId: "",
@@ -194,29 +172,7 @@ class FirestoreRepository {
             );
 
             return childs.map((child) {
-              final Point point = pointMap[child.pointId] ?? const Point(
-                pointId: "",
-                name: "",
-                pointName: "",
-                pointCode: "",
-                fullName: "",
-                type: "",
-                active: false,
-                country: "",
-                regionId: '',
-                location: "",
-                province: "",
-                phoneCode: "",
-                phoneLength: 0,
-                latitude: 0.0,
-                longitude: 0.0,
-                language: "",
-                cases: 0,
-                casesnormopeso: 0,
-                casesmoderada: 0,
-                casessevera: 0,
-                transactionHash: "",
-              );
+              final Point point = pointMap[child.pointId] ?? Point.getEmptyPoint();
 
               final Tutor tutor = tutorMap[child.tutorId] ?? Tutor(
                 tutorId: "",

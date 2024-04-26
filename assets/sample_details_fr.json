@@ -334,13 +334,26 @@
         },
         {
           "type": "child",
-          "title": "Seguimiento de admisiones en los CRENAM Comunitarios",
+          "title": "Rapport par périmètre brachial et oedème",
           "displayType": "tab",
           "subItems": [
             {
               "type": "sample",
-              "title": "Seguimiento de admisiones en los CRENAM Comunitarios",
+              "title": "Rapport par périmètre brachial et oedème",
               "key": "diagnosis_communitary_crenam_by_region_date",
+              "codeLink": ""
+            }
+          ]
+        },
+        {
+          "type": "child",
+          "title": "Admissions et Sorties",
+          "displayType": "tab",
+          "subItems": [
+            {
+              "type": "sample",
+              "title": "Admissions et Sorties",
+              "key": "admissions_and_discharges",
               "codeLink": ""
             }
           ]

@@ -159,29 +159,7 @@ class FirestoreRepository {
             );
 
             return visits.map((visit) {
-                final point = pointMap[visit.pointId] ?? const Point(
-                    pointId: "",
-                    name: "",
-                    fullName: "",
-                    pointName: "",
-                    pointCode: "",
-                    type: "",
-                    active: false,
-                    country: "",
-                    regionId: '',
-                    location: "",
-                    province: "",
-                    phoneCode: "",
-                    phoneLength: 0,
-                    latitude: 0.0,
-                    longitude: 0.0,
-                    language: "",
-                    cases: 0,
-                    casesnormopeso: 0,
-                    casesmoderada: 0,
-                    casessevera: 0,
-                    transactionHash: "",
-                );
+                final point = pointMap[visit.pointId] ?? Point.getEmptyPoint();
 
                 final child = childMap[visit.childId] ?? Child(
                   childId: "",
@@ -276,29 +254,7 @@ class FirestoreRepository {
             );
 
             return visits.map((visit) {
-                final point = pointMap[visit.pointId] ?? const Point(
-                    pointId: "",
-                    name: "",
-                    pointName: "",
-                    pointCode: "",
-                    fullName: "",
-                    type: "",
-                    active: false,
-                    country: "",
-                    regionId: '',
-                    location: "",
-                    province: "",
-                    phoneCode: "",
-                    phoneLength: 0,
-                    latitude: 0.0,
-                    longitude: 0.0,
-                    language: "",
-                    cases: 0,
-                    casesnormopeso: 0,
-                    casesmoderada: 0,
-                    casessevera: 0,
-                    transactionHash: "",
-                );
+                final point = pointMap[visit.pointId] ?? Point.getEmptyPoint();
 
                 final child = childMap[visit.childId] ?? Child(
                   childId: "",

@@ -66,8 +66,9 @@ class Case extends Equatable {
     final chefValidation = data['chefValidation']?? false;
     final regionalValidation = data['regionalValidation']?? false;
     final admissionType = data['admissionType']?? "";
-    final admissionTypeServer = data['admissionTypeServer']?? "";
-    final closedReason = data['closedReason']?? "";
+    final admissionTypeServer = data['admissionTypeServer']?? "null";
+    // Si closedReason es NULL lo escribimos como null para distinguirlo de las que vienen cadenas vacías del servidor
+    final closedReason = data['closedReason']?? "null";
 
     return Case(
       caseId: documentId,
@@ -106,4 +107,18 @@ class Case extends Equatable {
       'closedReason': closedReason,
     };
   }
+}
+
+class CaseType {
+  // admissionTypeServer
+  static String newAdmission = 'New Admission';
+  static String relapse = 'Relapse'; // TODO: Not using for now
+  static String reAdmission = 'Readmission';
+  // closedReason
+  static String recovered = 'Recovered';
+  static String unresponsive = 'Unresponsive';
+  static String abandonment = 'Abandonment';
+  // Both
+  static String referred = 'Referred';
+  static String transfered = 'Transfered';
 }

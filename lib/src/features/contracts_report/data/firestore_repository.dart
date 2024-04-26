@@ -1,8 +1,13 @@
 import 'dart:async';
 
+import 'package:adminnut4health/src/features/cases/domain/case.dart';
+import 'package:adminnut4health/src/features/contracts_report/domain/case_full.dart';
 import 'package:adminnut4health/src/features/contracts_report/domain/diagnosis_comunitary_crenam_by_region_and_date_inform.dart';
 import 'package:adminnut4health/src/features/countries/domain/country.dart';
+import 'package:adminnut4health/src/features/locations/domain/location.dart';
+import 'package:adminnut4health/src/features/provinces/domain/province.dart';
 import 'package:adminnut4health/src/features/regions/domain/region.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -17,9 +22,6 @@ import '../domain/child_inform.dart';
 import '../domain/contract.dart';
 import '../domain/main_inform.dart';
 
-import 'package:tuple/tuple.dart';
-
-
 String documentIdFromCurrentDate() {
   final iso = DateTime.now().toIso8601String();
   return iso.replaceAll(':', '-').replaceAll('.', '-');
@@ -28,10 +30,13 @@ String documentIdFromCurrentDate() {
 class FirestorePath {
   static String contracts() => 'contracts';
   static String points() => 'points';
+  static String cases() => 'cases';
   static String visits() => 'visits';
   static String childs() => 'childs';
   static String countries() => 'countries';
   static String regions() => 'regions';
+  static String locations() => 'locations';
+  static String provinces() => 'provinces';
 }
 
 class FirestoreRepository {
@@ -62,6 +67,119 @@ class FirestoreRepository {
           }
           return query;
         },
+      sort: (a, b) => a.name.compareTo(b.name),
+    );
+  }
+
+  Stream<List<Location>> watchLocationsByCountryAndRegion({required CountryID countryId, required String regionId}) {
+    return _dataSource.watchCollection(
+      path: FirestorePath.locations(),
+      builder: (data, documentId) => Location.fromMap(data, documentId),
+      queryBuilder: (query) {
+        if (countryId.isNotEmpty) {
+          query = query.where('country', isEqualTo: countryId);
+        }
+        if (regionId.isNotEmpty) {
+          query = query.where('regionId', isEqualTo: regionId);
+        }
+        return query;
+      },
+      sort: (a, b) => a.name.compareTo(b.name),
+    );
+  }
+
+  Stream<List<Province>> watchProvincesByLocation({required CountryID countryId, required String regionId,  required String locationId}) {
+    return _dataSource.watchCollection(
+      path: FirestorePath.provinces(),
+      builder: (data, documentId) => Province.fromMap(data, documentId),
+      queryBuilder: (query) {
+        if (countryId.isNotEmpty) {
+          query = query.where('country', isEqualTo: countryId);
+        }
+        if (regionId.isNotEmpty) {
+          query = query.where('regionId', isEqualTo: regionId);
+        }
+        if (locationId.isNotEmpty) {
+          query = query.where('locationId', isEqualTo: locationId);
+        }
+        return query;
+      },
+      sort: (a, b) => a.name.compareTo(b.name),
+    );
+  }
+  Stream<List<Point>> watchPoints() {
+    return _dataSource.watchCollection(
+      path: FirestorePath.points(),
+      builder: (data, documentId) => Point.fromMap(data, documentId),
+      sort: (a, b) => a.name.compareTo(b.name),
+    );
+  }
+
+
+  Stream<List<Point>> watchPointsByLocation({
+    required CountryID countryId,
+    required String regionId,
+    required String locationId,
+    required String provinceId,
+    required String pointType,
+  }) {
+    return _dataSource.watchCollection(
+      path: FirestorePath.points(),
+      builder: (data, documentId) => Point.fromMap(data, documentId),
+      queryBuilder: (query) {
+        if (countryId.isNotEmpty) {
+          query = query.where('country', isEqualTo: countryId);
+        }
+        if (regionId.isNotEmpty) {
+          query = query.where('regionId', isEqualTo: regionId);
+        }
+        if (locationId.isNotEmpty) {
+          query = query.where('location', isEqualTo: locationId);
+        }
+        if (provinceId.isNotEmpty) {
+          query = query.where('province', isEqualTo: provinceId);
+        }
+        if (pointType.isNotEmpty) {
+          query = query.where('type', isEqualTo: pointType);
+        }
+        return query;
+      },
+      sort: (a, b) => a.name.compareTo(b.name),
+    );
+  }
+
+  Stream<List<Point>> watchPointsByLocationAndPoint({
+    required CountryID countryId,
+    required String regionId,
+    required String locationId,
+    required String provinceId,
+    required String pointType,
+    required String pointId,
+  }) {
+    return _dataSource.watchCollection(
+      path: FirestorePath.points(),
+      builder: (data, documentId) => Point.fromMap(data, documentId),
+      queryBuilder: (query) {
+        if (countryId.isNotEmpty) {
+          query = query.where('country', isEqualTo: countryId);
+        }
+        if (regionId.isNotEmpty) {
+          query = query.where('regionId', isEqualTo: regionId);
+        }
+        if (locationId.isNotEmpty) {
+          query = query.where('location', isEqualTo: locationId);
+        }
+        if (provinceId.isNotEmpty) {
+          query = query.where('province', isEqualTo: provinceId);
+        }
+        if (pointType.isNotEmpty) {
+          query = query.where('type', isEqualTo: pointType);
+        }
+        if (pointId.isNotEmpty) {
+          query = query.where('pointId', isEqualTo: pointId);
+        }
+        return query;
+      },
       sort: (a, b) => a.name.compareTo(b.name),
     );
   }
@@ -97,6 +215,23 @@ class FirestoreRepository {
     return points;
   }
 
+  Stream<List<Point>> watchPointsByCountryAndRegion(String countryId, String regionId) {
+    Stream<List<Point>> points =  _dataSource.watchCollection(
+        path: FirestorePath.points(),
+        builder: (data, documentId) => Point.fromMap(data, documentId),
+        queryBuilder: (query) {
+          if (countryId.isNotEmpty) {
+            query = query.where('country', isEqualTo: countryId);
+          }
+          if (regionId.isNotEmpty) {
+            query = query.where('regionId', isEqualTo: regionId);
+          }
+          return query.orderBy('fullName');
+        }
+    );
+    return points;
+  }
+
   Stream<List<Child>> watchChilds() {
     Stream<List<Child>> childs =  _dataSource.watchCollection(
       path: FirestorePath.childs(),
@@ -118,6 +253,39 @@ class FirestoreRepository {
       },
     );
     return visits;
+  }
+
+  Stream<List<Case>> watchCases() {
+    Stream<List<Case>> cases =  _dataSource.watchCollection(
+      path: FirestorePath.cases(),
+      builder: (data, documentId) => Case.fromMap(data, documentId),
+    );
+    return cases;
+  }
+
+  Stream<List<CaseFull>> watchCasesFull() {
+    final emptyPoint = Point.getEmptyPoint();
+    final emptyChild = Child.getEmptyChild();
+
+    return CombineLatestStream.combine3(
+        watchCases(),
+        watchChilds(),
+        watchPoints(),
+            (List<Case> cases, List<Child> childs, List<Point> points) {
+          var casesList = cases.map((myCase) {
+            final Map<String, Child> childMap = Map.fromEntries(
+              childs.map((child) => MapEntry(child.childId, child)),
+            );
+            final child = childMap[myCase.childId] ?? emptyChild;
+            final Map<String, Point> pointMap = Map.fromEntries(
+              points.map((point) => MapEntry(point.pointId, point)),
+            );
+            final point = pointMap[myCase.pointId] ?? emptyPoint;
+            return CaseFull(myCase, point, child);
+          }).toList();
+
+          return casesList;
+        });
   }
 
   Stream<List<VisitWithChildAndPoint>> watchVisitWithChildAndCommunityCrenamPoint(int start, int end, String countryId, String regionId) {
@@ -154,8 +322,6 @@ class FirestoreRepository {
           return oldestVisits;
         });
   }
-
-
 
   Stream<List<MainInform>> watchMainInform(int start, int end) {
     return watchContracts(start, end).map((contracts) {
@@ -421,8 +587,8 @@ final mainInformMauritane2024StreamProvider = StreamProvider.family.autoDispose<
   }
 
   final database = ref.watch(databaseProvider);
-  final start = rangeDate.item1;
-  final end = rangeDate.item2;
+  final start = rangeDate.value1;
+  final end = rangeDate.value2;
 
   return database.watchMainInform(start, end);
 });
@@ -434,8 +600,8 @@ final childInformMauritane2024StreamProvider = StreamProvider.family.autoDispose
   }
 
   final database = ref.watch(databaseProvider);
-  final start = range.item1;
-  final end = range.item2;
+  final start = range.value1;
+  final end = range.value2;
 
   return database.watchChildInform(start,end);
 });
@@ -447,12 +613,21 @@ final visitWithChildAndCommunityCrenamPoinStreamProvider = StreamProvider.family
   }
 
   final database = ref.watch(databaseProvider);
-  final start = range.item1;
-  final end = range.item2;
-  final countryId = range.item3;
-  final regionId = range.item4;
+  final start = range.value1;
+  final end = range.value2;
+  final countryId = range.value3;
+  final regionId = range.value4;
 
   return database.watchVisitWithChildAndCommunityCrenamPoint(start, end, countryId, regionId);
+});
+
+final casesFullStreamProvider = StreamProvider.autoDispose<List<CaseFull>>((ref) {
+  final user = ref.watch(authStateChangesProvider).value;
+  if (user == null) {
+    throw AssertionError('User can\'t be null');
+  }
+  final database = ref.watch(databaseProvider);
+  return database.watchCasesFull();
 });
 
 final countriesStreamProvider = StreamProvider.autoDispose<List<Country>>((ref) {
@@ -480,6 +655,46 @@ final regionsByCountryStreamProvider = StreamProvider.family.autoDispose<List<Re
   }
   final database = ref.watch(databaseProvider);
   return database.watchRegionsByCountry(countryId: countryId);
+});
+
+final locationsByCountryAndRegionStreamProvider = StreamProvider.family.autoDispose<List<Location>, Tuple2<String, String>>((ref, locationFilter) {
+  final user = ref.watch(authStateChangesProvider).value;
+  if (user == null) {
+    throw AssertionError('User can\'t be null');
+  }
+  final database = ref.watch(databaseProvider);
+  final countryId = locationFilter.value1;
+  final regionId = locationFilter.value2;
+
+  return database.watchLocationsByCountryAndRegion(countryId: countryId, regionId: regionId);
+});
+
+final provincesByLocationStreamProvider = StreamProvider.family.autoDispose<List<Province>, Tuple3<String, String, String>>((ref, provinceFilter) {
+  final user = ref.watch(authStateChangesProvider).value;
+  if (user == null) {
+    throw AssertionError('User can\'t be null');
+  }
+  final database = ref.watch(databaseProvider);
+  final countryId = provinceFilter.value1;
+  final regionId = provinceFilter.value2;
+  final locationId = provinceFilter.value3;
+
+  return database.watchProvincesByLocation(countryId: countryId, regionId: regionId, locationId: locationId);
+});
+
+final pointsByLocationStreamProvider = StreamProvider.family.autoDispose<List<Point>, Tuple5<String, String, String, String, String>>((ref, pointFilter) {
+  final user = ref.watch(authStateChangesProvider).value;
+  if (user == null) {
+    throw AssertionError('User can\'t be null');
+  }
+  final database = ref.watch(databaseProvider);
+  final countryId = pointFilter.value1;
+  final regionId = pointFilter.value2;
+  final locationId = pointFilter.value3;
+  final provinceId = pointFilter.value4;
+  final pointType = pointFilter.value5;
+
+  return database.watchPointsByLocation(countryId: countryId, regionId: regionId, locationId: locationId, provinceId: provinceId, pointType: pointType);
 });
 
 

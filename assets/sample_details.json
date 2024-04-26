@@ -334,13 +334,26 @@
         },
         {
           "type": "child",
-          "title": "Seguimiento de admisiones en los CRENAM Comunitarios",
+          "title": "Informe por perímetro braquial y edema",
           "displayType": "tab",
           "subItems": [
             {
               "type": "sample",
-              "title": "Seguimiento de admisiones en los CRENAM Comunitarios",
+              "title": "Informe por perímetro braquial y edema",
               "key": "diagnosis_communitary_crenam_by_region_date",
+              "codeLink": ""
+            }
+          ]
+        },
+        {
+          "type": "child",
+          "title": "Admisiones y Altas",
+          "displayType": "tab",
+          "subItems": [
+            {
+              "type": "sample",
+              "title": "Admisiones y Altas",
+              "key": "admissions_and_discharges",
               "codeLink": ""
             }
           ]

@@ -2,6 +2,7 @@
 /// import 'package:flutter/foundation.dart';
 
 import 'package:adminnut4health/src/features/countries/domain/country.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,7 +17,6 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
-import 'package:tuple/tuple.dart';
 
 import '../../../sample/model/sample_view.dart';
 import '../../regions/domain/region.dart';
@@ -541,7 +541,7 @@ class _DiagnosisCommunitaryCrenamByRegionAndDateDataGridState extends Localizati
     if (args.value is PickerDateRange) {
       final PickerDateRange range = args.value;
       final DateTime? startDate = range.startDate;
-      final DateTime? endDate = range.endDate;
+      final DateTime? endDate = range.endDate?.copyWith(hour: 23, minute: 59, second: 59);
 
       start = startDate!.millisecondsSinceEpoch;
       if (endDate != null && endDate.millisecondsSinceEpoch > startDate.millisecondsSinceEpoch){
