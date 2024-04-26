@@ -76,7 +76,8 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
       _recovered, _unresponsive, _abandonment, _referredOut, _transferedOut,
       _totalDischarges, _totalAtTheEnd, _start, _end, _exportXLS, _exportPDF,
       _total, _contracts, _selectCountry, _selectRegion, _selectLocation,
-      _selectProvince, _selectPointType, _selectPoint;
+      _selectProvince, _selectPointType, _selectPoint, _allMale, _allFemale,
+      _admissions, _discharges;
 
   late Map<String, double> columnWidths = {
     'Categoría': 200,
@@ -113,7 +114,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
   List<Province> provinces = <Province>[];
   Province? provinceSelected;
 
-  final pointTypes =  ["TODOS", "CRENAM", "CRENAS", "CRENI", "Otro"];
+  late List<String> pointTypes;
   String? pointTypeSelected;
 
   List<Point> points = <Point>[];
@@ -135,7 +136,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
       return;
     } else {
       this.countries.clear();
-      this.countries.add(const Country(countryId: "", name: "TODOS", code: "",
+      this.countries.add(Country(countryId: "", name: _allMale, code: "",
           active: false, needValidation: false, cases: 0, casesnormopeso: 0,
           casesmoderada: 0, casessevera: 0));
       this.countries.addAll(countries.value!);
@@ -147,7 +148,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
       return;
     } else {
       this.regions.clear();
-      this.regions.add(const Region(regionId: '', name: 'TODAS', countryId: '', active: false));
+      this.regions.add(Region(regionId: '', name: _allFemale, countryId: '', active: false));
       this.regions.addAll(regions.value!);
     }
   }
@@ -157,7 +158,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
       return;
     } else {
       this.locations.clear();
-      this.locations.add(const Location(locationId: '', name: 'TODAS', country: '', regionId: '', active: false));
+      this.locations.add(Location(locationId: '', name: _allFemale, country: '', regionId: '', active: false));
       this.locations.addAll(locations.value!);
     }
   }
@@ -167,7 +168,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
       return;
     } else {
       this.provinces.clear();
-      this.provinces.add(const Province.all());
+      this.provinces.add(Province(provinceId: '', locationId: '', regionId: '', name: _allFemale, country: '', active: false));
       this.provinces.addAll(provinces.value!);
     }
   }
@@ -194,23 +195,23 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
   _updateInformData() {
     List<CaseFull> filteredCases = List.from(cases);
 
-    if (countrySelected != null && countrySelected!.name != 'TODOS') {
+    if (countrySelected != null && countrySelected!.name != _allMale) {
       filteredCases = filteredCases.where((c) =>  c.point?.country == countrySelected?.countryId).toList();
     }
 
-    if (regionSelected != null && regionSelected!.name != 'TODAS') {
+    if (regionSelected != null && regionSelected!.name != _allFemale) {
       filteredCases = filteredCases.where((c) =>  c.point?.regionId == regionSelected?.regionId).toList();
     }
 
-    if (locationSelected != null && locationSelected!.name != 'TODAS') {
+    if (locationSelected != null && locationSelected!.name != _allFemale) {
       filteredCases = filteredCases.where((c) =>  c.point?.location == locationSelected?.locationId).toList();
     }
 
-    if (provinceSelected != null && provinceSelected!.name != 'TODAS') {
+    if (provinceSelected != null && provinceSelected!.name != _allFemale) {
       filteredCases = filteredCases.where((c) =>  c.point?.province == provinceSelected?.provinceId).toList();
     }
 
-    if (pointTypeSelected != null && pointTypeSelected != 'TODOS') {
+    if (pointTypeSelected != null && pointTypeSelected != _allMale) {
       filteredCases = filteredCases.where((c) =>  c.point?.type == pointTypeSelected).toList();
     }
 
@@ -739,39 +740,6 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
   }
 
   SfDataGrid _buildDataGrid() {
-    final selectedLocale = model.locale.toString();
-    switch (selectedLocale) {
-      case 'en_US':
-        _category = 'Category';
-        _patientsAtBeginning = 'Patients at beginning';
-        _exportXLS = 'Export XLS';
-        _exportPDF = 'Export PDF';
-        _total = 'Total Locations';
-        _contracts = 'Diagnosis';
-        _start = 'Start';
-        _end = 'End';
-        break;
-      case 'es_ES':
-        _category = 'Categoría';
-        _patientsAtBeginning = 'Pacientes al comienzo';
-        _exportXLS = 'Exportar XLS';
-        _exportPDF = 'Exportar PDF';
-        _total = 'Totales';
-        _contracts = 'Diagnósticos';
-        _start = 'Inicio';
-        _end = 'Fin';
-        break;
-      case 'fr_FR':
-        _category = 'Catégorie';
-        _patientsAtBeginning = 'Patients au début';
-        _exportXLS = 'Exporter XLS';
-        _exportPDF = 'Exporter PDF';
-        _total = 'Total';
-        _contracts = 'Diagnostics';
-        _start = 'Début';
-        _end = 'Fin';
-        break;
-    }
     return SfDataGrid(
       frozenColumnsCount: 1,
       key: _key,
@@ -992,14 +960,10 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
         StackedHeaderRow(cells: [
           StackedHeaderCell(
               columnNames: ['Nuevos casos', 'Readmisiones', 'Referidos (Admisión)', 'Recaídas', 'Transferidos (Admisión)', 'TOTAL ADMISIONES'],
-              child: Container(
-                  //color: const Color(0xFFF1F1F1),
-                  child: Center(child: Text('ADMISIONES', style: TextStyle(fontWeight: FontWeight.bold),)))),
+              child: Center(child: Text(_admissions, style: const TextStyle(fontWeight: FontWeight.bold),))),
           StackedHeaderCell(
               columnNames: ['Recuperados', 'Sin respuesta', 'Abandonos', 'Referidos (Alta)', 'Transferidos (Alta)', 'TOTAL ALTAS'],
-              child: Container(
-                  //color: const Color(0xFFF1F1F1),
-                  child: Center(child: Text('ALTAS', style: TextStyle(fontWeight: FontWeight.bold),)))),
+              child: Center(child: Text(_discharges, style: const TextStyle(fontWeight: FontWeight.bold),))),
         ]),
       ],
     );
@@ -1011,29 +975,94 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
     mainInformDataGridSource = AdmissionsAndDischargesDataGridSource(List.empty());
 
     selectedLocale = model.locale.toString();
+    switch (selectedLocale) {
+      case 'en_US':
+        _category = 'Category';
+        _patientsAtBeginning = 'Patients at beginning';
+        _newAdmissions = 'New admissions';
+        _reAdmissions = 'Readmissions';
+        _relapses = 'Relapses';
+        _referredIn = 'Referred (Admission)';
+        _transferedIn = 'Transferred (Admission)';
+        _totalAdmissions = 'TOTAL ADMISSIONS';
+        _totalAttended = 'TOTAL ATTENDED';
+        _recovered = 'Recovered';
+        _unresponsive = 'Unresponsive';
+        _abandonment = 'Abandonment';
+        _referredOut = 'Referred (Discharge)';
+        _transferedOut = 'Transferred (Discharge)';
+        _totalDischarges = 'TOTAL DISCHARGES';
+        _totalAtTheEnd = 'TOTAL AT THE END';
+        _exportXLS = 'Export XLS';
+        _exportPDF = 'Export PDF';
+        _total = 'Total Locations';
+        _contracts = 'Diagnosis';
+        _start = 'Start';
+        _end = 'End';
+        _allMale = 'ALL';
+        _allFemale = 'ALL';
+        _admissions = 'ADMISSIONS';
+        _discharges = 'DISCHARGES';
+        break;
+      case 'es_ES':
+        _category = 'Categoría';
+        _patientsAtBeginning = 'Pacientes al inicio';
+        _newAdmissions = 'Nuevos casos';
+        _reAdmissions = 'Readmisiones';
+        _relapses = 'Recaídas';
+        _referredIn = 'Referidos (Admisión)';
+        _transferedIn = 'Transferidos (Admisión)';
+        _totalAdmissions = 'TOTAL ADMISIONES';
+        _totalAttended = 'TOTAL ATENDIDOS/AS';
+        _recovered = 'Recuperados';
+        _unresponsive = 'Sin respuesta';
+        _abandonment = 'Abandonos';
+        _referredOut = 'Referidos (Alta)';
+        _transferedOut = 'Transferidos (Alta)';
+        _totalDischarges = 'TOTAL ALTAS';
+        _totalAtTheEnd = 'TOTAL AL FINAL';
+        _exportXLS = 'Exportar XLS';
+        _exportPDF = 'Exportar PDF';
+        _total = 'Totales';
+        _contracts = 'Diagnósticos';
+        _start = 'Inicio';
+        _end = 'Fin';
+        _allMale = 'TODOS';
+        _allFemale = 'TODAS';
+        _admissions = 'ADMISIONES';
+        _discharges = 'ALTAS';
+        break;
+      case 'fr_FR':
+        _category = 'Catégorie';
+        _patientsAtBeginning = 'Patients au début';
+        _newAdmissions = 'Nouvelles admissions';
+        _reAdmissions = 'Réadmissions';
+        _relapses = 'Rechutes';
+        _referredIn = 'Références (Admission)';
+        _transferedIn = 'Transféré (Admission)';
+        _totalAdmissions = 'ADMISSIONS TOTALES';
+        _totalAttended = 'ATTENTION TOTALE';
+        _recovered = 'Rétabli';
+        _unresponsive = 'Sans réponse';
+        _abandonment = 'Décrocheurs';
+        _referredOut = 'Références (Sortie)';
+        _transferedOut = 'Transféré (Sortie)';
+        _totalDischarges = 'SORTIES TOTALES';
+        _totalAtTheEnd = 'TOTAL À LA FIN';
+        _exportXLS = 'Exporter XLS';
+        _exportPDF = 'Exporter PDF';
+        _total = 'Total';
+        _contracts = 'Diagnostics';
+        _start = 'Début';
+        _end = 'Fin';
+        _allMale = 'TOUS';
+        _allFemale = 'TOUTES';
+        _admissions = 'ADMISSIONS';
+        _discharges = 'SORTIES';
+        break;
+    }
 
-    _category = 'Categoría';
-    _patientsAtBeginning = 'Pacientes al inicio';
-    _newAdmissions = 'Nuevos casos';
-    _reAdmissions = 'Readmisiones';
-    _relapses = 'Recaídas';
-    _referredIn = 'Referidos (Admisión)';
-    _transferedIn = 'Transferidos (Admisión)';
-    _totalAdmissions = 'TOTAL ADMISIONES';
-    _totalAttended = 'TOTAL ATENDIDOS/AS';
-    _recovered = 'Recuperados';
-    _unresponsive = 'Sin respuesta';
-    _abandonment = 'Abandonos';
-    _referredOut = 'Referidos (Alta)';
-    _transferedOut = 'Transferidos (Alta)';
-    _totalDischarges = 'TOTAL ALTAS';
-    _totalAtTheEnd = 'TOTAL AL FINAL';
-    _exportXLS = 'Exportar XLS';
-    _exportPDF = 'Exportar PDF';
-    _total = 'Diagnósticos totales';
-    _contracts = 'Diagnósticos';
-    _start = 'Inicio';
-    _end = 'Fin';
+    pointTypes = [_allMale, "CRENAM", "CRENAS", "CRENI", "Otro"];
   }
 
 
@@ -1079,7 +1108,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
               regionSelected?.regionId??"",
               locationSelected?.locationId??"",
               provinceSelected?.provinceId??"",
-              pointTypeSelected == "TODOS"?"": (pointTypeSelected??""),
+              pointTypeSelected == _allMale?"": (pointTypeSelected??""),
           );
           final pointsAsyncValue = ref.watch(pointsByLocationStreamProvider(pointFilter));
           if (pointsAsyncValue.value != null) {
@@ -1486,55 +1515,13 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
                     _refreshPointsSelected();
                   });
                 },
-                child: Text("TODOS", style: TextStyle(color: model.textColor)),
+                child: Text(_allMale, style: TextStyle(color: model.textColor)),
               )
             ],
           ),
         ),
       ),
     );
-    return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          PopupMenuButton<Point>(
-            offset: const Offset(0, -380),
-            itemBuilder: (context) => points.map((p) => PopupMenuItem<Point>(
-                value: p,
-                child: StatefulBuilder(
-                    builder: (context, setStateSB) {
-                    return CheckboxMenuButton(
-                      value: p.isSelected,
-                      onChanged: (bool? value) {
-                        setStateSB(() {
-                          p.isSelected = value?? false;
-                          _refreshPointsSelected();
-                        });
-                        setState(() {
-
-                        });
-                      },
-                      child: Text(p.name, style: TextStyle(color: model.textColor)),
-                    );
-                  }
-                ))).toList(),
-            child: Text(_selectPoint),
-          ),
-          CheckboxMenuButton(
-            value: !points.any((p) => !p.isSelected),
-            onChanged: (bool? value) {
-              setState(() {
-                if (value??false) {
-                  _selectAllPoints();
-                } else {
-                  _unselectAllPoints();
-                }
-                _refreshPointsSelected();
-              });
-            },
-            child: Text("TODOS", style: TextStyle(color: model.textColor)),
-          )
-        ],
-      );
   }
 
   _selectAllPoints(){
