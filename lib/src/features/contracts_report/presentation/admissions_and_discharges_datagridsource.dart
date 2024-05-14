@@ -31,7 +31,7 @@ class AdmissionsAndDischargesDataGridSource extends DataGridSource {
           DataGridCell<int>(columnName: 'TOTAL ATENDIDOS/AS', value: mainInform.totalAttended()),
           DataGridCell<int>(columnName: 'Recuperados', value: mainInform.recovered),
           DataGridCell<int>(columnName: 'Sin respuesta', value: mainInform.unresponsive),
-          DataGridCell<int>(columnName: 'Abandono', value: mainInform.abandonment),
+          DataGridCell<int>(columnName: 'Abandonos', value: mainInform.abandonment),
           DataGridCell<int>(columnName: 'Referidos (Alta)', value: mainInform.referredOut),
           DataGridCell<int>(columnName: 'Transferidos (Alta)', value: mainInform.transferedOut),
           DataGridCell<int>(columnName: 'TOTAL ALTAS', value: mainInform.totalDischarges()),
