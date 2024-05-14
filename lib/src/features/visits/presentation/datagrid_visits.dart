@@ -54,7 +54,7 @@ class _VisitDataGridState extends LocalizationSampleViewState {
   late String selectedLocale;
 
   /// Translate names
-  late String _chefValidation, _regionalValidation, _point, _tutor, _child, _case, _admission, _createDate,  _height, _weight, _imc,
+  late String _chefValidation, _regionalValidation, _point, _tutor, _fefa, _child, _case, _admission, _createDate,  _height, _weight, _imc,
       _armCirunference, _status, _edema, _respirationStatus, _appetiteTest,
       _infection, _eyesDeficiency, _deshidratation, _vomiting, _diarrhea, _fever,
       _temperature, _cough, _vaccinationCard, _rubeolaVaccinated, _vitamineAVaccinated,
@@ -63,6 +63,7 @@ class _VisitDataGridState extends LocalizationSampleViewState {
       _total, _visits, _validateData, _pointId, _visitId, _caseId, _tutorId, _childId;
 
   late Map<String, double> columnWidths = {
+    'FEFA': 150,
     'Validación Médico Jefe': 200,
     'Validación Dirección Regional': 200,
     'Punto': 150,
@@ -443,6 +444,7 @@ class _VisitDataGridState extends LocalizationSampleViewState {
         _regionalValidation = 'Regional validation';
         _point = 'Point';
         _tutor = 'Mother, father or tutor';
+        _fefa = 'FEFA';
         _child = 'Child';
         _case = 'Case';
         _admission = 'Admission';
@@ -489,6 +491,7 @@ class _VisitDataGridState extends LocalizationSampleViewState {
         _regionalValidation = 'Validación Dirección Regional';
         _point = 'Punto';
         _tutor = 'Madre, padre o tutor';
+        _fefa = 'FEFA';
         _child = 'Niño/a';
         _case = 'Caso';
         _admission = 'Admisión';
@@ -535,6 +538,7 @@ class _VisitDataGridState extends LocalizationSampleViewState {
         _regionalValidation = 'Validation direction régionale de la santé';
         _point = 'Place';
         _tutor = 'Mère, père ou tuteur';
+        _fefa = 'FEFA';
         _child = 'Enfant';
         _case = 'Cas';
         _admission = 'Admission';
@@ -599,6 +603,18 @@ class _VisitDataGridState extends LocalizationSampleViewState {
       allowSorting: true,
       allowMultiColumnSorting: true,
       columns: <GridColumn>[
+        GridColumn(
+            columnName: 'FEFA',
+            width: columnWidths['FEFA']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _fefa,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
         GridColumn(
             columnName: 'Validación Médico Jefe',
             width: columnWidths['Validación Médico Jefe']!,
@@ -1085,6 +1101,7 @@ class _VisitDataGridState extends LocalizationSampleViewState {
     _regionalValidation = 'Validación Dirección Regional';
     _point = 'Punto';
     _tutor = 'Madre, padre o tutor';
+    _fefa = 'FEFA';
     _child = 'Niño/a';
     _case = 'Caso';
     _admission = 'Admisión';

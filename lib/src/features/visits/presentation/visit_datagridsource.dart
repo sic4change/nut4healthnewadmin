@@ -65,6 +65,7 @@ class VisitDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Punto ID', value: visitCombined.visit.pointId),
           DataGridCell<String>(columnName: 'Madre, padre o tutor ID', value: visitCombined.visit.tutorId),
           DataGridCell<String>(columnName: 'Niño/a ID', value: visitCombined.visit.childId),
+          DataGridCell<bool>(columnName: 'FEFA', value: visitCombined.myCase!.fefaId.isNotEmpty),
         ]);
       }).toList();
     }
@@ -108,6 +109,7 @@ class VisitDataGridSource extends DataGridSource {
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(cells: <Widget>[
+      _buildBoolean(row.getCells()[39].value),
       _buildBoolean(row.getCells()[33].value),
       _buildBoolean(row.getCells()[34].value),
       _buildStandardContainer(row.getCells()[1].value.toString()),

@@ -55,12 +55,13 @@ class _CaseDataGridState extends LocalizationSampleViewState {
   late String selectedLocale;
 
   /// Translate names
-  late String _chefValidation, _regionalValidation, _point, _tutor, _child, _name,
+  late String _chefValidation, _regionalValidation, _point, _tutor, _fefa, _child, _name,
       _admissionType, _admissionTypeServer, _closedReason, _createDate, _lastDate, _visits,
       _observations, _status, _exportXLS, _exportPDF, _total, _cases, _validateData,
       _pointId, _caseId, _tutorId, _childId;
 
   late Map<String, double> columnWidths = {
+    'FEFA': 150,
     'Validación Médico Jefe': 200,
     'Validación Dirección Regional': 200,
     'Punto': 150,
@@ -264,6 +265,7 @@ class _CaseDataGridState extends LocalizationSampleViewState {
             pointId: c.myCase.pointId,
             childId: c.myCase.childId,
             tutorId: c.myCase.tutorId,
+            fefaId: c.myCase.fefaId,
             name: c.myCase.name,
             admissionType: c.myCase.admissionType,
             admissionTypeServer: c.myCase.admissionTypeServer,
@@ -287,6 +289,7 @@ class _CaseDataGridState extends LocalizationSampleViewState {
             pointId: c.myCase.pointId,
             childId: c.myCase.childId,
             tutorId: c.myCase.tutorId,
+            fefaId: c.myCase.fefaId,
             name: c.myCase.name,
             admissionType: c.myCase.admissionType,
             admissionTypeServer: c.myCase.admissionTypeServer,
@@ -381,6 +384,7 @@ class _CaseDataGridState extends LocalizationSampleViewState {
         _regionalValidation = 'Regional validation';
         _point = 'Point';
         _tutor = 'Mother, father or tutor';
+        _fefa = 'FEFA';
         _child = 'Child';
         _name = 'Name';
         _admissionType = 'Admission type';
@@ -410,6 +414,7 @@ class _CaseDataGridState extends LocalizationSampleViewState {
         _admissionTypeServer = 'Servidor tipo de admisión';
         _closedReason = 'Razón de cierre';
         _tutor = 'Madre, padre o tutor';
+        _fefa = 'FEFA';
         _child = 'Niño/a';
         _createDate = 'Fecha de alta';
         _lastDate = 'Última visita';
@@ -435,6 +440,7 @@ class _CaseDataGridState extends LocalizationSampleViewState {
         _admissionTypeServer = 'Serveur type d\'admission';
         _closedReason = 'Motif fermé';
         _tutor = 'Mère, père ou tuteur';
+        _fefa = 'FEFA';
         _child = 'Enfant';
         _createDate = 'Date d\'enregistrement';
         _lastDate = 'Derniere visite';
@@ -474,6 +480,18 @@ class _CaseDataGridState extends LocalizationSampleViewState {
       allowSorting: true,
       allowMultiColumnSorting: true,
       columns: <GridColumn>[
+        GridColumn(
+            columnName: 'FEFA',
+            width: columnWidths['FEFA']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _fefa,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
         GridColumn(
             columnName: 'Validación Médico Jefe',
             width: columnWidths['Validación Médico Jefe']!,
@@ -712,6 +730,7 @@ class _CaseDataGridState extends LocalizationSampleViewState {
     _admissionTypeServer = 'Servidor tipo de admisión';
     _closedReason = 'Razón de cierre';
     _tutor = 'Madre, padre o tutor';
+    _fefa = 'FEFA';
     _child = 'Niño/a';
     _createDate = 'Fecha de alta';
     _lastDate = 'Última visita';

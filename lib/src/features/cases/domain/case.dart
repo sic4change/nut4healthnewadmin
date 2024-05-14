@@ -11,6 +11,7 @@ class Case extends Equatable {
     required this.pointId,
     required this.childId,
     required this.tutorId,
+    required this.fefaId,
     required this.name,
     required this.createDate,
     required this.lastDate,
@@ -28,6 +29,7 @@ class Case extends Equatable {
   final String pointId;
   final String childId;
   final String tutorId;
+  final String fefaId;
   final String name;
   final DateTime createDate;
   final DateTime lastDate;
@@ -41,7 +43,7 @@ class Case extends Equatable {
   final String closedReason;
 
   @override
-  List<Object> get props => [caseId, pointId, childId, tutorId, name,
+  List<Object> get props => [caseId, pointId, childId, tutorId, fefaId, name,
     createDate, lastDate, observations, status, visits, chefValidation, regionalValidation,
     admissionType, admissionTypeServer, closedReason];
 
@@ -55,6 +57,7 @@ class Case extends Equatable {
     final pointId = data['point']?? "";
     final childId = data['childId']?? "";
     final tutorId = data['tutorId']?? "";
+    final fefaId = data['fefaId']?? "";
     final name = data['name']?? "";
     final Timestamp createtDateFirebase = data['createdate'] ?? Timestamp(0, 0);
     final createDate = createtDateFirebase.toDate();
@@ -75,6 +78,7 @@ class Case extends Equatable {
       pointId: pointId,
       childId: childId,
       tutorId: tutorId,
+      fefaId: fefaId,
       name: name,
       createDate: createDate,
       lastDate: lastDate,
@@ -94,6 +98,7 @@ class Case extends Equatable {
       'point': pointId,
       'childId': childId,
       'tutorId': tutorId,
+      'fefaId': fefaId,
       'name': name,
       'createDate': createDate,
       'lastDate': lastDate,

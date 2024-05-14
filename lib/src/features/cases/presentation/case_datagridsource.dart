@@ -45,6 +45,7 @@ class CaseDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Punto ID', value: myCaseWithPointChildAndTutor.myCase.pointId),
           DataGridCell<String>(columnName: 'Madre, padre o tutor ID', value: myCaseWithPointChildAndTutor.myCase.tutorId),
           DataGridCell<String>(columnName: 'Niño/a ID', value: myCaseWithPointChildAndTutor.myCase.childId),
+          DataGridCell<bool>(columnName: 'FEFA', value: myCaseWithPointChildAndTutor.myCase.fefaId.isNotEmpty),
         ]);
       }).toList();
     }
@@ -88,6 +89,7 @@ class CaseDataGridSource extends DataGridSource {
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(cells: <Widget>[
+      _buildBoolean(row.getCells()[19].value),
       _buildBoolean(row.getCells()[10].value),
       _buildBoolean(row.getCells()[11].value),
       _buildStandardContainer(row.getCells()[1].value.toString()),
