@@ -37,7 +37,9 @@ class CaseDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Estado', value: myCaseWithPointChildAndTutor.myCase.status),
           DataGridCell<bool>(columnName: 'Validación Médico Jefe', value: myCaseWithPointChildAndTutor.myCase.chefValidation),
           DataGridCell<bool>(columnName: 'Validación Dirección Regional', value: myCaseWithPointChildAndTutor.myCase.regionalValidation),
-          DataGridCell<String>(columnName: 'Tipo de admisión', value: myCaseWithPointChildAndTutor.myCase.admissionType),
+          DataGridCell<String>(columnName: 'Tipo de admisión',
+              value: myCaseWithPointChildAndTutor.myCase.admissionType.isNotEmpty? myCaseWithPointChildAndTutor.myCase.admissionType :
+                     _getAdmissionTypeByLanguage(myCaseWithPointChildAndTutor.point?.language)),
           DataGridCell<String>(columnName: 'Servidor tipo de admisión', value: myCaseWithPointChildAndTutor.myCase.admissionTypeServer),
           DataGridCell<String>(columnName: 'Razón de cierre',
               value: myCaseWithPointChildAndTutor.myCase.closedReason == 'null'? '': myCaseWithPointChildAndTutor.myCase.closedReason),
@@ -123,6 +125,21 @@ class CaseDataGridSource extends DataGridSource {
       _buildStandardContainer(row.getCells()[17].value.toString()),
       _buildStandardContainer(row.getCells()[18].value.toString()),
     ]);
+  }
+
+  String _getAdmissionTypeByLanguage(String? language) {
+    switch(language) {
+      case 'Español':
+        return 'Nueva Admisión';
+      case 'Arabe':
+        return 'قبول جديد';
+      case 'Francés':
+        return 'Nouvelle admission';
+      case 'French':
+        return 'Nouvelle admission';
+      default:
+        return 'Nouvelle admission';
+    }
   }
 
   setCases(List<CaseWithPointChildAndTutor>? myCaseData) {
