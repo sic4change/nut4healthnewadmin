@@ -73,7 +73,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
   /// Translate names
   late String _category, _patientsAtBeginning, _newAdmissions, _reAdmissions,
       _relapses, _referredIn, _transferedIn, _totalAdmissions, _totalAttended,
-      _recovered, _unresponsive, _abandonment, _referredOut, _transferedOut,
+      _recovered, _unresponsive, _deaths, _abandonment, _referredOut, _transferedOut,
       _totalDischarges, _totalAtTheEnd, _start, _end, _exportXLS, _exportPDF,
       _total, _contracts, _selectCountry, _selectRegion, _selectLocation,
       _selectProvince, _selectPointType, _selectPoint, _allMale, _allFemale,
@@ -91,6 +91,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
     'TOTAL ATENDIDOS/AS': 200,
     'Recuperados': 200,
     'Sin respuesta': 200,
+    'Fallecimientos': 200,
     'Abandonos': 200,
     'Referidos (Alta)': 200,
     'Transferidos (Alta)': 200,
@@ -253,6 +254,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
       transferedIn: 0,
       recovered: 0,
       unresponsive: 0,
+      deaths: 0,
       abandonment: 0,
       referredOut: 0,
       transferedOut: 0,
@@ -268,6 +270,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
       transferedIn: 0,
       recovered: 0,
       unresponsive: 0,
+      deaths: 0,
       abandonment: 0,
       referredOut: 0,
       transferedOut: 0,
@@ -283,6 +286,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
       transferedIn: 0,
       recovered: 0,
       unresponsive: 0,
+      deaths: 0,
       abandonment: 0,
       referredOut: 0,
       transferedOut: 0,
@@ -298,6 +302,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
       transferedIn: 0,
       recovered: 0,
       unresponsive: 0,
+      deaths: 0,
       abandonment: 0,
       referredOut: 0,
       transferedOut: 0,
@@ -313,6 +318,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
       transferedIn: 0,
       recovered: 0,
       unresponsive: 0,
+      deaths: 0,
       abandonment: 0,
       referredOut: 0,
       transferedOut: 0,
@@ -455,6 +461,21 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
           }
         }
 
+        // Fallecimientos
+        if (element.myCase.closedReason == CaseType.death) {
+          if (element.child == null || element.child!.childId == '') {
+            informs[3].deaths++;
+          } else {
+            if (element.child?.sex == "Masculino" ||
+                element.child?.sex == "Homme" ||
+                element.child?.sex == "ذكر") {
+              informs[0].deaths++;
+            } else {
+              informs[1].deaths++;
+            }
+          }
+        }
+
         // Abandono
         if (element.myCase.closedReason == CaseType.abandonment) {
           if (element.child == null || element.child!.childId == '') {
@@ -511,6 +532,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
     informs[2].transferedIn = informs[0].transferedIn + informs[1].transferedIn;
     informs[2].recovered = informs[0].recovered + informs[1].recovered;
     informs[2].unresponsive = informs[0].unresponsive + informs[1].unresponsive;
+    informs[2].deaths = informs[0].deaths + informs[1].deaths;
     informs[2].abandonment = informs[0].abandonment + informs[1].abandonment;
     informs[2].referredOut = informs[0].referredOut + informs[1].referredOut;
     informs[2].transferedOut = informs[0].transferedOut + informs[1].transferedOut;
@@ -524,6 +546,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
     informs[4].transferedIn = informs[2].transferedIn + informs[3].transferedIn;
     informs[4].recovered = informs[2].recovered + informs[3].recovered;
     informs[4].unresponsive = informs[2].unresponsive + informs[3].unresponsive;
+    informs[4].deaths = informs[2].deaths + informs[3].deaths;
     informs[4].abandonment = informs[2].abandonment + informs[3].abandonment;
     informs[4].referredOut = informs[2].referredOut + informs[3].referredOut;
     informs[4].transferedOut = informs[2].transferedOut + informs[3].transferedOut;
@@ -896,6 +919,18 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
             )
         ),
         GridColumn(
+            columnName: 'Fallecimientos',
+            width: columnWidths['Fallecimientos']!,
+            label: Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _deaths,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
             columnName: 'Abandonos',
             width: columnWidths['Abandonos']!,
             label: Container(
@@ -962,7 +997,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
               columnNames: ['Nuevos casos', 'Readmisiones', 'Referidos (Admisión)', 'Recaídas', 'Transferidos (Admisión)', 'TOTAL ADMISIONES'],
               child: Center(child: Text(_admissions, style: const TextStyle(fontWeight: FontWeight.bold),))),
           StackedHeaderCell(
-              columnNames: ['Recuperados', 'Sin respuesta', 'Abandonos', 'Referidos (Alta)', 'Transferidos (Alta)', 'TOTAL ALTAS'],
+              columnNames: ['Recuperados', 'Sin respuesta', 'Fallecimientos', 'Abandonos', 'Referidos (Alta)', 'Transferidos (Alta)', 'TOTAL ALTAS'],
               child: Center(child: Text(_discharges, style: const TextStyle(fontWeight: FontWeight.bold),))),
         ]),
       ],
@@ -988,6 +1023,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
         _totalAttended = 'TOTAL ATTENDED';
         _recovered = 'Recovered';
         _unresponsive = 'Unresponsive';
+        _deaths = 'Deaths';
         _abandonment = 'Abandonment';
         _referredOut = 'Referred (Discharge)';
         _transferedOut = 'Transferred (Discharge)';
@@ -1016,6 +1052,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
         _totalAttended = 'TOTAL ATENDIDOS/AS';
         _recovered = 'Recuperados';
         _unresponsive = 'Sin respuesta';
+        _deaths = 'Fallecimientos';
         _abandonment = 'Abandonos';
         _referredOut = 'Referidos (Alta)';
         _transferedOut = 'Transferidos (Alta)';
@@ -1044,6 +1081,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
         _totalAttended = 'ATTENTION TOTALE';
         _recovered = 'Rétabli';
         _unresponsive = 'Sans réponse';
+        _deaths = 'Décès';
         _abandonment = 'Décrocheurs';
         _referredOut = 'Références (Sortie)';
         _transferedOut = 'Transféré (Sortie)';

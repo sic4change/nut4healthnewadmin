@@ -123,6 +123,7 @@ class CaseType {
   // closedReason
   static String recovered = 'Recovered';
   static String unresponsive = 'Unresponsive';
+  static String death = 'Death';
   static String abandonment = 'Abandonment';
   // Both
   static String referred = 'Referred';

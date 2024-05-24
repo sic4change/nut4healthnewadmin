@@ -15,6 +15,7 @@ class AdmissionsAndDischargesInform extends Equatable {
     required this.transferedIn,
     required this.recovered,
     required this.unresponsive,
+    required this.deaths,
     required this.abandonment,
     required this.referredOut,
     required this.transferedOut,
@@ -31,10 +32,11 @@ class AdmissionsAndDischargesInform extends Equatable {
   int totalAttended() => totalAdmissions() + patientsAtBeginning;
   int recovered;
   int unresponsive;
+  int deaths;
   int abandonment;
   int referredOut;
   int transferedOut;
-  int totalDischarges() => recovered + unresponsive + abandonment + referredOut + transferedOut;
+  int totalDischarges() => recovered + unresponsive + deaths + abandonment + referredOut + transferedOut;
   int totalAtTheEnd() => totalAttended() - totalDischarges();
 
   @override
@@ -48,6 +50,7 @@ class AdmissionsAndDischargesInform extends Equatable {
     transferedIn,
     recovered,
     unresponsive,
+    deaths,
     abandonment,
     referredOut,
     transferedOut,
