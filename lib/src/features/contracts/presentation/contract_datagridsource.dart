@@ -222,16 +222,6 @@ class ContractDataGridSource extends DataGridSource {
     );
   }
 
-  Widget _buildStatus(dynamic value) {
-    return Center(
-      child: Text(
-        value,
-        style: _getStatusTextStyle(value),
-        overflow: TextOverflow.ellipsis,
-      ),
-    );
-  }
-
   Widget _getWidget(Widget image, String text) {
     return Container(
       color: Colors.transparent,
@@ -259,20 +249,6 @@ class ContractDataGridSource extends DataGridSource {
     } else if (value.toString() == 'Desnutrición Aguda Severa (SAM)') {
       return const TextStyle(color: Colors.red);
     }  else {
-      return const TextStyle(color: Colors.orange);
-    }
-  }
-
-  TextStyle _getStatusTextStyle(dynamic value) {
-    if (value.toString() == 'DUPLICATED') {
-      return const TextStyle(color: Colors.orange);
-    } else if (value.toString() == 'REGISTERED') {
-      return TextStyle(color: Colors.green);
-    } else if (value.toString() == 'DERIVED') {
-      return const TextStyle(color: Colors.red);
-    } else if (value.toString() == 'ADMITTED') {
-      return const TextStyle(color: Colors.purple);
-    } else {
       return const TextStyle(color: Colors.orange);
     }
   }
@@ -311,7 +287,11 @@ class ContractDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[2].value.toString()),
       ),
-      _buildStatus(row.getCells()[3].value.toString()),
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(row.getCells()[3].value.toString()),
+      ),
       _buildDesnutritionStatus(row.getCells()[4].value.toString()),
       _buildDouble(row.getCells()[5].value),
       _buildDouble(row.getCells()[6].value),
