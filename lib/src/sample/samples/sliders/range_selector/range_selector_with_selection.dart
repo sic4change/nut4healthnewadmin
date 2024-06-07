@@ -131,7 +131,7 @@ class _RangeSelectorSelectionPageState extends SampleViewState
             child: Center(
               child: SfRangeSelectorTheme(
                 data: SfRangeSelectorThemeData(
-                    brightness: themeData.colorScheme.brightness,
+                    //brightness: themeData.colorScheme.brightness,
                     labelOffset: const Offset(0, 2),
                     thumbColor: Colors.white,
                     overlayColor: const Color.fromRGBO(0, 178, 206, 0.24),
@@ -141,11 +141,11 @@ class _RangeSelectorSelectionPageState extends SampleViewState
                     inactiveTrackColor: const Color.fromRGBO(194, 194, 194, 1),
                     activeLabelStyle: TextStyle(
                         fontSize: 12,
-                        color: themeData.textTheme.bodyText1!.color!
+                        color: themeData.textTheme.bodyLarge!.color!
                             .withOpacity(0.87)),
                     inactiveLabelStyle: TextStyle(
                         fontSize: 12,
-                        color: themeData.textTheme.bodyText1!.color!
+                        color: themeData.textTheme.bodyLarge!.color!
                             .withOpacity(0.87)),
                     inactiveRegionColor: Colors.transparent),
                 child: SfRangeSelector(

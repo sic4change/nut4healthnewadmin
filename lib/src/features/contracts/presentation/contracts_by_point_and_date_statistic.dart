@@ -177,8 +177,8 @@ class _StatisticContractsByPointAndDatePageState extends SampleViewState
           isVisible: false,
           minimum: min,
           maximum: max,
-          visibleMinimum: rangeController.start,
-          visibleMaximum: rangeController.end,
+          initialVisibleMinimum: rangeController.start,
+          initialVisibleMaximum: rangeController.end,
           rangeController: rangeController),
       primaryYAxis: NumericAxis(
         labelPosition: ChartDataLabelPosition.outside,

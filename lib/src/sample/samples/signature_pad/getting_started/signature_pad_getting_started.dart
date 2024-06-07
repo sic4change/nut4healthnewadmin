@@ -317,7 +317,7 @@ class _GettingStartedSignaturePadState extends SampleViewState {
         child: IgnorePointer(
           child: SfDataGridTheme(
             data: SfDataGridThemeData(
-              brightness: _isDark ? Brightness.dark : Brightness.light,
+              //brightness: _isDark ? Brightness.dark : Brightness.light,
               headerColor: Colors.transparent,
               gridLineStrokeWidth: 1,
               gridLineColor: _isDark ? Colors.grey[850] : Colors.grey[200],

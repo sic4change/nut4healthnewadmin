@@ -59,10 +59,10 @@ class User extends Equatable {
     final username = data['username'] as String?;
     final name = data['name'] ?? "";
     final surname = data['surname'] ?? "";
-    final email = data['email'] as String;
+    final email = data['email'] ?? "";
     final phone = data['phone'] ?? "";
 
-    final role = data['role'] as String;
+    final role = data['role'] ?? "";
     if (email == null) {
       throw StateError('missing email for userId: $documentId');
     }
