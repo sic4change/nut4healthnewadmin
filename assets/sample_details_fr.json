@@ -357,6 +357,19 @@
               "codeLink": ""
             }
           ]
+        },
+        {
+          "type": "child",
+          "title": "Admissions et Sorties par poste de santé",
+          "displayType": "tab",
+          "subItems": [
+            {
+              "type": "sample",
+              "title": "Admissions et Sorties par poste de santé",
+              "key": "admissions_and_discharges_by_point",
+              "codeLink": ""
+            }
+          ]
         }
       ]
     }
