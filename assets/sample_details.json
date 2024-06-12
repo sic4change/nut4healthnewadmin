@@ -357,6 +357,19 @@
               "codeLink": ""
             }
           ]
+        },
+        {
+          "type": "child",
+          "title": "Admisiones y Altas por centro de salud",
+          "displayType": "tab",
+          "subItems": [
+            {
+              "type": "sample",
+              "title": "Admisiones y Altas por centro de salud",
+              "key": "admissions_and_discharges_by_point",
+              "codeLink": ""
+            }
+          ]
         }
       ]
     }
