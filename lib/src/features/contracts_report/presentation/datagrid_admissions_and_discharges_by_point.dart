@@ -719,7 +719,6 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
         onRowsPerPageChanged: (int? rowsPerPage) {
           setState(() {
             _rowsPerPage = rowsPerPage!;
-            mainInformDataGridSource.updateDataSource();
           });
         },
       ),
@@ -754,7 +753,7 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
       gridLinesVisibility: GridLinesVisibility.both,
       key: _key,
       source: mainInformDataGridSource,
-      //rowsPerPage: _rowsPerPage,
+      rowsPerPage: _rowsPerPage,
       //tableSummaryRows: _getTableSummaryRows(),
       allowColumnsResizing: true,
       shrinkWrapRows: true,
@@ -1655,7 +1654,12 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
 
           casesAsyncValue = ref.watch(casesFullStreamProvider);
 
-          if (casesAsyncValue.value != null) {
+          if (countriesAsyncValue.value != null
+              && regionsAsyncValue.value != null
+              && locationsAsyncValue.value != null
+              && provincesAsyncValue.value != null
+              && pointsAsyncValue.value != null && casesAsyncValue.value != null
+          ) {
             _saveMainInforms(casesAsyncValue);
           }
 
