@@ -67,12 +67,12 @@ class AdmissionsAndDischargesByPointDataGridSource extends DataGridSource {
           DataGridCell<int>(columnName: 'Transferidos (Alta) (M)', value: mainInform.transferedOutBoy),
           DataGridCell<int>(columnName: 'Transferidos (Alta) (F)', value: mainInform.transferedOutGirl),
           DataGridCell<int>(columnName: 'Transferidos (Alta) (FEFA)', value: mainInform.transferedOutFEFA),
-          DataGridCell<int>(columnName: 'TOTAL ALTAS (M)', value: mainInform.totalDischargesBoy()),
-          DataGridCell<int>(columnName: 'TOTAL ALTAS (F)', value: mainInform.totalDischargesGirl()),
-          DataGridCell<int>(columnName: 'TOTAL ALTAS (FEFA)', value: mainInform.totalDischargesFEFA()),
-          DataGridCell<int>(columnName: 'TOTAL AL FINAL (M)', value: mainInform.totalAtTheEndBoy()),
-          DataGridCell<int>(columnName: 'TOTAL AL FINAL (F)', value: mainInform.totalAtTheEndGirl()),
-          DataGridCell<int>(columnName: 'TOTAL AL FINAL (FEFA)', value: mainInform.totalAtTheEndFEFA()),
+          DataGridCell<int>(columnName: 'TOTAL ALTAS (M)', value: mainInform.point.contains("PORCENTAJES")? 0: mainInform.totalDischargesBoy()),
+          DataGridCell<int>(columnName: 'TOTAL ALTAS (F)', value: mainInform.point.contains("PORCENTAJES")? 0: mainInform.totalDischargesGirl()),
+          DataGridCell<int>(columnName: 'TOTAL ALTAS (FEFA)', value: mainInform.point.contains("PORCENTAJES")? 0: mainInform.totalDischargesFEFA()),
+          DataGridCell<int>(columnName: 'TOTAL AL FINAL (M)', value: mainInform.point.contains("PORCENTAJES")? mainInform.percentageBoyAtTheEnd: mainInform.totalAtTheEndBoy()),
+          DataGridCell<int>(columnName: 'TOTAL AL FINAL (F)', value: mainInform.point.contains("PORCENTAJES")? mainInform.percentageGirlAtTheEnd: mainInform.totalAtTheEndGirl()),
+          DataGridCell<int>(columnName: 'TOTAL AL FINAL (FEFA)', value: mainInform.point.contains("PORCENTAJES")? mainInform.percentageFEFAAtTheEnd: mainInform.totalAtTheEndFEFA()),
         ]);
       }).toList();
     }
@@ -80,10 +80,14 @@ class AdmissionsAndDischargesByPointDataGridSource extends DataGridSource {
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
+    final rowColor = row.getCells()[4].value.toString().contains("TOTAL") || row.getCells()[4].value.toString().contains("PORCENTAJES")? Colors.grey.withOpacity(0.3): Colors.white;
+    final textStyle = row.getCells()[4].value.toString().contains("TOTAL")|| row.getCells()[4].value.toString().contains("PORCENTAJES")? const TextStyle(fontWeight: FontWeight.bold): const TextStyle();
+
     return DataGridRowAdapter(
         cells: row.getCells().map((c) =>
-            _buildStandardContainer(c.value.toString())
+            _buildStandardContainer(c.value.toString(), textStyle)
         ).toList(),
+        color: rowColor
     );
   }
 
@@ -103,11 +107,11 @@ class AdmissionsAndDischargesByPointDataGridSource extends DataGridSource {
     );
   }
 
-  Widget _buildStandardContainer(String value) {
+  Widget _buildStandardContainer(String value, TextStyle textStyle) {
     return Container(
       padding: const EdgeInsets.all(8.0),
       alignment: Alignment.centerLeft,
-      child: Text(value),
+      child: Text(value, style: textStyle),
     );
   }
 

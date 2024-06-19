@@ -27,21 +27,21 @@ dependencies:
   path_provider_macos: ^2.0.0
   desktop_window: 0.4.0
   shared_preferences: ^2.1.2
-  syncfusion_localizations: ^24.1.46
-  syncfusion_flutter_datagrid_export: ^24.1.46
-  syncfusion_flutter_calendar: ^24.1.46
-  syncfusion_flutter_datepicker: ^24.1.46
-  syncfusion_flutter_charts: ^24.1.46
-  syncfusion_flutter_gauges: ^24.1.46
-  syncfusion_flutter_sliders: ^24.1.46
-  syncfusion_flutter_pdf: ^24.1.46
-  syncfusion_flutter_barcodes: ^24.1.46
-  syncfusion_officechart: ^24.1.46
-  syncfusion_flutter_maps: ^24.1.46
-  syncfusion_flutter_signaturepad: ^24.1.46
-  syncfusion_flutter_pdfviewer: ^24.1.46
-  syncfusion_flutter_treemap: ^24.1.46
-  syncfusion_flutter_core: ^24.1.46
+  syncfusion_localizations: ^24.2.7
+  syncfusion_flutter_datagrid_export: ^24.2.7
+  syncfusion_flutter_calendar: ^24.2.7
+  syncfusion_flutter_datepicker: ^24.2.7
+  syncfusion_flutter_charts: ^24.2.7
+  syncfusion_flutter_gauges: ^24.2.7
+  syncfusion_flutter_sliders: ^24.2.7
+  syncfusion_flutter_pdf: ^24.2.7
+  syncfusion_flutter_barcodes: ^24.2.7
+  syncfusion_officechart: ^24.2.7
+  syncfusion_flutter_maps: ^24.2.7
+  syncfusion_flutter_signaturepad: ^24.2.7
+  syncfusion_flutter_pdfviewer: ^24.2.7
+  syncfusion_flutter_treemap: ^24.2.7
+  syncfusion_flutter_core: ^24.2.7
   cupertino_icons: ^1.0.5
   font_awesome_flutter: ^10.5.0
   file_picker: ^5.3.2

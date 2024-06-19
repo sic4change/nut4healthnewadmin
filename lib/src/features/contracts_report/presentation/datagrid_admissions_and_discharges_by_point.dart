@@ -9,7 +9,9 @@ import 'package:adminnut4health/src/features/countries/domain/country.dart';
 import 'package:adminnut4health/src/features/locations/domain/location.dart';
 import 'package:adminnut4health/src/features/points/domain/point.dart';
 import 'package:adminnut4health/src/features/provinces/domain/province.dart';
+import 'package:adminnut4health/src/sample/samples/datagrid/datagrid_table_summary.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -257,6 +259,38 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
 
     List<AdmissionsAndDischargesByPointInform> informs = [];
 
+    AdmissionsAndDischargesByPointInform informSummaryRow1 = AdmissionsAndDischargesByPointInform(
+      country: "",
+      region: "",
+      location: "",
+      province: "",
+      point: "TOTAL",
+    );
+
+    AdmissionsAndDischargesByPointInform informSummaryRow2 = AdmissionsAndDischargesByPointInform(
+      country: "",
+      region: "",
+      location: "",
+      province: "",
+      point: "TOTALES NIÑAS Y NIÑOS",
+    );
+
+    AdmissionsAndDischargesByPointInform informSummaryRow3 = AdmissionsAndDischargesByPointInform(
+      country: "",
+      region: "",
+      location: "",
+      province: "",
+      point: "TOTALES NIÑAS, NIÑOS Y MEL",
+    );
+
+    AdmissionsAndDischargesByPointInform informSummaryRow4 = AdmissionsAndDischargesByPointInform(
+      country: "",
+      region: "",
+      location: "",
+      province: "",
+      point: "PORCENTAJES",
+    );
+
     for (Point point in pointsSelected) {
       AdmissionsAndDischargesByPointInform inform = AdmissionsAndDischargesByPointInform(
         country: countries.firstWhere((c) => c.countryId == point.country).name,
@@ -264,42 +298,6 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
         location: locations.firstWhere((l) => l.locationId == point.location).name,
         province: provinces.firstWhere((p) => p.provinceId == point.province).name,
         point: point.name,
-        patientsAtBeginningBoy: 0,
-        patientsAtBeginningGirl: 0,
-        patientsAtBeginningFEFA: 0,
-        newAdmissionsBoy: 0,
-        newAdmissionsGirl: 0,
-        newAdmissionsFEFA: 0,
-        reAdmissionsBoy: 0,
-        reAdmissionsGirl: 0,
-        reAdmissionsFEFA: 0,
-        relapsesBoy: 0,
-        relapsesGirl: 0,
-        relapsesFEFA: 0,
-        referredInBoy: 0,
-        referredInGirl: 0,
-        referredInFEFA: 0,
-        transferedInBoy: 0,
-        transferedInGirl: 0,
-        transferedInFEFA: 0,
-        recoveredBoy: 0,
-        recoveredGirl: 0,
-        recoveredFEFA: 0,
-        unresponsiveBoy: 0,
-        unresponsiveGirl: 0,
-        unresponsiveFEFA: 0,
-        deathsBoy: 0,
-        deathsGirl: 0,
-        deathsFEFA: 0,
-        abandonmentBoy: 0,
-        abandonmentGirl: 0,
-        abandonmentFEFA: 0,
-        referredOutBoy: 0,
-        referredOutGirl: 0,
-        referredOutFEFA: 0,
-        transferedOutBoy: 0,
-        transferedOutGirl: 0,
-        transferedOutFEFA: 0,
       );
 
       if (filteredCases.isNotEmpty) {
@@ -504,36 +502,135 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
         }
 
         informs.add(inform);
+        // Totales por cada columna
+        informSummaryRow1.patientsAtBeginningBoy += inform.patientsAtBeginningBoy;
+        informSummaryRow1.patientsAtBeginningGirl += inform.patientsAtBeginningGirl;
+        informSummaryRow1.patientsAtBeginningFEFA += inform.patientsAtBeginningFEFA;
+        informSummaryRow1.newAdmissionsBoy += inform.newAdmissionsBoy;
+        informSummaryRow1.newAdmissionsGirl += inform.newAdmissionsGirl;
+        informSummaryRow1.newAdmissionsFEFA += inform.newAdmissionsFEFA;
+        informSummaryRow1.reAdmissionsBoy += inform.reAdmissionsBoy;
+        informSummaryRow1.reAdmissionsGirl += inform.reAdmissionsGirl;
+        informSummaryRow1.reAdmissionsFEFA += inform.reAdmissionsFEFA;
+        informSummaryRow1.relapsesBoy += inform.relapsesBoy;
+        informSummaryRow1.relapsesGirl += inform.relapsesGirl;
+        informSummaryRow1.relapsesFEFA += inform.relapsesFEFA;
+        informSummaryRow1.referredInBoy += inform.referredInBoy;
+        informSummaryRow1.referredInGirl += inform.referredInGirl;
+        informSummaryRow1.referredInFEFA += inform.referredInFEFA;
+        informSummaryRow1.transferedInBoy += inform.transferedInBoy;
+        informSummaryRow1.transferedInGirl += inform.transferedInGirl;
+        informSummaryRow1.transferedInFEFA += inform.transferedInFEFA;
+        informSummaryRow1.recoveredBoy += inform.recoveredBoy;
+        informSummaryRow1.recoveredGirl += inform.recoveredGirl;
+        informSummaryRow1.recoveredFEFA += inform.recoveredFEFA;
+        informSummaryRow1.unresponsiveBoy += inform.unresponsiveBoy;
+        informSummaryRow1.unresponsiveGirl += inform.unresponsiveGirl;
+        informSummaryRow1.unresponsiveFEFA += inform.unresponsiveFEFA;
+        informSummaryRow1.deathsBoy += inform.deathsBoy;
+        informSummaryRow1.deathsGirl += inform.deathsGirl;
+        informSummaryRow1.deathsFEFA += inform.deathsFEFA;
+        informSummaryRow1.abandonmentBoy += inform.abandonmentBoy;
+        informSummaryRow1.abandonmentGirl += inform.abandonmentGirl;
+        informSummaryRow1.abandonmentFEFA += inform.abandonmentFEFA;
+        informSummaryRow1.referredOutBoy += inform.referredOutBoy;
+        informSummaryRow1.referredOutGirl += inform.referredOutGirl;
+        informSummaryRow1.referredOutFEFA += inform.referredOutFEFA;
+        informSummaryRow1.transferedOutBoy += inform.transferedOutBoy;
+        informSummaryRow1.transferedOutGirl += inform.transferedOutGirl;
+        informSummaryRow1.transferedOutFEFA += inform.transferedOutFEFA;
+
+        // Totales juntando niños y niñas
+        informSummaryRow2.patientsAtBeginningGirl += (inform.patientsAtBeginningBoy + inform.patientsAtBeginningGirl);
+        informSummaryRow2.newAdmissionsGirl += (inform.newAdmissionsBoy + inform.newAdmissionsGirl);
+        informSummaryRow2.reAdmissionsGirl += (inform.reAdmissionsBoy + inform.reAdmissionsGirl);
+        informSummaryRow2.relapsesGirl += (inform.relapsesBoy + inform.relapsesGirl);
+        informSummaryRow2.referredInGirl += (inform.referredInBoy + inform.referredInGirl);
+        informSummaryRow2.transferedInGirl += (inform.transferedInBoy + inform.transferedInGirl);
+        informSummaryRow2.recoveredGirl += (inform.recoveredBoy + inform.recoveredGirl);
+        informSummaryRow2.unresponsiveGirl += (inform.unresponsiveBoy + inform.unresponsiveGirl);
+        informSummaryRow2.deathsGirl += (inform.deathsBoy + inform.deathsGirl);
+        informSummaryRow2.abandonmentGirl += (inform.abandonmentBoy + inform.abandonmentGirl);
+        informSummaryRow2.referredOutGirl += (inform.referredOutBoy + inform.referredOutGirl);
+        informSummaryRow2.transferedOutGirl += (inform.transferedOutBoy + inform.transferedOutGirl);
+
+        // Totales juntando niñas, niños y MEL
+        informSummaryRow3.patientsAtBeginningFEFA += (inform.patientsAtBeginningBoy + inform.patientsAtBeginningGirl + inform.patientsAtBeginningFEFA);
+        informSummaryRow3.newAdmissionsFEFA += (inform.newAdmissionsBoy + inform.newAdmissionsGirl + inform.newAdmissionsFEFA);
+        informSummaryRow3.reAdmissionsFEFA += (inform.reAdmissionsBoy + inform.reAdmissionsGirl + inform.reAdmissionsFEFA);
+        informSummaryRow3.relapsesFEFA += (inform.relapsesBoy + inform.relapsesGirl + inform.relapsesFEFA);
+        informSummaryRow3.referredInFEFA += (inform.referredInBoy + inform.referredInGirl + inform.referredInFEFA);
+        informSummaryRow3.transferedInFEFA += (inform.transferedInBoy + inform.transferedInGirl + inform.transferedInFEFA);
+        informSummaryRow3.recoveredFEFA += (inform.recoveredBoy + inform.recoveredGirl + inform.recoveredFEFA);
+        informSummaryRow3.unresponsiveFEFA += (inform.unresponsiveBoy + inform.unresponsiveGirl + inform.unresponsiveFEFA);
+        informSummaryRow3.deathsFEFA += (inform.deathsBoy + inform.deathsGirl + inform.deathsFEFA);
+        informSummaryRow3.abandonmentFEFA += (inform.abandonmentBoy + inform.abandonmentGirl + inform.abandonmentFEFA);
+        informSummaryRow3.referredOutFEFA += (inform.referredOutBoy + inform.referredOutGirl + inform.referredOutFEFA);
+        informSummaryRow3.transferedOutFEFA += (inform.transferedOutBoy + inform.transferedOutGirl + inform.transferedOutFEFA);
       }
     }
 
-    // Subtotal children
-    /*informs[2].patientsAtBeginning = informs[0].patientsAtBeginning + informs[1].patientsAtBeginning;
-    informs[2].newAdmissions = informs[0].newAdmissions + informs[1].newAdmissions;
-    informs[2].reAdmissions = informs[0].reAdmissions + informs[1].reAdmissions;
-    informs[2].relapses = informs[0].relapses + informs[1].relapses;
-    informs[2].referredIn = informs[0].referredIn + informs[1].referredIn;
-    informs[2].transferedIn = informs[0].transferedIn + informs[1].transferedIn;
-    informs[2].recovered = informs[0].recovered + informs[1].recovered;
-    informs[2].unresponsive = informs[0].unresponsive + informs[1].unresponsive;
-    informs[2].deaths = informs[0].deaths + informs[1].deaths;
-    informs[2].abandonment = informs[0].abandonment + informs[1].abandonment;
-    informs[2].referredOut = informs[0].referredOut + informs[1].referredOut;
-    informs[2].transferedOut = informs[0].transferedOut + informs[1].transferedOut;
+    // Completar los campos de la segunda fila de totales (En niños ponemos también niñas y niños sumandos, y en FEFA el total de FEFAS)
+    informSummaryRow2.patientsAtBeginningBoy = informSummaryRow2.patientsAtBeginningGirl;
+    informSummaryRow2.newAdmissionsBoy = informSummaryRow2.newAdmissionsGirl;
+    informSummaryRow2.reAdmissionsBoy = informSummaryRow2.reAdmissionsGirl;
+    informSummaryRow2.relapsesBoy = informSummaryRow2.relapsesGirl;
+    informSummaryRow2.referredInBoy = informSummaryRow2.referredInGirl;
+    informSummaryRow2.transferedInBoy = informSummaryRow2.transferedInGirl;
+    informSummaryRow2.recoveredBoy = informSummaryRow2.recoveredGirl;
+    informSummaryRow2.unresponsiveBoy = informSummaryRow2.unresponsiveGirl;
+    informSummaryRow2.deathsBoy = informSummaryRow2.deathsGirl;
+    informSummaryRow2.abandonmentBoy = informSummaryRow2.abandonmentGirl;
+    informSummaryRow2.referredOutBoy = informSummaryRow2.referredOutGirl;
+    informSummaryRow2.transferedOutBoy = informSummaryRow2.transferedOutGirl;
+    //
+    informSummaryRow2.patientsAtBeginningFEFA = informSummaryRow1.patientsAtBeginningFEFA;
+    informSummaryRow2.newAdmissionsFEFA = informSummaryRow1.newAdmissionsFEFA;
+    informSummaryRow2.reAdmissionsFEFA = informSummaryRow1.reAdmissionsFEFA;
+    informSummaryRow2.relapsesFEFA = informSummaryRow1.relapsesFEFA;
+    informSummaryRow2.referredInFEFA = informSummaryRow1.referredInFEFA;
+    informSummaryRow2.transferedInFEFA = informSummaryRow1.transferedInFEFA;
+    informSummaryRow2.recoveredFEFA = informSummaryRow1.recoveredFEFA;
+    informSummaryRow2.unresponsiveFEFA = informSummaryRow1.unresponsiveFEFA;
+    informSummaryRow2.deathsFEFA = informSummaryRow1.deathsFEFA;
+    informSummaryRow2.abandonmentFEFA = informSummaryRow1.abandonmentFEFA;
+    informSummaryRow2.referredOutFEFA = informSummaryRow1.referredOutFEFA;
+    informSummaryRow2.transferedOutFEFA = informSummaryRow1.transferedOutFEFA;
 
-    // Total
-    informs[4].patientsAtBeginning = informs[2].patientsAtBeginning + informs[3].patientsAtBeginning;
-    informs[4].newAdmissions = informs[2].newAdmissions + informs[3].newAdmissions;
-    informs[4].reAdmissions = informs[2].reAdmissions + informs[3].reAdmissions;
-    informs[4].relapses = informs[2].relapses + informs[3].relapses;
-    informs[4].referredIn = informs[2].referredIn + informs[3].referredIn;
-    informs[4].transferedIn = informs[2].transferedIn + informs[3].transferedIn;
-    informs[4].recovered = informs[2].recovered + informs[3].recovered;
-    informs[4].unresponsive = informs[2].unresponsive + informs[3].unresponsive;
-    informs[4].deaths = informs[2].deaths + informs[3].deaths;
-    informs[4].abandonment = informs[2].abandonment + informs[3].abandonment;
-    informs[4].referredOut = informs[2].referredOut + informs[3].referredOut;
-    informs[4].transferedOut = informs[2].transferedOut + informs[3].transferedOut;*/
+    // Completar los campos de la tercera fila de totales (En todas las columnas ponemos la suma de niñas, niños y FEFA)
+    informSummaryRow3.patientsAtBeginningBoy = informSummaryRow3.patientsAtBeginningGirl = informSummaryRow3.patientsAtBeginningFEFA;
+    informSummaryRow3.newAdmissionsBoy = informSummaryRow3.newAdmissionsGirl = informSummaryRow3.newAdmissionsFEFA;
+    informSummaryRow3.reAdmissionsBoy = informSummaryRow3.reAdmissionsGirl = informSummaryRow3.reAdmissionsFEFA;
+    informSummaryRow3.relapsesBoy = informSummaryRow3.relapsesGirl = informSummaryRow3.relapsesFEFA;
+    informSummaryRow3.referredInBoy = informSummaryRow3.referredInGirl = informSummaryRow3.referredInFEFA;
+    informSummaryRow3.transferedInBoy = informSummaryRow3.transferedInGirl = informSummaryRow3.transferedInFEFA;
+    informSummaryRow3.recoveredBoy = informSummaryRow3.recoveredGirl = informSummaryRow3.recoveredFEFA;
+    informSummaryRow3.unresponsiveBoy = informSummaryRow3.unresponsiveGirl = informSummaryRow3.unresponsiveFEFA;
+    informSummaryRow3.deathsBoy = informSummaryRow3.deathsGirl = informSummaryRow3.deathsFEFA;
+    informSummaryRow3.abandonmentBoy = informSummaryRow3.abandonmentGirl = informSummaryRow3.abandonmentFEFA;
+    informSummaryRow3.referredOutBoy = informSummaryRow3.referredOutGirl = informSummaryRow3.referredOutFEFA;
+    informSummaryRow3.transferedOutBoy = informSummaryRow3.transferedOutGirl = informSummaryRow3.transferedOutFEFA;
+
+    // Porcentajes niños y niñas
+    if (informSummaryRow2.totalAttendedGirl() != 0){
+      informSummaryRow4.referredInBoy = informSummaryRow4.referredInGirl = (informSummaryRow2.referredInGirl/informSummaryRow2.totalAttendedGirl()*100).floor();
+    }
+    // Porcentajes niños, niñas y FEFA
+    if (informSummaryRow3.totalDischargesFEFA() != 0){
+      informSummaryRow4.recoveredBoy = informSummaryRow4.recoveredGirl = informSummaryRow4.recoveredFEFA = (informSummaryRow3.recoveredFEFA/informSummaryRow3.totalDischargesFEFA()*100).floor();
+      informSummaryRow4.unresponsiveBoy = informSummaryRow4.unresponsiveGirl = informSummaryRow4.unresponsiveFEFA = (informSummaryRow3.unresponsiveFEFA/informSummaryRow3.totalDischargesFEFA()*100).floor();
+      informSummaryRow4.deathsBoy = informSummaryRow4.deathsGirl = informSummaryRow4.deathsFEFA = (informSummaryRow3.deathsFEFA/informSummaryRow3.totalDischargesFEFA()*100).floor();
+      informSummaryRow4.abandonmentBoy = informSummaryRow4.abandonmentGirl = informSummaryRow4.abandonmentFEFA = (informSummaryRow3.abandonmentFEFA/informSummaryRow3.totalDischargesFEFA()*100).floor();
+
+      informSummaryRow4.percentageBoyAtTheEnd = (informSummaryRow1.totalAtTheEndBoy()/informSummaryRow3.totalAtTheEndFEFA()*100).floor();
+      informSummaryRow4.percentageGirlAtTheEnd = (informSummaryRow1.totalAtTheEndGirl()/informSummaryRow3.totalAtTheEndFEFA()*100).floor();
+      informSummaryRow4.percentageFEFAAtTheEnd = (informSummaryRow1.totalAtTheEndFEFA()/informSummaryRow3.totalAtTheEndFEFA()*100).floor();
+    }
+
+    informs.add(informSummaryRow1);
+    informs.add(informSummaryRow2);
+    informs.add(informSummaryRow3);
+    informs.add(informSummaryRow4);
 
     mainInformDataGridSource.setMainInforms(informs);
 
@@ -726,35 +823,25 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
 
   }
 
-  List<GridTableSummaryRow> _getTableSummaryRows() {
-    final Color color =
-    model.themeData.colorScheme.brightness == Brightness.light
-        ? const Color(0xFFEBEBEB)
-        : const Color(0xFF3B3B3B);
-    return <GridTableSummaryRow>[
-      GridTableSummaryRow(
-        showSummaryInRow: true,
-          color: color,
-          title: '$_total: {Count}',
-          columns: <GridSummaryColumn>[
-            const GridSummaryColumn(
-                name: 'Count',
-                columnName: 'Categoría',
-                summaryType: GridSummaryType.count),
-          ],
-          position: GridTableSummaryRowPosition.bottom),
-    ];
-  }
-
   SfDataGrid _buildDataGrid() {
     return SfDataGrid(
+      /*tableSummaryRows: [
+        GridTableSummaryRow(
+            title: "ADMISIONES (Niñas y niños): ${informSummaryRow4.referredInGirl}% Referidos || "
+              "ALTAS (Niñas, niños y MEL): ${informSummaryRow4.recoveredFEFA}% Recuperados, ${informSummaryRow4.unresponsiveFEFA}% Sin Respuesta, ${informSummaryRow4.deathsFEFA}% Fallecimientos y ${informSummaryRow4.abandonmentFEFA}% Abandonos || "
+              "AL FINAL DEL MES: ${(informSummaryRow1.totalAtTheEndBoy()/informSummaryRow3.totalAtTheEndBoy()*100).toDouble().toStringAsPrecision(2)}% Niños, ${(informSummaryRow1.totalAtTheEndGirl()/informSummaryRow3.totalAtTheEndGirl()*100).toDouble().toStringAsPrecision(2)}% Niñas y ${(informSummaryRow1.totalAtTheEndFEFA()/informSummaryRow3.totalAtTheEndFEFA()*100).toDouble().toStringAsPrecision(2)}% MEL",
+            titleColumnSpan: 8,
+            color: model.themeData.colorScheme.brightness == Brightness.light ? const Color(0xFFEBEBEB) : const Color(0xFF3B3B3B),
+            columns: [],
+            position: GridTableSummaryRowPosition.bottom
+        )
+      ],*/
       frozenColumnsCount: 5,
       headerGridLinesVisibility: GridLinesVisibility.both,
       gridLinesVisibility: GridLinesVisibility.both,
       key: _key,
       source: mainInformDataGridSource,
       rowsPerPage: _rowsPerPage,
-      //tableSummaryRows: _getTableSummaryRows(),
       allowColumnsResizing: true,
       shrinkWrapRows: true,
       onColumnResizeUpdate: (ColumnResizeUpdateDetails details) {
