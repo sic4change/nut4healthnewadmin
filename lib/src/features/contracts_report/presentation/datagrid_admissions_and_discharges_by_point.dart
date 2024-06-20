@@ -79,7 +79,7 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
       _totalDischarges, _totalAtTheEnd, _start, _end, _exportXLS, _exportPDF,
       _total, _contracts, _selectCountry, _selectRegion, _selectLocation,
       _selectProvince, _selectPointType, _selectPoint, _allMale, _allFemale,
-      _admissions, _discharges, _boy, _girl, _fefa;
+      _admissions, _discharges, _boy, _girl, _fefa, _totalBoyGirl, _totalBoyGirlFEFA, _percentages;
 
   late Map<String, double> columnWidths = {
     'País': 150,
@@ -267,7 +267,7 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
       region: "",
       location: "",
       province: "",
-      point: "TOTALES NIÑAS Y NIÑOS",
+      point: _totalBoyGirl,
     );
 
     AdmissionsAndDischargesByPointInform informSummaryRow3 = AdmissionsAndDischargesByPointInform(
@@ -275,7 +275,7 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
       region: "",
       location: "",
       province: "",
-      point: "TOTALES NIÑAS, NIÑOS Y MEL",
+      point: _totalBoyGirlFEFA,
     );
 
     AdmissionsAndDischargesByPointInform informSummaryRow4 = AdmissionsAndDischargesByPointInform(
@@ -283,7 +283,7 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
       region: "",
       location: "",
       province: "",
-      point: "PORCENTAJES (%)",
+      point: _percentages,
     );
 
     for (Point point in pointsSelected) {
@@ -565,20 +565,7 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
       }
     }
 
-    // Completar los campos de la segunda fila de totales (En niños ponemos también niñas y niños sumandos, y en FEFA el total de FEFAS)
-    informSummaryRow2.patientsAtBeginningBoy = informSummaryRow2.patientsAtBeginningGirl;
-    informSummaryRow2.newAdmissionsBoy = informSummaryRow2.newAdmissionsGirl;
-    informSummaryRow2.reAdmissionsBoy = informSummaryRow2.reAdmissionsGirl;
-    informSummaryRow2.relapsesBoy = informSummaryRow2.relapsesGirl;
-    informSummaryRow2.referredInBoy = informSummaryRow2.referredInGirl;
-    informSummaryRow2.transferedInBoy = informSummaryRow2.transferedInGirl;
-    informSummaryRow2.recoveredBoy = informSummaryRow2.recoveredGirl;
-    informSummaryRow2.unresponsiveBoy = informSummaryRow2.unresponsiveGirl;
-    informSummaryRow2.deathsBoy = informSummaryRow2.deathsGirl;
-    informSummaryRow2.abandonmentBoy = informSummaryRow2.abandonmentGirl;
-    informSummaryRow2.referredOutBoy = informSummaryRow2.referredOutGirl;
-    informSummaryRow2.transferedOutBoy = informSummaryRow2.transferedOutGirl;
-    //
+    // Completar los campos de la segunda fila de totales (en FEFA el total de FEFAS)
     informSummaryRow2.patientsAtBeginningFEFA = informSummaryRow1.patientsAtBeginningFEFA;
     informSummaryRow2.newAdmissionsFEFA = informSummaryRow1.newAdmissionsFEFA;
     informSummaryRow2.reAdmissionsFEFA = informSummaryRow1.reAdmissionsFEFA;
@@ -592,30 +579,16 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
     informSummaryRow2.referredOutFEFA = informSummaryRow1.referredOutFEFA;
     informSummaryRow2.transferedOutFEFA = informSummaryRow1.transferedOutFEFA;
 
-    // Completar los campos de la tercera fila de totales (En todas las columnas ponemos la suma de niñas, niños y FEFA)
-    informSummaryRow3.patientsAtBeginningBoy = informSummaryRow3.patientsAtBeginningGirl = informSummaryRow3.patientsAtBeginningFEFA;
-    informSummaryRow3.newAdmissionsBoy = informSummaryRow3.newAdmissionsGirl = informSummaryRow3.newAdmissionsFEFA;
-    informSummaryRow3.reAdmissionsBoy = informSummaryRow3.reAdmissionsGirl = informSummaryRow3.reAdmissionsFEFA;
-    informSummaryRow3.relapsesBoy = informSummaryRow3.relapsesGirl = informSummaryRow3.relapsesFEFA;
-    informSummaryRow3.referredInBoy = informSummaryRow3.referredInGirl = informSummaryRow3.referredInFEFA;
-    informSummaryRow3.transferedInBoy = informSummaryRow3.transferedInGirl = informSummaryRow3.transferedInFEFA;
-    informSummaryRow3.recoveredBoy = informSummaryRow3.recoveredGirl = informSummaryRow3.recoveredFEFA;
-    informSummaryRow3.unresponsiveBoy = informSummaryRow3.unresponsiveGirl = informSummaryRow3.unresponsiveFEFA;
-    informSummaryRow3.deathsBoy = informSummaryRow3.deathsGirl = informSummaryRow3.deathsFEFA;
-    informSummaryRow3.abandonmentBoy = informSummaryRow3.abandonmentGirl = informSummaryRow3.abandonmentFEFA;
-    informSummaryRow3.referredOutBoy = informSummaryRow3.referredOutGirl = informSummaryRow3.referredOutFEFA;
-    informSummaryRow3.transferedOutBoy = informSummaryRow3.transferedOutGirl = informSummaryRow3.transferedOutFEFA;
-
     // PORCENTAJES niños y niñas
     if (informSummaryRow2.totalAttendedGirl() != 0){
-      informSummaryRow4.referredInBoy = informSummaryRow4.referredInGirl = (informSummaryRow2.referredInGirl/informSummaryRow2.totalAttendedGirl()*100).floor();
+      informSummaryRow4.referredInGirl = (informSummaryRow2.referredInGirl/informSummaryRow2.totalAttendedGirl()*100).floor();
     }
     // PORCENTAJES niños, niñas y FEFA
     if (informSummaryRow3.totalDischargesFEFA() != 0) {
-      informSummaryRow4.recoveredBoy = informSummaryRow4.recoveredGirl = informSummaryRow4.recoveredFEFA = (informSummaryRow3.recoveredFEFA / informSummaryRow3.totalDischargesFEFA() * 100).floor();
-      informSummaryRow4.unresponsiveBoy = informSummaryRow4.unresponsiveGirl = informSummaryRow4.unresponsiveFEFA = (informSummaryRow3.unresponsiveFEFA / informSummaryRow3.totalDischargesFEFA() * 100).floor();
-      informSummaryRow4.deathsBoy = informSummaryRow4.deathsGirl = informSummaryRow4.deathsFEFA = (informSummaryRow3.deathsFEFA / informSummaryRow3.totalDischargesFEFA() * 100).floor();
-      informSummaryRow4.abandonmentBoy = informSummaryRow4.abandonmentGirl = informSummaryRow4.abandonmentFEFA = (informSummaryRow3.abandonmentFEFA / informSummaryRow3.totalDischargesFEFA() * 100).floor();
+      informSummaryRow4.recoveredFEFA = (informSummaryRow3.recoveredFEFA / informSummaryRow3.totalDischargesFEFA() * 100).floor();
+      informSummaryRow4.unresponsiveFEFA = (informSummaryRow3.unresponsiveFEFA / informSummaryRow3.totalDischargesFEFA() * 100).floor();
+      informSummaryRow4.deathsFEFA = (informSummaryRow3.deathsFEFA / informSummaryRow3.totalDischargesFEFA() * 100).floor();
+      informSummaryRow4.abandonmentFEFA = (informSummaryRow3.abandonmentFEFA / informSummaryRow3.totalDischargesFEFA() * 100).floor();
     }
 
     if (informSummaryRow3.totalAtTheEndFEFA() != 0) {informSummaryRow4.percentageBoyAtTheEnd = (informSummaryRow1.totalAtTheEndBoy() / informSummaryRow3.totalAtTheEndFEFA() * 100).floor();
@@ -636,9 +609,10 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
 
   Widget _buildView(AsyncValue<List<CaseFull>> cases) {
     if (cases.value != null) {
+      selectedLocale = model.locale.toString();
+      mainInformDataGridSource.updateSelectedLocale(selectedLocale);
       mainInformDataGridSource.buildDataGridRows();
       mainInformDataGridSource.updateDataSource();
-      selectedLocale = model.locale.toString();
       return _buildLayoutBuilder();
     } else {
       return const Center(
@@ -1583,6 +1557,9 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
         _transferedOut = 'Transferred (Discharge)';
         _totalDischarges = 'TOTAL DISCHARGES';
         _totalAtTheEnd = 'TOTAL AT THE END';
+        _totalBoyGirl = 'TOTAL GIRLS AND BOYS';
+        _totalBoyGirlFEFA = 'TOTAL GIRLS, BOYS AND FEFA';
+        _percentages = 'PERCENTAGES (%)';
         _exportXLS = 'Export XLS';
         _exportPDF = 'Export PDF';
         _total = 'Total Locations';
@@ -1619,6 +1596,9 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
         _transferedOut = 'Transferidos (Alta)';
         _totalDischarges = 'TOTAL ALTAS';
         _totalAtTheEnd = 'TOTAL AL FINAL';
+        _totalBoyGirl = 'TOTALES NIÑAS Y NIÑOS';
+        _totalBoyGirlFEFA = 'TOTALES NIÑAS, NIÑOS Y MEL';
+        _percentages = 'PORCENTAJES (%)';
         _exportXLS = 'Exportar XLS';
         _exportPDF = 'Exportar PDF';
         _total = 'Totales';
@@ -1655,6 +1635,9 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
         _transferedOut = 'Transféré (Sortie)';
         _totalDischarges = 'SORTIES TOTALES';
         _totalAtTheEnd = 'TOTAL À LA FIN';
+        _totalBoyGirl = 'TOTAL FILLES ET GARÇONS';
+        _totalBoyGirlFEFA = 'TOTAL FILLES, GARCONS ET FEFA';
+        _percentages = 'POURCENTAGES (%)';
         _exportXLS = 'Exporter XLS';
         _exportPDF = 'Exporter PDF';
         _total = 'Total';
