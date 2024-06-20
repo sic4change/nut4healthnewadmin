@@ -170,16 +170,11 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
     );
   }
 
-  _saveCountries(AsyncValue<List<Country>>? countries) {
-    if (countries == null) {
-      return;
-    } else {
-      this.countries.clear();
+  _saveCountries(AsyncValue<List<Country>> countries) {      this.countries.clear();
       this.countries.add(Country(countryId: "", name: _allMale, code: "",
           active: false, needValidation: false, cases: 0, casesnormopeso: 0,
           casesmoderada: 0, casessevera: 0));
       this.countries.addAll(countries.value!);
-    }
   }
 
   _saveRegions(AsyncValue<List<Region>>? regions) {
@@ -288,15 +283,15 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
       region: "",
       location: "",
       province: "",
-      point: "PORCENTAJES",
+      point: "PORCENTAJES (%)",
     );
 
     for (Point point in pointsSelected) {
       AdmissionsAndDischargesByPointInform inform = AdmissionsAndDischargesByPointInform(
-        country: countries.firstWhere((c) => c.countryId == point.country).name,
-        region: regions.firstWhere((r) => r.regionId == point.regionId).name,
-        location: locations.firstWhere((l) => l.locationId == point.location).name,
-        province: provinces.firstWhere((p) => p.provinceId == point.province).name,
+        country: countries.firstWhere((c) => c.countryId == point.country, orElse: () => const Country.empty()).name,
+        region: regions.firstWhere((r) => r.regionId == point.regionId, orElse: () => const Region.empty()).name,
+        location: locations.firstWhere((l) => l.locationId == point.location, orElse: () => const Location.empty()).name,
+        province: provinces.firstWhere((p) => p.provinceId == point.province, orElse: () => const Province.empty()).name,
         point: point.name,
       );
 
@@ -611,20 +606,21 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
     informSummaryRow3.referredOutBoy = informSummaryRow3.referredOutGirl = informSummaryRow3.referredOutFEFA;
     informSummaryRow3.transferedOutBoy = informSummaryRow3.transferedOutGirl = informSummaryRow3.transferedOutFEFA;
 
-    // Porcentajes niños y niñas
+    // PORCENTAJES niños y niñas
     if (informSummaryRow2.totalAttendedGirl() != 0){
       informSummaryRow4.referredInBoy = informSummaryRow4.referredInGirl = (informSummaryRow2.referredInGirl/informSummaryRow2.totalAttendedGirl()*100).floor();
     }
-    // Porcentajes niños, niñas y FEFA
-    if (informSummaryRow3.totalDischargesFEFA() != 0){
-      informSummaryRow4.recoveredBoy = informSummaryRow4.recoveredGirl = informSummaryRow4.recoveredFEFA = (informSummaryRow3.recoveredFEFA/informSummaryRow3.totalDischargesFEFA()*100).floor();
-      informSummaryRow4.unresponsiveBoy = informSummaryRow4.unresponsiveGirl = informSummaryRow4.unresponsiveFEFA = (informSummaryRow3.unresponsiveFEFA/informSummaryRow3.totalDischargesFEFA()*100).floor();
-      informSummaryRow4.deathsBoy = informSummaryRow4.deathsGirl = informSummaryRow4.deathsFEFA = (informSummaryRow3.deathsFEFA/informSummaryRow3.totalDischargesFEFA()*100).floor();
-      informSummaryRow4.abandonmentBoy = informSummaryRow4.abandonmentGirl = informSummaryRow4.abandonmentFEFA = (informSummaryRow3.abandonmentFEFA/informSummaryRow3.totalDischargesFEFA()*100).floor();
+    // PORCENTAJES niños, niñas y FEFA
+    if (informSummaryRow3.totalDischargesFEFA() != 0) {
+      informSummaryRow4.recoveredBoy = informSummaryRow4.recoveredGirl = informSummaryRow4.recoveredFEFA = (informSummaryRow3.recoveredFEFA / informSummaryRow3.totalDischargesFEFA() * 100).floor();
+      informSummaryRow4.unresponsiveBoy = informSummaryRow4.unresponsiveGirl = informSummaryRow4.unresponsiveFEFA = (informSummaryRow3.unresponsiveFEFA / informSummaryRow3.totalDischargesFEFA() * 100).floor();
+      informSummaryRow4.deathsBoy = informSummaryRow4.deathsGirl = informSummaryRow4.deathsFEFA = (informSummaryRow3.deathsFEFA / informSummaryRow3.totalDischargesFEFA() * 100).floor();
+      informSummaryRow4.abandonmentBoy = informSummaryRow4.abandonmentGirl = informSummaryRow4.abandonmentFEFA = (informSummaryRow3.abandonmentFEFA / informSummaryRow3.totalDischargesFEFA() * 100).floor();
+    }
 
-      informSummaryRow4.percentageBoyAtTheEnd = (informSummaryRow1.totalAtTheEndBoy()/informSummaryRow3.totalAtTheEndFEFA()*100).floor();
-      informSummaryRow4.percentageGirlAtTheEnd = (informSummaryRow1.totalAtTheEndGirl()/informSummaryRow3.totalAtTheEndFEFA()*100).floor();
-      informSummaryRow4.percentageFEFAAtTheEnd = (informSummaryRow1.totalAtTheEndFEFA()/informSummaryRow3.totalAtTheEndFEFA()*100).floor();
+    if (informSummaryRow3.totalAtTheEndFEFA() != 0) {informSummaryRow4.percentageBoyAtTheEnd = (informSummaryRow1.totalAtTheEndBoy() / informSummaryRow3.totalAtTheEndFEFA() * 100).floor();
+      informSummaryRow4.percentageGirlAtTheEnd = (informSummaryRow1.totalAtTheEndGirl() / informSummaryRow3.totalAtTheEndFEFA() * 100).floor();
+      informSummaryRow4.percentageFEFAAtTheEnd = (informSummaryRow1.totalAtTheEndFEFA() / informSummaryRow3.totalAtTheEndFEFA() * 100).floor();
     }
 
     informs.add(informSummaryRow1);
@@ -825,17 +821,6 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
 
   SfDataGrid _buildDataGrid() {
     return SfDataGrid(
-      /*tableSummaryRows: [
-        GridTableSummaryRow(
-            title: "ADMISIONES (Niñas y niños): ${informSummaryRow4.referredInGirl}% Referidos || "
-              "ALTAS (Niñas, niños y MEL): ${informSummaryRow4.recoveredFEFA}% Recuperados, ${informSummaryRow4.unresponsiveFEFA}% Sin Respuesta, ${informSummaryRow4.deathsFEFA}% Fallecimientos y ${informSummaryRow4.abandonmentFEFA}% Abandonos || "
-              "AL FINAL DEL MES: ${(informSummaryRow1.totalAtTheEndBoy()/informSummaryRow3.totalAtTheEndBoy()*100).toDouble().toStringAsPrecision(2)}% Niños, ${(informSummaryRow1.totalAtTheEndGirl()/informSummaryRow3.totalAtTheEndGirl()*100).toDouble().toStringAsPrecision(2)}% Niñas y ${(informSummaryRow1.totalAtTheEndFEFA()/informSummaryRow3.totalAtTheEndFEFA()*100).toDouble().toStringAsPrecision(2)}% MEL",
-            titleColumnSpan: 8,
-            color: model.themeData.colorScheme.brightness == Brightness.light ? const Color(0xFFEBEBEB) : const Color(0xFF3B3B3B),
-            columns: [],
-            position: GridTableSummaryRowPosition.bottom
-        )
-      ],*/
       frozenColumnsCount: 5,
       headerGridLinesVisibility: GridLinesVisibility.both,
       gridLinesVisibility: GridLinesVisibility.both,
@@ -856,8 +841,8 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
           _buildLayoutBuilder();
         });
       },
-      allowSorting: true,
-      allowMultiColumnSorting: true,
+      allowSorting: false,
+      allowMultiColumnSorting: false,
       columns: <GridColumn>[
         GridColumn(
             columnName: 'País',
@@ -1702,50 +1687,47 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
           );
 
           final countriesAsyncValue = ref.watch(countriesStreamProvider);
+          final regionsAsyncValue = ref.watch(regionsByCountryStreamProvider(countrySelected?.countryId??""));
+          final locationFilter = Tuple2(countrySelected?.countryId??"", regionSelected?.regionId??"");
+          final locationsAsyncValue = ref.watch(locationsByCountryAndRegionStreamProvider(locationFilter));
+          final provinceFilter = Tuple3(countrySelected?.countryId??"", regionSelected?.regionId??"", locationSelected?.locationId??"",);
+          final provincesAsyncValue = ref.watch(provincesByLocationStreamProvider(provinceFilter));
+          final pointFilter = Tuple5(
+            countrySelected?.countryId??"",
+            regionSelected?.regionId??"",
+            locationSelected?.locationId??"",
+            provinceSelected?.provinceId??"",
+            pointTypeSelected == _allMale?"": (pointTypeSelected??""),
+          );
+          final pointsAsyncValue = ref.watch(pointsByLocationStreamProvider(pointFilter));
+          casesAsyncValue = ref.watch(casesFullStreamProvider);
+
           if (countriesAsyncValue.value != null) {
             _saveCountries(countriesAsyncValue);
           }
 
-          final regionsAsyncValue = ref.watch(regionsByCountryStreamProvider(countrySelected?.countryId??""));
           if (regionsAsyncValue.value != null) {
             _saveRegions(regionsAsyncValue);
           }
 
-          final locationFilter = Tuple2(countrySelected?.countryId??"", regionSelected?.regionId??"");
-          final locationsAsyncValue = ref.watch(locationsByCountryAndRegionStreamProvider(locationFilter));
           if (locationsAsyncValue.value != null) {
             _saveLocations(locationsAsyncValue);
           }
 
-          final provinceFilter = Tuple3(
-            countrySelected?.countryId??"",
-            regionSelected?.regionId??"",
-            locationSelected?.locationId??"",
-          );
-          final provincesAsyncValue = ref.watch(provincesByLocationStreamProvider(provinceFilter));
           if (provincesAsyncValue.value != null) {
             _saveProvinces(provincesAsyncValue);
           }
 
-          final pointFilter = Tuple5(
-              countrySelected?.countryId??"",
-              regionSelected?.regionId??"",
-              locationSelected?.locationId??"",
-              provinceSelected?.provinceId??"",
-              pointTypeSelected == _allMale?"": (pointTypeSelected??""),
-          );
-          final pointsAsyncValue = ref.watch(pointsByLocationStreamProvider(pointFilter));
           if (pointsAsyncValue.value != null) {
             _savePoints(pointsAsyncValue);
           }
-
-          casesAsyncValue = ref.watch(casesFullStreamProvider);
 
           if (countriesAsyncValue.value != null
               && regionsAsyncValue.value != null
               && locationsAsyncValue.value != null
               && provincesAsyncValue.value != null
-              && pointsAsyncValue.value != null && casesAsyncValue.value != null
+              && pointsAsyncValue.value != null
+              && casesAsyncValue.value != null
           ) {
             _saveMainInforms(casesAsyncValue);
           }
