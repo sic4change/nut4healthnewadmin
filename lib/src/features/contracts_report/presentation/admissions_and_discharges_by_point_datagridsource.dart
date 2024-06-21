@@ -12,12 +12,33 @@ class AdmissionsAndDischargesByPointDataGridSource extends DataGridSource {
 
   List<DataGridRow> _dataGridRows = <DataGridRow>[];
   List<AdmissionsAndDischargesByPointInform>? _mainInforms = <AdmissionsAndDischargesByPointInform>[];
+  String selectedLocale = "";
 
   /// Building DataGridRows
   void buildDataGridRows() {
     if (_mainInforms != null && _mainInforms!.isNotEmpty) {
 
       _dataGridRows = _mainInforms!.map<DataGridRow>((AdmissionsAndDischargesByPointInform mainInform) {
+        bool isPercentageRow = mainInform.point.contains("(%)");
+        bool isBoyGirlRow = mainInform.point.contains("TOTALES NIÑAS Y NIÑOS") || mainInform.point.contains("TOTAL FILLES ET GARÇONS") || mainInform.point.contains("TOTAL GIRLS AND BOYS");
+        bool isBoyGirlFefaRow = mainInform.point.contains("TOTALES NIÑAS, NIÑOS Y MEL") || mainInform.point.contains("TOTAL FILLES, GARCONS ET FEFA") || mainInform.point.contains("TOTAL GIRLS, BOYS AND FEFA");
+
+        String boyGirls = "Niñas + niños:";
+        String boyGirlsFEFA = "Niñas + niños + MEL:";
+        switch (selectedLocale) {
+          case 'en_US':
+            boyGirls = "Girls + boys:";
+            boyGirlsFEFA = "Girls + boys + FEFA:";
+            break;
+          case "es_ES":
+            boyGirls = "Niñas + niños:";
+            boyGirlsFEFA = "Niñas + niños + MEL:";
+            break;
+          case 'fr_FR':
+            boyGirls = "Filles + garçons:";
+            boyGirlsFEFA = "Filles + garçons + FEFA:";
+            break;
+        }
 
         return DataGridRow(cells: <DataGridCell>[
           DataGridCell<String>(columnName: 'País', value: mainInform.country),
@@ -25,54 +46,54 @@ class AdmissionsAndDischargesByPointDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Provincia', value: mainInform.location),
           DataGridCell<String>(columnName: 'Municipio', value: mainInform.province),
           DataGridCell<String>(columnName: 'Puesto de salud', value: mainInform.point),
-          DataGridCell<int>(columnName: 'Pacientes al inicio (M)', value: mainInform.patientsAtBeginningBoy),
-          DataGridCell<int>(columnName: 'Pacientes al inicio (F)', value: mainInform.patientsAtBeginningGirl),
-          DataGridCell<int>(columnName: 'Pacientes al inicio (FEFA)', value: mainInform.patientsAtBeginningFEFA),
-          DataGridCell<int>(columnName: 'Nuevos casos (M)', value: mainInform.newAdmissionsBoy),
-          DataGridCell<int>(columnName: 'Nuevos casos (F)', value: mainInform.newAdmissionsGirl),
-          DataGridCell<int>(columnName: 'Nuevos casos (FEFA)', value: mainInform.newAdmissionsFEFA),
-          DataGridCell<int>(columnName: 'Readmisiones (M)', value: mainInform.reAdmissionsBoy),
-          DataGridCell<int>(columnName: 'Readmisiones (F)', value: mainInform.reAdmissionsGirl),
-          DataGridCell<int>(columnName: 'Readmisiones (FEFA)', value: mainInform.reAdmissionsFEFA),
-          DataGridCell<int>(columnName: 'Recaídas (M)', value: mainInform.relapsesBoy),
-          DataGridCell<int>(columnName: 'Recaídas (F)', value: mainInform.relapsesGirl),
-          DataGridCell<int>(columnName: 'Recaídas (FEFA)', value: mainInform.relapsesFEFA),
-          DataGridCell<int>(columnName: 'Referidos (Admisión) (M)', value: mainInform.referredInBoy),
-          DataGridCell<int>(columnName: 'Referidos (Admisión) (F)', value: mainInform.referredInGirl),
-          DataGridCell<int>(columnName: 'Referidos (Admisión) (FEFA)', value: mainInform.referredInFEFA),
-          DataGridCell<int>(columnName: 'Transferidos (Admisión) (M)', value: mainInform.transferedInBoy),
-          DataGridCell<int>(columnName: 'Transferidos (Admisión) (F)', value: mainInform.transferedInGirl),
-          DataGridCell<int>(columnName: 'Transferidos (Admisión) (FEFA)', value: mainInform.transferedInFEFA),
-          DataGridCell<int>(columnName: 'TOTAL ADMISIONES (M)', value: mainInform.totalAdmissionsBoy()),
-          DataGridCell<int>(columnName: 'TOTAL ADMISIONES (F)', value: mainInform.totalAdmissionsGirl()),
-          DataGridCell<int>(columnName: 'TOTAL ADMISIONES (FEFA)', value: mainInform.totalAdmissionsFEFA()),
-          DataGridCell<int>(columnName: 'TOTAL ATENDIDOS (M)', value: mainInform.totalAttendedBoy()),
-          DataGridCell<int>(columnName: 'TOTAL ATENDIDAS (F)', value: mainInform.totalAttendedGirl()),
-          DataGridCell<int>(columnName: 'TOTAL ATENDIDAS (FEFA)', value: mainInform.totalAttendedFEFA()),
-          DataGridCell<int>(columnName: 'Recuperados (M)', value: mainInform.recoveredBoy),
-          DataGridCell<int>(columnName: 'Recuperados (F)', value: mainInform.recoveredGirl),
-          DataGridCell<int>(columnName: 'Recuperados (FEFA)', value: mainInform.recoveredFEFA),
-          DataGridCell<int>(columnName: 'Sin respuesta (M)', value: mainInform.unresponsiveBoy),
-          DataGridCell<int>(columnName: 'Sin respuesta (F)', value: mainInform.unresponsiveGirl),
-          DataGridCell<int>(columnName: 'Sin respuesta (FEFA)', value: mainInform.unresponsiveFEFA),
-          DataGridCell<int>(columnName: 'Fallecimientos (M)', value: mainInform.deathsBoy),
-          DataGridCell<int>(columnName: 'Fallecimientos (F)', value: mainInform.deathsGirl),
-          DataGridCell<int>(columnName: 'Fallecimientos (FEFA)', value: mainInform.deathsFEFA),
-          DataGridCell<int>(columnName: 'Abandonos (M)', value: mainInform.abandonmentBoy),
-          DataGridCell<int>(columnName: 'Abandonos (F)', value: mainInform.abandonmentGirl),
-          DataGridCell<int>(columnName: 'Abandonos (FEFA)', value: mainInform.abandonmentFEFA),
-          DataGridCell<int>(columnName: 'Referidos (Alta) (M)', value: mainInform.referredOutBoy),
-          DataGridCell<int>(columnName: 'Referidos (Alta) (F)', value: mainInform.referredOutGirl),
-          DataGridCell<int>(columnName: 'Referidos (Alta) (FEFA)', value: mainInform.referredOutFEFA),
-          DataGridCell<int>(columnName: 'Transferidos (Alta) (M)', value: mainInform.transferedOutBoy),
-          DataGridCell<int>(columnName: 'Transferidos (Alta) (F)', value: mainInform.transferedOutGirl),
-          DataGridCell<int>(columnName: 'Transferidos (Alta) (FEFA)', value: mainInform.transferedOutFEFA),
-          DataGridCell<int>(columnName: 'TOTAL ALTAS (M)', value: mainInform.totalDischargesBoy()),
-          DataGridCell<int>(columnName: 'TOTAL ALTAS (F)', value: mainInform.totalDischargesGirl()),
-          DataGridCell<int>(columnName: 'TOTAL ALTAS (FEFA)', value: mainInform.totalDischargesFEFA()),
-          DataGridCell<int>(columnName: 'TOTAL AL FINAL (M)', value: mainInform.totalAtTheEndBoy()),
-          DataGridCell<int>(columnName: 'TOTAL AL FINAL (F)', value: mainInform.totalAtTheEndGirl()),
-          DataGridCell<int>(columnName: 'TOTAL AL FINAL (FEFA)', value: mainInform.totalAtTheEndFEFA()),
+          DataGridCell<String>(columnName: 'Pacientes al inicio (M)', value: isPercentageRow? "": isBoyGirlRow? boyGirls: isBoyGirlFefaRow? "":mainInform.patientsAtBeginningBoy.toString()),
+          DataGridCell<String>(columnName: 'Pacientes al inicio (F)', value: isPercentageRow? "": isBoyGirlFefaRow? boyGirlsFEFA:mainInform.patientsAtBeginningGirl.toString()),
+          DataGridCell<String>(columnName: 'Pacientes al inicio (FEFA)', value: isPercentageRow? "":mainInform.patientsAtBeginningFEFA.toString()),
+          DataGridCell<String>(columnName: 'Nuevos casos (M)', value: isPercentageRow? "": isBoyGirlRow? boyGirls: isBoyGirlFefaRow? "":mainInform.newAdmissionsBoy.toString()),
+          DataGridCell<String>(columnName: 'Nuevos casos (F)', value: isPercentageRow? "": isBoyGirlFefaRow? boyGirlsFEFA:mainInform.newAdmissionsGirl.toString()),
+          DataGridCell<String>(columnName: 'Nuevos casos (FEFA)', value: isPercentageRow? "":mainInform.newAdmissionsFEFA.toString()),
+          DataGridCell<String>(columnName: 'Readmisiones (M)', value: isPercentageRow? "": isBoyGirlRow? boyGirls: isBoyGirlFefaRow? "":mainInform.reAdmissionsBoy.toString()),
+          DataGridCell<String>(columnName: 'Readmisiones (F)', value: isPercentageRow? "": isBoyGirlFefaRow? boyGirlsFEFA:mainInform.reAdmissionsGirl.toString()),
+          DataGridCell<String>(columnName: 'Readmisiones (FEFA)', value: isPercentageRow? "":mainInform.reAdmissionsFEFA.toString()),
+          DataGridCell<String>(columnName: 'Recaídas (M)', value: isPercentageRow? "": isBoyGirlRow? boyGirls: isBoyGirlFefaRow? "":mainInform.relapsesBoy.toString()),
+          DataGridCell<String>(columnName: 'Recaídas (F)', value: isPercentageRow? "": isBoyGirlFefaRow? boyGirlsFEFA:mainInform.relapsesGirl.toString()),
+          DataGridCell<String>(columnName: 'Recaídas (FEFA)', value: isPercentageRow? "":mainInform.relapsesFEFA.toString()),
+          DataGridCell<String>(columnName: 'Referidos (Admisión) (M)', value: isPercentageRow? "": isBoyGirlRow? boyGirls: isBoyGirlFefaRow? "":mainInform.referredInBoy.toString()),
+          DataGridCell<String>(columnName: 'Referidos (Admisión) (F)', value: isBoyGirlFefaRow? boyGirlsFEFA:mainInform.referredInGirl.toString()),
+          DataGridCell<String>(columnName: 'Referidos (Admisión) (FEFA)', value: isPercentageRow? "": mainInform.referredInFEFA.toString()),
+          DataGridCell<String>(columnName: 'Transferidos (Admisión) (M)', value: isPercentageRow? "": isBoyGirlRow? boyGirls: isBoyGirlFefaRow? "":mainInform.transferedInBoy.toString()),
+          DataGridCell<String>(columnName: 'Transferidos (Admisión) (F)', value: isPercentageRow? "": isBoyGirlFefaRow? boyGirlsFEFA:mainInform.transferedInGirl.toString()),
+          DataGridCell<String>(columnName: 'Transferidos (Admisión) (FEFA)', value: isPercentageRow? "":mainInform.transferedInFEFA.toString()),
+          DataGridCell<String>(columnName: 'TOTAL ADMISIONES (M)', value: isPercentageRow? "": isBoyGirlRow? boyGirls: isBoyGirlFefaRow? "":mainInform.totalAdmissionsBoy().toString()),
+          DataGridCell<String>(columnName: 'TOTAL ADMISIONES (F)', value: isPercentageRow? "": isBoyGirlFefaRow? boyGirlsFEFA:mainInform.totalAdmissionsGirl().toString()),
+          DataGridCell<String>(columnName: 'TOTAL ADMISIONES (FEFA)', value: isPercentageRow? "":mainInform.totalAdmissionsFEFA().toString()),
+          DataGridCell<String>(columnName: 'TOTAL ATENDIDOS (M)', value: isPercentageRow? "": isBoyGirlRow? boyGirls: isBoyGirlFefaRow? "":mainInform.totalAttendedBoy().toString()),
+          DataGridCell<String>(columnName: 'TOTAL ATENDIDAS (F)', value: isPercentageRow? "": isBoyGirlFefaRow? boyGirlsFEFA:mainInform.totalAttendedGirl().toString()),
+          DataGridCell<String>(columnName: 'TOTAL ATENDIDAS (FEFA)', value: isPercentageRow? "":mainInform.totalAttendedFEFA().toString()),
+          DataGridCell<String>(columnName: 'Recuperados (M)', value: isPercentageRow? "": isBoyGirlRow? boyGirls: isBoyGirlFefaRow? "":mainInform.recoveredBoy.toString()),
+          DataGridCell<String>(columnName: 'Recuperados (F)', value: isPercentageRow? "": isBoyGirlFefaRow? boyGirlsFEFA:mainInform.recoveredGirl.toString()),
+          DataGridCell<String>(columnName: 'Recuperados (FEFA)', value: mainInform.recoveredFEFA.toString()),
+          DataGridCell<String>(columnName: 'Sin respuesta (M)', value: isPercentageRow? "": isBoyGirlRow? boyGirls: isBoyGirlFefaRow? "":mainInform.unresponsiveBoy.toString()),
+          DataGridCell<String>(columnName: 'Sin respuesta (F)', value: isPercentageRow? "": isBoyGirlFefaRow? boyGirlsFEFA:mainInform.unresponsiveGirl.toString()),
+          DataGridCell<String>(columnName: 'Sin respuesta (FEFA)', value: mainInform.unresponsiveFEFA.toString()),
+          DataGridCell<String>(columnName: 'Fallecimientos (M)', value: isPercentageRow? "": isBoyGirlRow? boyGirls: isBoyGirlFefaRow? "":mainInform.deathsBoy.toString()),
+          DataGridCell<String>(columnName: 'Fallecimientos (F)', value: isPercentageRow? "": isBoyGirlFefaRow? boyGirlsFEFA:mainInform.deathsGirl.toString()),
+          DataGridCell<String>(columnName: 'Fallecimientos (FEFA)', value: mainInform.deathsFEFA.toString()),
+          DataGridCell<String>(columnName: 'Abandonos (M)', value: isPercentageRow? "": isBoyGirlRow? boyGirls: isBoyGirlFefaRow? "":mainInform.abandonmentBoy.toString()),
+          DataGridCell<String>(columnName: 'Abandonos (F)', value: isPercentageRow? "": isBoyGirlFefaRow? boyGirlsFEFA:mainInform.abandonmentGirl.toString()),
+          DataGridCell<String>(columnName: 'Abandonos (FEFA)', value: mainInform.abandonmentFEFA.toString()),
+          DataGridCell<String>(columnName: 'Referidos (Alta) (M)', value: isPercentageRow? "": isBoyGirlRow? boyGirls: isBoyGirlFefaRow? "":mainInform.referredOutBoy.toString()),
+          DataGridCell<String>(columnName: 'Referidos (Alta) (F)', value: isPercentageRow? "": isBoyGirlFefaRow? boyGirlsFEFA:mainInform.referredOutGirl.toString()),
+          DataGridCell<String>(columnName: 'Referidos (Alta) (FEFA)', value: isPercentageRow? "":mainInform.referredOutFEFA.toString()),
+          DataGridCell<String>(columnName: 'Transferidos (Alta) (M)', value: isPercentageRow? "": isBoyGirlRow? boyGirls: isBoyGirlFefaRow? "":mainInform.transferedOutBoy.toString()),
+          DataGridCell<String>(columnName: 'Transferidos (Alta) (F)', value: isPercentageRow? "": isBoyGirlFefaRow? boyGirlsFEFA:mainInform.transferedOutGirl.toString()),
+          DataGridCell<String>(columnName: 'Transferidos (Alta) (FEFA)', value: isPercentageRow? "":mainInform.transferedOutFEFA.toString()),
+          DataGridCell<String>(columnName: 'TOTAL ALTAS (M)', value: isPercentageRow? "": isBoyGirlRow? boyGirls: isBoyGirlFefaRow? "": mainInform.totalDischargesBoy().toString()),
+          DataGridCell<String>(columnName: 'TOTAL ALTAS (F)', value: isPercentageRow? "": isBoyGirlFefaRow? boyGirlsFEFA:mainInform.totalDischargesGirl().toString()),
+          DataGridCell<String>(columnName: 'TOTAL ALTAS (FEFA)', value: isPercentageRow? "": mainInform.totalDischargesFEFA().toString()),
+          DataGridCell<String>(columnName: 'TOTAL AL FINAL (M)', value: isPercentageRow? mainInform.percentageBoyAtTheEnd.toString(): isBoyGirlRow? boyGirls: isBoyGirlFefaRow? "": mainInform.totalAtTheEndBoy().toString()),
+          DataGridCell<String>(columnName: 'TOTAL AL FINAL (F)', value: isPercentageRow? mainInform.percentageGirlAtTheEnd.toString(): isBoyGirlFefaRow? boyGirlsFEFA: mainInform.totalAtTheEndGirl().toString()),
+          DataGridCell<String>(columnName: 'TOTAL AL FINAL (FEFA)', value: isPercentageRow? mainInform.percentageFEFAAtTheEnd.toString(): mainInform.totalAtTheEndFEFA().toString()),
         ]);
       }).toList();
     }
@@ -80,10 +101,18 @@ class AdmissionsAndDischargesByPointDataGridSource extends DataGridSource {
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
+    final rowColor = row.getCells()[4].value.toString().contains("TOTAL") || row.getCells()[4].value.toString().contains("(%)")? Colors.grey.withOpacity(0.3): Colors.white;
+    final textStyle = row.getCells()[4].value.toString().contains("TOTAL")|| row.getCells()[4].value.toString().contains("(%)")? const TextStyle(fontWeight: FontWeight.bold): const TextStyle();
+
     return DataGridRowAdapter(
-        cells: row.getCells().map((c) =>
-            _buildStandardContainer(c.value.toString())
-        ).toList(),
+        cells: row.getCells().map((c){
+          var text = c.value.toString();
+          if (row.getCells()[4].value.toString().contains("(%)") && text.isNotEmpty && !text.contains("(%)")) {
+            text = "$text%";
+          }
+          return _buildStandardContainer(text, textStyle);
+        }).toList(),
+        color: rowColor
     );
   }
 
@@ -103,11 +132,11 @@ class AdmissionsAndDischargesByPointDataGridSource extends DataGridSource {
     );
   }
 
-  Widget _buildStandardContainer(String value) {
+  Widget _buildStandardContainer(String value, TextStyle textStyle) {
     return Container(
       padding: const EdgeInsets.all(8.0),
       alignment: Alignment.centerLeft,
-      child: Text(value),
+      child: Text(value, style: textStyle),
     );
   }
 
@@ -122,5 +151,9 @@ class AdmissionsAndDischargesByPointDataGridSource extends DataGridSource {
   /// Update DataSource
   void updateDataSource() {
     notifyListeners();
+  }
+
+  void updateSelectedLocale(String selectedLocale) {
+    this.selectedLocale = selectedLocale;
   }
 }
