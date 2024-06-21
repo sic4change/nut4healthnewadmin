@@ -148,6 +148,17 @@
           },
           {
             "type": "child",
+            "title": "Visitas sin caso",
+            "subItems": [
+              {
+                "type": "sample",
+                "title": "Visitas sin caso",
+                "key": "visit_without_diagnosis_datagrid"
+              }
+            ]
+          },
+          {
+            "type": "child",
             "title": "Complicaciones",
             "subItems": [
               {
