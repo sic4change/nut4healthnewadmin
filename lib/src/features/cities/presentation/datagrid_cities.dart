@@ -77,6 +77,8 @@ class _CityDataGridState extends LocalizationSampleViewState {
       _region,
       _location,
       _province,
+      _latitude,
+      _longitude,
       _active,
       _newCity,
       _importCSV,
@@ -101,12 +103,16 @@ class _CityDataGridState extends LocalizationSampleViewState {
     'Región': 150,
     'Provincia': 150,
     'Municipio': 150,
+    'Latitud': 150,
+    'Longitud': 150,
     'Activo': 150,
   };
 
   /// Editing controller for forms to perform update the values.
   TextEditingController? idController,
       nameController,
+      latitudeController,
+      longitudeController,
       activeController;
 
   /// Used to validate the forms
@@ -238,8 +244,11 @@ class _CityDataGridState extends LocalizationSampleViewState {
                     r.name == row[3].toString()).regionId,
                   locationId: cityDataGridSource.getLocations().firstWhere((r) =>
                   r.name == row[4].toString()).locationId,
-                  active: row[5].toString() == 'true' ? true : false,
-                ));
+                  latitude: double.parse(row[5].toString()),
+                  longitude: double.parse(row[6].toString()),
+                  active: row[7].toString() == 'true' ? true : false,
+
+            ));
           }
         }
       });
@@ -423,6 +432,8 @@ class _CityDataGridState extends LocalizationSampleViewState {
       return RegExp(r"^[\d+]+$");
     } else if (keyboardType == TextInputType.emailAddress) {
       return RegExp(r"[a-zA-Z0-9@.]+");
+    } else if (keyboardType == const TextInputType.numberWithOptions(decimal: true, signed: true)) {
+      return RegExp(r'(^\-?\d*\.?\d*)');
     } else {
       return RegExp('.');
     }
@@ -517,6 +528,10 @@ class _CityDataGridState extends LocalizationSampleViewState {
       required String columnName,
       required String text}) {
     TextInputType keyboardType = TextInputType.text;
+    if (columnName == 'Latitud' || columnName == 'Longitud') {
+      keyboardType =  const TextInputType.numberWithOptions(decimal: true, signed: true);
+    }
+
     // Holds the regular expression pattern based on the column type.
     final RegExp regExp = _getRegExp(keyboardType, columnName);
 
@@ -592,6 +607,8 @@ class _CityDataGridState extends LocalizationSampleViewState {
             text: _province,
             setState: setState,
         ),
+        _buildRow(controller: latitudeController!, columnName: 'Latitud', text: _latitude),
+        _buildRow(controller: longitudeController!, columnName: 'Longitud', text: _longitude),
         _buildRowComboSelection(
             context: context,
             optionSelected: activeController!.text,
@@ -649,6 +666,8 @@ class _CityDataGridState extends LocalizationSampleViewState {
             text: _province,
             setState: setState,
         ),
+        _buildRow(controller: latitudeController!, columnName: 'Latitud', text: _latitude),
+        _buildRow(controller: longitudeController!, columnName: 'Longitud', text: _longitude),
         const SizedBox(height: 20),
         _buildRowComboSelection(
             context: context,
@@ -665,6 +684,8 @@ class _CityDataGridState extends LocalizationSampleViewState {
   void _createTextFieldContext() {
     idController!.text = '';
     nameController!.text = '';
+    latitudeController!.text = '';
+    longitudeController!.text = '';
     activeController!.text = '✔';
     _resetComboValues();
   }
@@ -731,6 +752,20 @@ class _CityDataGridState extends LocalizationSampleViewState {
     setProvinceOptions(cityDataGridSource.getProvinces().where((p) =>
         p.locationId == ref.watch(citiesScreenControllerProvider.notifier).getLocationSelected().locationId).toList());
 
+    final String? latitude = row
+        .getCells()
+        .firstWhere((DataGridCell element) => element.columnName == 'Latitud')
+        ?.value.toString();
+
+    latitudeController!.text = latitude ?? '';
+
+    final String? longitude = row
+        .getCells()
+        .firstWhere((DataGridCell element) => element.columnName == 'Longitud')
+        ?.value.toString();
+
+    longitudeController!.text = longitude ?? '';
+
     final String? active = row
         .getCells()
         .firstWhere(
@@ -779,7 +814,10 @@ class _CityDataGridState extends LocalizationSampleViewState {
           country: ref.watch(citiesScreenControllerProvider.notifier).getCountrySelected().countryId,
           regionId: ref.watch(citiesScreenControllerProvider.notifier).getRegionSelected().regionId,
           locationId: ref.watch(citiesScreenControllerProvider.notifier).getLocationSelected().locationId,
-          active: activeController!.text == '✔' ? true : false));
+          active: activeController!.text == '✔' ? true : false,
+          latitude: double.parse(latitudeController!.text),
+          longitude: double.parse(longitudeController!.text),
+      ));
       Navigator.pop(buildContext);
     }
   }
@@ -801,7 +839,10 @@ class _CityDataGridState extends LocalizationSampleViewState {
           regionId: ref.watch(citiesScreenControllerProvider.notifier).getRegionSelected().regionId,
           locationId: ref.watch(citiesScreenControllerProvider.notifier).getLocationSelected().locationId,
           province: ref.watch(citiesScreenControllerProvider.notifier).getProvinceSelected().provinceId,
-          active: activeController!.text == '✔' ? true : false));
+          active: activeController!.text == '✔' ? true : false,
+          latitude: double.parse(latitudeController!.text),
+          longitude: double.parse(longitudeController!.text),
+      ));
       Navigator.pop(buildContext);
     }
   }
@@ -936,6 +977,8 @@ class _CityDataGridState extends LocalizationSampleViewState {
         _region = 'Region';
         _location = 'Location';
         _province = 'Municipality';
+        _latitude = 'Latitude';
+        _longitude = 'Longitude';
         _active = 'Active';
         _newCity = 'New Community';
         _importCSV = 'Import CSV';
@@ -960,6 +1003,8 @@ class _CityDataGridState extends LocalizationSampleViewState {
         _region = 'Región';
         _location = 'Provincia';
         _province = 'Municipio';
+        _latitude = 'Latitud';
+        _longitude = 'Longitud';
         _active = 'Activo';
         _newCity = 'Crear Comunidad';
         _importCSV = 'Importar CSV';
@@ -981,6 +1026,8 @@ class _CityDataGridState extends LocalizationSampleViewState {
         _provinceId = 'Municipalité ID';
         _name = 'Nom';
         _province = 'Municipalité';
+        _latitude = 'Latitude';
+        _longitude = 'Longitude';
         _country = 'Pays';
         _region = 'Région';
         _location = 'Province';
@@ -1083,6 +1130,30 @@ class _CityDataGridState extends LocalizationSampleViewState {
           ),
         ),
         GridColumn(
+          columnName: 'Latitud',
+          width: columnWidths['Latitud']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _latitude,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+        GridColumn(
+          columnName: 'Longitud',
+          width: columnWidths['Longitud']!,
+          label: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _longitude,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+        GridColumn(
           columnName: 'Activo',
           width: columnWidths['Activo']!,
           label: Container(
@@ -1164,6 +1235,8 @@ class _CityDataGridState extends LocalizationSampleViewState {
         CityDataGridSource(List.empty(), List.empty(), List.empty(), List.empty(), List.empty());
     idController = TextEditingController();
     nameController = TextEditingController();
+    latitudeController = TextEditingController();
+    longitudeController = TextEditingController();
     activeController = TextEditingController();
     selectedLocale = model.locale.toString();
 
@@ -1177,6 +1250,8 @@ class _CityDataGridState extends LocalizationSampleViewState {
     _region = 'Región';
     _location = 'Provincia';
     _province = 'Municipio';
+    _latitude = 'Latitud';
+    _longitude = 'Longitud';
     _active = 'Activo';
     _newCity = 'Crear Comunidad';
     _importCSV = 'Importar CSV';

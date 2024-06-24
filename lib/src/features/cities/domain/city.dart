@@ -9,7 +9,9 @@ class City extends Equatable {
 
   const City({required this.cityId, required this.name,
     required this.locationId, required this.province, required this.country,
-    required this.regionId, required this.active});
+    required this.regionId, required this.active, required this.latitude,
+    required this.longitude,
+  });
 
   final CityID cityId;
   final String name;
@@ -18,6 +20,8 @@ class City extends Equatable {
   final String locationId;
   final String province;
   final bool active;
+  final double latitude;
+  final double longitude;
 
   @override
   List<Object> get props => [cityId, name, country, regionId, locationId, province, active];
@@ -36,6 +40,8 @@ class City extends Equatable {
     final locationId = data['locationId']?? "";
     final province = data['province'] as String;
     final active = data['active'] as bool;
+    final latitude = data['latitude']?? 0.0;
+    final longitude = data['longitude']?? 0.0;
     return City(
         cityId: documentId,
         name: name,
@@ -43,7 +49,10 @@ class City extends Equatable {
         regionId: regionId,
         locationId: locationId,
         province: province,
-        active: active);
+        active: active,
+        latitude: latitude,
+        longitude: longitude,
+    );
   }
 
   Map<String, dynamic> toMap() {
@@ -54,6 +63,8 @@ class City extends Equatable {
       'locationId': locationId,
       'province': province,
       'active': active,
+      'latitude': latitude,
+      'longitude': longitude,
     };
   }
 }
