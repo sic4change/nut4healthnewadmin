@@ -9,6 +9,7 @@ import 'package:adminnut4health/src/features/regions/presentation/datagrid_regio
 import 'package:adminnut4health/src/features/tutors/presentation/datagrid_tutors.dart';
 import 'package:adminnut4health/src/features/users/presentation/datagrid_users.dart';
 import 'package:adminnut4health/src/features/visits/presentation/datagrid_visits.dart';
+import 'package:adminnut4health/src/features/visitsWithoutDiagnosis/presentation/datagrid_visits_without_diagnosis.dart';
 import 'package:flutter/foundation.dart';
 
 import '../features/cities/presentation/datagrid_cities.dart';
@@ -585,6 +586,8 @@ Map<String, Function> getSampleWidget() {
     'child_datagrid': (Key key) => ChildDataGrid(key: key),
     'case_datagrid': (Key key) => CaseDataGrid(key: key),
     'visit_datagrid': (Key key) => VisitDataGrid(key: key),
+    'visit_without_diagnosis_datagrid': (Key key) => VisitWithoutDiagnosisDataGrid(key: key),
+
     'notification_datagrid': (Key key) => NotificationDataGrid(key: key),
     'complication_datagrid': (Key key) => ComplicationDataGrid(key: key),
 
