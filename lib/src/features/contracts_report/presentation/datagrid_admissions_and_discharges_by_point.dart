@@ -74,8 +74,8 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
 
   /// Translate names
   late String _country, _region, _location, _province, _point, _patientsAtBeginning, _newAdmissions, _reAdmissions,
-      _relapses, _referredIn, _transferedIn, _totalAdmissions, _totalAttended,
-      _recovered, _unresponsive, _deaths, _abandonment, _referredOut, _transferedOut,
+      _referredIn, _transferedIn, _totalAdmissions, _totalAttended, _recovered,
+      _unresponsive, _deaths, _abandonment, _referredOut, _transferedOut,
       _totalDischarges, _totalAtTheEnd, _start, _end, _exportXLS, _exportPDF,
       _total, _contracts, _selectCountry, _selectRegion, _selectLocation,
       _selectProvince, _selectPointType, _selectPoint, _allMale, _allFemale,
@@ -96,9 +96,6 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
     'Readmisiones (M)': 200,
     'Readmisiones (F)': 200,
     'Readmisiones (FEFA)': 200,
-    'Recaídas (M)': 200,
-    'Recaídas (F)': 200,
-    'Recaídas (FEFA)': 200,
     'Referidos (Admisión) (M)': 200,
     'Referidos (Admisión) (F)': 200,
     'Referidos (Admisión) (FEFA)': 200,
@@ -988,42 +985,6 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
             )
         ),
         GridColumn(
-            columnName: 'Recaídas (M)',
-            width: columnWidths['Recaídas (M)']!,
-            label: Container(
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _boy,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-        ),
-        GridColumn(
-            columnName: 'Recaídas (F)',
-            width: columnWidths['Recaídas (F)']!,
-            label: Container(
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _girl,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-        ),
-        GridColumn(
-            columnName: 'Recaídas (FEFA)',
-            width: columnWidths['Recaídas (FEFA)']!,
-            label: Container(
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _fefa,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-        ),
-        GridColumn(
             columnName: 'Referidos (Admisión) (M)',
             width: columnWidths['Referidos (Admisión) (M)']!,
             label: Container(
@@ -1461,9 +1422,9 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
         StackedHeaderRow(cells: [
           StackedHeaderCell(
               columnNames: [
-                'Nuevos casos (M)', 'Readmisiones (M)', 'Recaídas (M)', 'Referidos (Admisión) (M)', 'Transferidos (Admisión) (M)', 'TOTAL ADMISIONES (M)',
-                'Nuevos casos (F)', 'Readmisiones (F)', 'Recaídas (F)', 'Referidos (Admisión) (F)', 'Transferidos (Admisión) (F)', 'TOTAL ADMISIONES (F)',
-                'Nuevos casos (FEFA)', 'Readmisiones (FEFA)', 'Recaídas (FEFA)', 'Referidos (Admisión) (FEFA)', 'Transferidos (Admisión) (FEFA)', 'TOTAL ADMISIONES (FEFA)',],
+                'Nuevos casos (M)', 'Readmisiones (M)', 'Referidos (Admisión) (M)', 'Transferidos (Admisión) (M)', 'TOTAL ADMISIONES (M)',
+                'Nuevos casos (F)', 'Readmisiones (F)', 'Referidos (Admisión) (F)', 'Transferidos (Admisión) (F)', 'TOTAL ADMISIONES (F)',
+                'Nuevos casos (FEFA)', 'Readmisiones (FEFA)', 'Referidos (Admisión) (FEFA)', 'Transferidos (Admisión) (FEFA)', 'TOTAL ADMISIONES (FEFA)',],
               child: Center(child: Text(_admissions, style: const TextStyle(fontWeight: FontWeight.bold),))),
           StackedHeaderCell(
               columnNames: [
@@ -1483,9 +1444,6 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
           StackedHeaderCell(
               columnNames: ['Readmisiones (M)', 'Readmisiones (F)', 'Readmisiones (FEFA)'],
               child: Center(child: Text(_reAdmissions, style: const TextStyle(fontWeight: FontWeight.bold),))),
-          StackedHeaderCell(
-              columnNames: ['Recaídas (M)', 'Recaídas (F)', 'Recaídas (FEFA)'],
-              child: Center(child: Text(_relapses, style: const TextStyle(fontWeight: FontWeight.bold),))),
           StackedHeaderCell(
               columnNames: ['Referidos (Admisión) (M)', 'Referidos (Admisión) (F)', 'Referidos (Admisión) (FEFA)'],
               child: Center(child: Text(_referredIn, style: const TextStyle(fontWeight: FontWeight.bold),))),
@@ -1544,7 +1502,6 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
         _patientsAtBeginning = 'Patients at beginning';
         _newAdmissions = 'New admissions';
         _reAdmissions = 'Readmissions';
-        _relapses = 'Relapses';
         _referredIn = 'Referred (Admission)';
         _transferedIn = 'Transferred (Admission)';
         _totalAdmissions = 'TOTAL ADMISSIONS';
@@ -1583,7 +1540,6 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
         _patientsAtBeginning = 'Pacientes al inicio';
         _newAdmissions = 'Nuevos casos';
         _reAdmissions = 'Readmisiones';
-        _relapses = 'Recaídas';
         _referredIn = 'Referidos (Admisión)';
         _transferedIn = 'Transferidos (Admisión)';
         _totalAdmissions = 'TOTAL ADMISIONES';
@@ -1622,7 +1578,6 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
         _patientsAtBeginning = 'Patients au début';
         _newAdmissions = 'Nouvelles admissions';
         _reAdmissions = 'Réadmissions';
-        _relapses = 'Rechutes';
         _referredIn = 'Références (Admission)';
         _transferedIn = 'Transféré (Admission)';
         _totalAdmissions = 'ADMISSIONS TOTALES';
