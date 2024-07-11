@@ -295,9 +295,10 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
       if (filteredCases.isNotEmpty) {
         // PATIENTS AT BEGINNING
         final openCasesBeforeStartDate = filteredCases.where((caseFull) =>
-            caseFull.myCase.createDate.isBefore(DateTime.fromMillisecondsSinceEpoch(start)) &&
-            caseFull.myCase.closedReason.isEmpty &&
-            caseFull.myCase.pointId == point.pointId);
+          caseFull.myCase.createDate.isBefore(DateTime.fromMillisecondsSinceEpoch(start)) &&
+          // Que no estén cerrados, o que estén cerrados DESPUÉS de la fecha de inicio del filtro
+          ((caseFull.myCase.closedReason.isEmpty || caseFull.myCase.closedReason == "null") || caseFull.getClosedDate().isAfter(DateTime.fromMillisecondsSinceEpoch(start))) &&
+          caseFull.myCase.pointId == point.pointId);
         for (var c in openCasesBeforeStartDate) {
           if (c.child == null || c.child!.childId == '') {
             inform.patientsAtBeginningFEFA++;
@@ -397,8 +398,8 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
 
         // DISCHARGES
         final closedCasesByDate = filteredCases.where((caseFull) =>
-        caseFull.myCase.lastDate.isAfter(DateTime.fromMillisecondsSinceEpoch(start)) &&
-            caseFull.myCase.lastDate.isBefore(DateTime.fromMillisecondsSinceEpoch(end)) &&
+        caseFull.getClosedDate().isAfter(DateTime.fromMillisecondsSinceEpoch(start)) &&
+            caseFull.getClosedDate().isBefore(DateTime.fromMillisecondsSinceEpoch(end)) &&
             caseFull.myCase.closedReason != "null" && caseFull.myCase.closedReason.isNotEmpty &&
             caseFull.myCase.pointId == point.pointId);
         for (var c in closedCasesByDate) {
@@ -447,7 +448,7 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
             }
           }
 
-          // Abandono
+          // Abandonos
           if (c.myCase.closedReason == CaseType.abandonment) {
             if (c.child == null || c.child!.childId == '') {
               inform.abandonmentFEFA++;
@@ -477,7 +478,7 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
             }
           }
 
-          // Abandono
+          // Transferidos
           if (c.myCase.closedReason == CaseType.transfered) {
             if (c.child == null || c.child!.childId == '') {
               inform.transferedOutFEFA++;

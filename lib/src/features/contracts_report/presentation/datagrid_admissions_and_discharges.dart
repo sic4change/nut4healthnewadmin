@@ -325,10 +325,13 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
     ));
 
     if (filteredCases.isNotEmpty) {
+
       // PATIENTS AT BEGINNING
       final openCasesBeforeStartDate = filteredCases.where((caseFull) =>
-          caseFull.myCase.createDate.isBefore(DateTime.fromMillisecondsSinceEpoch(start)) &&
-          caseFull.myCase.closedReason.isEmpty);
+        caseFull.myCase.createDate.isBefore(DateTime.fromMillisecondsSinceEpoch(start)) &&
+        // Y que no estén cerrados, o que estén cerrados DESPUÉS de la fecha de inicio del filtro
+        ((caseFull.myCase.closedReason.isEmpty || caseFull.myCase.closedReason == "null") || caseFull.getClosedDate().isAfter(DateTime.fromMillisecondsSinceEpoch(start)))
+      );
       for (var element in openCasesBeforeStartDate) {
         if (element.child == null || element.child!.childId == '') {
           informs[3].patientsAtBeginning++;
@@ -427,8 +430,8 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
 
       // DISCHARGES
       final closedCasesByDate = filteredCases.where((caseFull) =>
-          caseFull.myCase.lastDate.isAfter(DateTime.fromMillisecondsSinceEpoch(start)) &&
-          caseFull.myCase.lastDate.isBefore(DateTime.fromMillisecondsSinceEpoch(end)) &&
+          caseFull.getClosedDate().isAfter(DateTime.fromMillisecondsSinceEpoch(start)) &&
+          caseFull.getClosedDate().isBefore(DateTime.fromMillisecondsSinceEpoch(end)) &&
           caseFull.myCase.closedReason != "null" && caseFull.myCase.closedReason.isNotEmpty);
       for (var element in closedCasesByDate) {
         // Recuperados
