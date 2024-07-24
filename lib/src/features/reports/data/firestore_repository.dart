@@ -79,7 +79,7 @@ class FirestoreRepository {
             } catch (e) {
                 return ReportWithUser(
                     report,
-                    const User(userId: '', name: '', email: '', role: ''));
+                    User(userId: '', name: '', email: '', role: ''));
           }}).toList();
         });
   }

@@ -165,7 +165,7 @@ class FirestoreRepository {
   }
 
   Stream<List<ContractWithScreenerAndMedicalAndPoint>> watchContractWithConfigurationAndPoints() {
-    const emptyUser = User(userId: '', name: '', email: '', role: '');
+    var emptyUser = User(userId: '', name: '', email: '', role: '');
     final emptyPoint = Point.getEmptyPoint();
     return CombineLatestStream.combine3(
         watchContracts(), watchUsers(), watchPoints(),
@@ -186,7 +186,7 @@ class FirestoreRepository {
   }
 
   Stream<List<ContractWithScreenerAndMedicalAndPoint>> watchContractsFullbyPoints(List<String> pointsIds) {
-    const emptyUser = User(userId: '', name: '', email: '', role: '');
+    var emptyUser = User(userId: '', name: '', email: '', role: '');
     final emptyPoint = Point.getEmptyPoint();
     return CombineLatestStream.combine3(
         watchContractsByRegion(pointsIds), watchUsers(), watchPoints(),
@@ -248,7 +248,7 @@ class FirestoreRepository {
 
 
   Stream<List<ContractScreenerStadistic>> watchContractsScreener(String screenerId) {
-    const emptyUser = User(userId: '', email: '', role: 'Agente Salud');
+    var emptyUser = User(userId: '', email: '', role: 'Agente Salud');
     return CombineLatestStream.combine2(
         watchContractsByScreener(screenerId), watchScreenerUsers(),
             (List<Contract> contracts, List<User> screeners) {

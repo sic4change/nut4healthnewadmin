@@ -49,7 +49,7 @@ class _StatisticContractsByScreenerAndDatePageState extends SampleViewState
   late SfCartesianChart columnChart, splineChart;
   late List<ChartSampleData>  splineSeriesData;
   List<User> users = <User>[];
-  User userSelected = const User(userId: '', email: '', role: 'Agente Salud');
+  User userSelected = User(userId: '', email: '', role: 'Agente Salud');
   bool enableDeferredUpdate = true;
 
   var currentUserRole = "";

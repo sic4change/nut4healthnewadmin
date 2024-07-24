@@ -9,7 +9,7 @@ typedef UserID = String;
 @immutable
 class User extends Equatable {
 
-  const User({
+  User({
     required this.userId, this.username, this.name,
     this.surname, required this.email, this.phone, required this. role, this.dni,
     this.photo, this.point, this.regionId, this.provinceId, this.configuration, this.points, this.createdate,
@@ -26,7 +26,7 @@ class User extends Equatable {
   final String? dni;
   final String email;
   final String? phone;
-  final String role;
+  String role;
   final String? photo;
   final String? point;
   final String? regionId;

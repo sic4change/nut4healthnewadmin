@@ -130,9 +130,38 @@ class _UserDataGridState extends LocalizationSampleViewState {
       userDataGridSource.setUsers(List.empty());
     } else {
       final notEmptyUsers = users.value!.where((element) => !element.user!.email.contains('@anonymous.com')).toList();
+
+      if (model.locale.toString() == 'fr_FR') {
+        for (var user in notEmptyUsers) {
+          switch (user.user.role) {
+            case 'Super Admin':
+              user.user.role = 'Super Administrateur';
+              break;
+            case 'Donante':
+              user.user.role = 'Donateur';
+              break;
+            case 'Servicio Salud':
+              user.user.role = 'Service de Santé';
+              break;
+            case 'Agente Salud':
+              user.user.role = 'Relais communautaire';
+              break;
+            case 'Médico Jefe':
+              user.user.role = 'Médecin Chef';
+              break;
+            case 'Dirección Regional de Salud':
+              user.user.role = 'Direction Régionale de la Santé';
+              break;
+            default:
+              break;
+          }
+        }
+      }
+
       userDataGridSource.setUsers(notEmptyUsers);
     }
   }
+
 
   _saveConfigurations(AsyncValue<List<Configuration>>? configurations) {
     if (configurations == null) {
@@ -597,7 +626,10 @@ class _UserDataGridState extends LocalizationSampleViewState {
 
   /// Building the forms to edit the data
   Widget _buildAlertDialogContent(BuildContext context, void Function(void Function()) setState) {
-    final roleOptions = ["Super Admin", "Donante", "Servicio Salud", "Agente Salud", "Médico Jefe", "Dirección Regional de Salud"];
+    var roleOptions = ["Super Admin", "Donante", "Servicio Salud", "Agente Salud", "Médico Jefe", "Dirección Regional de Salud"];
+    if (model.locale.toString() == 'fr_FR') {
+      roleOptions = ["Super Administrateur", "Donateur", "Service de Santé", "Relais communautaire", "Médecin Chef", "Direction Régionale de la Santé"];
+    }
     final pointOptions = userDataGridSource.getPoints().map((e) => e.name).toList();
     pointOptions.insert(0, "");
     final configurationOptions = userDataGridSource.getConfigurations().map((e) => e.name).toList();
@@ -658,8 +690,10 @@ class _UserDataGridState extends LocalizationSampleViewState {
 
   /// Building the forms to create the data
   Widget _buildAlertDialogCreateContent(BuildContext context, void Function(void Function()) setState) {
-    final roleOptions = ["Super Admin", "Donante", "Servicio Salud", "Agente Salud", "Médico Jefe", "Dirección Regional de Salud"];
-    final pointOptions = userDataGridSource.getPoints().map((e) => e.name).toList();
+    var roleOptions = ["Super Admin", "Donante", "Servicio Salud", "Agente Salud", "Médico Jefe", "Dirección Regional de Salud"];
+    if (model.locale.toString() == 'fr_FR') {
+      roleOptions = ["Super Administrateur", "Donateur", "Service de Santé", "Relais communautaire", "Médecin Chef", "Direction Régionale de la Santé"];
+    } final pointOptions = userDataGridSource.getPoints().map((e) => e.name).toList();
     pointOptions.insert(0, "");
     final configurationOptions = userDataGridSource.getConfigurations().map((e) => e.name).toList();
     configurationOptions.insert(0, "");
@@ -789,10 +823,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
     final String? rol = row
         .getCells()
         .firstWhere(
-          (DataGridCell element) => element.columnName == 'Rol',
-    )
-        ?.value
-        .toString();
+          (DataGridCell element) => element.columnName == 'Rol',)?.value.toString();
 
     roleController!.text = rol ?? '';
 
@@ -876,6 +907,25 @@ class _UserDataGridState extends LocalizationSampleViewState {
     );
   }
 
+  String formatRoleToSaveValue(String role) {
+    switch (role) {
+      case 'Super Administrateur':
+        return 'Super Admin';
+      case 'Donateur':
+        return 'Donante';
+      case 'Service de Santé':
+        return 'Servicio Salud';
+      case 'Relais communautaire':
+        return 'Agente Salud';
+      case 'Médecin Chef':
+        return 'Médico Jefe';
+      case 'Direction Régionale de la Santé':
+        return 'Dirección Regional de Salud';
+      default:
+        return role; // Si el rol no coincide, devuelve el valor original
+    }
+  }
+
   void _processCellCreate(BuildContext buildContext) async {
     if (_formKey.currentState!.validate()) {
       ref.read(usersScreenControllerProvider.notifier).addUser(
@@ -883,7 +933,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
               username: usernameController!.text, name: nameController!.text,
               surname: surnamesController!.text, dni: dniController!.text,
               email: emailController!.text, phone: phoneController!.text,
-              role: roleController!.text,
+              role: formatRoleToSaveValue(roleController!.text),
               regionId: ref.watch(usersScreenControllerProvider.notifier).getRegionSelected().regionId,
               provinceId: ref.watch(usersScreenControllerProvider.notifier).getProvinceSelected().provinceId,
               point: userDataGridSource.getPoints().firstWhere((element) => element.name == pointController!.text).pointId,
@@ -904,12 +954,13 @@ class _UserDataGridState extends LocalizationSampleViewState {
               username: usernameController!.text, name: nameController!.text,
               surname: surnamesController!.text, dni: dniController!.text,
               email: emailController!.text, phone: phoneController!.text,
+              role: formatRoleToSaveValue(roleController!.text),
               regionId: ref.watch(usersScreenControllerProvider.notifier).getRegionSelected().regionId,
               provinceId: ref.watch(usersScreenControllerProvider.notifier).getProvinceSelected().provinceId,
               point: userDataGridSource.getPoints().firstWhere((element) => element.name == pointController!.text).pointId,
               configuration: userDataGridSource.getConfigurations().firstWhere((element) => element.name == configurationController!.text).id,
               points: int.tryParse(pointsController!.text),
-              address: user.address, role: roleController!.text,
+              address: user.address,
               pointTransactionHash: user.pointTransactionHash,
               roleTransactionHash: user.roleTransactionHash,
               configurationTransactionHash: user.configurationTransactionHash,

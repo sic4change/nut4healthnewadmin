@@ -16,6 +16,8 @@ import '../../configurations/domain/configuration.dart';
 import '../domain/UserWithConfigurationAndPoint.dart';
 import '../domain/user.dart';
 
+import '../../../sample/model/sample_view.dart';
+
 /// Set user's data collection to data grid source.
 class UserDataGridSource extends DataGridSource {
   /// Creates the user data source class with required details.
@@ -35,6 +37,7 @@ class UserDataGridSource extends DataGridSource {
   List<Province> _provinces = <Province>[];
   List<Point> _points = <Point>[];
   List<Configuration> _configurations = <Configuration>[];
+
 
   /// Building DataGridRows
   void buildDataGridRows() {
