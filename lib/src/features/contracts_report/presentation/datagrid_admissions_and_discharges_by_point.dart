@@ -1,6 +1,8 @@
 /// Package imports
 /// import 'package:flutter/foundation.dart';
 
+import 'package:adminnut4health/src/common_widgets/custom_datagrid_to_excel_converter.dart';
+import 'package:adminnut4health/src/common_widgets/custom_datagrid_to_pdf_converter.dart';
 import 'package:adminnut4health/src/features/cases/domain/case.dart';
 import 'package:adminnut4health/src/features/contracts_report/domain/admissions_and_discharges_by_point_inform.dart';
 import 'package:adminnut4health/src/features/contracts_report/domain/case_full.dart';
@@ -686,12 +688,7 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
 
   Widget _buildHeaderButtons() {
     Future<void> exportDataGridToExcel() async {
-      //CustomDataGridToExcelConverter excelConverter = CustomDataGridToExcelConverter();
-      //final Workbook workbook = _key.currentState!.exportToExcelWorkbook(converter: excelConverter);
-      final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
-        //exportTableSummaries: false,
-          cellExport: (DataGridCellExcelExportDetails details) {
-          });
+      final Workbook workbook = _key.currentState!.exportToExcelWorkbook(converter: CustomDataGridToExcelConverter());
       final List<int> bytes = workbook.saveAsStream();
       workbook.dispose();
       await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_contracts.xlsx');
@@ -700,6 +697,7 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
     Future<void> exportDataGridToPdf() async {
       final ByteData data = await rootBundle.load('images/nut_logo.jpg');
       final PdfDocument document = _key.currentState!.exportToPdfDocument(
+          converter: CustomDataGridToPdfConverter(),
           cellExport: (DataGridCellPdfExportDetails details) {},
           headerFooterExport: (DataGridPdfHeaderFooterExportDetails details) {
             final double width = details.pdfPage.getClientSize().width;
@@ -1422,12 +1420,14 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
       stackedHeaderRows: <StackedHeaderRow>[
         StackedHeaderRow(cells: [
           StackedHeaderCell(
+              text: _admissions,
               columnNames: [
                 'Nuevos casos (M)', 'Readmisiones (M)', 'Referidos (Admisión) (M)', 'Transferidos (Admisión) (M)', 'TOTAL ADMISIONES (M)',
                 'Nuevos casos (F)', 'Readmisiones (F)', 'Referidos (Admisión) (F)', 'Transferidos (Admisión) (F)', 'TOTAL ADMISIONES (F)',
                 'Nuevos casos (FEFA)', 'Readmisiones (FEFA)', 'Referidos (Admisión) (FEFA)', 'Transferidos (Admisión) (FEFA)', 'TOTAL ADMISIONES (FEFA)',],
               child: Center(child: Text(_admissions, style: const TextStyle(fontWeight: FontWeight.bold),))),
           StackedHeaderCell(
+              text: _discharges,
               columnNames: [
                 'Recuperados (M)', 'Sin respuesta (M)', 'Fallecimientos (M)', 'Abandonos (M)', 'Referidos (Alta) (M)', 'Transferidos (Alta) (M)', 'TOTAL ALTAS (M)',
                 'Recuperados (F)', 'Sin respuesta (F)', 'Fallecimientos (F)', 'Abandonos (F)', 'Referidos (Alta) (F)', 'Transferidos (Alta) (F)', 'TOTAL ALTAS (F)',
@@ -1436,50 +1436,65 @@ class _AdmissionsAndDischargesByPointDataGridState extends LocalizationSampleVie
         ]),
         StackedHeaderRow(cells: [
           StackedHeaderCell(
+              text: _patientsAtBeginning,
               columnNames: ['Pacientes al inicio (M)', 'Pacientes al inicio (F)', 'Pacientes al inicio (FEFA)'],
               child: Center(child: Text(_patientsAtBeginning, style: const TextStyle(fontWeight: FontWeight.bold),))),
           // ADMISSIONS
           StackedHeaderCell(
+              text: _newAdmissions,
               columnNames: ['Nuevos casos (M)', 'Nuevos casos (F)', 'Nuevos casos (FEFA)'],
               child: Center(child: Text(_newAdmissions, style: const TextStyle(fontWeight: FontWeight.bold),))),
           StackedHeaderCell(
+              text: _reAdmissions,
               columnNames: ['Readmisiones (M)', 'Readmisiones (F)', 'Readmisiones (FEFA)'],
               child: Center(child: Text(_reAdmissions, style: const TextStyle(fontWeight: FontWeight.bold),))),
           StackedHeaderCell(
+              text: _referredIn,
               columnNames: ['Referidos (Admisión) (M)', 'Referidos (Admisión) (F)', 'Referidos (Admisión) (FEFA)'],
               child: Center(child: Text(_referredIn, style: const TextStyle(fontWeight: FontWeight.bold),))),
           StackedHeaderCell(
+              text: _transferedIn,
               columnNames: ['Transferidos (Admisión) (M)', 'Transferidos (Admisión) (F)', 'Transferidos (Admisión) (FEFA)'],
               child: Center(child: Text(_transferedIn, style: const TextStyle(fontWeight: FontWeight.bold),))),
           StackedHeaderCell(
+              text: _totalAdmissions,
               columnNames: ['TOTAL ADMISIONES (M)', 'TOTAL ADMISIONES (F)', 'TOTAL ADMISIONES (FEFA)'],
               child: Center(child: Text(_totalAdmissions, style: const TextStyle(fontWeight: FontWeight.bold),))),
           StackedHeaderCell(
+              text: _totalAttended,
               columnNames: ['TOTAL ATENDIDOS (M)', 'TOTAL ATENDIDAS (F)', 'TOTAL ATENDIDAS (FEFA)'],
               child: Center(child: Text(_totalAttended, style: const TextStyle(fontWeight: FontWeight.bold),))),
           // DISCHARGES
           StackedHeaderCell(
+              text: _recovered,
               columnNames: ['Recuperados (M)', 'Recuperados (F)', 'Recuperados (FEFA)'],
               child: Center(child: Text(_recovered, style: const TextStyle(fontWeight: FontWeight.bold),))),
           StackedHeaderCell(
+              text: _unresponsive,
               columnNames: ['Sin respuesta (M)', 'Sin respuesta (F)', 'Sin respuesta (FEFA)'],
               child: Center(child: Text(_unresponsive, style: const TextStyle(fontWeight: FontWeight.bold),))),
           StackedHeaderCell(
+              text: _deaths,
               columnNames: ['Fallecimientos (M)', 'Fallecimientos (F)', 'Fallecimientos (FEFA)'],
               child: Center(child: Text(_deaths, style: const TextStyle(fontWeight: FontWeight.bold),))),
           StackedHeaderCell(
+              text: _abandonment,
               columnNames: ['Abandonos (M)', 'Abandonos (F)', 'Abandonos (FEFA)'],
               child: Center(child: Text(_abandonment, style: const TextStyle(fontWeight: FontWeight.bold),))),
           StackedHeaderCell(
+              text: _referredOut,
               columnNames: ['Referidos (Alta) (M)', 'Referidos (Alta) (F)', 'Referidos (Alta) (FEFA)'],
               child: Center(child: Text(_referredOut, style: const TextStyle(fontWeight: FontWeight.bold),))),
           StackedHeaderCell(
+              text: _transferedOut,
               columnNames: ['Transferidos (Alta) (M)', 'Transferidos (Alta) (F)', 'Transferidos (Alta) (FEFA)'],
               child: Center(child: Text(_transferedOut, style: const TextStyle(fontWeight: FontWeight.bold),))),
           StackedHeaderCell(
+              text: _totalDischarges,
               columnNames: ['TOTAL ALTAS (M)', 'TOTAL ALTAS (F)', 'TOTAL ALTAS (FEFA)'],
               child: Center(child: Text(_totalDischarges, style: const TextStyle(fontWeight: FontWeight.bold),))),
           StackedHeaderCell(
+              text: _totalAtTheEnd,
               columnNames: ['TOTAL AL FINAL (M)', 'TOTAL AL FINAL (F)', 'TOTAL AL FINAL (FEFA)'],
               child: Center(child: Text(_totalAtTheEnd, style: const TextStyle(fontWeight: FontWeight.bold),))),
         ]),

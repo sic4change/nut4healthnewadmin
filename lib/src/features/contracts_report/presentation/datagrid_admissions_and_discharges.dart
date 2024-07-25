@@ -1,6 +1,8 @@
 /// Package imports
 /// import 'package:flutter/foundation.dart';
 
+import 'package:adminnut4health/src/common_widgets/custom_datagrid_to_excel_converter.dart';
+import 'package:adminnut4health/src/common_widgets/custom_datagrid_to_pdf_converter.dart';
 import 'package:adminnut4health/src/features/cases/domain/case.dart';
 import 'package:adminnut4health/src/features/contracts_report/domain/admissions_and_discharges_inform.dart';
 import 'package:adminnut4health/src/features/contracts_report/domain/case_full.dart';
@@ -640,10 +642,8 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
 
   Widget _buildHeaderButtons() {
     Future<void> exportDataGridToExcel() async {
-      //CustomDataGridToExcelConverter excelConverter = CustomDataGridToExcelConverter();
-      //final Workbook workbook = _key.currentState!.exportToExcelWorkbook(converter: excelConverter);
       final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
-        //exportTableSummaries: false,
+          converter: CustomDataGridToExcelConverter(),
           cellExport: (DataGridCellExcelExportDetails details) {
           });
       final List<int> bytes = workbook.saveAsStream();
@@ -654,6 +654,7 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
     Future<void> exportDataGridToPdf() async {
       final ByteData data = await rootBundle.load('images/nut_logo.jpg');
       final PdfDocument document = _key.currentState!.exportToPdfDocument(
+          converter: CustomDataGridToPdfConverter(),
           cellExport: (DataGridCellPdfExportDetails details) {},
           headerFooterExport: (DataGridPdfHeaderFooterExportDetails details) {
             final double width = details.pdfPage.getClientSize().width;
@@ -997,9 +998,11 @@ class _AdmissionsAndDischargesDataGridState extends LocalizationSampleViewState 
       stackedHeaderRows: <StackedHeaderRow>[
         StackedHeaderRow(cells: [
           StackedHeaderCell(
+              text: _admissions,
               columnNames: ['Nuevos casos', 'Readmisiones', 'Referidos (Admisión)', 'Recaídas', 'Transferidos (Admisión)', 'TOTAL ADMISIONES'],
               child: Center(child: Text(_admissions, style: const TextStyle(fontWeight: FontWeight.bold),))),
           StackedHeaderCell(
+              text: _discharges,
               columnNames: ['Recuperados', 'Sin respuesta', 'Fallecimientos', 'Abandonos', 'Referidos (Alta)', 'Transferidos (Alta)', 'TOTAL ALTAS'],
               child: Center(child: Text(_discharges, style: const TextStyle(fontWeight: FontWeight.bold),))),
         ]),
