@@ -177,7 +177,7 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
   Widget _buildHeaderButtons() {
     Future<void> exportDataGridToExcel() async {
       final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
-          excludeColumns: ['Nombre Menor', 'Dirección Menor'],
+          excludeColumns: ['Nombre Agente Salud', 'DNI/DPI Agente Salud', 'Teléfono Agente Salud', 'Nombre Menor', 'Dirección Menor'],
           cellExport: (DataGridCellExcelExportDetails details) {
 
           });
@@ -190,7 +190,7 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
       exportDataGridToPdfStandard(
         dataGridState: _key.currentState!,
         title: _payments,
-        excludeColumns: ['Nombre Menor', 'Dirección Menor', 'ID', 'Agente Salud ID'],
+        excludeColumns: ['Nombre Agente Salud', 'DNI/DPI Agente Salud', 'Teléfono Agente Salud', 'Nombre Menor', 'Dirección Menor', 'ID', 'Agente Salud ID'],
       );
     }
 

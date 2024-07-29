@@ -172,6 +172,7 @@ class _VisitWithoutDiagnosisDataGridState extends LocalizationSampleViewState {
   Widget _buildHeaderButtons() {
     Future<void> exportDataGridToExcel() async {
       final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
+          excludeColumns: ['Madre, padre o tutor', 'Niño/a'],
           cellExport: (DataGridCellExcelExportDetails details) {
 
           });
@@ -184,7 +185,7 @@ class _VisitWithoutDiagnosisDataGridState extends LocalizationSampleViewState {
       exportDataGridToPdfStandard(
         dataGridState: _key.currentState!,
         title: _visits,
-        excludeColumns: ['ID', 'Punto ID', 'Madre, padre o tutor ID', 'Niño/a ID'],
+        excludeColumns: ['ID', 'Punto ID', 'Madre, padre o tutor ID', 'Niño/a ID', 'Madre, padre o tutor', 'Niño/a'],
       );
     }
 

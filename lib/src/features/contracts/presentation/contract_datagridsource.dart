@@ -297,19 +297,19 @@ class ContractDataGridSource extends DataGridSource {
       _buildDouble(row.getCells()[6].value),
       _buildDouble(row.getCells()[7].value),
       _buildDouble(row.getCells()[8].value),
-      User.currentRole != 'donante' ? Container(
+      /*User.currentRole != 'donante' ? Container(
           padding: const EdgeInsets.all(8.0),
           alignment: Alignment.centerLeft,
           child: Text(row.getCells()[9].value.toString()),
-        ) : Container(padding: const EdgeInsets.all(8.0),
+        ) :*/ Container(padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: const Text('---------'),
       ),
-    User.currentRole != 'donante' ? Container(
+    /*User.currentRole != 'donante' ? Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[10].value.toString()),
-      ) : Container(padding: const EdgeInsets.all(8.0),
+      ) :*/ Container(padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: const Text('---------'),
     ),
@@ -324,11 +324,11 @@ class ContractDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[13].value.toString()),
       ),
-      User.currentRole != 'donante' ? Container(
+      /*User.currentRole != 'donante' ? Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[14].value.toString()),
-      ) : Container(padding: const EdgeInsets.all(8.0),
+      ) :*/ Container(padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: const Text('---------'),
       ),

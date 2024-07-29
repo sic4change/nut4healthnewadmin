@@ -362,7 +362,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
   Widget _buildHeaderButtons() {
     Future<void> exportDataGridToExcel() async {
       final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
-          excludeColumns: ['Foto'],
+          excludeColumns: ['Foto', 'Nombre', 'Apellidos', 'DNI/DPI', 'Teléfono'],
           cellExport: (DataGridCellExcelExportDetails details) {
 
           });
@@ -375,7 +375,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
       exportDataGridToPdfStandard(
         dataGridState: _key.currentState!,
         title: _users,
-        excludeColumns: ['Foto', 'Usuario ID', 'Región ID', 'Municipio ID'],
+        excludeColumns: ['Foto', 'Usuario ID', 'Región ID', 'Municipio ID', 'Nombre', 'Apellidos', 'DNI/DPI', 'Teléfono'],
       );
     }
 
