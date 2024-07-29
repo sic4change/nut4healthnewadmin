@@ -64,8 +64,8 @@ class _VisitDataGridState extends LocalizationSampleViewState {
 
   late Map<String, double> columnWidths = {
     'FEFA': 150,
-    'Validación Médico Jefe': 200,
-    'Validación Dirección Regional': 200,
+    'Validación Médico Jefe': 150,
+    'Validación Dirección Regional': 150,
     'Punto': 150,
     'Madre, padre o tutor': 150,
     'Niño/a': 150,
@@ -93,16 +93,16 @@ class _VisitDataGridState extends LocalizationSampleViewState {
     'Programa de vacunación Vitamina A': 150,
     'Vacunación Ácido fólico y Hierro': 150,
     'Amoxicilina': 150,
-    'Otros tratamientos': 200,
-    'Complicaciones (ES)': 200,
-    'Complicaciones (EN)': 200,
-    'Complicaciones (FR)': 200,
+    'Otros tratamientos': 150,
+    'Complicaciones (ES)': 150,
+    'Complicaciones (EN)': 150,
+    'Complicaciones (FR)': 150,
     'Observaciones': 150,
-    'ID': 200,
-    'Caso ID': 200,
-    'Punto ID': 200,
-    'Madre, padre o tutor ID': 200,
-    'Niño/a ID': 200,
+    'ID': 150,
+    'Caso ID': 150,
+    'Punto ID': 150,
+    'Madre, padre o tutor ID': 150,
+    'Niño/a ID': 150,
   };
 
   AsyncValue<List<VisitCombined>> visitsAsyncValue = AsyncValue.data(List.empty());
@@ -202,21 +202,30 @@ class _VisitDataGridState extends LocalizationSampleViewState {
 
   Widget _buildHeaderButtons() {
     Future<void> exportDataGridToExcel() async {
+      final excludeColumns = <String>[];
+      if (!User.showPersonalData()) {
+        excludeColumns.addAll(['Madre, padre o tutor', 'Niño/a']);
+      }
+      if (User.currentRole != 'super-admin') {
+        excludeColumns.addAll(['ID', 'Caso ID', 'Punto ID', 'Madre, padre o tutor ID', 'Niño/a ID']);
+      }
       final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
-          excludeColumns: ['Madre, padre o tutor', 'Niño/a'],
-          cellExport: (DataGridCellExcelExportDetails details) {
-
-          });
+          excludeColumns: excludeColumns,
+      );
       final List<int> bytes = workbook.saveAsStream();
       workbook.dispose();
       await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_visits.xlsx');
     }
 
     Future<void> exportDataGridToPdf() async {
+      final excludeColumns = ['ID', 'Caso ID', 'Punto ID', 'Madre, padre o tutor ID', 'Niño/a ID'];
+      if (!User.showPersonalData()) {
+        excludeColumns.addAll(['Madre, padre o tutor', 'Niño/a']);
+      }
       exportDataGridToPdfStandard(
         dataGridState: _key.currentState!,
         title: _visits,
-        excludeColumns: ['ID', 'Caso ID', 'Punto ID', 'Madre, padre o tutor ID', 'Niño/a ID', 'Madre, padre o tutor', 'Niño/a'],
+        excludeColumns: excludeColumns,
       );
     }
 
@@ -653,6 +662,7 @@ class _VisitDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
+            visible: User.showPersonalData(),
             columnName: 'Madre, padre o tutor',
             width: columnWidths['Madre, padre o tutor']!,
             label: Container(
@@ -665,6 +675,7 @@ class _VisitDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
+            visible: User.showPersonalData(),
             columnName: 'Niño/a',
             width: columnWidths['Niño/a']!,
             label: Container(

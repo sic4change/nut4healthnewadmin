@@ -361,21 +361,30 @@ class _UserDataGridState extends LocalizationSampleViewState {
 
   Widget _buildHeaderButtons() {
     Future<void> exportDataGridToExcel() async {
+      final excludeColumns = ['Foto'];
+      if (!User.showPersonalData()) {
+        excludeColumns.addAll(['Nombre', 'Apellidos', 'DNI/DPI', 'Teléfono']);
+      }
+      if (User.currentRole != 'super-admin') {
+        excludeColumns.addAll(['Usuario ID', 'Región ID', 'Municipio ID']);
+      }
       final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
-          excludeColumns: ['Foto', 'Nombre', 'Apellidos', 'DNI/DPI', 'Teléfono'],
-          cellExport: (DataGridCellExcelExportDetails details) {
-
-          });
+          excludeColumns: excludeColumns,
+      );
       final List<int> bytes = workbook.saveAsStream();
       workbook.dispose();
       await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_users.xlsx');
     }
 
     Future<void> exportDataGridToPdf() async {
+      final excludeColumns = ['Foto', 'Usuario ID', 'Región ID', 'Municipio ID'];
+      if (!User.showPersonalData()) {
+        excludeColumns.addAll(['Nombre', 'Apellidos', 'DNI/DPI', 'Teléfono']);
+      }
       exportDataGridToPdfStandard(
         dataGridState: _key.currentState!,
         title: _users,
-        excludeColumns: ['Foto', 'Usuario ID', 'Región ID', 'Municipio ID', 'Nombre', 'Apellidos', 'DNI/DPI', 'Teléfono'],
+        excludeColumns: excludeColumns,
       );
     }
 
@@ -1241,6 +1250,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
               ),
             )),
         GridColumn(
+          visible: User.showPersonalData(),
           columnName: 'Nombre',
             width: columnWidths['Nombre']!,
           label: Container(
@@ -1253,6 +1263,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
           )
         ),
         GridColumn(
+          visible: User.showPersonalData(),
           columnName: 'Apellidos',
           width: columnWidths['Apellidos']!,
           label: Container(
@@ -1265,6 +1276,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
           ),
         ),
         GridColumn(
+          visible: User.showPersonalData(),
           columnName: 'DNI/DPI',
           width: columnWidths['DNI/DPI']!,
           label: Container(
@@ -1289,6 +1301,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
           ),
         ),
         GridColumn(
+          visible: User.showPersonalData(),
           columnName: 'Teléfono',
           width: columnWidths['Teléfono']!,
           label: Container(

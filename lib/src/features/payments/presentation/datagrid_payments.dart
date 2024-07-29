@@ -5,6 +5,7 @@
 import 'package:adminnut4health/src/features/payments/domain/payment.dart';
 import 'package:adminnut4health/src/features/payments/presentation/payment_datagridsource.dart';
 import 'package:adminnut4health/src/features/payments/presentation/payments_screen_controller.dart';
+import 'package:adminnut4health/src/features/users/domain/user.dart';
 import 'package:adminnut4health/src/utils/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -65,25 +66,23 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
 
   /// Translate names
   late String _id, _date, _screenerName, _screenerDPI, _screenerEmail, _screenerPhone,
-      _quantity, _childName, _childAddress, _status, _type, _exportXLS, _exportPDF,
+      _quantity, _status, _type, _exportXLS, _exportPDF,
       _total, _payments,  _save, _cancel, _editPayment, _screenerId;
 
   /// Editing controller for forms to perform update the values.
   TextEditingController?
       statusController;
 
-  late Map<String, double> columnWidths = {
-    'Fecha': 150,
-    'Nombre Agente Salud': 150,
-    'DNI/DPI Agente Salud': 150,
-    'Email Agente Salud': 150,
-    'Teléfono Agente Salud': 150,
-    'Cantidad': 150,
-    'Nombre Menor': 150,
-    'Dirección Menor': 150,
-    'Estado': 150,
-    'Tipo': 150,
+  Map<String, double> columnWidths = {
     'ID': 200,
+    'Estado': 200,
+    'Tipo': 200,
+    'Nombre Agente Salud': 200,
+    'DNI/DPI Agente Salud': 200,
+    'Email Agente Salud': 200,
+    'Teléfono Agente Salud': 200,
+    'Fecha': 200,
+    'Cantidad': 200,
     'Agente Salud ID': 200,
   };
 
@@ -176,21 +175,31 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
 
   Widget _buildHeaderButtons() {
     Future<void> exportDataGridToExcel() async {
-      final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
-          excludeColumns: ['Nombre Agente Salud', 'DNI/DPI Agente Salud', 'Teléfono Agente Salud', 'Nombre Menor', 'Dirección Menor'],
-          cellExport: (DataGridCellExcelExportDetails details) {
+      final excludeColumns = <String>[];
+      if (!User.showPersonalData()) {
+        excludeColumns.addAll(['Nombre Agente Salud', 'DNI/DPI Agente Salud', 'Teléfono Agente Salud']);
+      }
+      if (User.currentRole != 'super-admin'){
+        excludeColumns.addAll(['ID', 'Agente Salud ID']);
+      }
 
-          });
+      final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
+          excludeColumns: excludeColumns
+      );
       final List<int> bytes = workbook.saveAsStream();
       workbook.dispose();
       await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_payments.xlsx');
     }
 
     Future<void> exportDataGridToPdf() async {
+      final excludeColumns = ['ID', 'Agente Salud ID'];
+      if (!User.showPersonalData()) {
+        excludeColumns.addAll(['Nombre Agente Salud', 'DNI/DPI Agente Salud', 'Teléfono Agente Salud']);
+      }
       exportDataGridToPdfStandard(
         dataGridState: _key.currentState!,
         title: _payments,
-        excludeColumns: ['Nombre Agente Salud', 'DNI/DPI Agente Salud', 'Teléfono Agente Salud', 'Nombre Menor', 'Dirección Menor', 'ID', 'Agente Salud ID'],
+        excludeColumns: excludeColumns,
       );
     }
 
@@ -285,8 +294,6 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
         _screenerEmail = 'Health Agent Email';
         _screenerPhone = 'Health Agent Phone';
         _quantity = 'Quantity';
-        _childName = 'Child Name';
-        _childAddress = 'Child Address';
         _status = 'Status';
         _type = 'Type';
         _screenerId = 'Screener ID';
@@ -307,8 +314,6 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
         _screenerEmail = 'Email Agente Salud';
         _screenerPhone = 'Teléfono Agente Salud';
         _quantity = 'Cantidad';
-        _childName = 'Nombre Menor';
-        _childAddress = 'Dirección Menor';
         _status = 'Estado';
         _type = 'Tipo';
         _screenerId = 'Agente Salud ID';
@@ -329,8 +334,6 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
         _screenerEmail = 'Email de l\'agent de santé';
         _screenerPhone = 'Téléphone de l\'agent de santé';
         _quantity = 'Quantité';
-        _childName = 'Nom de l\'enfant';
-        _childAddress = 'Adresse de l\'enfant';
         _status = 'Statut';
         _type = 'Type';
         _screenerId = 'Agent de santé ID';
@@ -374,7 +377,7 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              _status.toString(),
+              _status,
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -386,12 +389,13 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              _type.toString(),
+              _type,
               overflow: TextOverflow.ellipsis,
             ),
           ),
         ),
         GridColumn(
+          visible: User.showPersonalData(),
           columnName: 'Nombre Agente Salud',
           width: columnWidths['Nombre Agente Salud']!,
           label: Container(
@@ -404,6 +408,7 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
           ),
         ),
         GridColumn(
+          visible: User.showPersonalData(),
           columnName: 'DNI/DPI Agente Salud',
           width: columnWidths['DNI/DPI Agente Salud']!,
           label: Container(
@@ -422,20 +427,20 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              _screenerEmail.toString(),
+              _screenerEmail,
               overflow: TextOverflow.ellipsis,
             ),
           ),
         ),
-
         GridColumn(
+          visible: User.showPersonalData(),
           columnName: 'Teléfono Agente Salud',
           width: columnWidths['Teléfono Agente Salud']!,
           label: Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              _screenerPhone.toString(),
+              _screenerPhone,
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -653,8 +658,6 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
     _screenerEmail = 'Email Agente Salud';
     _screenerPhone = 'Teléfono Agente Salud';
     _quantity = 'Cantidad';
-    _childName = 'Nombre Menor';
-    _childAddress = 'Dirección Menor';
     _status = 'Estado';
     _type = 'Tipo';
     _screenerId = 'Agente Salud ID';
@@ -665,7 +668,6 @@ class _PaymentDataGridState extends LocalizationSampleViewState {
     _exportXLS = 'Exportar XLS';
     _exportPDF = 'Exportar PDF';
     _total = 'Pagos totales';
-    _date = 'Fecha';
     _cancel = 'Cancelar';
     _save = 'Guardar';
     _editPayment = 'Edit';

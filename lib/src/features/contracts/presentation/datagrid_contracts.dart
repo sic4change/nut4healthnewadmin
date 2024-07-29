@@ -74,9 +74,9 @@ class _ContractDataGridState extends LocalizationSampleViewState {
       _transactionValidateHash, _validateData, _medicalId, _screenerId, _pointId;
 
   late Map<String, double> columnWidths = {
-    'Validación Médico Jefe': 200,
-    'Validación Dirección Regional': 200,
-    'ID': 200,
+    'Validación Médico Jefe': 150,
+    'Validación Dirección Regional': 150,
+    'ID': 150,
     'Código': 150,
     'FEFA': 150,
     'Estado': 150,
@@ -107,9 +107,9 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     'Duración': 150,
     'Hash transacción': 150,
     'Hash transacción validada': 150,
-    'Servicio Salud ID': 200,
-    'Agente Salud ID': 200,
-    'Punto ID': 200,
+    'Servicio Salud ID': 150,
+    'Agente Salud ID': 150,
+    'Punto ID': 150,
   };
 
   /// Used to validate the forms
@@ -220,22 +220,30 @@ class _ContractDataGridState extends LocalizationSampleViewState {
 
   Widget _buildHeaderButtons() {
     Future<void> exportDataGridToExcel() async {
+      final excludeColumns = ['Contacto', 'FEFA'];
+      if (!User.showPersonalData()) {
+        excludeColumns.addAll(['Nombre', 'Apellidos', 'Lugar', 'Madre, Padre o Tutor']);
+      }
+      if (User.currentRole != 'super-admin') {
+        excludeColumns.addAll(['ID', 'Punto ID', 'Servicio Salud ID', 'Agente Salud ID']);
+      }
       final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
-          excludeColumns: ['Nombre', 'Apellidos', 'Lugar', 'Madre, Padre o Tutor', 'Contacto', 'FEFA'],
-          cellExport: (DataGridCellExcelExportDetails details) {
-
-          });
+          excludeColumns: excludeColumns,
+      );
       final List<int> bytes = workbook.saveAsStream();
       workbook.dispose();
       await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_contracts.xlsx');
     }
 
     Future<void> exportDataGridToPdf() async {
+      final excludeColumns = ['Contacto', 'FEFA', 'ID', 'Punto ID', 'Servicio Salud ID', 'Agente Salud ID'];
+      if (!User.showPersonalData()) {
+        excludeColumns.addAll(['Nombre', 'Apellidos', 'Lugar', 'Madre, Padre o Tutor']);
+      }
       exportDataGridToPdfStandard(
         dataGridState: _key.currentState!,
         title: _contracts,
-        excludeColumns: ['Nombre', 'Apellidos', 'Lugar', 'Madre, Padre o Tutor',
-          'Contacto', 'FEFA', 'ID', 'Punto ID', 'Servicio Salud ID', 'Agente Salud ID'],
+        excludeColumns: excludeColumns
       );
     }
 
@@ -725,6 +733,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
         ),
 
         GridColumn(
+          visible: User.showPersonalData(),
           columnName: 'Nombre',
           width: columnWidths['Nombre']!,
           label: Container(
@@ -737,6 +746,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
           ),
         ),
         GridColumn(
+          visible: User.showPersonalData(),
           columnName: 'Apellidos',
           width: columnWidths['Apellidos']!,
           label: Container(
@@ -785,6 +795,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
           ),
         ),
         GridColumn(
+          visible: User.showPersonalData(),
           columnName: 'Madre, Padre o Tutor',
           width: columnWidths['Madre, Padre o Tutor']!,
           label: Container(
@@ -869,6 +880,7 @@ class _ContractDataGridState extends LocalizationSampleViewState {
           ),
         ),
         GridColumn(
+          visible: User.showPersonalData(),
           columnName: 'Lugar',
           width: columnWidths['Lugar']!,
           allowEditing: true,

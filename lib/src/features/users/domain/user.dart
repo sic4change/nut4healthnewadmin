@@ -18,6 +18,8 @@ class User extends Equatable {
 
   static String currentRegionId = "", currentProvinceId = "", currentRole = "";
   static bool needValidation = false;
+  // Not showing personal data for superadmins is provisional
+  static bool showPersonalData() => currentRole != 'donante' && currentRole != 'super-admin';
 
   final UserID userId;
   final String? username;

@@ -3,6 +3,7 @@
 
 
 import 'package:adminnut4health/src/features/reports/domain/reportWithUser.dart';
+import 'package:adminnut4health/src/features/users/domain/user.dart';
 import 'package:adminnut4health/src/utils/functions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -158,21 +159,30 @@ class _ReportDataGridState extends LocalizationSampleViewState {
 
   Widget _buildHeaderButtons() {
     Future<void> exportDataGridToExcel() async {
+      final excludeColumns = <String>[];
+      if (!User.showPersonalData()) {
+        excludeColumns.addAll(['Nombre', 'Apellidos']);
+      }
+      if (User.currentRole != 'super-admin') {
+        excludeColumns.addAll(['ID', 'Usuario ID']);
+      }
       final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
-          excludeColumns: ['Nombre', 'Apellidos'],
-          cellExport: (DataGridCellExcelExportDetails details) {
-
-          });
+          excludeColumns: excludeColumns,
+      );
       final List<int> bytes = workbook.saveAsStream();
       workbook.dispose();
       await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_reports.xlsx');
     }
 
     Future<void> exportDataGridToPdf() async {
+      final excludeColumns = ['ID', 'Usuario ID'];
+      if (!User.showPersonalData()) {
+        excludeColumns.addAll(['Nombre', 'Apellidos']);
+      }
       exportDataGridToPdfStandard(
         dataGridState: _key.currentState!,
         title: _reports,
-        excludeColumns: ['ID', 'Usuario ID', 'Nombre', 'Apellidos'],
+        excludeColumns: excludeColumns,
       );
     }
 
@@ -590,6 +600,7 @@ class _ReportDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
+            visible: User.showPersonalData(),
             columnName: 'Nombre',
             width: columnWidths['Nombre']!,
             label: Container(
@@ -602,6 +613,7 @@ class _ReportDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
+            visible: User.showPersonalData(),
             columnName: 'Apellidos',
             width: columnWidths['Apellidos']!,
             label: Container(

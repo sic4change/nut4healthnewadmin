@@ -138,28 +138,18 @@ class PaymentDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[2].value.toString()),
       ),
-      /*User.currentRole != 'donante' ? Container(
+      Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[3].value.toString()),
-      ) :*/ Container(padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: const Text('---------'),
       ),
-      /*User.currentRole != 'donante' ? Container(
+      Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[4].value.toString()),
-      ) :*/ Container(padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: const Text('---------'),
       ),
       _buildEmail(row.getCells()[5].value.toString()),
-      /*User.currentRole != 'donante' ? _buildPhone(row.getCells()[6].value.toString())
-          :*/ Container(padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: const Text('---------'),
-      ),
+      _buildPhone(row.getCells()[6].value.toString()),
       _buildDate(row.getCells()[7].value.toString()),
       Container(
         padding: const EdgeInsets.all(8.0),

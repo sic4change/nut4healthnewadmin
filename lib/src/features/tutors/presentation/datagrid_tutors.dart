@@ -62,8 +62,8 @@ class _TutorDataGridState extends LocalizationSampleViewState {
       _validateData, _id, _pointId;
 
   late Map<String, double> columnWidths = {
-    'Validación Médico Jefe': 200,
-    'Validación Dirección Regional': 200,
+    'Validación Médico Jefe': 150,
+    'Validación Dirección Regional': 150,
     'Punto': 150,
     'Nombre': 150,
     'Apellidos': 150,
@@ -80,8 +80,8 @@ class _TutorDataGridState extends LocalizationSampleViewState {
     'Hijos/as menores a 6 meses': 150,
     'Observaciones': 150,
     'Activo': 150,
-    'ID': 200,
-    'Punto ID': 200,
+    'ID': 150,
+    'Punto ID': 150,
   };
 
   AsyncValue<List<TutorWithPoint>> tutorsAsyncValue = AsyncValue.data(List.empty());
@@ -181,21 +181,30 @@ class _TutorDataGridState extends LocalizationSampleViewState {
 
   Widget _buildHeaderButtons() {
     Future<void> exportDataGridToExcel() async {
+      final excludeColumns = <String>[];
+      if (!User.showPersonalData()) {
+        excludeColumns.addAll(['Nombre', 'Apellidos', 'Vecindario', 'Teléfono', 'Fecha de nacimiento']);
+      }
+      if (User.currentRole != 'super-admin') {
+        excludeColumns.addAll(['ID', 'Punto ID']);
+      }
       final Workbook workbook = _key.currentState!.exportToExcelWorkbook(
-          excludeColumns: <String>['Nombre', 'Apellidos', 'Vecindario', 'Teléfono', 'Fecha de nacimiento'],
-          cellExport: (DataGridCellExcelExportDetails details) {
-
-          });
+          excludeColumns: excludeColumns,
+      );
       final List<int> bytes = workbook.saveAsStream();
       workbook.dispose();
       await helper.FileSaveHelper.saveAndLaunchFile(bytes, '$_tutors.xlsx');
     }
 
     Future<void> exportDataGridToPdf() async {
+      final excludeColumns = ['ID', 'Punto ID'];
+      if (!User.showPersonalData()) {
+        excludeColumns.addAll(['Nombre', 'Apellidos', 'Vecindario', 'Teléfono', 'Fecha de nacimiento']);
+      }
       exportDataGridToPdfStandard(
         dataGridState: _key.currentState!,
         title: _tutors,
-        excludeColumns: ['Nombre', 'Apellidos', 'Vecindario', 'Teléfono', 'Fecha de nacimiento', 'ID', 'Punto ID']
+        excludeColumns: excludeColumns
       );
     }
 
@@ -535,6 +544,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
+            visible: User.showPersonalData(),
             columnName: 'Nombre',
             width: columnWidths['Nombre']!,
             label: Container(
@@ -547,6 +557,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
+            visible: User.showPersonalData(),
             columnName: 'Apellidos',
             width: columnWidths['Apellidos']!,
             label: Container(
@@ -559,6 +570,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
+            visible: User.showPersonalData(),
             columnName: 'Vecindario',
             width: columnWidths['Vecindario']!,
             label: Container(
@@ -571,6 +583,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
+            visible: User.showPersonalData(),
             columnName: 'Teléfono',
             width: columnWidths['Teléfono']!,
             label: Container(
@@ -583,6 +596,7 @@ class _TutorDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
+            visible: User.showPersonalData(),
             columnName: 'Fecha de nacimiento',
             width: columnWidths['Fecha de nacimiento']!,
             label: Container(

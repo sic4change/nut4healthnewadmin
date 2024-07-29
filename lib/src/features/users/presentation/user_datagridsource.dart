@@ -202,36 +202,23 @@ class UserDataGridSource extends DataGridSource {
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[1].value.toString()),
       ),
-      /*User.currentRole != 'donante' ? Container(
+      Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[2].value.toString()),
-      ) :*/ Container(padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: const Text('---------'),
       ),
-      /*User.currentRole != 'donante' ? Container(
+      Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[3].value.toString()),
-      ) :*/ Container(padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: const Text('---------'),
       ),
-      /*User.currentRole != 'donante' ? Container(
+      Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         child: Text(row.getCells()[4].value.toString()),
-      ) :*/ Container(padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: const Text('---------'),
       ),
       _buildEmail(row.getCells()[5].value),
-      /*User.currentRole != 'donante' ? _buildPhone(row.getCells()[6].value)
-          :*/ Container(padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: const Text('---------'),
-      ),
+      _buildPhone(row.getCells()[6].value),
       _buildRole(row.getCells()[7].value),
       Container(
         padding: const EdgeInsets.all(8.0),
