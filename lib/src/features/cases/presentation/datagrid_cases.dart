@@ -540,7 +540,7 @@ class _CaseDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
-            visible: User.currentRole == 'donante' ||  User.currentRole == 'super-admin'? false: true,
+            visible: User.showPersonalData(),
             columnName: 'Madre, padre o tutor',
             width: columnWidths['Madre, padre o tutor']!,
             label: Container(
@@ -553,7 +553,7 @@ class _CaseDataGridState extends LocalizationSampleViewState {
             )
         ),
         GridColumn(
-            visible: User.currentRole == 'donante' ||  User.currentRole == 'super-admin'? false: true,
+            visible: User.showPersonalData(),
             columnName: 'Niño/a',
             width: columnWidths['Niño/a']!,
             label: Container(
