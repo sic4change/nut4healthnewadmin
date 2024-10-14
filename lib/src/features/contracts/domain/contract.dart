@@ -92,10 +92,10 @@ class Contract extends Equatable {
     final childName = data['childName'] ?? "";
     final childSurname = data['childSurname'] ?? "";
     final sex = data['sex'] ?? "";
-    final childBirthdate = (data['childBirthdateMiliseconds'] != null) ? convertStringToDate(data['childBirthdate']) : DateTime(0, 0, 0,);
+    final childBirthdate = (data['childBirthdateMiliseconds'] != null) ? DateTime.fromMillisecondsSinceEpoch(data['childBirthdateMiliseconds'])/*convertStringToDate(data['childBirthdate'])*/ : DateTime(0, 0, 0,);
     final childDNI = data['childDNI'] ?? "";
     final childTutor = data['childTutor'] ?? "";
-    final tutorBirthdate = (data['tutorBirthdateMiliseconds'] != null) ? convertStringToDate(data['tutorBirthdate']) : DateTime(0, 0, 0,);
+    final tutorBirthdate = (data['tutorBirthdateMiliseconds'] != null) ? DateTime.fromMillisecondsSinceEpoch(data['tutorBirthdateMiliseconds'])/*convertStringToDate(data['tutorBirthdate'])*/ : DateTime(0, 0, 0,);
     final tutorDNI = data['tutorDNI'] ?? "";
     final tutorStatus = data['tutorStatus'] ?? "";
     final weeks = data['weeks'] ?? 0;
