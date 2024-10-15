@@ -2,6 +2,7 @@
 /// import 'package:flutter/foundation.dart';
 
 import 'package:adminnut4health/src/features/users/domain/user.dart';
+import 'package:adminnut4health/src/features/visitsWithoutDiagnosis/domain/visitWithoutDiagnosis.dart';
 import 'package:adminnut4health/src/features/visitsWithoutDiagnosis/domain/visitWithoutDiagnosisCombined.dart';
 import 'package:adminnut4health/src/utils/alert_dialogs.dart';
 import 'package:adminnut4health/src/utils/functions.dart';
@@ -53,12 +54,14 @@ class _VisitWithoutDiagnosisDataGridState extends LocalizationSampleViewState {
   late String selectedLocale;
 
   /// Translate names
-  late String _point, _tutor, _fefa, _child, _createDate,  _height, _weight, _imc,
+  late String _chefValidation, _regionalValidation, _point, _tutor, _fefa, _child, _createDate,  _height, _weight, _imc,
       _armCirunference, _observations, _exportXLS, _exportPDF,
-      _total, _visits, _pointId, _visitId, _tutorId, _childId;
+      _total, _visits, _pointId, _visitId, _tutorId, _childId, _validateData;
 
   late Map<String, double> columnWidths = {
     'FEFA': 150,
+    'Validación Médico Jefe': 150,
+    'Validación Dirección Regional': 150,
     'Punto': 150,
     'Madre, padre o tutor': 150,
     'Niño/a': 150,
@@ -198,13 +201,103 @@ class _VisitWithoutDiagnosisDataGridState extends LocalizationSampleViewState {
       );
     }
 
+    if (User.needValidation){
+      return Row(
+        children: <Widget>[
+          _buildValidationButton(onPressed: () {
+            showValidationDialog(
+                context: context,
+                selectedLocale: selectedLocale,
+                onPressed: () {
+                  if (User.currentRole == 'medico-jefe') {
+                    chefValidation();
+                  }
+
+                  if (User.currentRole == 'direccion-regional-salud') {
+                    regionalValidation();
+                  }
+                }
+            );
+          }),
+          _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
+          _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
+        ],
+      );
+    } else {
     return Row(
       children: <Widget>[
         _buildPDFExportingButton(_exportPDF, onPressed: exportDataGridToPdf),
         _buildExcelExportingButton(_exportXLS, onPressed: exportDataGridToExcel),
       ],
     );
+    }
   }
+
+  Widget _buildValidationButton(
+      {required VoidCallback onPressed}) {
+    switch (selectedLocale) {
+      case 'en_US':
+        _validateData = 'VALIDATE DATA';
+        break;
+      case 'es_ES':
+        _validateData = 'VALIDAR DATOS';
+        break;
+      case 'fr_FR':
+        _validateData = 'VALIDER LES DONNÉES';
+        break;
+    }
+    return Container(
+        height: 60.0,
+        padding: const EdgeInsets.only(left: 10.0, top: 10.0, bottom: 10.0),
+        child: TextButton(
+          onPressed: onPressed,
+          child: Text(_validateData),)
+    );
+  }
+
+  Future<void> chefValidation() async {
+    final visits =  visitDataGridSource.getVisitsWithoutDiagnosis()!.where((v) => !v.visitWithoutDiagnosis.chefValidation);
+    for (var v in visits) {
+      VisitWithoutDiagnosis newVisit = VisitWithoutDiagnosis(
+          id: v.visitWithoutDiagnosis.id,
+          pointId: v.visitWithoutDiagnosis.pointId,
+          childId: v.visitWithoutDiagnosis.childId,
+          tutorId: v.visitWithoutDiagnosis.tutorId,
+          fefaId: v.visitWithoutDiagnosis.fefaId,
+          createDate: v.visitWithoutDiagnosis.createDate,
+          height: v.visitWithoutDiagnosis.height,
+          weight: v.visitWithoutDiagnosis.weight,
+          imc: v.visitWithoutDiagnosis.imc,
+          armCircunference: v.visitWithoutDiagnosis.armCircunference,
+          observations: v.visitWithoutDiagnosis.observations,
+          chefValidation: true,
+          regionalValidation: v.visitWithoutDiagnosis.regionalValidation
+      );
+
+      ref.read(visitsWithoutDiagnosisScreenControllerProvider.notifier).updateVisitWithoutDiagnosis(newVisit);
+    }}
+
+  Future<void> regionalValidation() async {
+    final visitsWithChefValidation = visitDataGridSource.getVisitsWithoutDiagnosis()!.where((v) => v.visitWithoutDiagnosis.chefValidation && !v.visitWithoutDiagnosis.regionalValidation);
+    for (var v in visitsWithChefValidation) {
+      ref.read(visitsWithoutDiagnosisScreenControllerProvider.notifier).updateVisitWithoutDiagnosis(
+          VisitWithoutDiagnosis(
+              id: v.visitWithoutDiagnosis.id,
+              pointId: v.visitWithoutDiagnosis.pointId,
+              childId: v.visitWithoutDiagnosis.childId,
+              tutorId: v.visitWithoutDiagnosis.tutorId,
+              fefaId: v.visitWithoutDiagnosis.fefaId,
+              createDate: v.visitWithoutDiagnosis.createDate,
+              height: v.visitWithoutDiagnosis.height,
+              weight: v.visitWithoutDiagnosis.weight,
+              imc: v.visitWithoutDiagnosis.imc,
+              armCircunference: v.visitWithoutDiagnosis.armCircunference,
+              observations: v.visitWithoutDiagnosis.observations,
+              chefValidation: v.visitWithoutDiagnosis.chefValidation,
+              regionalValidation: true
+          )
+      );
+    }}
 
   Widget _buildExcelExportingButton(String buttonName,
       {required VoidCallback onPressed}) {
@@ -282,6 +375,8 @@ class _VisitWithoutDiagnosisDataGridState extends LocalizationSampleViewState {
     final selectedLocale = model.locale.toString();
     switch (selectedLocale) {
       case 'en_US':
+        _chefValidation = 'Chef validation';
+        _regionalValidation = 'Regional validation';
         _point = 'Point';
         _tutor = 'Mother, father or tutor';
         _fefa = 'FEFA';
@@ -303,6 +398,8 @@ class _VisitWithoutDiagnosisDataGridState extends LocalizationSampleViewState {
         _visits = 'Visits without case';
         break;
       case 'es_ES':
+        _chefValidation = 'Validación Médico Jefe';
+        _regionalValidation = 'Validación Dirección Regional';
         _point = 'Punto';
         _tutor = 'Madre, padre o tutor';
         _fefa = 'FEFA';
@@ -324,6 +421,8 @@ class _VisitWithoutDiagnosisDataGridState extends LocalizationSampleViewState {
         _visits = 'Visitas sin caso';
         break;
       case 'fr_FR':
+        _chefValidation = 'Validation du médecin-chef';
+        _regionalValidation = 'Validation direction régionale de la santé';
         _point = 'Place';
         _tutor = 'Mère, père ou tuteur';
         _fefa = 'FEFA';
@@ -375,6 +474,30 @@ class _VisitWithoutDiagnosisDataGridState extends LocalizationSampleViewState {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 _fefa,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Validación Médico Jefe',
+            width: columnWidths['Validación Médico Jefe']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _chefValidation,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+        ),
+        GridColumn(
+            columnName: 'Validación Dirección Regional',
+            width: columnWidths['Validación Dirección Regional']!,
+            label: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                _regionalValidation,
                 overflow: TextOverflow.ellipsis,
               ),
             )
@@ -551,6 +674,8 @@ class _VisitWithoutDiagnosisDataGridState extends LocalizationSampleViewState {
     visitDataGridSource = VisitWithoutDiagnosisDataGridSource(List.empty());
     selectedLocale = model.locale.toString();
 
+    _chefValidation = 'Validación Médico Jefe';
+    _regionalValidation = 'Validación Dirección Regional';
     _point = 'Punto';
     _tutor = 'Madre, padre o tutor';
     _fefa = 'FEFA';
@@ -570,6 +695,7 @@ class _VisitWithoutDiagnosisDataGridState extends LocalizationSampleViewState {
     _exportPDF = 'Exportar PDF';
     _total = 'Visitas totales';
     _visits = 'Visitas';
+    _validateData = 'VALIDAR DATOS';
   }
 
 
@@ -583,14 +709,14 @@ class _VisitWithoutDiagnosisDataGridState extends LocalizationSampleViewState {
             },
           );
 
-          /*if (User.currentRole == 'medico-jefe') {
+          if (User.currentRole == 'medico-jefe') {
             final pointsAsyncValue = ref.watch(pointsByProvinceStreamProvider);
             if (pointsAsyncValue.value != null) {
               final points = pointsAsyncValue.value!;
               if (pointsIds.isEmpty) {
                 pointsIds = points.map((e) => e.pointId).toList();
               }
-              visitsWithoutDiagnosisAsyncValue = ref.watch(visitsByPointsStreamProvider(pointsIds));
+              visitsWithoutDiagnosisAsyncValue = ref.watch(visitsWithoutDiagnosisByPointsStreamProvider(pointsIds));
             }
           } else if (User.currentRole == 'direccion-regional-salud') {
             final pointsAsyncValue = ref.watch(pointsByRegionStreamProvider);
@@ -599,11 +725,11 @@ class _VisitWithoutDiagnosisDataGridState extends LocalizationSampleViewState {
               if (pointsIds.isEmpty) {
                 pointsIds = points.map((e) => e.pointId).toList();
               }
-              visitsWithoutDiagnosisAsyncValue = ref.watch(visitsByPointsStreamProvider(pointsIds));
+              visitsWithoutDiagnosisAsyncValue = ref.watch(visitsWithoutDiagnosisByPointsStreamProvider(pointsIds));
             }
-          } else {*/
+          } else {
           visitsWithoutDiagnosisAsyncValue = ref.watch(visitsWithoutDiagnosisStreamProvider);
-          //}
+          }
 
           if (visitsWithoutDiagnosisAsyncValue.value != null) {
             _saveVisitsWithoutDiagnosis(visitsWithoutDiagnosisAsyncValue);

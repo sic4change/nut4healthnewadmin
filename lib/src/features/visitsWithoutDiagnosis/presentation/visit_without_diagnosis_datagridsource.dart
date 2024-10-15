@@ -39,6 +39,8 @@ class VisitWithoutDiagnosisDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Madre, padre o tutor ID', value: visitCombined.visitWithoutDiagnosis.tutorId),
           DataGridCell<String>(columnName: 'Niño/a ID', value: visitCombined.visitWithoutDiagnosis.childId),
           DataGridCell<bool>(columnName: 'FEFA', value: visitCombined.visitWithoutDiagnosis.fefaId.isNotEmpty),
+          DataGridCell<bool>(columnName: 'Validación Médico Jefe', value: visitCombined.visitWithoutDiagnosis.chefValidation),
+          DataGridCell<bool>(columnName: 'Validación Dirección Regional', value: visitCombined.visitWithoutDiagnosis.regionalValidation),
         ]);
       }).toList();
     }
@@ -83,6 +85,8 @@ class VisitWithoutDiagnosisDataGridSource extends DataGridSource {
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(cells: <Widget>[
       _buildBoolean(row.getCells()[13].value),
+      _buildBoolean(row.getCells()[14].value),
+      _buildBoolean(row.getCells()[15].value),
       _buildStandardContainer(row.getCells()[1].value.toString()),
       _buildStandardContainer(row.getCells()[2].value.toString()),
       _buildStandardContainer(row.getCells()[3].value.toString()),

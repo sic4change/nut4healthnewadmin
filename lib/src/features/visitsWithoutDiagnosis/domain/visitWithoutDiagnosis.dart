@@ -16,11 +16,14 @@ class VisitWithoutDiagnosis extends Equatable {
     required this.imc,
     required this.armCircunference,
     required this.observations,
+    required this.chefValidation,
+    required this.regionalValidation,
   });
 
   final String id, pointId, childId, fefaId, tutorId, observations;
   final DateTime createDate;
   final double height, weight, imc, armCircunference;
+  final bool chefValidation, regionalValidation;
 
 
   @override
@@ -44,6 +47,8 @@ class VisitWithoutDiagnosis extends Equatable {
     final imc = data['imc']?? 0.0;
     final armCircunference = data['armCircunference']?? 0.0;
     final observations = data['observations']?? "";
+    final chefValidation = data['chefValidation']?? false;
+    final regionalValidation = data['regionalValidation']?? false;
 
     return VisitWithoutDiagnosis(
       id: documentId,
@@ -57,6 +62,8 @@ class VisitWithoutDiagnosis extends Equatable {
       imc: imc,
       armCircunference: armCircunference,
       observations: observations,
+      chefValidation: chefValidation,
+      regionalValidation: regionalValidation,
     );
   }
 
@@ -72,6 +79,8 @@ class VisitWithoutDiagnosis extends Equatable {
       'imc': imc,
       'armCircunference': armCircunference,
       'observations': observations,
+      'chefValidation': chefValidation,
+      'regionalValidation': regionalValidation,
     };
   }
 
@@ -88,6 +97,8 @@ class VisitWithoutDiagnosis extends Equatable {
       imc: 0.0,
       armCircunference: 0.0,
       observations: '',
+      chefValidation: false,
+      regionalValidation: false,
     );
   }
 

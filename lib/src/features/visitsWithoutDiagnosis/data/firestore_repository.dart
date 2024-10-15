@@ -64,6 +64,12 @@ class FirestoreRepository {
       _dataSource.watchCollection(
         path: FirestorePath.visitsWithoutDiagnosis(),
         builder: (data, documentId) => VisitWithoutDiagnosis.fromMap(data, documentId),
+        queryBuilder: (query) {
+          if (User.currentRole != 'super-admin' && User.currentRole != 'donante') {
+            query = query.where('chefValidation', isEqualTo: true).where('regionalValidation', isEqualTo: true);
+          }
+          return query;
+        },
       );
 
   Stream<List<VisitWithoutDiagnosis>> watchVisitsWithoutDiagnosisByPoints(List<String> pointsIds) =>
@@ -72,6 +78,9 @@ class FirestoreRepository {
         builder: (data, documentId) => VisitWithoutDiagnosis.fromMap(data, documentId),
         queryBuilder: (query) {
           query = query.where('point', whereIn: pointsIds);
+          if (User.currentRole == 'direccion-regional-salud') {
+            query = query.where('chefValidation', isEqualTo: true);
+          }
           return query;
         },
       );
