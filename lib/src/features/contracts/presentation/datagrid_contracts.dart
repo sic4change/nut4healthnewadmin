@@ -133,7 +133,11 @@ class _ContractDataGridState extends LocalizationSampleViewState {
     if (contracts == null) {
       contractDataGridSource.setContracts(List.empty());
     } else {
-      contractDataGridSource.setContracts(contracts.value!);
+      var contractsList = contracts.value!;
+      if (pointsIds.isNotEmpty) {
+        contractsList = contractsList.where((c) => pointsIds.contains(c.point!.pointId)).toList();
+      }
+      contractDataGridSource.setContracts(contractsList);
     }
   }
 
@@ -1116,13 +1120,12 @@ class _ContractDataGridState extends LocalizationSampleViewState {
           );
 
           if (User.currentRole == 'medico-jefe') {
-            final pointsAsyncValue = ref.watch(pointsByProvinceStreamProvider);
+            final pointsAsyncValue = ref.watch(pointsByLocationStreamProvider);
             if (pointsAsyncValue.value != null) {
               final points = pointsAsyncValue.value!;
               if (pointsIds.isEmpty) {
                 pointsIds = points.map((e) => e.pointId).toList();
               }
-              contractsAsyncValue = ref.watch(contractsByPointsStreamProvider(pointsIds));
             }
           } else if (User.currentRole == 'direccion-regional-salud') {
             final pointsAsyncValue = ref.watch(pointsByRegionStreamProvider);
@@ -1131,11 +1134,10 @@ class _ContractDataGridState extends LocalizationSampleViewState {
               if (pointsIds.isEmpty) {
                 pointsIds = points.map((e) => e.pointId).toList();
               }
-              contractsAsyncValue = ref.watch(contractsByPointsStreamProvider(pointsIds));
             }
-          } else {
-            contractsAsyncValue = ref.watch(contractsStreamProvider);
           }
+
+          contractsAsyncValue = ref.watch(contractsStreamProvider);
 
           if (contractsAsyncValue.value != null) {
             _saveContracts(contractsAsyncValue);

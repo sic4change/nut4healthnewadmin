@@ -17,7 +17,7 @@ class User extends Equatable {
     this.active, this.emptyUser, this.address, this.pointTransactionHash,
     this.roleTransactionHash, this.configurationTransactionHash});
 
-  static String currentRegionId = "", currentLocationId = "", currentProvinceId = "", currentRole = "";
+  static String currentRegionId = "", currentLocationId = "", currentRole = "";
   static bool needValidation = false;
   // Not showing personal data for superadmins is provisional
   static bool showPersonalData() => currentRole != 'donante' /*&& currentRole != 'super-admin'*/;

@@ -95,7 +95,11 @@ class _VisitWithoutDiagnosisDataGridState extends LocalizationSampleViewState {
     if (visits == null) {
       visitDataGridSource.setVisitsWithoutDiagnosis(List.empty());
     } else {
-      visitDataGridSource.setVisitsWithoutDiagnosis(visits.value);
+      var visitsList = visits.value!;
+      if (pointsIds.isNotEmpty) {
+        visitsList = visitsList.where((v) => pointsIds.contains(v.point!.pointId)).toList();
+      }
+      visitDataGridSource.setVisitsWithoutDiagnosis(visitsList);
     }
   }
 
@@ -710,13 +714,12 @@ class _VisitWithoutDiagnosisDataGridState extends LocalizationSampleViewState {
           );
 
           if (User.currentRole == 'medico-jefe') {
-            final pointsAsyncValue = ref.watch(pointsByProvinceStreamProvider);
+            final pointsAsyncValue = ref.watch(pointsByLocationStreamProvider);
             if (pointsAsyncValue.value != null) {
               final points = pointsAsyncValue.value!;
               if (pointsIds.isEmpty) {
                 pointsIds = points.map((e) => e.pointId).toList();
               }
-              visitsWithoutDiagnosisAsyncValue = ref.watch(visitsWithoutDiagnosisByPointsStreamProvider(pointsIds));
             }
           } else if (User.currentRole == 'direccion-regional-salud') {
             final pointsAsyncValue = ref.watch(pointsByRegionStreamProvider);
@@ -725,11 +728,10 @@ class _VisitWithoutDiagnosisDataGridState extends LocalizationSampleViewState {
               if (pointsIds.isEmpty) {
                 pointsIds = points.map((e) => e.pointId).toList();
               }
-              visitsWithoutDiagnosisAsyncValue = ref.watch(visitsWithoutDiagnosisByPointsStreamProvider(pointsIds));
             }
-          } else {
-          visitsWithoutDiagnosisAsyncValue = ref.watch(visitsWithoutDiagnosisStreamProvider);
           }
+
+          visitsWithoutDiagnosisAsyncValue = ref.watch(visitsWithoutDiagnosisStreamProvider);
 
           if (visitsWithoutDiagnosisAsyncValue.value != null) {
             _saveVisitsWithoutDiagnosis(visitsWithoutDiagnosisAsyncValue);

@@ -95,7 +95,11 @@ class _ChildDataGridState extends LocalizationSampleViewState {
     if (childs == null) {
       childDataGridSource.setChilds(List.empty());
     } else {
-      childDataGridSource.setChilds(childs.value);
+      var childrenList = childs.value!;
+      if (pointsIds.isNotEmpty) {
+        childrenList = childrenList.where((c) => pointsIds.contains(c.point!.pointId)).toList();
+      }
+      childDataGridSource.setChilds(childrenList);
     }
   }
 
@@ -719,13 +723,12 @@ class _ChildDataGridState extends LocalizationSampleViewState {
           );
 
           if (User.currentRole == 'medico-jefe') {
-            final pointsAsyncValue = ref.watch(pointsByProvinceStreamProvider);
+            final pointsAsyncValue = ref.watch(pointsByLocationStreamProvider);
             if (pointsAsyncValue.value != null) {
               final points = pointsAsyncValue.value!;
               if (pointsIds.isEmpty) {
                 pointsIds = points.map((e) => e.pointId).toList();
               }
-              childrenAsyncValue = ref.watch(childrenByPointsStreamProvider(pointsIds));
             }
           } else if (User.currentRole == 'direccion-regional-salud') {
             final pointsAsyncValue = ref.watch(pointsByRegionStreamProvider);
@@ -734,11 +737,10 @@ class _ChildDataGridState extends LocalizationSampleViewState {
               if (pointsIds.isEmpty) {
                 pointsIds = points.map((e) => e.pointId).toList();
               }
-              childrenAsyncValue = ref.watch(childrenByPointsStreamProvider(pointsIds));
             }
-          } else {
-            childrenAsyncValue = ref.watch(childsStreamProvider);
           }
+
+          childrenAsyncValue = ref.watch(childsStreamProvider);
 
           if (childrenAsyncValue.value != null) {
             _saveChildren(childrenAsyncValue);

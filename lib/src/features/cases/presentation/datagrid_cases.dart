@@ -100,7 +100,11 @@ class _CaseDataGridState extends LocalizationSampleViewState {
     if (cases == null) {
       caseDataGridSource.setCases(List.empty());
     } else {
-      caseDataGridSource.setCases(cases.value);
+      var casesList = cases.value!;
+      if (pointsIds.isNotEmpty) {
+        casesList = casesList.where((c) => pointsIds.contains(c.point!.pointId)).toList();
+      }
+      caseDataGridSource.setCases(casesList);
     }
   }
 
@@ -780,7 +784,6 @@ class _CaseDataGridState extends LocalizationSampleViewState {
               if (pointsIds.isEmpty) {
                 pointsIds = points.map((e) => e.pointId).toList();
               }
-              casesAsyncValue = ref.watch(casesByPointsStreamProvider(pointsIds));
             }
           } else if (User.currentRole == 'direccion-regional-salud') {
             final pointsAsyncValue = ref.watch(pointsByRegionStreamProvider);
@@ -789,11 +792,10 @@ class _CaseDataGridState extends LocalizationSampleViewState {
               if (pointsIds.isEmpty) {
                 pointsIds = points.map((e) => e.pointId).toList();
               }
-              casesAsyncValue = ref.watch(casesByPointsStreamProvider(pointsIds));
             }
-          } else {
-            casesAsyncValue = ref.watch(casesStreamProvider);
           }
+
+          casesAsyncValue = ref.watch(casesStreamProvider);
 
           if (casesAsyncValue.value != null) {
             _saveCases(casesAsyncValue);

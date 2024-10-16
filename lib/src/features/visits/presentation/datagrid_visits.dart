@@ -123,7 +123,11 @@ class _VisitDataGridState extends LocalizationSampleViewState {
     if (visits == null) {
       visitDataGridSource.setVisits(List.empty());
     } else {
-      visitDataGridSource.setVisits(visits.value);
+      var visitsList = visits.value!;
+      if (pointsIds.isNotEmpty) {
+        visitsList = visitsList.where((v) => pointsIds.contains(v.point!.pointId)).toList();
+      }
+      visitDataGridSource.setVisits(visitsList);
     }
   }
 
@@ -1169,13 +1173,12 @@ class _VisitDataGridState extends LocalizationSampleViewState {
           );
 
           if (User.currentRole == 'medico-jefe') {
-            final pointsAsyncValue = ref.watch(pointsByProvinceStreamProvider);
+            final pointsAsyncValue = ref.watch(pointsByLocationStreamProvider);
             if (pointsAsyncValue.value != null) {
               final points = pointsAsyncValue.value!;
               if (pointsIds.isEmpty) {
                 pointsIds = points.map((e) => e.pointId).toList();
               }
-              visitsAsyncValue = ref.watch(visitsByPointsStreamProvider(pointsIds));
             }
           } else if (User.currentRole == 'direccion-regional-salud') {
             final pointsAsyncValue = ref.watch(pointsByRegionStreamProvider);
@@ -1184,11 +1187,10 @@ class _VisitDataGridState extends LocalizationSampleViewState {
               if (pointsIds.isEmpty) {
                 pointsIds = points.map((e) => e.pointId).toList();
               }
-              visitsAsyncValue = ref.watch(visitsByPointsStreamProvider(pointsIds));
             }
-          } else {
-            visitsAsyncValue = ref.watch(visitsStreamProvider);
           }
+
+          visitsAsyncValue = ref.watch(visitsStreamProvider);
 
           if (visitsAsyncValue.value != null) {
             _saveVisits(visitsAsyncValue);

@@ -9,8 +9,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // ignore:depend_on_referenced_packages
 import 'package:flutter_web_plugins/url_strategy.dart';
-
 import 'firebase_options.dart';
+import 'package:stack_trace/stack_trace.dart' as stack_trace;
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,6 +37,12 @@ Future<void> main() async {
     container: container,
     child: const MyApp(),
   ));
+
+  FlutterError.demangleStackTrace = (StackTrace stack) {
+    if (stack is stack_trace.Trace) return stack.vmTrace;
+    if (stack is stack_trace.Chain) return stack.toTrace().vmTrace;
+    return stack;
+  };
 }
 
 void registerErrorHandlers() {

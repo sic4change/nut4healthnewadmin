@@ -72,7 +72,7 @@ class _SampleBrowserState extends ConsumerState<SampleBrowser> {
 
         if (localUser.value != null) {
           User.currentRegionId = localUser.value!.regionId ?? "";
-          User.currentProvinceId = localUser.value!.provinceId ?? "";
+          User.currentLocationId = localUser.value!.locationId ?? "";
           if ((User.currentRole == 'direccion-regional-salud' || User.currentRole == 'medico-jefe') && countries != null && regions != null) {
             final currentRegion = regions.firstWhere((r) => r.regionId == User.currentRegionId);
             final country = countries.firstWhere((c) => c.countryId == currentRegion.countryId);

@@ -42,11 +42,11 @@ class FirestoreRepository {
     return points;
   }
 
-  Stream<List<Point>> watchPointsByProvince() {
+  Stream<List<Point>> watchPointsByLocation() {
     Stream<List<Point>> points =  _dataSource.watchCollection(
       path: FirestorePath.points(),
       builder: (data, documentId) => Point.fromMap(data, documentId),
-      queryBuilder: (query) => query.where('province', isEqualTo: User.currentProvinceId),
+      queryBuilder: (query) => query.where('location', isEqualTo: User.currentLocationId),
       sort: (a, b) => a.name.compareTo(b.name),
     );
     return points;
@@ -81,44 +81,18 @@ class FirestoreRepository {
         path: FirestorePath.tutors(),
         builder: (data, documentId) => Tutor.fromMap(data, documentId),
         queryBuilder: (query) {
-          if (User.currentRole != 'super-admin' && User.currentRole != 'donante') {
+          if (User.currentRole == 'direccion-regional-salud') {
+            query = query.where('chefValidation', isEqualTo: true);
+          } else if (User.currentRole != 'super-admin' && User.currentRole != 'donante' && User.currentRole != 'medico-jefe') {
             query = query.where('chefValidation', isEqualTo: true).where('regionalValidation', isEqualTo: true);
           }
           return query;
         },
       );
 
-  Stream<List<Tutor>> watchTutorsByPoints(List<String> pointsIds) =>
-      _dataSource.watchCollection(
-        path: FirestorePath.tutors(),
-        builder: (data, documentId) => Tutor.fromMap(data, documentId),
-        queryBuilder: (query) {
-          query = query.where('point', whereIn: pointsIds);
-          if (User.currentRole == 'direccion-regional-salud') {
-            query = query.where('chefValidation', isEqualTo: true);
-          }
-          return query;
-        },
-    );
-
   Stream<List<TutorWithPoint>> watchTutorsWithPoints() {
     return CombineLatestStream.combine2(
         watchTutors(),
-        watchPoints(),
-            (List<Tutor> tutors, List<Point> points,) {
-          final Map<String, Point> pointMap = Map.fromEntries(
-            points.map((point) => MapEntry(point.pointId, point)),
-          );
-          return tutors.map((tutor) {
-              final Point point = pointMap[tutor.pointId] ?? Point.getEmptyPoint();
-              return TutorWithPoint(tutor, point);
-            }).toList();
-        });
-  }
-
-  Stream<List<TutorWithPoint>> watchTutorsFullByPoints(List<String> pointsIds) {
-    return CombineLatestStream.combine2(
-        watchTutorsByPoints(pointsIds),
         watchPoints(),
             (List<Tutor> tutors, List<Point> points,) {
           final Map<String, Point> pointMap = Map.fromEntries(
@@ -158,15 +132,6 @@ final tutorsStreamProvider = StreamProvider.autoDispose<List<TutorWithPoint>>((r
   return database.watchTutorsWithPoints();
 });
 
-final tutorsByPointsStreamProvider = StreamProvider.autoDispose.family<List<TutorWithPoint>, List<String>>((ref, pointsIds) {
-  final user = ref.watch(authStateChangesProvider).value;
-  if (user == null) {
-    throw AssertionError('User can\'t be null');
-  }
-  final database = ref.watch(databaseProvider);
-  return database.watchTutorsFullByPoints(pointsIds);
-});
-
 final tutorStreamProvider =
     StreamProvider.autoDispose.family<Tutor, TutorID>((ref, tutorId) {
   final user = ref.watch(authStateChangesProvider).value;
@@ -186,12 +151,12 @@ final pointsByRegionStreamProvider = StreamProvider.autoDispose<List<Point>>((re
   return database.watchPointsByRegion();
 });
 
-final pointsByProvinceStreamProvider = StreamProvider.autoDispose<List<Point>>((ref) {
+final pointsByLocationStreamProvider = StreamProvider.autoDispose<List<Point>>((ref) {
   final user = ref.watch(authStateChangesProvider).value;
   if (user == null) {
     throw AssertionError('User can\'t be null');
   }
   final database = ref.watch(databaseProvider);
-  return database.watchPointsByProvince();
+  return database.watchPointsByLocation();
 });
 
