@@ -2,6 +2,7 @@
 /// import 'package:flutter/foundation.dart';
 
 
+import 'package:adminnut4health/src/features/locations/domain/location.dart';
 import 'package:adminnut4health/src/features/provinces/domain/province.dart';
 import 'package:adminnut4health/src/features/regions/domain/region.dart';
 import 'package:adminnut4health/src/features/users/presentation/users_screen_controller.dart';
@@ -70,10 +71,11 @@ class _UserDataGridState extends LocalizationSampleViewState {
 
   /// Translate names
   late String _photo, _username, _name, _surnames, _dni, _email, _phone, _role,
-      _configuration, _region, _province, _point, _points, _createDate, _address,_pointTransactionHash,
+      _configuration, _region, _location, _province, _point, _points, _createDate,
+      _address,_pointTransactionHash,
       _roleTransactionHash, _configurationTransactionHash, _newUser, _importCSV,
       _exportXLS, _exportPDF, _total, _editUser, _removeUser, _save, _cancel,
-      _users, _removedUser, _userId, _regionId, _provinceId;
+      _users, _removedUser, _userId, _regionId, _locationId, _provinceId;
 
   late Map<String, double> columnWidths = {
     'Foto': 150,
@@ -86,6 +88,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
     'Rol': 150,
     'Configuración': 150,
     'Región': 200,
+    'Provincia': 200,
     'Municipio': 200,
     'Punto': 200,
     'Puntos': 150,
@@ -96,6 +99,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
     'Hash transacción configuración': 300,
     'Usuario ID': 200,
     'Región ID': 200,
+    'Provincia ID': 200,
     'Municipio ID': 200,
   };
 
@@ -178,7 +182,15 @@ class _UserDataGridState extends LocalizationSampleViewState {
       userDataGridSource.setRegions(regions.value!);
     }
   }
-  
+
+  _saveLocations(AsyncValue<List<Location>>? locations) {
+    if (locations == null) {
+      userDataGridSource.setLocations(List.empty());
+    } else {
+      userDataGridSource.setLocations(locations.value!);
+    }
+  }
+
   _saveProvinces(AsyncValue<List<Province>>? provinces) {
     if (provinces == null) {
       userDataGridSource.setProvinces(List.empty());
@@ -525,13 +537,6 @@ class _UserDataGridState extends LocalizationSampleViewState {
     required String text,
     required void Function(void Function()) setState}) {
     String value = optionSelected;
-    if (optionSelected.isEmpty) {
-      if (dropDownMenuItems.isNotEmpty) {
-        value = dropDownMenuItems[0];
-      } else {
-        value = "";
-      }
-    }
     return Row(
       children: <Widget>[
         Container(
@@ -541,13 +546,13 @@ class _UserDataGridState extends LocalizationSampleViewState {
         SizedBox(
           width: 150,
           child: DropdownButtonFormField<String>(
-                value: value,
+                value: value.isNotEmpty? value: null,
                 autofocus: true,
                 focusColor: Colors.transparent,
                 icon: const Icon(Icons.arrow_drop_down_sharp),
                 isExpanded: false,
                 validator: (String? value) {
-                  if (value!.isEmpty) {
+                  if (value == null || value.isEmpty) {
                     return 'El campo no puede estar vacío';
                   }
                   return null;
@@ -558,17 +563,24 @@ class _UserDataGridState extends LocalizationSampleViewState {
                     if (columnName == 'Región') {
                       Region regionSelected = userDataGridSource.getRegions().firstWhere((r) => r.name == newValue);
                       ref.watch(usersScreenControllerProvider.notifier).setRegionSelected(regionSelected);
+
                       ref.watch(usersScreenControllerProvider.notifier).
-                      setProvinceOptions(userDataGridSource.getProvinces().where((p) => p.regionId == regionSelected.regionId).toList());
-                      if (ref.watch(usersScreenControllerProvider.notifier).getProvinceOptions().isNotEmpty) {
-                        ref.watch(usersScreenControllerProvider.notifier).
-                        setProvinceSelected(ref.watch(usersScreenControllerProvider.notifier).getProvinceOptions()[0]);
-                      } else {
-                        ref.watch(usersScreenControllerProvider.notifier).
-                        setProvinceSelected(const Province(provinceId: '', country: "", regionId: '', locationId: '', name: "", active: false));
-                      }
+                      setLocationOptions(userDataGridSource.getLocations().where((p) => p.regionId == regionSelected.regionId
+                      ).toList());
+                      ref.watch(usersScreenControllerProvider.notifier).setLocationSelected(const Location.empty());
+
+                      ref.watch(usersScreenControllerProvider.notifier).setProvinceOptions(List.empty());
+                      ref.watch(usersScreenControllerProvider.notifier).setProvinceSelected(const Province.empty());
+                    } else if (columnName == 'Provincia') {
+                      Location locationSelected = userDataGridSource.getLocations().firstWhere((r) => r.name == newValue);
+                      ref.watch(usersScreenControllerProvider.notifier).setLocationSelected(locationSelected);
+
+                      ref.watch(usersScreenControllerProvider.notifier).
+                      setProvinceOptions(userDataGridSource.getProvinces().where((p) => p.locationId == locationSelected.locationId
+                      ).toList());
+                      ref.watch(usersScreenControllerProvider.notifier).setProvinceSelected(const Province.empty());
                     } else if (columnName == 'Municipio') {
-                      Province provinceSelected = userDataGridSource.getProvinces().firstWhere((element) => element.name == newValue);
+                      Province provinceSelected = userDataGridSource.getProvinces()!.firstWhere((element) => element.name == newValue);
                       ref.watch(usersScreenControllerProvider.notifier).setProvinceSelected(provinceSelected);
                     } else if (columnName == 'Rol'){
                       roleController!.text = newValue;
@@ -670,6 +682,16 @@ class _UserDataGridState extends LocalizationSampleViewState {
         const SizedBox(height: 20),
         _buildRowComboSelection(
           context: context,
+          optionSelected: ref.watch(usersScreenControllerProvider.notifier).getLocationSelected().name,
+          columnName: 'Provincia',
+          dropDownMenuItems: ref.watch(usersScreenControllerProvider.notifier)
+              .getLocationOptions().map((l) => l.name).toList(),
+          text: _location,
+          setState: setState,
+        ),
+        const SizedBox(height: 20),
+        _buildRowComboSelection(
+          context: context,
           optionSelected: ref.watch(usersScreenControllerProvider.notifier).getProvinceSelected().name,
           columnName: 'Municipio',
           dropDownMenuItems: ref.watch(usersScreenControllerProvider.notifier)
@@ -729,6 +751,16 @@ class _UserDataGridState extends LocalizationSampleViewState {
           columnName: 'Región',
           dropDownMenuItems: userDataGridSource.getRegions().map((e) => e.name).toList(),
           text: _region,
+          setState: setState,
+        ),
+        const SizedBox(height: 20),
+        _buildRowComboSelection(
+          context: context,
+          optionSelected: ref.watch(usersScreenControllerProvider.notifier).getLocationSelected().name,
+          columnName: 'Provincia',
+          dropDownMenuItems: ref.watch(usersScreenControllerProvider.notifier)
+              .getLocationOptions().map((l) => l.name).toList(),
+          text: _location,
           setState: setState,
         ),
         const SizedBox(height: 20),
@@ -845,6 +877,18 @@ class _UserDataGridState extends LocalizationSampleViewState {
     final region = userDataGridSource.getRegions().firstWhere((r) => r.name == regionString);
     ref.watch(usersScreenControllerProvider.notifier).setRegionSelected(region);
 
+    final String? locationString = row
+        .getCells()
+        .firstWhere((DataGridCell element) => element.columnName == 'Provincia')
+        ?.value
+        .toString();
+
+    final location = userDataGridSource.getLocations().firstWhere((l) => l.name == locationString);
+    ref.watch(usersScreenControllerProvider.notifier).setLocationSelected(location);
+    ref.watch(usersScreenControllerProvider.notifier).
+    setLocationOptions(userDataGridSource.getLocations().where((l) =>
+    l.regionId == ref.watch(usersScreenControllerProvider.notifier).getRegionSelected().regionId).toList());
+
     final String? provinceString = row
         .getCells()
         .firstWhere((DataGridCell element) => element.columnName == 'Municipio')
@@ -855,7 +899,8 @@ class _UserDataGridState extends LocalizationSampleViewState {
     ref.watch(usersScreenControllerProvider.notifier).setProvinceSelected(province);
     ref.watch(usersScreenControllerProvider.notifier).
     setProvinceOptions(userDataGridSource.getProvinces().where((p) =>
-    p.regionId == ref.watch(usersScreenControllerProvider.notifier).getRegionSelected().regionId).toList());
+    p.regionId == ref.watch(usersScreenControllerProvider.notifier).getRegionSelected().regionId
+    && p.locationId == ref.watch(usersScreenControllerProvider.notifier).getLocationSelected().locationId).toList());
 
     final String? point = row
         .getCells()
@@ -944,6 +989,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
               email: emailController!.text, phone: phoneController!.text,
               role: formatRoleToSaveValue(roleController!.text),
               regionId: ref.watch(usersScreenControllerProvider.notifier).getRegionSelected().regionId,
+              locationId: ref.watch(usersScreenControllerProvider.notifier).getLocationSelected().locationId,
               provinceId: ref.watch(usersScreenControllerProvider.notifier).getProvinceSelected().provinceId,
               point: userDataGridSource.getPoints().firstWhere((element) => element.name == pointController!.text).pointId,
               configuration: userDataGridSource.getConfigurations().firstWhere((element) => element.name == configurationController!.text).id,
@@ -965,6 +1011,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
               email: emailController!.text, phone: phoneController!.text,
               role: formatRoleToSaveValue(roleController!.text),
               regionId: ref.watch(usersScreenControllerProvider.notifier).getRegionSelected().regionId,
+              locationId: ref.watch(usersScreenControllerProvider.notifier).getLocationSelected().locationId,
               provinceId: ref.watch(usersScreenControllerProvider.notifier).getProvinceSelected().provinceId,
               point: userDataGridSource.getPoints().firstWhere((element) => element.name == pointController!.text).pointId,
               configuration: userDataGridSource.getConfigurations().firstWhere((element) => element.name == configurationController!.text).id,
@@ -1105,6 +1152,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
         _role = 'Role';
         _configuration = 'Configuration';
         _region = 'Region';
+        _location = 'Province';
         _province = 'Municipality';
         _point = 'Point';
         _points = 'Points';
@@ -1115,6 +1163,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
         _configurationTransactionHash = 'Configuration transaction hash';
         _userId = 'User ID';
         _regionId = 'Region ID';
+        _locationId = 'Province ID';
         _provinceId = 'Municipality ID';
 
         _newUser = 'Create User';
@@ -1140,6 +1189,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
         _role = 'Rol';
         _configuration = 'Configuración';
         _region = 'Región';
+        _location = 'Provincia';
         _province = 'Municipio';
         _point = 'Punto';
         _points = 'Puntos';
@@ -1150,6 +1200,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
         _configurationTransactionHash = 'Hash transacción configuración';
         _userId = 'Usuario ID';
         _regionId = 'Región ID';
+        _locationId = 'Provincia ID';
         _provinceId = 'Municipio ID';
 
         _newUser = 'Crear Usuario';
@@ -1175,6 +1226,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
         _role = 'Rôle';
         _configuration = 'Configuration';
         _region = 'Région';
+        _location = 'Province';
         _province = 'Municipalité';
         _point = 'Point';
         _points = 'Points';
@@ -1185,6 +1237,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
         _configurationTransactionHash = 'Hachage transaction configuration';
         _userId = 'Utilisateur ID';
         _regionId = 'Région ID';
+        _locationId = 'Province ID';
         _provinceId = 'Municipalité ID';
 
         _newUser = 'Créer utilisateur';
@@ -1336,6 +1389,17 @@ class _UserDataGridState extends LocalizationSampleViewState {
               )),
         ),
         GridColumn(
+          columnName: 'Provincia',
+          width: columnWidths['Provincia']!,
+          label: Container(
+              padding: const EdgeInsets.all(8.0),
+              alignment: Alignment.center,
+              child: Text(
+                _location,
+                overflow: TextOverflow.ellipsis,
+              )),
+        ),
+        GridColumn(
           columnName: 'Municipio',
           width: columnWidths['Municipio']!,
           label: Container(
@@ -1466,6 +1530,19 @@ class _UserDataGridState extends LocalizationSampleViewState {
               )),
         ),
         GridColumn(
+          columnName: 'Provincia ID',
+          width: columnWidths['Provincia ID']!,
+          visible: false,
+          columnWidthMode: ColumnWidthMode.lastColumnFill,
+          label: Container(
+              padding: const EdgeInsets.all(8.0),
+              alignment: Alignment.center,
+              child: Text(
+                _locationId,
+                overflow: TextOverflow.ellipsis,
+              )),
+        ),
+        GridColumn(
           columnName: 'Municipio ID',
           width: columnWidths['Municipio ID']!,
           visible: false,
@@ -1485,7 +1562,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
   @override
   void initState() {
     super.initState();
-    userDataGridSource = UserDataGridSource(List.empty(), List.empty(), List.empty(), List.empty(), List.empty());
+    userDataGridSource = UserDataGridSource(List.empty(), List.empty(), List.empty(), List.empty(), List.empty(), List.empty());
     usernameController = TextEditingController();
     nameController = TextEditingController();
     surnamesController = TextEditingController();
@@ -1509,6 +1586,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
     _role = 'Rol';
     _configuration = 'Configuración';
     _region = 'Región';
+    _location = 'Provincia';
     _province = 'Municipio';
     _point = 'Punto';
     _points = 'Puntos';
@@ -1519,6 +1597,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
     _configurationTransactionHash = 'Hash transacción configuración';
     _userId = 'Usuario ID';
     _regionId = 'Región ID';
+    _locationId = 'Provincia ID';
     _provinceId = 'Municipio ID';
 
     _newUser = 'Crear Usuario';
@@ -1561,6 +1640,7 @@ class _UserDataGridState extends LocalizationSampleViewState {
           }
           final usersAsyncValue = ref.watch(usersStreamProvider);
           final regionsAsyncValue = ref.watch(regionsStreamProvider);
+          final locationsAsyncValue = ref.watch(locationsStreamProvider);
           final provincesAsyncValue = ref.watch(provincesStreamProvider);
           final pointsAsyncValue = ref.watch(pointsStreamProvider);
           final configurationsAsyncValue = ref.watch(configurationsStreamProvider);
@@ -1570,6 +1650,9 @@ class _UserDataGridState extends LocalizationSampleViewState {
           }
           if (regionsAsyncValue.value != null) {
             _saveRegions(regionsAsyncValue);
+          }
+          if (locationsAsyncValue.value != null) {
+            _saveLocations(locationsAsyncValue);
           }
           if (provincesAsyncValue.value != null) {
             _saveProvinces(provincesAsyncValue);

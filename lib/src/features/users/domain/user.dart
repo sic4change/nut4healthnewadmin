@@ -12,11 +12,12 @@ class User extends Equatable {
   User({
     required this.userId, this.username, this.name,
     this.surname, required this.email, this.phone, required this. role, this.dni,
-    this.photo, this.point, this.regionId, this.provinceId, this.configuration, this.points, this.createdate,
+    this.photo, this.point, this.regionId, this.locationId,
+    this.provinceId, this.configuration, this.points, this.createdate,
     this.active, this.emptyUser, this.address, this.pointTransactionHash,
     this.roleTransactionHash, this.configurationTransactionHash});
 
-  static String currentRegionId = "", currentProvinceId = "", currentRole = "";
+  static String currentRegionId = "", currentLocationId = "", currentProvinceId = "", currentRole = "";
   static bool needValidation = false;
   // Not showing personal data for superadmins is provisional
   static bool showPersonalData() => currentRole != 'donante' /*&& currentRole != 'super-admin'*/;
@@ -32,6 +33,7 @@ class User extends Equatable {
   final String? photo;
   final String? point;
   final String? regionId;
+  final String? locationId;
   final String? provinceId;
   final String? configuration;
   final int? points;
@@ -45,8 +47,8 @@ class User extends Equatable {
 
   @override
   List<Object> get props => [userId, username ?? "", name ?? "", surname ?? "",
-    role, dni ?? "", email, phone ?? "", photo ?? "", point ?? "", regionId ?? "", provinceId ?? "",
-    configuration ?? "", points ?? 0, createdate ?? DateTime(0, 0, 0),
+    role, dni ?? "", email, phone ?? "", photo ?? "", point ?? "", regionId ?? "", locationId ?? "",
+    provinceId ?? "",configuration ?? "", points ?? 0, createdate ?? DateTime(0, 0, 0),
     active ?? false, emptyUser ?? false,address?? "",  pointTransactionHash ?? "",
     roleTransactionHash ?? "", configurationTransactionHash?? ""];
 
@@ -72,6 +74,7 @@ class User extends Equatable {
     final photo = data['photo'] ?? "";
     final point = data['point'] ?? "";
     final regionId = data['regionId'] ?? "";
+    final locationId = data['locationId'] ?? "";
     final provinceId = data['provinceId'] ?? "";
     final configuration = data['configuration'] ?? "";
     final points = data['points'] ?? 0;
@@ -96,6 +99,7 @@ class User extends Equatable {
         photo: photo,
         point: point,
         regionId: regionId,
+        locationId: locationId,
         provinceId: provinceId,
         configuration: configuration,
         points: points,
@@ -121,6 +125,7 @@ class User extends Equatable {
       'photo': photo,
       'point': point,
       'regionId': regionId,
+      'locationId': locationId,
       'provinceId': provinceId,
       'configuration': configuration,
       'points': points,

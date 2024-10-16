@@ -1,6 +1,7 @@
 /// Dart import
 import 'dart:math' as math;
 
+import 'package:adminnut4health/src/features/locations/domain/location.dart';
 import 'package:adminnut4health/src/features/points/domain/point.dart';
 import 'package:adminnut4health/src/features/provinces/domain/province.dart';
 import 'package:adminnut4health/src/features/regions/domain/region.dart';
@@ -22,9 +23,11 @@ import '../../../sample/model/sample_view.dart';
 class UserDataGridSource extends DataGridSource {
   /// Creates the user data source class with required details.
   UserDataGridSource(List<UserWithConfigurationAndPoint> userData,
-      List<Region> regionData, List<Province> provinceData, List<Point> pointData, List<Configuration> configurationData) {
+      List<Region> regionData, List<Location> locationData, List<Province> provinceData,
+      List<Point> pointData, List<Configuration> configurationData) {
     _users = userData;
     _regions = regionData;
+    _locations = locationData;
     _provinces = provinceData;
     _points = pointData;
     _configurations = configurationData;
@@ -34,6 +37,7 @@ class UserDataGridSource extends DataGridSource {
   List<DataGridRow> _dataGridRows = <DataGridRow>[];
   List<UserWithConfigurationAndPoint>? _users = <UserWithConfigurationAndPoint>[];
   List<Region> _regions = <Region>[];
+  List<Location> _locations = <Location>[];
   List<Province> _provinces = <Province>[];
   List<Point> _points = <Point>[];
   List<Configuration> _configurations = <Configuration>[];
@@ -53,6 +57,7 @@ class UserDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Teléfono', value: userWithConfiguration.user.phone),
           DataGridCell<String>(columnName: 'Rol', value: userWithConfiguration.user.role),
           DataGridCell<String>(columnName: 'Región', value: userWithConfiguration.region?.name),
+          DataGridCell<String>(columnName: 'Provincia', value: userWithConfiguration.location?.name),
           DataGridCell<String>(columnName: 'Municipio', value: userWithConfiguration.province?.name),
           DataGridCell<String>(columnName: 'Punto', value: userWithConfiguration.point?.name),
           DataGridCell<String>(columnName: 'Configuración', value: userWithConfiguration.configuration?.name),
@@ -64,6 +69,7 @@ class UserDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'Hash transacción configuración', value: userWithConfiguration.user.configurationTransactionHash),
           DataGridCell<String>(columnName: 'Usuario ID', value: userWithConfiguration.user.userId),
           DataGridCell<String>(columnName: 'Región ID', value: userWithConfiguration.region?.regionId),
+          DataGridCell<String>(columnName: 'Provincia ID', value: userWithConfiguration.location?.locationId),
           DataGridCell<String>(columnName: 'Municipio ID', value: userWithConfiguration.province?.provinceId),
         ]);
       }).toList();
@@ -152,6 +158,14 @@ class UserDataGridSource extends DataGridSource {
     }
   }
 
+  Widget _buildStandardContainer(String value) {
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      alignment: Alignment.centerLeft,
+      child: Text(value),
+    );
+  }
+
   Widget _buildRole(dynamic value) {
     return Center(
       child: Text(
@@ -197,86 +211,28 @@ class UserDataGridSource extends DataGridSource {
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(cells: <Widget>[
       _buildPhoto((row.getCells()[0].value.toString())),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[1].value.toString()),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[2].value.toString()),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[3].value.toString()),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[4].value.toString()),
-      ),
+      _buildStandardContainer(row.getCells()[1].value.toString()),
+      _buildStandardContainer(row.getCells()[2].value.toString()),
+      _buildStandardContainer(row.getCells()[3].value.toString()),
+      _buildStandardContainer(row.getCells()[4].value.toString()),
       _buildEmail(row.getCells()[5].value),
       _buildPhone(row.getCells()[6].value),
       _buildRole(row.getCells()[7].value),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[8].value.toString()),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[9].value.toString()),
-      ),
-      _buildPoint(row.getCells()[10].value),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[11].value.toString()),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.center,
-        child: Text(row.getCells()[12].value.toString()),
-      ),
-      _buildDate(row.getCells()[13].value),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.center,
-        child: Text(row.getCells()[14].value.toString()),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[15].value.toString()),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[16].value.toString()),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[17].value.toString()),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[18].value.toString()),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[19].value.toString()),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.centerLeft,
-        child: Text(row.getCells()[20].value.toString()),
-      ),
+      _buildStandardContainer(row.getCells()[8].value.toString()),
+      _buildStandardContainer(row.getCells()[9].value.toString()),
+      _buildStandardContainer(row.getCells()[10].value.toString()),
+      _buildPoint(row.getCells()[11].value),
+      _buildStandardContainer(row.getCells()[12].value.toString()),
+      _buildStandardContainer(row.getCells()[13].value.toString()),
+      _buildDate(row.getCells()[14].value),
+      _buildStandardContainer(row.getCells()[15].value.toString()),
+      _buildStandardContainer(row.getCells()[16].value.toString()),
+      _buildStandardContainer(row.getCells()[17].value.toString()),
+      _buildStandardContainer(row.getCells()[18].value.toString()),
+      _buildStandardContainer(row.getCells()[19].value.toString()),
+      _buildStandardContainer(row.getCells()[20].value.toString()),
+      _buildStandardContainer(row.getCells()[21].value.toString()),
+      _buildStandardContainer(row.getCells()[22].value.toString()),
     ]);
   }
 
@@ -294,6 +250,14 @@ class UserDataGridSource extends DataGridSource {
 
   List<Region> getRegions() {
     return _regions;
+  }
+
+  setLocations(List<Location> locationData) {
+    _locations = locationData;
+  }
+
+  List<Location> getLocations() {
+    return _locations;
   }
 
   setProvinces(List<Province> provinceData) {
